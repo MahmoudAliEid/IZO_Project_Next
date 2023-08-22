@@ -1,0 +1,4 @@
+_____________Brand Colors_______________
+Black-Color=hex: #111111;
+Orange-Color=hex:#ec6608;
+White-Color=hex:#f4f4f4
