@@ -25,7 +25,9 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 
 // images
 
-import logo from '../../../public/izoLogo/Logo.ico'
+// import logo from '/public/izoLogo/Logo.ico'
+
+// /import loginImage from '/izoLogo/loginImage.svg'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -85,11 +87,7 @@ const Register = () => {
     <Box className='content-right'>
       {!hidden ? (
         <Box sx={{ p: 12, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <RegisterIllustration
-            width={700}
-            alt='register-illustration'
-            src={`/images/pages/girl-with-laptop-${theme.palette.mode}.png`}
-          />
+          <RegisterIllustration width={700} alt='register-illustration' src={'/izoLogo/loginImage.svg'} />
         </Box>
       ) : null}
       <RightWrapper
@@ -97,8 +95,8 @@ const Register = () => {
       >
         <Box sx={{ mx: 'auto', maxWidth: 400 }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center' }}>
-            <Image src={logo} alt='logo' width={30} height={30} />
-            <Typography
+            <Image src={'/izoLogo/Logo.ico'} alt='logo' width={40} height={40} />
+            {/* <Typography
               variant='h5'
               sx={{
                 ml: 2,
@@ -110,7 +108,7 @@ const Register = () => {
               }}
             >
               {themeConfig.templateName}
-            </Typography>
+            </Typography> */}
           </Box>
           <Typography variant='h6' sx={{ mb: 1.5 }}>
             Adventure starts here 🚀
@@ -163,26 +161,6 @@ const Register = () => {
               <Typography variant='body2'>
                 <LinkStyled href='/login'>Sign in instead</LinkStyled>
               </Typography>
-            </Box>
-            <Divider sx={{ my: `${theme.spacing(6)} !important` }}>or</Divider>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>
-                <Icon icon='bxl:facebook-circle' />
-              </IconButton>
-              <IconButton href='/' component={Link} sx={{ color: '#1da1f2' }} onClick={e => e.preventDefault()}>
-                <Icon icon='bxl:twitter' />
-              </IconButton>
-              <IconButton
-                href='/'
-                component={Link}
-                onClick={e => e.preventDefault()}
-                sx={{ color: theme.palette.mode === 'light' ? '#272727' : 'grey.300' }}
-              >
-                <Icon icon='bxl:github' />
-              </IconButton>
-              <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
-                <Icon icon='bxl:google' />
-              </IconButton>
             </Box>
           </form>
         </Box>
