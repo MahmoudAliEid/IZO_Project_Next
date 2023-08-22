@@ -121,12 +121,9 @@ const App = (props: ExtendedAppProps) => {
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
-          <meta
-            name='description'
-            content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
-          />
-          <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+          <title>{`${themeConfig.templateName}`}</title>
+          <meta name='description' content={`${themeConfig.templateName} – IZO Admin Dashboard`} />
+          <meta name='keywords' content='IZO, ERP, Admin Template, ERP Admin ' />
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 

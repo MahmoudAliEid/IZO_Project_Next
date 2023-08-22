@@ -1,0 +1,69 @@
+.register__container {
+  background-color: #f4f4f4;
+}
+.center_wrapper {
+  box-shadow: 1px 4px 20px 0px #11111191;
+}
+.part_1 {
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ec6608;
+  margin-bottom: 20px;
+  gap: 7px;
+  display: flex;
+  /* justify-content: space-between; */
+}
+.part_1 input {
+  width: 200px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  flex-shrink: 1;
+}
+.dropdown {
+  width: 200px;
+}
+.part_2 {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  gap: 5px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between;
+}
+.part_2 input {
+  width: 200px;
+  flex-wrap: wrap;
+  flex-shrink: 1;
+}
+
+.izo__logo {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 20px;
+  padding: 0;
+}
+.parts__container {
+  margin: 20px;
+}
+
+.form__controllers {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin: 23px;
+}
+.form__controllers button {
+  width: 200px;
+  margin: auto;
+  background-color: #ec6608;
+  border: 1px solid #ec6608;
+  margin-bottom: 10px;
+  transition: ease-in-out 0.5s;
+}
+.form__controllers button:hover {
+  background-color: #111111;
+  border: 1px solid #111111;
+  color: #ec6608;
+  transition: ease-in-out 0.5s;
+}
