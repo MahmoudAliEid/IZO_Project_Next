@@ -4,6 +4,7 @@ export type LoginParams = {
   email: string
   password: string
   rememberMe?: boolean
+  LogoutFromOtherDevices?: boolean
 }
 
 export type UserDataType = {

@@ -6,6 +6,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import logo from '../../../public/izoLogo/Logo.ico'
 // ** MUI Components
+
+import MenuItem from '@mui/material/MenuItem'
+
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -41,6 +44,7 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
+import { AccordionActions, Select } from '@mui/material'
 
 // ** Styled Components
 const LoginIllustration = styled('img')({
@@ -89,6 +93,7 @@ interface FormData {
 
 const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
+  const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   // ** Hooks
@@ -114,7 +119,7 @@ const LoginPage = () => {
 
   const onSubmit = (data: FormData) => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
+    auth.login({ email, password, rememberMe, LogoutFromOtherDevices }, () => {
       setError('email', {
         type: 'manual',
         message: 'Email or Password is invalid'
@@ -122,16 +127,17 @@ const LoginPage = () => {
     })
   }
 
+  const [Language, setLanguage] = useState('')
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setLanguage(event.target.value)
+  }
+
   return (
     <Box className='content-right'>
       {!hidden ? (
         <Box sx={{ p: 12, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <LoginIllustration
-          
-            width={500}
-            alt='login-illustration'
-            src={`/undraw_businessman_f8ko.svg`}
-          />
+          <LoginIllustration width={500} alt='login-illustration' src={`/undraw_businessman_f8ko.svg`} />
         </Box>
       ) : null}
       <RightWrapper
@@ -139,7 +145,7 @@ const LoginPage = () => {
       >
         <Box sx={{ mx: 'auto', maxWidth: 400 }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center' }}>
-          <Image src={logo} alt='logo' width={30} height={30} background-color={'black'}/>
+            <Image src={logo} alt='logo' width={30} height={30} background-color={'black'} />
             <Typography
               variant='h5'
               sx={{
@@ -153,7 +159,25 @@ const LoginPage = () => {
             >
               {themeConfig.templateName}
             </Typography>
+            <Box sx={{ mx: 'auto', maxWidth: 400 }}>
+              <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
+                <InputLabel id='demo-select-small-label'>Language</InputLabel>
+                <Select
+                  labelId='demo-select-small-label'
+                  id='demo-select-small'
+                  value={Language}
+                  label='Language'
+                  onChange={handleChange}
+                >
+                  
+                  <MenuItem value={10}>arabic</MenuItem>
+                  <MenuItem value={20}>french</MenuItem>
+                  <MenuItem value={30}>english</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
           </Box>
+
           <Typography variant='h6' sx={{ mb: 1.5 }}>
             Welcome to {themeConfig.templateName}! 👋🏻
           </Typography>
@@ -228,6 +252,16 @@ const LoginPage = () => {
             <Box
               sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
             >
+              <FormControlLabel
+                label='Logout Form Other Device'
+                sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: 'text.secondary' } }}
+                control={
+                  <Checkbox
+                    checked={LogoutFromOtherDevices}
+                    onChange={e => setLogoutFromOtherDevices(e.target.checked)}
+                  />
+                }
+              />
               <FormControlLabel
                 label='Remember Me'
                 sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: 'text.secondary' } }}
