@@ -146,28 +146,58 @@ const Register = () => {
                 </FormControl>
               </div>
               <div className={styles.part_2}>
-                <TextField autoFocus label='Username' placeholder='johndoe' />
+                <TextField autoFocus label='Mr/Mrs' placeholder='Mr/Mrs' />
+                <TextField autoFocus label='Firstname' placeholder='johndoe' />
                 <TextField autoFocus label='Lastname' placeholder='johndoe' />
-                <TextField label='Email' placeholder='user@email.com' />
-                <FormControl>
-                  <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
-                  <OutlinedInput
-                    label='Password'
-                    id='auth-login-v2-password'
-                    type={showPassword ? 'text' : 'password'}
-                    endAdornment={
-                      <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          onMouseDown={e => e.preventDefault()}
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
+                <TextField autoFocus label='Username' placeholder='johndoe' />
+
+                <FormControl
+                  className={styles.dropdown}
+                  sx={{ width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
+                >
+                  <TextField label='Email' placeholder='user@email.com' />
                 </FormControl>
+                <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
+                  <FormControl>
+                    <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
+                    <OutlinedInput
+                      label='Password'
+                      id='auth-login-v2-password'
+                      type={showPassword ? 'text' : 'password'}
+                      endAdornment={
+                        <InputAdornment position='end'>
+                          <IconButton
+                            edge='end'
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+
+                  <FormControl>
+                    <InputLabel htmlFor='auth-login-v2-password'>confirm Password</InputLabel>
+                    <OutlinedInput
+                      label='Password'
+                      id='auth-login-v2-password'
+                      type={showPassword ? 'text' : 'password'}
+                      endAdornment={
+                        <InputAdornment position='end'>
+                          <IconButton
+                            edge='end'
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </div>
               </div>
             </div>
             <div className={styles.form__controllers}>
