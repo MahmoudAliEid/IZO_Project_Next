@@ -26,6 +26,9 @@ import { styled, useTheme } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { MenuItem, Select } from '@mui/material'
+import FormValidationBasic from 'src/views/forms/form-validation/FormValidationBasic'
+import StepperAlternativeLabel from 'src/views/forms/form-wizard/StepperAlternativeLabel'
+import RegisterMultiStepseps from 'src/views/pages/auth/register-multi-steps/index'
 
 // images
 
@@ -44,6 +47,11 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
+import BillingAddressCard from 'src/views/pages/account-settings/billing/BillingAddressCard'
+import AccountSettings from 'src/views/pages/account-settings/AccountSettings'
+import RegisterMultiSteps from '../pages/auth/register-multi-steps'
+import TabBilling from 'src/views/pages/account-settings/TabBilling'
+import AnalyticsTransactions from 'src/views/dashboards/analytics/AnalyticsTransactions'
 
 // ** Styled Components
 // const RegisterIllustration = styled('img')({
@@ -109,126 +117,13 @@ const Register = () => {
         className={styles.center_wrapper}
         sx={{ ...(skin === 'bordered' && !hidden && { borderLeft: `1px solid ${theme.palette.divider}` }) }}
       >
-        <Box sx={{ mx: 'auto', maxWidth: 2000 }}>
-          <Box sx={{ mb: 8, display: 'flex', alignItems: 'center' }}>
-            <Image src={'/izoLogo/Logo.ico'} alt='izo-logo' width={200} height={200} className={styles.izo__logo} />
-            {/* <Typography
-              variant='h5'
-              sx={{
-                ml: 2,
-                lineHeight: 1,
-                fontWeight: 700,
-                letterSpacing: '-0.45px',
-                textTransform: 'lowercase',
-                fontSize: '1.75rem !important'
-              }}
-            >
-              {themeConfig.templateName}
-            </Typography> */}
-          </Box>
-          <Typography variant='h6' sx={{ mb: 1.5 }}>
-            Adventure starts here 🚀
-          </Typography>
-          <Typography sx={{ mb: 6, color: 'text.secondary' }}>Make your app management easy and fun!</Typography>
-          <form noValidate autoComplete='off' onSubmit={e => handleSubmit(e)} className={styles.form__custom}>
-            <div className={styles.parts__container}>
-              <div className={styles.part_1}>
-                <TextField autoFocus label='Activity Name' placeholder='activity name' />
-                <TextField type='tel' label='Activity Phone umber' placeholder='activity phone number' />
-                <TextField type='tel' label='Alternate phone number' placeholder='alternate phone number' />
-                <FormControl className={styles.dropdown}>
-                  <InputLabel>Choose Currency</InputLabel>
-                  <Select label='Choose Currency' value={selectedOption} onChange={handleChange}>
-                    <MenuItem value='USD'>USD</MenuItem>
-                    <MenuItem value='EUR'>EUR</MenuItem>
-                    <MenuItem value='AED '>AED </MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div className={styles.part_2}>
-                <TextField autoFocus label='Mr/Mrs' placeholder='Mr/Mrs' />
-                <TextField autoFocus label='Firstname' placeholder='johndoe' />
-                <TextField autoFocus label='Lastname' placeholder='johndoe' />
-                <TextField autoFocus label='Username' placeholder='johndoe' />
-
-                <FormControl
-                  className={styles.dropdown}
-                  sx={{ width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
-                >
-                  <TextField label='Email' placeholder='user@email.com' />
-                </FormControl>
-                <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
-                  <FormControl>
-                    <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
-                    <OutlinedInput
-                      label='Password'
-                      id='auth-login-v2-password'
-                      type={showPassword ? 'text' : 'password'}
-                      endAdornment={
-                        <InputAdornment position='end'>
-                          <IconButton
-                            edge='end'
-                            onMouseDown={e => e.preventDefault()}
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-
-                  <FormControl>
-                    <InputLabel htmlFor='auth-login-v2-password'>confirm Password</InputLabel>
-                    <OutlinedInput
-                      label='Password'
-                      id='auth-login-v2-password'
-                      type={showPassword ? 'text' : 'password'}
-                      endAdornment={
-                        <InputAdornment position='end'>
-                          <IconButton
-                            edge='end'
-                            onMouseDown={e => e.preventDefault()}
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                </div>
-              </div>
-            </div>
-            <div className={styles.form__controllers}>
-              <FormControlLabel
-                sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: '#ec6608' } }}
-                control={<Checkbox />}
-                label={
-                  <>
-                    <Typography variant='body2' component='span'>
-                      I agree to{' '}
-                    </Typography>
-                    <LinkStyled href='/' onClick={e => e.preventDefault()}>
-                      privacy policy & terms
-                    </LinkStyled>
-                  </>
-                }
-              />
-              <Button size='large' type='submit' variant='contained' sx={{ mb: 2 }}>
-                Sign up
-              </Button>
-              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography variant='body2' sx={{ mr: 2 }}>
-                  Already have an account?
-                </Typography>
-                <Typography variant='body2'>
-                  <LinkStyled href='/login'>Sign in instead</LinkStyled>
-                </Typography>
-              </Box>
-            </div>
-          </form>
-        </Box>
+        {/* <FormValidationBasic /> */}
+        {/* <StepperAlternativeLabel /> */}
+        {/* <BillingAddressCard /> */}
+        {/* <AccountSettings tab='admin' /> */}
+        {/* <RegisterMultiStepseps /> */}
+        {/* <TabBilling /> */}
+        <AnalyticsTransactions />
       </CenterWrapper>
     </Box>
   )

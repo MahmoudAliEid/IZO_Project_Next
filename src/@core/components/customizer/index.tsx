@@ -212,8 +212,8 @@ const Customizer = () => {
                 <ColorBox
                   onClick={() => handleChange('themeColor', 'warning')}
                   sx={{
-                    backgroundColor: 'warning.main',
-                    ...(themeColor === 'warning'
+                    backgroundColor: '#ec6608',
+                    ...(themeColor === '#ec6608'
                       ? { width: 53, height: 53, m: theme => theme.spacing(1.5, 0.75, 0) }
                       : {})
                   }}

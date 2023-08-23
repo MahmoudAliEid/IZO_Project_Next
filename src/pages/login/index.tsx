@@ -5,6 +5,7 @@ import { useState, ReactNode, MouseEvent } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import logo from '../../../public/izoLogo/Logo.ico'
+
 // ** MUI Components
 
 import MenuItem from '@mui/material/MenuItem'
@@ -44,7 +45,7 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import { AccordionActions, Select } from '@mui/material'
+import { AccordionActions, Select, SelectChangeEvent } from '@mui/material'
 
 // ** Styled Components
 const LoginIllustration = styled('img')({
@@ -169,7 +170,6 @@ const LoginPage = () => {
                   label='Language'
                   onChange={handleChange}
                 >
-                  
                   <MenuItem value={10}>arabic</MenuItem>
                   <MenuItem value={20}>french</MenuItem>
                   <MenuItem value={30}>english</MenuItem>
@@ -269,7 +269,13 @@ const LoginPage = () => {
               />
               <LinkStyled href='/forgot-password'>Forgot Password?</LinkStyled>
             </Box>
-            <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 4 }}>
+            <Button
+              fullWidth
+              size='large'
+              type='submit'
+              variant='contained'
+              sx={{ mb: 4, backgroundColor: '#ec6608 !import' }}
+            >
               Sign in
             </Button>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>

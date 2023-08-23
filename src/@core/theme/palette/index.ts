@@ -7,7 +7,7 @@ const DefaultPalette = (mode: Palette['mode'], settings: Settings): Palette => {
   const whiteColor = '#FFF'
   const lightColor = '50, 71, 92'
   const darkColor = '219, 219, 235'
-  const darkPaperBgColor = '#2B2C40'
+  const darkPaperBgColor = '#111111'
   const mainColor = mode === 'light' ? lightColor : darkColor
 
   const defaultBgColor = () => {
@@ -17,7 +17,7 @@ const DefaultPalette = (mode: Palette['mode'], settings: Settings): Palette => {
       return darkPaperBgColor
     } else if (mode === 'light') {
       return '#F5F5F9'
-    } else return '#232333'
+    } else return 'rgb(57 57 57)'
   }
 
   const collapseTogglerBgColor = () => {
@@ -29,7 +29,7 @@ const DefaultPalette = (mode: Palette['mode'], settings: Settings): Palette => {
       }
     } else {
       if (settings.mode === 'dark') {
-        return '#232333'
+        return 'rgb(57 57 57)'
       } else {
         return '#F5F5F9'
       }
@@ -44,7 +44,7 @@ const DefaultPalette = (mode: Palette['mode'], settings: Settings): Palette => {
       lightPaperBg: whiteColor,
       darkPaperBg: darkPaperBgColor,
       collapseTogglerBg: collapseTogglerBgColor(),
-      bodyBg: mode === 'light' ? '#F5F5F9' : '#232333', // Same as palette.background.default but doesn't consider bordered skin
+      bodyBg: mode === 'light' ? '#F5F5F9' : 'rgb(57 57 57)', // Same as palette.background.default but doesn't consider bordered skin
       trackBg: mode === 'light' ? '#EBEEF0' : '#444463',
       avatarBg: mode === 'light' ? '#F0EFF0' : '#3F3B59',
       tableHeaderBg: mode === 'light' ? '#F3F4F6' : '#353649'
@@ -73,9 +73,9 @@ const DefaultPalette = (mode: Palette['mode'], settings: Settings): Palette => {
       contrastText: whiteColor
     },
     warning: {
-      light: '#FFB826',
-      main: '#FFAB00',
-      dark: '#E89C00',
+      light: '#ec6608',
+      main: '#ec6608',
+      dark: '#ec6608',
       contrastText: whiteColor
     },
     info: {
