@@ -4,7 +4,6 @@ import { useState, ReactNode, MouseEvent } from 'react'
 // ** Next Imports
 import Link from 'next/link'
 import Image from 'next/image'
-import logo from '../../../public/izoLogo/Logo.ico'
 
 // ** MUI Components
 
@@ -53,6 +52,9 @@ const LoginIllustration = styled('img')({
   maxWidth: '100%'
 })
 
+// ** styles css
+import styles from './styles.module.css'
+
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
   display: 'flex',
@@ -71,10 +73,10 @@ const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   }
 }))
 
-const LinkStyled = styled(Link)(({ theme }) => ({
+const LinkStyled = styled(Link)(() => ({
   fontSize: '0.875rem',
   textDecoration: 'none',
-  color: theme.palette.primary.main
+  color: '#ec6608 '
 }))
 
 const schema = yup.object().shape({
@@ -96,12 +98,14 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [Language, setLanguage] = useState('')
 
   // ** Hooks
   const auth = useAuth()
   const theme = useTheme()
   const { settings } = useSettings()
-  const bgColors: UseBgColorType = useBgColor()
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
 
   // ** Var
@@ -128,17 +132,25 @@ const LoginPage = () => {
     })
   }
 
-  const [Language, setLanguage] = useState('')
-
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChangeLanguage = (event: SelectChangeEvent) => {
     setLanguage(event.target.value)
   }
+
+  // const handleChangeRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setRememberMe(event.target.checked)
+  // }
+  // const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setEmail(event.target.value)
+  // }
+  // const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setPassword(event.target.value)
+  // }
 
   return (
     <Box className='content-right'>
       {!hidden ? (
         <Box sx={{ p: 12, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <LoginIllustration width={500} alt='login-illustration' src={`/undraw_businessman_f8ko.svg`} />
+          <LoginIllustration width={500} alt='login-illustration' src={`/izoLogo/login_img.svg`} />
         </Box>
       ) : null}
       <RightWrapper
@@ -146,8 +158,8 @@ const LoginPage = () => {
       >
         <Box sx={{ mx: 'auto', maxWidth: 400 }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center' }}>
-            <Image src={logo} alt='logo' width={30} height={30} background-color={'black'} />
-            <Typography
+            <Image src={'/izoLogo/izo_logo_black.png'} alt='logo' width={40} height={40} background-color={'black'} />
+            {/* <Typography
               variant='h5'
               sx={{
                 ml: 2,
@@ -159,36 +171,58 @@ const LoginPage = () => {
               }}
             >
               {themeConfig.templateName}
-            </Typography>
+            </Typography> */}
             <Box sx={{ mx: 'auto', maxWidth: 400 }}>
-              <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
+              <FormControl
+                sx={{
+                  m: 1,
+                  minWidth: 120,
+                  '& .Mui-focused': {
+                    borderColor: '#ec6608 !important',
+                    color: '#ec6608 !important',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#ec6608 !important'
+                    }
+                  }
+                }}
+                size='small'
+              >
                 <InputLabel id='demo-select-small-label'>Language</InputLabel>
                 <Select
                   labelId='demo-select-small-label'
                   id='demo-select-small'
                   value={Language}
                   label='Language'
-                  onChange={handleChange}
+                  onChange={handleChangeLanguage}
                 >
-                  <MenuItem value={10}>arabic</MenuItem>
-                  <MenuItem value={20}>french</MenuItem>
-                  <MenuItem value={30}>english</MenuItem>
+                  <MenuItem value={'arabic'}>Arabic</MenuItem>
+                  <MenuItem value={'french'}>French</MenuItem>
+                  <MenuItem value={'english'}>English</MenuItem>
                 </Select>
               </FormControl>
             </Box>
           </Box>
 
           <Typography variant='h6' sx={{ mb: 1.5 }}>
-            Welcome to {themeConfig.templateName}! 👋🏻
+            Welcome to {themeConfig.templateName.toUpperCase()}! 👋🏻
           </Typography>
           <Typography sx={{ mb: 6, color: 'text.secondary' }}>
             Please sign-in to your account and start the adventure
           </Typography>
-          <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
-            <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
+          <Alert
+            icon={false}
+            sx={{
+              py: 3,
+              mb: 6,
+              backgroundColor: '#ec66086b',
+
+              '& .MuiAlert-message': { p: 0 }
+            }}
+          >
+            <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'text.secondary' }}>
               Admin: <strong>admin@sneat.com</strong> / Pass: <strong>admin</strong>
             </Typography>
-            <Typography variant='caption' sx={{ display: 'block', color: 'primary.main' }}>
+            <Typography variant='caption' sx={{ display: 'block', color: 'text.secondary' }}>
               Client: <strong>client@sneat.com</strong> / Pass: <strong>client</strong>
             </Typography>
           </Alert>
@@ -200,6 +234,15 @@ const LoginPage = () => {
                 rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
+                    sx={{
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
                     autoFocus
                     label='Email'
                     value={value}
@@ -212,7 +255,19 @@ const LoginPage = () => {
               />
               {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
             </FormControl>
-            <FormControl fullWidth sx={{ mb: 2 }}>
+            <FormControl
+              fullWidth
+              sx={{
+                mb: 2,
+                '& .Mui-focused': {
+                  borderColor: '#ec6608 !important',
+                  color: '#ec6608 !important',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ec6608 !important'
+                  }
+                }
+              }}
+            >
               <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
                 Password
               </InputLabel>
@@ -253,14 +308,29 @@ const LoginPage = () => {
               sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
             >
               <FormControlLabel
-                label='Logout Form Other Device'
-                sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: 'text.secondary' } }}
+                label='Logout From Other Device'
+                sx={{
+                  '& .MuiFormControlLabel-label': {
+                    fontSize: '0.875rem',
+                    color: 'text.secondary'
+                  }
+                }}
                 control={
                   <Checkbox
                     checked={LogoutFromOtherDevices}
                     onChange={e => setLogoutFromOtherDevices(e.target.checked)}
                   />
                 }
+              />
+
+              <Checkbox
+                defaultChecked
+                sx={{
+                  color: '#ec6608 !important',
+                  '&.Mui-checked': {
+                    color: '#ec6608 !important'
+                  }
+                }}
               />
               <FormControlLabel
                 label='Remember Me'
@@ -270,6 +340,7 @@ const LoginPage = () => {
               <LinkStyled href='/forgot-password'>Forgot Password?</LinkStyled>
             </Box>
             <Button
+              className={styles.custom__btn}
               fullWidth
               size='large'
               type='submit'
@@ -277,6 +348,10 @@ const LoginPage = () => {
               sx={{ mb: 4, backgroundColor: '#ec6608 !import' }}
             >
               Sign in
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </Button>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ mr: 2 }}>
