@@ -322,16 +322,6 @@ const LoginPage = () => {
                   />
                 }
               />
-
-              <Checkbox
-                defaultChecked
-                sx={{
-                  color: '#ec6608 !important',
-                  '&.Mui-checked': {
-                    color: '#ec6608 !important'
-                  }
-                }}
-              />
               <FormControlLabel
                 label='Remember Me'
                 sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: 'text.secondary' } }}
@@ -344,8 +334,19 @@ const LoginPage = () => {
               fullWidth
               size='large'
               type='submit'
-              variant='contained'
-              sx={{ mb: 4, backgroundColor: '#ec6608 !import' }}
+              sx={{
+                mb: 4,
+                backgroundColor: '#ec6608 !import',
+                color: 'white',
+                '&:hover': {
+                  background: '#111111 !important',
+                  color: '#ec6608 !important'
+                },
+                '&:focus': {
+                  outline: '2px solid orange', // Change the focus outline to orange
+                  boxShadow: 'none' // Remove the default focus box shadow
+                }
+              }}
             >
               Sign in
               <span></span>

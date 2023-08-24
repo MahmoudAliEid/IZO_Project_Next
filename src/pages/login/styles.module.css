@@ -1,7 +1,4 @@
 .custom__btn {
-}
-
-.custom__btn {
   background: linear-gradient(90deg, #ec6608, #f39004, orange);
   /* border: 1px solid #ec6608; */
 
@@ -14,6 +11,7 @@
   transition: 0.5s;
   letter-spacing: 3px;
   border-radius: none !important;
+  transition: ease-in-out 0.01s;
 }
 .custom__btn span {
   position: absolute;
@@ -97,9 +95,7 @@
     bottom: 100%;
   }
 }
-.custom__btn:hover {
-  background: #111111;
-
-  color: #ec6608;
-  transition: ease-in-out 0.5s;
-}
+/* .custom__btn:hover {
+  background: #111111 !important;
+  color: #ec6608 !important;
+} */
