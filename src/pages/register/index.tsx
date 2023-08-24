@@ -21,9 +21,10 @@ import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
-import useMediaQuery from '@mui/material/useMediaQuery'
+
+// import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { MenuItem, Select, Grid } from '@mui/material'
@@ -44,7 +45,7 @@ import Icon from 'src/@core/components/icon'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Hooks
-import { useSettings } from 'src/@core/hooks/useSettings'
+// import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Styled Components
 // const RegisterIllustration = styled('img')({
@@ -98,12 +99,12 @@ const Register = () => {
   const [activityName, setActivityName] = useState('')
 
   // ** Hooks
-  const theme = useTheme()
-  const { settings } = useSettings()
-  const hidden = useMediaQuery(theme.breakpoints.down('lg'))
+  // const theme = useTheme()
+  // const { settings } = useSettings()
+  // const hidden = useMediaQuery(theme.breakpoints.down('lg'))
 
   // ** Vars
-  const { skin } = settings
+  // const { skin } = settings
 
   // ** Functions for handle states
   const handleSubmit = (e: React.FormEvent) => {
@@ -142,7 +143,7 @@ const Register = () => {
     setConfirmPassword(event.target.value)
   }
 
-  const handleAlternatePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAlternatePhoneNumberChange = (event: any) => {
     setAlternatePhoneNumber(event.target.value)
   }
 
@@ -198,6 +199,7 @@ const Register = () => {
                 className={styles.inputField_container}
               >
                 <TextField
+                  value={activityName}
                   className={styles.varInput}
                   sx={{
                     margin: '5px 2px',
@@ -216,6 +218,7 @@ const Register = () => {
                   onChange={handleActivityNameChange}
                 />
                 <TextField
+                  value={activityPhoneNumber}
                   className={styles.varInput}
                   sx={{
                     margin: '5px 2px',
@@ -247,6 +250,7 @@ const Register = () => {
                     }
                   }}
                   type='tel'
+                  value={alternatePhoneNumber}
                   label='Alternate Phone Number'
                   placeholder='alternate phone number'
                   onChange={handleAlternatePhoneNumberChange}
@@ -293,6 +297,7 @@ const Register = () => {
                 <TextField
                   className={styles.varInput}
                   label='Mr/Mrs'
+                  value={mrMrs}
                   placeholder='Mr/Mrs'
                   sx={{
                     margin: '5px 2px',
@@ -321,6 +326,7 @@ const Register = () => {
                   }}
                   className={styles.varInput}
                   label='Firstname'
+                  value={firstName}
                   placeholder='johndoe'
                   onChange={handleFirstNameChange}
                 />
@@ -338,6 +344,7 @@ const Register = () => {
                   }}
                   className={styles.varInput}
                   label='Lastname'
+                  value={lastName}
                   placeholder='johndoe'
                   onChange={handleLastNameChange}
                 />
@@ -356,15 +363,27 @@ const Register = () => {
                   }}
                   className={styles.varInput}
                   label='Username'
+                  value={userName}
                   placeholder='johndoe'
                   onChange={handleUserNameChange}
                 />
 
                 <FormControl
                   className={(styles.dropdown, styles.varInput)}
-                  sx={{ width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
+                  sx={{
+                    width: '100%',
+                    marginTop: '1rem',
+                    marginBottom: '1rem',
+                    '& .Mui-focused': {
+                      borderColor: '#ec6608 !important',
+                      color: '#ec6608 !important',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#ec6608 !important'
+                      }
+                    }
+                  }}
                 >
-                  <TextField label='Email' placeholder='user@email.com' onChange={handleEmailChange} />
+                  <TextField label='Email' placeholder='user@email.com' onChange={handleEmailChange} value={email} />
                 </FormControl>
                 <FormControl
                   className={styles.varInput}
@@ -383,6 +402,7 @@ const Register = () => {
                   <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
                   <OutlinedInput
                     label='Password'
+                    value={password}
                     id='auth-login-v2-password'
                     type={showPassword ? 'text' : 'password'}
                     endAdornment={
@@ -416,6 +436,7 @@ const Register = () => {
                 >
                   <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
                   <OutlinedInput
+                    value={confirmPassword}
                     label='Confirm Password'
                     id='auth-login-v2-confirm-password'
                     type={showPassword ? 'text' : 'password'}
