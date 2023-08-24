@@ -90,11 +90,10 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [phone, setPhone] = useState('')
   const [userName, setUserName] = useState('')
   const [activityPhoneNumber, setActivityPhoneNumber] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [alternatePhoneNumber, setAlternatePhoneNumber] = useState<number>()
+  const [alternatePhoneNumber, setAlternatePhoneNumber] = useState()
   const [mrMrs, setMrMrs] = useState('')
   const [activityName, setActivityName] = useState('')
 
@@ -107,12 +106,14 @@ const Register = () => {
   const { skin } = settings
 
   // ** Functions for handle states
-  const handleSubmit = (e: React.SubmitEvent<HTMLInputElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
   }
-  const handleChangeCurrency = (event: React.SelectHTMLAttributesEvent<HTMLInputElement>) => {
-    setSelectedOption(event.target.value)
+
+  const handleChangeCurrency = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedOption(event.target.value as string)
   }
+
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value)
   }
@@ -129,10 +130,6 @@ const Register = () => {
     setLastName(event.target.value)
   }
 
-  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(event.target.value)
-  }
-
   const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(event.target.value)
   }
@@ -146,11 +143,7 @@ const Register = () => {
   }
 
   const handleAlternatePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value
-
-    // Parse the input value as a number or set it to null if it's not a valid number
-    const numericValue = isNaN(Number(inputValue)) ? null : Number(inputValue)
-    setAlternatePhoneNumber(numericValue)
+    setAlternatePhoneNumber(event.target.value)
   }
 
   const handleMrMrsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -371,7 +364,7 @@ const Register = () => {
                   className={(styles.dropdown, styles.varInput)}
                   sx={{ width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
                 >
-                  <TextField label='Email' placeholder='user@email.com' />
+                  <TextField label='Email' placeholder='user@email.com' onChange={handleEmailChange} />
                 </FormControl>
                 <FormControl
                   className={styles.varInput}
