@@ -155,7 +155,7 @@ const Register = () => {
                   className={styles.dropdown}
                   sx={{ width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
                 >
-                  <TextField label='Email' placeholder='user@email.com' />
+                  <TextField label='Email' placeholder='user@email.com' style={{ width: '100%' }} />
                 </FormControl>
                 <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
                   <FormControl>
