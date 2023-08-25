@@ -99,7 +99,7 @@ const Register = () => {
   const [mrMrs, setMrMrs] = useState('')
   const [activityName, setActivityName] = useState('')
   const [surname, setSurname] = useState('')
-
+  const [selectedLanguage, setSelectedLanguage] = useState('')
 
   // ** Hooks
   // const theme = useTheme()
@@ -116,6 +116,9 @@ const Register = () => {
 
   const handleChangeCurrency = (event: React.ChangeEvent<{ value: unknown }>) => {
     setSelectedOption(event.target.value as string)
+  }
+  const handleChangeLanguage = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(event.target.value as string)
   }
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,8 +185,8 @@ const Register = () => {
         />
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid spacing={2} item xs={12} sx={{  padding: '20px 0' }}>
-              <fieldset style={{ border: '1px solid #ec6608' }}>
+            <Grid spacing={2} item xs={12} sx={{ padding: '20px 0' }}>
+              <fieldset style={{ border: '1px solid #ec6608', borderRadius: '10px', padding: '20px' }}>
                 {/* <Typography
                 className={styles.gradientText}
                 variant='h4'
@@ -207,9 +210,62 @@ const Register = () => {
                   }}
                   className={styles.inputField_container}
                 >
-                  <TextField
-                    value={activityName}
+                  <FormControl
                     className={styles.varInput}
+                    sx={{
+                      width: '100%',
+                      marginTop: '5px',
+                      marginBottom: '5px',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                  >
+                    <TextField
+                      sx={{ margin: '7px 7px 0 0', width: '100%' }}
+                      value={activityName}
+                      autoFocus
+                      label='Activity Name'
+                      placeholder='activity name'
+                      onChange={handleActivityNameChange}
+                    />
+                    <TextField
+                      sx={{ margin: '7px 7px 0 0', width: '100%' }}
+                      type='tel'
+                      label='Activity Phone Number'
+                      placeholder='activity phone number'
+                      onChange={handleActivityPhoneNumberChange}
+                    />
+                  </FormControl>
+                  <FormControl
+                    className={styles.varInput}
+                    sx={{
+                      width: '100%',
+                      marginTop: '5px',
+                      marginBottom: '5px',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                  >
+                    <TextField
+                      type='tel'
+                      value={alternatePhoneNumber}
+                      label='Alternate Phone Number'
+                      placeholder='alternate phone number'
+                      onChange={handleAlternatePhoneNumberChange}
+                    />
+                  </FormControl>
+
+                  <FormControl
                     sx={{
                       margin: '5px 2px',
                       flex: '1',
@@ -221,49 +277,14 @@ const Register = () => {
                         }
                       }
                     }}
-                    autoFocus
-                    label='Activity Name'
-                    placeholder='activity name'
-                    onChange={handleActivityNameChange}
-                  />
-                  <TextField
-                    value={activityPhoneNumber}
-                    className={styles.varInput}
-                    sx={{
-                      margin: '5px 2px',
-                      flex: '1',
-                      '& .Mui-focused': {
-                        borderColor: '#ec6608 !important',
-                        color: '#ec6608 !important',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#ec6608 !important'
-                        }
-                      }
-                    }}
-                    type='tel'
-                    label='Activity Phone Number'
-                    placeholder='activity phone number'
-                    onChange={handleActivityPhoneNumberChange}
-                  />
-                  <TextField
-                    className={styles.varInput}
-                    sx={{
-                      margin: '5px 2px',
-                      flex: '1',
-                      '& .Mui-focused': {
-                        borderColor: '#ec6608 !important',
-                        color: '#ec6608 !important',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#ec6608 !important'
-                        }
-                      }
-                    }}
-                    type='tel'
-                    value={alternatePhoneNumber}
-                    label='Alternate Phone Number'
-                    placeholder='alternate phone number'
-                    onChange={handleAlternatePhoneNumberChange}
-                  />
+                    className={(styles.dropdown, styles.varInput)}
+                  >
+                    <InputLabel>Language</InputLabel>
+                    <Select label='Language' value={selectedLanguage} onChange={handleChangeLanguage}>
+                      <MenuItem value='ar'>Arabic</MenuItem>
+                      <MenuItem value='en'>English</MenuItem>
+                    </Select>
+                  </FormControl>
                   <FormControl
                     sx={{
                       margin: '5px 2px',
@@ -289,7 +310,7 @@ const Register = () => {
               </fieldset>
             </Grid>
             <Grid item xs={12} sx={{}}>
-              <fieldset style={{ border: '1px solid #ec6608' }}>
+              <fieldset style={{ border: '1px solid #ec6608', borderRadius: '10px', padding: '20px' }}>
                 <legend className={styles.gradientText}>Details about the owner</legend>
                 <Box
                   sx={{
@@ -391,9 +412,6 @@ const Register = () => {
                     onChange={handleUserNameChange}
                   />
 
-
-
-
                   <FormControl
                     className={(styles.dropdown, styles.varInput)}
                     sx={{
@@ -411,7 +429,7 @@ const Register = () => {
                   >
                     <TextField label='Email' placeholder='user@email.com' onChange={handleEmailChange} value={email} />
                   </FormControl>
-                  
+
                   <FormControl
                     className={styles.varInput}
                     sx={{
