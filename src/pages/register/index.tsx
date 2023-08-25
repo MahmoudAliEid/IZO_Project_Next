@@ -43,6 +43,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
+import { color } from '@mui/system'
 
 // ** Hooks
 // import { useSettings } from 'src/@core/hooks/useSettings'
@@ -97,6 +98,8 @@ const Register = () => {
   const [alternatePhoneNumber, setAlternatePhoneNumber] = useState()
   const [mrMrs, setMrMrs] = useState('')
   const [activityName, setActivityName] = useState('')
+  const [surname, setSurname] = useState('')
+
 
   // ** Hooks
   // const theme = useTheme()
@@ -154,6 +157,9 @@ const Register = () => {
   const handleActivityNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setActivityName(event.target.value)
   }
+  const handleSurnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSurname(event.target.value)
+  }
 
   return (
     <Grid
@@ -163,7 +169,7 @@ const Register = () => {
       justifyContent='center'
       sx={{
         backgroundColor: '#f4f4f4',
-        minHeight: '100vh' // Set the height to 100% of the viewport height for vertical centering
+        minHeight: '100vh'
       }}
     >
       <CenterWrapper sx={{ margin: '20px 0' }}>
@@ -176,8 +182,9 @@ const Register = () => {
         />
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid spacing={2} item xs={12} sx={{ borderBottom: ' 1px solid #ec6608', padding: '20px 0' }}>
-              <Typography
+            <Grid spacing={2} item xs={12} sx={{  padding: '20px 0' }}>
+              <fieldset style={{ border: '1px solid #ec6608' }}>
+                {/* <Typography
                 className={styles.gradientText}
                 variant='h4'
                 sx={{
@@ -189,272 +196,293 @@ const Register = () => {
                 }}
               >
                 Company Details
-              </Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between'
-                }}
-                className={styles.inputField_container}
-              >
-                <TextField
-                  value={activityName}
-                  className={styles.varInput}
+              </Typography> */}
+                <legend className={styles.gradientText}>Company Details</legend>
+
+                <Box
                   sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between'
                   }}
-                  autoFocus
-                  label='Activity Name'
-                  placeholder='activity name'
-                  onChange={handleActivityNameChange}
-                />
-                <TextField
-                  value={activityPhoneNumber}
-                  className={styles.varInput}
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
-                  }}
-                  type='tel'
-                  label='Activity Phone Number'
-                  placeholder='activity phone number'
-                  onChange={handleActivityPhoneNumberChange}
-                />
-                <TextField
-                  className={styles.varInput}
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
-                  }}
-                  type='tel'
-                  value={alternatePhoneNumber}
-                  label='Alternate Phone Number'
-                  placeholder='alternate phone number'
-                  onChange={handleAlternatePhoneNumberChange}
-                />
-                <FormControl
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
-                  }}
-                  className={(styles.dropdown, styles.varInput)}
+                  className={styles.inputField_container}
                 >
-                  <InputLabel>Choose Currency</InputLabel>
-                  <Select label='Choose Currency' value={selectedOption} onChange={handleChangeCurrency}>
-                    <MenuItem value='USD'>USD</MenuItem>
-                    <MenuItem value='EUR'>EUR</MenuItem>
-                    <MenuItem value='AED'>AED</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
+                  <TextField
+                    value={activityName}
+                    className={styles.varInput}
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                    autoFocus
+                    label='Activity Name'
+                    placeholder='activity name'
+                    onChange={handleActivityNameChange}
+                  />
+                  <TextField
+                    value={activityPhoneNumber}
+                    className={styles.varInput}
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                    type='tel'
+                    label='Activity Phone Number'
+                    placeholder='activity phone number'
+                    onChange={handleActivityPhoneNumberChange}
+                  />
+                  <TextField
+                    className={styles.varInput}
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                    type='tel'
+                    value={alternatePhoneNumber}
+                    label='Alternate Phone Number'
+                    placeholder='alternate phone number'
+                    onChange={handleAlternatePhoneNumberChange}
+                  />
+                  <FormControl
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                    className={(styles.dropdown, styles.varInput)}
+                  >
+                    <InputLabel>Choose Currency</InputLabel>
+                    <Select label='Choose Currency' value={selectedOption} onChange={handleChangeCurrency}>
+                      <MenuItem value='USD'>USD</MenuItem>
+                      <MenuItem value='EUR'>EUR</MenuItem>
+                      <MenuItem value='AED'>AED</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </fieldset>
             </Grid>
             <Grid item xs={12} sx={{}}>
-              <Typography
-                className={styles.gradientText}
-                variant='h4'
-                sx={{ textAlign: 'center', color: '#ec6608', padding: '10px 0' }}
-              >
-                Details about the owner
-              </Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between'
-                }}
-                className={styles.inputField_container}
-              >
-                <TextField
-                  className={styles.varInput}
-                  label='Mr/Mrs'
-                  value={mrMrs}
-                  placeholder='Mr/Mrs'
+              <fieldset style={{ border: '1px solid #ec6608' }}>
+                <legend className={styles.gradientText}>Details about the owner</legend>
+                <Box
                   sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between'
                   }}
-                  onChange={handleMrMrsChange}
-                />
-                <TextField
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
-                  }}
-                  className={styles.varInput}
-                  label='Firstname'
-                  value={firstName}
-                  placeholder='johndoe'
-                  onChange={handleFirstNameChange}
-                />
-                <TextField
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
-                  }}
-                  className={styles.varInput}
-                  label='Lastname'
-                  value={lastName}
-                  placeholder='johndoe'
-                  onChange={handleLastNameChange}
-                />
-
-                <TextField
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
-                  }}
-                  className={styles.varInput}
-                  label='Username'
-                  value={userName}
-                  placeholder='johndoe'
-                  onChange={handleUserNameChange}
-                />
-
-                <FormControl
-                  className={(styles.dropdown, styles.varInput)}
-                  sx={{
-                    width: '100%',
-                    marginTop: '1rem',
-                    marginBottom: '1rem',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
-                      }
-                    }
-                  }}
+                  className={styles.inputField_container}
                 >
-                  <TextField label='Email' placeholder='user@email.com' onChange={handleEmailChange} value={email} />
-                </FormControl>
-                <FormControl
-                  className={styles.varInput}
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
+                  <TextField
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
                       }
-                    }
-                  }}
-                >
-                  <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
-                  <OutlinedInput
-                    label='Password'
-                    value={password}
-                    id='auth-login-v2-password'
-                    type={showPassword ? 'text' : 'password'}
-                    endAdornment={
-                      <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          onMouseDown={e => e.preventDefault()}
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    onChange={handlePasswordChange}
+                    }}
+                    className={styles.varInput}
+                    label='Mr/Mrs'
+                    value={mrMrs}
+                    placeholder='Mr/Mrs'
+                    onChange={handleMrMrsChange}
                   />
-                </FormControl>
-
-                <FormControl
-                  className={styles.varInput}
-                  sx={{
-                    margin: '5px 2px',
-                    flex: '1',
-                    '& .Mui-focused': {
-                      borderColor: '#ec6608 !important',
-                      color: '#ec6608 !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#ec6608 !important'
+                  <TextField
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
                       }
-                    }
-                  }}
-                >
-                  <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
-                  <OutlinedInput
-                    value={confirmPassword}
-                    label='Confirm Password'
-                    id='auth-login-v2-confirm-password'
-                    type={showPassword ? 'text' : 'password'}
-                    endAdornment={
-                      <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          onMouseDown={e => e.preventDefault()}
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    onChange={handleConfirmPasswordChange}
+                    }}
+                    className={styles.varInput}
+                    label='Firstname'
+                    value={firstName}
+                    placeholder='johndoe'
+                    onChange={handleFirstNameChange}
                   />
-                </FormControl>
-              </Box>
+                  <TextField
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                    className={styles.varInput}
+                    label='Lastname'
+                    value={lastName}
+                    placeholder='johndoe'
+                    onChange={handleLastNameChange}
+                  />
+                  <TextField
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                    className={styles.varInput}
+                    label='Surname'
+                    value={surname}
+                    placeholder='doe'
+                    onChange={handleSurnameChange}
+                  />
+
+                  <TextField
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                    className={styles.varInput}
+                    label='Username'
+                    value={userName}
+                    placeholder='johndoe'
+                    onChange={handleUserNameChange}
+                  />
+
+
+
+
+                  <FormControl
+                    className={(styles.dropdown, styles.varInput)}
+                    sx={{
+                      width: '100%',
+                      marginTop: '1rem',
+                      marginBottom: '1rem',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                  >
+                    <TextField label='Email' placeholder='user@email.com' onChange={handleEmailChange} value={email} />
+                  </FormControl>
+                  
+                  <FormControl
+                    className={styles.varInput}
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                  >
+                    <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
+                    <OutlinedInput
+                      label='Password'
+                      value={password}
+                      id='auth-login-v2-password'
+                      type={showPassword ? 'text' : 'password'}
+                      endAdornment={
+                        <InputAdornment position='end'>
+                          <IconButton
+                            edge='end'
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      onChange={handlePasswordChange}
+                    />
+                  </FormControl>
+
+                  <FormControl
+                    className={styles.varInput}
+                    sx={{
+                      margin: '5px 2px',
+                      flex: '1',
+                      '& .Mui-focused': {
+                        borderColor: '#ec6608 !important',
+                        color: '#ec6608 !important',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#ec6608 !important'
+                        }
+                      }
+                    }}
+                  >
+                    <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
+                    <OutlinedInput
+                      value={confirmPassword}
+                      label='Confirm Password'
+                      id='auth-login-v2-confirm-password'
+                      type={showPassword ? 'text' : 'password'}
+                      endAdornment={
+                        <InputAdornment position='end'>
+                          <IconButton
+                            edge='end'
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      onChange={handleConfirmPasswordChange}
+                    />
+                  </FormControl>
+                </Box>
+              </fieldset>
             </Grid>
             <Grid item xs={12} sx={{ justifyContent: 'center', margin: '20px 0' }} className={styles.form__controllers}>
               <FormControlLabel
