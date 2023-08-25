@@ -1,6 +1,6 @@
 # IZO - Enterprise Resource Planning (ERP) System
 
-**Developed by Mahmoud Ali, Ali Hatem, and Omar Anas**
+**Developed by Mahmoud Ali,Mohamed Aldosoky**
 
 ## Table of Contents
 
