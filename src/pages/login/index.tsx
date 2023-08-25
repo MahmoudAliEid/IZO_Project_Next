@@ -6,7 +6,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 // ** MUI Components
+
 import MenuItem from '@mui/material/MenuItem'
+
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -91,7 +93,6 @@ interface FormData {
   email: string
   password: string
 }
-const currentYear = new Date().getFullYear()
 
 const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
@@ -361,13 +362,8 @@ const LoginPage = () => {
                 <LinkStyled href='/register'>Create an account</LinkStyled>
               </Typography>
             </Box>
-            <Divider sx={{ my: `${theme.spacing(6)} !important` }}></Divider>
-            <Typography sx={{ mb: 4, color: 'text.secondary', fontSize: 12, textAlign: 'center' }}>
-              IZO CLOUD - V4.0 | Powered By AGT | +971-56-777-9250 | +971-4-23-55-919 | All Rights Reserved Copyright ©{' '}
-              {currentYear}
-            </Typography>
-
-            {/* <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Divider sx={{ my: `${theme.spacing(6)} !important` }}>or</Divider>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <IconButton
                 href='/'
                 component={Link}
@@ -400,7 +396,7 @@ const LoginPage = () => {
               >
                 <Icon icon='bxl:google' />
               </IconButton>
-            </Box> */}
+            </Box>
           </form>
         </Box>
       </RightWrapper>
