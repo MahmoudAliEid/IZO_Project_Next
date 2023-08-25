@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+
 import axios from 'axios'
 
 const initialState = {
@@ -22,11 +23,14 @@ export const login = createAsyncThunk('feature/login', async loginData => {
       throw new Error(response.data.message)
     }
 
-    return response.data
+    return await response.data
   } catch (error) {
     // Use rejectWithValue to pass the error message to the rejected action
 
-    return new Error(' Failed to Login:', error)
+    return {
+      message: 'Failed to Login:',
+      stack: error.stack
+    }
   }
 })
 
@@ -42,6 +46,7 @@ export const loginSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(login.fulfilled, (state, action) => {
+        console.log('from login  action', action)
         state.data = action.payload
 
         // Ensure that authorisation and token exist before assigning
