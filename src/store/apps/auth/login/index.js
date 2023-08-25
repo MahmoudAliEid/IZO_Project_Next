@@ -1,33 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 
-// Define the interface for login data
-interface LoginData {
-  username: string
-  password: string
-  logout_other?: string
-}
-
-// Define the initial login data
-// const initialLoginData: LoginData = {
-//   username: 'admin',
-//   password: '123456',
-//   logout_other: '1'
-// }
-
-// Convert login data to JSON
-// const loginDataJSON = JSON.stringify(initialLoginData)
-
-// Define the initial login state
-interface LoginState {
-  data: any[]
-  userType: string
-  token: string
-  status: 'idle' | 'success' | 'pending' | 'rejected'
-  error: string | null
-}
-
-const initialState: LoginState = {
+const initialState = {
   data: [],
   userType: '',
   token: '',
@@ -36,18 +10,23 @@ const initialState: LoginState = {
 }
 
 // Define an async thunk action to handle login
-export const login = createAsyncThunk('feature/login', async (loginData: LoginData, { rejectWithValue }) => {
+export const login = createAsyncThunk('feature/login', async loginData => {
   try {
-    const response: AxiosResponse = await axios.post('https://test.izocloud.com/api/app/front/login', loginData, {
+    const response = await axios.post('https://test.izocloud.com/api/app/front/login', loginData, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
+    if (response.status < 200 || response.status >= 300) {
+      // Handle non-2xx status codes as errors
+      throw new Error(response.data.message)
+    }
 
     return response.data
   } catch (error) {
     // Use rejectWithValue to pass the error message to the rejected action
-    throw rejectWithValue(error.message) // Use throw to reject with an error
+
+    return new Error(' Failed to Login:', error)
   }
 })
 
@@ -79,7 +58,7 @@ export const loginSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.status = 'rejected'
-        state.error = action.payload as string // Store the error message
+        state.error = action.payload
       })
   }
 })

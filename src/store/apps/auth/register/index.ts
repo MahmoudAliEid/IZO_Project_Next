@@ -62,8 +62,10 @@ const registerSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(register.fulfilled, (state, action: PayloadAction<any>) => {
       state.data = action.payload
-      state.userType = action.payload.authorisation.type
-      state.token = action.payload.authorisation.token
+      if (action.payload.authorisation) {
+        state.userType = action.payload.authorisation.type
+        state.token = action.payload.authorisation.token
+      }
       state.status = 'success'
       localStorage.setItem('token', JSON.stringify(action.payload.authorisation.token))
       console.log('from reducer register action:', action)
@@ -73,7 +75,7 @@ const registerSlice = createSlice({
     })
     builder.addCase(register.rejected, (state, action: PayloadAction<any>) => {
       state.status = 'rejected'
-      console.error('Register rejected:', action.error)
+      console.error('Register rejected:', action)
     })
   }
 })

@@ -1,5 +1,11 @@
 // ** React Imports
-import { useState, ReactNode, MouseEvent } from 'react'
+import { useState, ReactNode } from 'react'
+
+//, MouseEvent
+
+// redux
+import { login } from 'src/store/apps/auth/login/index.js'
+import { useDispatch } from 'react-redux'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -35,8 +41,8 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
-import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
+// import { useAuth } from 'src/hooks/useAuth'
+// import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Configs
@@ -44,7 +50,9 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import { AccordionActions, Select, SelectChangeEvent } from '@mui/material'
+import { Select, SelectChangeEvent } from '@mui/material'
+
+// AccordionActions
 
 // ** Styled Components
 const LoginIllustration = styled('img')({
@@ -90,22 +98,35 @@ const defaultValues = {
 }
 
 interface FormData {
-  email: string
+  username: string
   password: string
+  logout_other: string
 }
 
 const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
-  const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [password, setPassword] = useState('')
-  const [email, setEmail] = useState('')
-  const [Language, setLanguage] = useState('')
-  const currentYear = new Date().getFullYear();
+  const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
+  const [password, setPassword] = useState<string>('')
+  const [username, setUserName] = useState<string>('')
+  const [Language, setLanguage] = useState<string>('')
+  const currentYear = new Date().getFullYear()
+  const dispatch = useDispatch()
 
+  const handleOnSubmit = (e: any) => {
+    e.preventDefault()
+    const loginData: FormData = {
+      username: username,
+      password: password,
+      logout_other: LogoutFromOtherDevices ? '1' : '0'
+    }
+    console.log(loginData)
+    dispatch(login(loginData))
+  }
 
   // ** Hooks
-  const auth = useAuth()
+
+  // const auth = useAuth()
   const theme = useTheme()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
@@ -115,8 +136,6 @@ const LoginPage = () => {
 
   const {
     control,
-    setError,
-    handleSubmit,
     formState: { errors }
   } = useForm({
     defaultValues,
@@ -124,15 +143,15 @@ const LoginPage = () => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = (data: FormData) => {
-    const { email, password } = data
-    auth.login({ email, password, rememberMe, LogoutFromOtherDevices }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
-      })
-    })
-  }
+  // const onSubmit = (data: FormData) => {
+  //   const { email, password } = data
+  //   auth.login({ email, password, rememberMe, LogoutFromOtherDevices }, () => {
+  //     setError('email', {
+  //       type: 'manual',
+  //       message: 'Email or Password is invalid'
+  //     })
+  //   })
+  // }
 
   const handleChangeLanguage = (event: SelectChangeEvent) => {
     setLanguage(event.target.value)
@@ -141,12 +160,12 @@ const LoginPage = () => {
   // const handleChangeRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setRememberMe(event.target.checked)
   // }
-  // const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setEmail(event.target.value)
-  // }
-  // const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setPassword(event.target.value)
-  // }
+  const handleChangeUserName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(event.target.value)
+  }
+  const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value)
+  }
 
   return (
     <Box className='content-right'>
@@ -228,13 +247,13 @@ const LoginPage = () => {
               Client: <strong>client@sneat.com</strong> / Pass: <strong>client</strong>
             </Typography>
           </Alert>
-          <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+          <form noValidate autoComplete='off'>
             <FormControl fullWidth sx={{ mb: 4 }}>
               <Controller
-                name='email'
+                name='user name'
                 control={control}
                 rules={{ required: true }}
-                render={({ field: { value, onChange, onBlur } }) => (
+                render={({ field: { onBlur } }) => (
                   <TextField
                     sx={{
                       '& .Mui-focused': {
@@ -246,12 +265,12 @@ const LoginPage = () => {
                       }
                     }}
                     autoFocus
-                    label='Email'
-                    value={value}
+                    label='User Name'
+                    value={username}
                     onBlur={onBlur}
-                    onChange={onChange}
+                    onChange={handleChangeUserName}
                     error={Boolean(errors.email)}
-                    placeholder='admin@sneat.com'
+                    placeholder='user name'
                   />
                 )}
               />
@@ -277,12 +296,12 @@ const LoginPage = () => {
                 name='password'
                 control={control}
                 rules={{ required: true }}
-                render={({ field: { value, onChange, onBlur } }) => (
+                render={({ field: { onBlur } }) => (
                   <OutlinedInput
-                    value={value}
+                    value={password}
                     onBlur={onBlur}
                     label='Password'
-                    onChange={onChange}
+                    onChange={handleChangePassword}
                     id='auth-login-v2-password'
                     error={Boolean(errors.password)}
                     type={showPassword ? 'text' : 'password'}
@@ -332,6 +351,7 @@ const LoginPage = () => {
               <LinkStyled href='/forgot-password'>Forgot Password?</LinkStyled>
             </Box>
             <Button
+              onClick={handleOnSubmit}
               className={styles.custom__btn}
               fullWidth
               size='large'

@@ -8,7 +8,7 @@ import email from 'src/store/apps/email'
 import invoice from 'src/store/apps/invoice'
 import calendar from 'src/store/apps/calendar'
 import permissions from 'src/store/apps/permissions'
-import loginSlice from './apps/auth/login'
+import loginSlice from './apps/auth/login/index'
 import registerSlice from './apps/auth/register'
 
 export const store = configureStore({
