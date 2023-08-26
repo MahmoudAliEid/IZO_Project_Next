@@ -10,8 +10,8 @@ const initialState = {
   error: null
 }
 
-// Define an async thunk action to handle login
-export const login = createAsyncThunk('feature/login', async loginData => {
+// Define an async thunk action to handle loginFirstTime
+export const loginFirstTime = createAsyncThunk('feature/loginFirstTime', async loginData => {
   try {
     const response = await axios.post('https://test.izocloud.com/api/app/front/login', loginData, {
       headers: {
@@ -28,15 +28,15 @@ export const login = createAsyncThunk('feature/login', async loginData => {
     // Use rejectWithValue to pass the error message to the rejected action
 
     return {
-      message: 'Failed to Login',
+      message: 'Failed to Login for first time!!',
       stack: error.stack
     }
   }
 })
 
-// Create the login slice
-export const loginSlice = createSlice({
-  name: 'login',
+// Create the loginFirstTime slice
+export const loginFirstTimeSlice = createSlice({
+  name: 'loginFirstTime',
   initialState,
   reducers: {
     getToken: state => {
@@ -45,23 +45,15 @@ export const loginSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(loginFirstTime.fulfilled, (state, action) => {
         console.log('from login  action', action)
         state.data = action.payload
-
-        // Ensure that authorisation and token exist before assigning
-        if (action.payload.authorisation) {
-          state.userType = action.payload.authorisation.type || ''
-          state.token = action.payload.authorisation.token || ''
-        }
-
         state.status = 'success'
-        localStorage.setItem('token', action.payload.authorisation?.token)
       })
-      .addCase(login.pending, state => {
+      .addCase(loginFirstTime.pending, state => {
         state.status = 'pending'
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(loginFirstTime.rejected, (state, action) => {
         state.status = 'rejected'
         state.error = action.payload
       })
@@ -69,5 +61,5 @@ export const loginSlice = createSlice({
 })
 
 // Export actions and reducer
-export const { getToken } = loginSlice.actions
-export default loginSlice.reducer
+export const { getToken } = loginFirstTimeSlice.actions
+export default loginFirstTimeSlice.reducer

@@ -1,5 +1,8 @@
 // ** React Imports
-import { useState, ReactNode } from 'react'
+import { useState, ReactNode, useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css' // Import the CSS for styling (you may have to adjust the path)
+import { useSelector } from 'react-redux'
 
 //, MouseEvent
 
@@ -113,15 +116,52 @@ const LoginPage = () => {
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
 
-  const handleOnSubmit = (e: any) => {
-    e.preventDefault()
-    const loginData: FormData = {
-      username: username,
-      password: password,
-      logout_other: LogoutFromOtherDevices ? '1' : '0'
+  const message = useSelector((state: any) => state.login.data.message)
+  const messageStatus = useSelector((state: any) => state.login.data.status)
+
+  // const message = 'hi >>>>>>>>>>'
+
+  useEffect(() => {
+    if (message) {
+      console.log('from useEffect', message)
+      toast.error(`${message}`, {
+        position: 'bottom-right',
+        autoClose: 5000, // Time to close the toast automatically (in milliseconds)
+        hideProgressBar: false, // Whether to hide the progress bar
+        closeOnClick: true, // Close the toast when clicked
+        pauseOnHover: true, // Pause the timer when hovered
+        draggable: true, // Allow the toast to be draggable
+        progress: undefined, // Customize the progress bar (can be a React component)
+        theme: 'colored' // Your desired theme (you can create custom themes)
+      })
     }
-    console.log(loginData)
-    dispatch(login(loginData))
+    if (messageStatus) {
+      console.log('from useEffect', messageStatus)
+      toast.success(`login ${messageStatus}fully`, {
+        position: 'bottom-right',
+        autoClose: 5000, // Time to close the toast automatically (in milliseconds)
+        hideProgressBar: false, // Whether to hide the progress bar
+        closeOnClick: true, // Close the toast when clicked
+        pauseOnHover: true, // Pause the timer when hovered
+        draggable: true, // Allow the toast to be draggable
+        progress: undefined, // Customize the progress bar (can be a React component)
+        theme: 'colored' // Your desired theme (you can create custom themes)
+      })
+    }
+  }, [message, messageStatus])
+  const handleOnSubmit = (e: any) => {
+    try {
+      e.preventDefault()
+      const loginData: FormData = {
+        username: username,
+        password: password,
+        logout_other: LogoutFromOtherDevices ? '1' : '0'
+      }
+      console.log(loginData)
+      dispatch(login(loginData))
+    } catch (error: any) {
+      console.log(error)
+    }
   }
 
   // ** Hooks
@@ -397,6 +437,7 @@ const LoginPage = () => {
           </form>
         </Box>
       </RightWrapper>
+      <ToastContainer />
     </Box>
   )
 }
