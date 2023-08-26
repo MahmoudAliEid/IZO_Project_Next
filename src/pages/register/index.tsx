@@ -54,6 +54,10 @@ import { color } from '@mui/system'
 //   maxWidth: '100%'
 // })
 
+import { register } from 'src/store/apps/auth/register/index'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/store'
+
 const CenterWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
   minHeight: '100vh', // Set the height to 100% of the viewport height for vertical centering
@@ -84,6 +88,21 @@ const LinkStyled = styled(Link)(() => ({
   color: '#ec6608'
 }))
 
+// interface FormData {
+//   username: string
+//   password: string
+//   name: string
+//   alternate_number: string
+//   mobile: string
+//   currency_id: string
+//   surname: string
+//   first_name: string
+//   last_name: string
+//   email: string
+//   confirm_password: string
+//   language: string
+// }
+
 const Register = () => {
   // ** States
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -100,6 +119,7 @@ const Register = () => {
   const [activityName, setActivityName] = useState('')
   const [surname, setSurname] = useState('')
   const [selectedLanguage, setSelectedLanguage] = useState('')
+  const dispatch = useDispatch<AppDispatch>()
 
   // ** Hooks
   // const theme = useTheme()
@@ -112,6 +132,24 @@ const Register = () => {
   // ** Functions for handle states
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    const registerData = {
+      username: userName,
+      password: password,
+      name: firstName + ' ' + lastName,
+      alternate_number: alternatePhoneNumber || '', // Use an empty string if alternatePhoneNumber is undefined
+      mobile: activityPhoneNumber,
+      currency_id: selectedOption,
+      surname: surname,
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      confirm_password: confirmPassword,
+      language: selectedLanguage
+    }
+
+    console.log(registerData)
+    dispatch(register(registerData))
   }
 
   const handleChangeCurrency = (event: React.ChangeEvent<{ value: unknown }>) => {
