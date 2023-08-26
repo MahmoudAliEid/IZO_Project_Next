@@ -51,6 +51,7 @@ export const register = createAsyncThunk('feature/register', async (registerData
     return response.data
   } catch (error) {
     // Handle network errors or other exceptions
+    console.log('errrrrrrrr' + error)
     throw new Error('Failed to register. Please try again later.')
   }
 })

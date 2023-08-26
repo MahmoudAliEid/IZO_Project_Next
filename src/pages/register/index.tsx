@@ -105,8 +105,9 @@ const LinkStyled = styled(Link)(() => ({
 
 const Register = () => {
   // ** States
+  const currencies: string[] = ['USD', 'EUR', 'AED']
+  const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<number>(0)
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [selectedOption, setSelectedOption] = useState('')
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
@@ -134,16 +135,16 @@ const Register = () => {
     e.preventDefault()
 
     const registerData = {
-      username: userName,
-      password: password,
       name: firstName + ' ' + lastName,
       alternate_number: alternatePhoneNumber || '', // Use an empty string if alternatePhoneNumber is undefined
       mobile: activityPhoneNumber,
-      currency_id: selectedOption,
+      currency_id: selectedCurrencyIndex.toString(),
       surname: surname,
       first_name: firstName,
       last_name: lastName,
+      username: userName,
       email: email,
+      password: password,
       confirm_password: confirmPassword,
       language: selectedLanguage
     }
@@ -153,8 +154,9 @@ const Register = () => {
   }
 
   const handleChangeCurrency = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedOption(event.target.value as string)
+    setSelectedCurrencyIndex(event.target.value as number)
   }
+
   const handleChangeLanguage = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLanguage(event.target.value as string)
   }
@@ -201,8 +203,6 @@ const Register = () => {
   const handleSurnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSurname(event.target.value)
   }
-
-
 
   return (
     <Grid
@@ -340,10 +340,12 @@ const Register = () => {
                     className={(styles.dropdown, styles.varInput)}
                   >
                     <InputLabel>Choose Currency</InputLabel>
-                    <Select label='Choose Currency' value={selectedOption} onChange={handleChangeCurrency}>
-                      <MenuItem value='USD'>USD</MenuItem>
-                      <MenuItem value='EUR'>EUR</MenuItem>
-                      <MenuItem value='AED'>AED</MenuItem>
+                    <Select label='Choose Currency' value={selectedCurrencyIndex} onChange={handleChangeCurrency}>
+                      {currencies.map((currency, index) => (
+                        <MenuItem key={index} value={index}>
+                          {currency}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Box>
