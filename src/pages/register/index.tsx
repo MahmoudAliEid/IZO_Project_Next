@@ -505,7 +505,7 @@ const Register = () => {
             <Grid item xs={12} sx={{ justifyContent: 'center', margin: '20px 0' }} className={styles.form__controllers}>
               <FormControlLabel
                 sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: '#ec6608' } }}
-                control={<Checkbox />}
+                control={<Checkbox color='warning' />}
                 label={
                   <>
                     <Typography variant='body2' component='span'>

@@ -338,6 +338,7 @@ const LoginPage = () => {
                 }}
                 control={
                   <Checkbox
+                  color='warning'
                     checked={LogoutFromOtherDevices}
                     onChange={e => setLogoutFromOtherDevices(e.target.checked)}
                   />
@@ -345,8 +346,12 @@ const LoginPage = () => {
               />
               <FormControlLabel
                 label='Remember Me'
-                sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: 'text.secondary' } }}
-                control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
+                sx={{
+                  '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: 'text.secondary' }
+                }}
+                control={
+                  <Checkbox color='warning' checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />
+                }
               />
               <LinkStyled href='/forgot-password'>Forgot Password?</LinkStyled>
             </Box>
@@ -384,7 +389,7 @@ const LoginPage = () => {
                 <LinkStyled href='/register'>Create an account</LinkStyled>
               </Typography>
             </Box>
-            <Divider sx={{ my: `${theme.spacing(6)} !important` }}>or</Divider>
+            <Divider sx={{ my: `${theme.spacing(6)} !important` }}></Divider>
             <Typography sx={{ mb: 4, color: 'text.secondary', fontSize: 12, textAlign: 'center' }}>
               IZO CLOUD - V4.0 | Powered By AGT | +971-56-777-9250 | +971-4-23-55-919 | All Rights Reserved Copyright ©{' '}
               {currentYear}
