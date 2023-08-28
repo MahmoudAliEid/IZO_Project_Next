@@ -116,27 +116,11 @@ const LoginPage = () => {
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
 
-  const message = useSelector((state: any) => state.login.data.message)
+  const messageError = useSelector((state: any) => state.login.data.message)
   const messageStatus = useSelector((state: any) => state.login.data.status)
 
-  // const message = 'hi >>>>>>>>>>'
-
   useEffect(() => {
-    if (message) {
-      console.log('from useEffect', message)
-      toast.error(`${message}`, {
-        position: 'bottom-right',
-        autoClose: 5000, // Time to close the toast automatically (in milliseconds)
-        hideProgressBar: false, // Whether to hide the progress bar
-        closeOnClick: true, // Close the toast when clicked
-        pauseOnHover: true, // Pause the timer when hovered
-        draggable: true, // Allow the toast to be draggable
-        progress: undefined, // Customize the progress bar (can be a React component)
-        theme: 'colored' // Your desired theme (you can create custom themes)
-      })
-    }
     if (messageStatus) {
-      console.log('from useEffect', messageStatus)
       toast.success(`login ${messageStatus}fully`, {
         position: 'bottom-right',
         autoClose: 5000, // Time to close the toast automatically (in milliseconds)
@@ -148,10 +132,28 @@ const LoginPage = () => {
         theme: 'colored' // Your desired theme (you can create custom themes)
       })
     }
-  }, [message, messageStatus])
+    if (messageError) {
+      toast.error(`${messageError} user name or password isn't correct`, {
+        position: 'bottom-right',
+        autoClose: 1000, // Time to close the toast automatically (in milliseconds)
+        hideProgressBar: false, // Whether to hide the progress bar
+        closeOnClick: true, // Close the toast when clicked
+        pauseOnHover: true, // Pause the timer when hovered
+        draggable: true, // Allow the toast to be draggable
+        progress: undefined, // Customize the progress bar (can be a React component)
+        theme: 'colored' // Your desired theme (you can create custom themes)
+      })
+
+      // setTimeout(() => {
+      //   window.location.reload()
+      // }, 1000)
+    }
+  }, [messageStatus, messageError])
+
   const handleOnSubmit = (e: any) => {
     try {
       e.preventDefault()
+
       const loginData: FormData = {
         username: username,
         password: password,
@@ -159,6 +161,20 @@ const LoginPage = () => {
       }
       console.log(loginData)
       dispatch(login(loginData))
+
+      //handle message alerts errors
+      if (username == '' || password == '') {
+        toast.error(`User name or password can't be empty!!`, {
+          position: 'bottom-right',
+          autoClose: 5000, // Time to close the toast automatically (in milliseconds)
+          hideProgressBar: false, // Whether to hide the progress bar
+          closeOnClick: true, // Close the toast when clicked
+          pauseOnHover: true, // Pause the timer when hovered
+          draggable: true, // Allow the toast to be draggable
+          progress: undefined, // Customize the progress bar (can be a React component)
+          theme: 'colored' // Your desired theme (you can create custom themes)
+        })
+      }
     } catch (error: any) {
       console.log(error)
     }
@@ -378,7 +394,7 @@ const LoginPage = () => {
                 }}
                 control={
                   <Checkbox
-                  color='warning'
+                    color='warning'
                     checked={LogoutFromOtherDevices}
                     onChange={e => setLogoutFromOtherDevices(e.target.checked)}
                   />

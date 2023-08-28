@@ -7,6 +7,7 @@ const initialState = {
   userType: '',
   token: '',
   status: 'idle',
+  login_first_time: null,
   error: null
 }
 
@@ -48,15 +49,15 @@ export const loginSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         console.log('from login  action', action)
         state.data = action.payload
+        state.login_first_time = action.payload.login_first_time
 
-        // Ensure that authorisation and token exist before assigning
-        if (action.payload.authorisation) {
-          state.userType = action.payload.authorisation.type || ''
-          state.token = action.payload.authorisation.token || ''
+        // Ensure that authorization and token exist before assigning
+        if (action.payload.authorization) {
+          state.userType = action.payload.authorization?.type || ''
+          state.token = action.payload.authorization?.token || ''
         }
-
         state.status = 'success'
-        localStorage.setItem('token', action.payload.authorisation?.token)
+        localStorage.setItem('token', action.payload.authorization?.token)
       })
       .addCase(login.pending, state => {
         state.status = 'pending'

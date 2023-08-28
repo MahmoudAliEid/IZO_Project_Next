@@ -8,7 +8,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 // ** Styles
-import styles from './styles.module.css'
+import * as styles from './styles.module.css'
 
 // ** MUI Components
 import Button from '@mui/material/Button'
@@ -43,7 +43,8 @@ import Icon from 'src/@core/components/icon'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import { color } from '@mui/system'
+
+// import { color } from '@mui/system'
 
 // ** Hooks
 // import { useSettings } from 'src/@core/hooks/useSettings'
