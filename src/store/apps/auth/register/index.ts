@@ -63,12 +63,12 @@ const registerSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(register.fulfilled, (state, action: PayloadAction<any>) => {
       state.data = action.payload
-      if (action.payload.authorisation) {
-        state.userType = action.payload.authorisation.type
-        state.token = action.payload.authorisation.token
+      if (action.payload.authorization) {
+        state.userType = action.payload.authorization.type
+        state.token = action.payload.authorization.token
       }
       state.status = 'success'
-      localStorage.setItem('token', JSON.stringify(action.payload.authorisation.token))
+      localStorage.setItem('token', JSON.stringify(action.payload.authorization.token))
       console.log('from reducer register action:', action)
     })
     builder.addCase(register.pending, state => {

@@ -65,6 +65,7 @@ const LoginIllustration = styled('img')({
 
 // ** styles css
 import styles from './styles.module.css'
+import { useNavigateToDashboardAnalysisIfTokenMatches } from 'src/utils/checkLogin'
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -121,7 +122,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (messageStatus) {
-      toast.success(`login ${messageStatus}fully`, {
+      toast.success(`login successfully`, {
         position: 'bottom-right',
         autoClose: 5000, // Time to close the toast automatically (in milliseconds)
         hideProgressBar: false, // Whether to hide the progress bar
@@ -149,6 +150,8 @@ const LoginPage = () => {
       // }, 1000)
     }
   }, [messageStatus, messageError])
+
+  useNavigateToDashboardAnalysisIfTokenMatches()
 
   const handleOnSubmit = (e: any) => {
     try {
