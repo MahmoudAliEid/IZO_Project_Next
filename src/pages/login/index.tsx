@@ -124,7 +124,10 @@ export async function getStaticProps() {
   }
 }
 
-const LoginPage: React.FC<{ userData: UserData }> = ({ userData }) => {
+const LoginPage: React.FC<{ userData: UserData }> & {
+  getLayout: (page: ReactNode) => ReactNode
+  guestGuard?: boolean
+} = ({ userData }) => {
   const router = useRouter()
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)

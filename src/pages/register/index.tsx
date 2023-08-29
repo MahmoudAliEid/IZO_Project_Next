@@ -90,9 +90,33 @@ const LinkStyled = styled(Link)(() => ({
   color: '#ec6608'
 }))
 
-const Register = () => {
+type CurrenciesType = {
+  status: string
+  currencies: object
+}
+
+export async function getStaticProps() {
+  // Fetch data from the API
+  const apiUrl = 'https://test.izocloud.com/api/app/react/currency'
+  const response = await fetch(apiUrl)
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch data from ${apiUrl}`)
+  }
+
+  const currencies: CurrenciesType = await response.json()
+
+  return {
+    props: {
+      currencies: currencies.currencies
+    }
+  }
+}
+const Register: React.FC<{ currencies: CurrenciesType }> & {
+  getLayout: (page: ReactNode) => ReactNode
+  guestGuard?: boolean
+} = ({ currencies }) => {
   // ** States
-  const currencies: string[] = ['USD', 'EUR', 'AED']
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [mrMrs, setMrMrs] = useState('')
   const [formDataRegister, setFormDataRegister] = useState<RegisterData>({
@@ -130,6 +154,9 @@ const Register = () => {
   const handleMrMrsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMrMrs(event.target.value)
   }
+
+  //array of currencies
+  const arrCurrencies = Object.keys(currencies)
 
   return (
     <Grid
@@ -297,11 +324,11 @@ const Register = () => {
                           </InputAdornment>
                         )
                       }}
-                      label='Choose Currency'
+                      label='Choose Currency ID'
                       onChange={handleChange}
                     >
-                      {currencies.map((currency, index) => (
-                        <MenuItem key={index} value={index}>
+                      {arrCurrencies.map((currency: any, index: number) => (
+                        <MenuItem key={index} value={currency}>
                           {currency}
                         </MenuItem>
                       ))}
