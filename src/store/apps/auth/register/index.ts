@@ -51,7 +51,7 @@ export const register = createAsyncThunk('feature/register', async (registerData
     return response.data
   } catch (error) {
     // Handle network errors or other exceptions
-    console.log('errrrrrrrr' + error)
+    console.log('error' + error)
     throw new Error('Failed to register. Please try again later.')
   }
 })
@@ -63,10 +63,7 @@ const registerSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(register.fulfilled, (state, action: PayloadAction<any>) => {
       state.data = action.payload
-      if (action.payload.authorization) {
-        state.userType = action.payload.authorization.type
-        state.token = action.payload.authorization.token
-      }
+
       state.status = 'success'
       localStorage.setItem('token', JSON.stringify(action.payload.authorization.token))
       console.log('from reducer register action:', action)

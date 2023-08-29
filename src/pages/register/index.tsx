@@ -29,31 +29,11 @@ import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { MenuItem, Grid } from '@mui/material'
 
-// images
-
-// import logo from '/public/izoLogo/Logo.ico'
-
-// /import loginImage from '/izoLogo/loginImage.svg'
-
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Configs
-// import themeConfig from 'src/configs/themeConfig'
-
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-// import { color } from '@mui/system'
-
-// ** Hooks
-// import { useSettings } from 'src/@core/hooks/useSettings'
-
-// ** Styled Components
-// const RegisterIllustration = styled('img')({
-//   height: 'auto',
-//   maxWidth: '100%'
-// })
 
 import { register } from 'src/store/apps/auth/register/index'
 import { useDispatch } from 'react-redux'
@@ -63,6 +43,22 @@ import PhoneIcon from '@mui/icons-material/Phone'
 import TranslateIcon from '@mui/icons-material/Translate'
 import PaidIcon from '@mui/icons-material/Paid'
 import EmailIcon from '@mui/icons-material/Email'
+
+//declare types
+type RegisterData = {
+  name: string
+  alternate_number: string
+  mobile: string
+  currency_id: string
+  surname: string
+  first_name: string
+  last_name: string
+  username: string
+  email: string
+  password: string
+  confirm_password: string
+  language: string
+}
 
 const CenterWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -94,120 +90,45 @@ const LinkStyled = styled(Link)(() => ({
   color: '#ec6608'
 }))
 
-// interface FormData {
-//   username: string
-//   password: string
-//   name: string
-//   alternate_number: string
-//   mobile: string
-//   currency_id: string
-//   surname: string
-//   first_name: string
-//   last_name: string
-//   email: string
-//   confirm_password: string
-//   language: string
-// }
-
 const Register = () => {
   // ** States
   const currencies: string[] = ['USD', 'EUR', 'AED']
-  const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<string>('0')
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [password, setPassword] = useState('')
-  const [email, setEmail] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [userName, setUserName] = useState('')
-  const [activityPhoneNumber, setActivityPhoneNumber] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [alternatePhoneNumber, setAlternatePhoneNumber] = useState()
   const [mrMrs, setMrMrs] = useState('')
-  const [activityName, setActivityName] = useState('')
-  const [surname, setSurname] = useState('')
-  const [selectedLanguage, setSelectedLanguage] = useState('')
+  const [formDataRegister, setFormDataRegister] = useState<RegisterData>({
+    name: '',
+    alternate_number: '',
+    mobile: '',
+    currency_id: '',
+    surname: '',
+    first_name: '',
+    last_name: '',
+    username: '',
+    email: '',
+    password: '',
+    confirm_password: '',
+    language: ''
+  })
+
   const dispatch = useDispatch<AppDispatch>()
-
-  // ** Hooks
-  // const theme = useTheme()
-  // const { settings } = useSettings()
-  // const hidden = useMediaQuery(theme.breakpoints.down('lg'))
-
-  // ** Vars
-  // const { skin } = settings
 
   // ** Functions for handle states
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const registerData = {
-      name: firstName + ' ' + lastName,
-      alternate_number: alternatePhoneNumber || '', // Use an empty string if alternatePhoneNumber is undefined
-      mobile: activityPhoneNumber,
-      currency_id: selectedCurrencyIndex.toString(),
-      surname: surname,
-      first_name: firstName,
-      last_name: lastName,
-      username: userName,
-      email: email,
-      password: password,
-      confirm_password: confirmPassword,
-      language: selectedLanguage
-    }
-
-    console.log(registerData)
-    dispatch(register(registerData))
+    console.log(formDataRegister)
+    dispatch(register(formDataRegister))
   }
 
-  const handleChangeCurrency = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedCurrencyIndex(event.target.value)
-  }
-
-  const handleChangeLanguage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedLanguage(event.target.value)
-  }
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value)
-  }
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value)
-  }
-
-  const handleFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFirstName(event.target.value)
-  }
-
-  const handleLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLastName(event.target.value)
-  }
-
-  const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(event.target.value)
-  }
-
-  const handleActivityPhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setActivityPhoneNumber(event.target.value)
-  }
-
-  const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(event.target.value)
-  }
-
-  const handleAlternatePhoneNumberChange = (event: any) => {
-    setAlternatePhoneNumber(event.target.value)
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormDataRegister(prevData => ({
+      ...prevData,
+      [event.target.name]: event.target.value
+    }))
   }
 
   const handleMrMrsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMrMrs(event.target.value)
-  }
-
-  const handleActivityNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setActivityName(event.target.value)
-  }
-  const handleSurnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSurname(event.target.value)
   }
 
   return (
@@ -260,10 +181,11 @@ const Register = () => {
                   >
                     <TextField
                       sx={{ margin: '7px 7px 0 0', width: '100%' }}
-                      value={activityName}
+                      value={formDataRegister.name}
                       autoFocus
                       placeholder='activity name'
-                      onChange={handleActivityNameChange}
+                      name='name'
+                      onChange={handleChange}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
@@ -275,8 +197,9 @@ const Register = () => {
                     <TextField
                       sx={{ margin: '7px 7px 0 0', width: '100%' }}
                       type='tel'
+                      name='mobile'
                       placeholder='activity phone number'
-                      onChange={handleActivityPhoneNumberChange}
+                      onChange={handleChange}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
@@ -303,9 +226,9 @@ const Register = () => {
                   >
                     <TextField
                       type='tel'
-                      value={alternatePhoneNumber}
+                      name='alternate_number'
                       placeholder='alternate phone number'
-                      onChange={handleAlternatePhoneNumberChange}
+                      onChange={handleChange}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
@@ -342,8 +265,8 @@ const Register = () => {
                           </InputAdornment>
                         )
                       }}
-                      value={selectedLanguage}
-                      onChange={handleChangeLanguage}
+                      name='language'
+                      onChange={handleChange}
                     >
                       <MenuItem value='ar'>Arabic</MenuItem>
                       <MenuItem value='en'>English</MenuItem>
@@ -366,7 +289,7 @@ const Register = () => {
                     <TextField
                       id='outlined-select-currency'
                       select
-                      defaultValue='EUR'
+                      name='currency_id'
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
@@ -375,8 +298,7 @@ const Register = () => {
                         )
                       }}
                       label='Choose Currency'
-                      value={selectedCurrencyIndex}
-                      onChange={handleChangeCurrency}
+                      onChange={handleChange}
                     >
                       {currencies.map((currency, index) => (
                         <MenuItem key={index} value={index}>
@@ -436,7 +358,7 @@ const Register = () => {
                       }
                     }}
                     className={styles.varInput}
-                    value={firstName}
+                    name='first_name'
                     placeholder='First Name'
                     InputProps={{
                       startAdornment: (
@@ -445,7 +367,7 @@ const Register = () => {
                         </InputAdornment>
                       )
                     }}
-                    onChange={handleFirstNameChange}
+                    onChange={handleChange}
                   />
                   <TextField
                     sx={{
@@ -460,7 +382,7 @@ const Register = () => {
                       }
                     }}
                     className={styles.varInput}
-                    value={lastName}
+                    name='last_name'
                     placeholder='Last Name'
                     InputProps={{
                       startAdornment: (
@@ -469,7 +391,7 @@ const Register = () => {
                         </InputAdornment>
                       )
                     }}
-                    onChange={handleLastNameChange}
+                    onChange={handleChange}
                   />
                   <TextField
                     sx={{
@@ -491,9 +413,9 @@ const Register = () => {
                         </InputAdornment>
                       )
                     }}
-                    value={surname}
+                    name='surname'
                     placeholder='Surname'
-                    onChange={handleSurnameChange}
+                    onChange={handleChange}
                   />
 
                   <TextField
@@ -516,9 +438,10 @@ const Register = () => {
                         </InputAdornment>
                       )
                     }}
-                    value={userName}
+                    name='username'
+                    value={formDataRegister.username}
                     placeholder='User Name'
-                    onChange={handleUserNameChange}
+                    onChange={handleChange}
                   />
 
                   <FormControl
@@ -545,8 +468,9 @@ const Register = () => {
                         )
                       }}
                       placeholder='user@email.com'
-                      onChange={handleEmailChange}
-                      value={email}
+                      onChange={handleChange}
+                      value={formDataRegister.email}
+                      name='email'
                     />
                   </FormControl>
 
@@ -567,7 +491,7 @@ const Register = () => {
                     <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
                     <OutlinedInput
                       label='Password'
-                      value={password}
+                      value={formDataRegister.password}
                       id='auth-login-v2-password'
                       type={showPassword ? 'text' : 'password'}
                       endAdornment={
@@ -581,7 +505,8 @@ const Register = () => {
                           </IconButton>
                         </InputAdornment>
                       }
-                      onChange={handlePasswordChange}
+                      name='password'
+                      onChange={handleChange}
                     />
                   </FormControl>
 
@@ -601,7 +526,7 @@ const Register = () => {
                   >
                     <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
                     <OutlinedInput
-                      value={confirmPassword}
+                      value={formDataRegister.confirm_password}
                       label='Confirm Password'
                       id='auth-login-v2-confirm-password'
                       type={showPassword ? 'text' : 'password'}
@@ -616,7 +541,8 @@ const Register = () => {
                           </IconButton>
                         </InputAdornment>
                       }
-                      onChange={handleConfirmPasswordChange}
+                      name='confirm_password'
+                      onChange={handleChange}
                     />
                   </FormControl>
                 </Box>
