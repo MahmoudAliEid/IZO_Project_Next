@@ -3,6 +3,7 @@ import { useState, ReactNode, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css' // Import the CSS for styling (you may have to adjust the path)
 import { useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
 
 // redux
 import { login } from 'src/store/apps/auth/login/index.js'
@@ -59,6 +60,7 @@ const LoginIllustration = styled('img')({
 // ** styles css
 import styles from './styles.module.css'
 import { useNavigateToDashboardAnalysisIfTokenMatches } from 'src/utils/checkLogin'
+import { RootState } from 'src/types/apps/rooteState'
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -123,6 +125,7 @@ export async function getStaticProps() {
 }
 
 const LoginPage: React.FC<{ userData: UserData }> = ({ userData }) => {
+  const router = useRouter()
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
@@ -132,8 +135,10 @@ const LoginPage: React.FC<{ userData: UserData }> = ({ userData }) => {
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
   console.log('username', username)
-  const messageError = useSelector((state: any) => state.login.data.message)
-  const messageStatus = useSelector((state: any) => state.login.data.status)
+  const messageError = useSelector((state: RootState) => state.login.data.message)
+  const messageStatus = useSelector((state: RootState) => state.login.data.status)
+
+  //  const login_first_time = useSelector((state: RootState) => state.login.login_first_time)
 
   useEffect(() => {
     if (messageStatus) {
@@ -166,7 +171,7 @@ const LoginPage: React.FC<{ userData: UserData }> = ({ userData }) => {
     }
   }, [messageStatus, messageError])
 
-  useNavigateToDashboardAnalysisIfTokenMatches()
+  const login_first_time = useNavigateToDashboardAnalysisIfTokenMatches()
 
   const handleOnSubmit = (e: any) => {
     try {
@@ -180,17 +185,21 @@ const LoginPage: React.FC<{ userData: UserData }> = ({ userData }) => {
       console.log(loginData)
       dispatch(login(loginData))
 
-      //handle message alerts errors
+      //to go into page login for first time
+      if (login_first_time) {
+        router.replace('/loginFirstTime')
+      }
       if (username == '' || password == '') {
+        //handle message alerts errors
         toast.error(`User name or password can't be empty!!`, {
           position: 'bottom-right',
-          autoClose: 5000, // Time to close the toast automatically (in milliseconds)
-          hideProgressBar: false, // Whether to hide the progress bar
-          closeOnClick: true, // Close the toast when clicked
-          pauseOnHover: true, // Pause the timer when hovered
-          draggable: true, // Allow the toast to be draggable
-          progress: undefined, // Customize the progress bar (can be a React component)
-          theme: 'colored' // Your desired theme (you can create custom themes)
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored'
         })
       }
     } catch (error: any) {
