@@ -27,7 +27,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { MenuItem, Select, Grid } from '@mui/material'
+import { MenuItem, Grid } from '@mui/material'
 
 // images
 
@@ -58,6 +58,11 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { register } from 'src/store/apps/auth/register/index'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
+import { AccountCircle } from '@mui/icons-material'
+import PhoneIcon from '@mui/icons-material/Phone'
+import TranslateIcon from '@mui/icons-material/Translate'
+import PaidIcon from '@mui/icons-material/Paid'
+import EmailIcon from '@mui/icons-material/Email'
 
 const CenterWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
@@ -107,7 +112,7 @@ const LinkStyled = styled(Link)(() => ({
 const Register = () => {
   // ** States
   const currencies: string[] = ['USD', 'EUR', 'AED']
-  const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<number>(0)
+  const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState<string>('0')
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
@@ -154,12 +159,12 @@ const Register = () => {
     dispatch(register(registerData))
   }
 
-  const handleChangeCurrency = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedCurrencyIndex(event.target.value as number)
+  const handleChangeCurrency = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedCurrencyIndex(event.target.value)
   }
 
-  const handleChangeLanguage = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLanguage(event.target.value as string)
+  const handleChangeLanguage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedLanguage(event.target.value)
   }
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,19 +233,6 @@ const Register = () => {
           <Grid container spacing={2}>
             <Grid spacing={2} item xs={12} sx={{ padding: '20px 0' }}>
               <fieldset style={{ border: '1px solid #ec6608', borderRadius: '10px', padding: '20px' }}>
-                {/* <Typography
-                className={styles.gradientText}
-                variant='h4'
-                sx={{
-                  width: 'fit-content',
-                  textAlign: 'center',
-                  margin: '10px auto',
-                  color: '#ec6608',
-                  padding: '10px 0'
-                }}
-              >
-                Company Details
-              </Typography> */}
                 <legend className={styles.gradientText}>Company Details</legend>
 
                 <Box
@@ -270,16 +262,28 @@ const Register = () => {
                       sx={{ margin: '7px 7px 0 0', width: '100%' }}
                       value={activityName}
                       autoFocus
-                      label='Activity Name'
                       placeholder='activity name'
                       onChange={handleActivityNameChange}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <AccountCircle />
+                          </InputAdornment>
+                        )
+                      }}
                     />
                     <TextField
                       sx={{ margin: '7px 7px 0 0', width: '100%' }}
                       type='tel'
-                      label='Activity Phone Number'
                       placeholder='activity phone number'
                       onChange={handleActivityPhoneNumberChange}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <PhoneIcon />
+                          </InputAdornment>
+                        )
+                      }}
                     />
                   </FormControl>
                   <FormControl
@@ -300,9 +304,15 @@ const Register = () => {
                     <TextField
                       type='tel'
                       value={alternatePhoneNumber}
-                      label='Alternate Phone Number'
                       placeholder='alternate phone number'
                       onChange={handleAlternatePhoneNumberChange}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <PhoneIcon />
+                          </InputAdornment>
+                        )
+                      }}
                     />
                   </FormControl>
 
@@ -320,11 +330,24 @@ const Register = () => {
                     }}
                     className={(styles.dropdown, styles.varInput)}
                   >
-                    <InputLabel>Language</InputLabel>
-                    <Select label='Language' value={selectedLanguage} onChange={handleChangeLanguage}>
+                    <TextField
+                      id='outlined-select-currency'
+                      select
+                      label='Language'
+                      defaultValue='EUR'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <TranslateIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                      value={selectedLanguage}
+                      onChange={handleChangeLanguage}
+                    >
                       <MenuItem value='ar'>Arabic</MenuItem>
                       <MenuItem value='en'>English</MenuItem>
-                    </Select>
+                    </TextField>
                   </FormControl>
                   <FormControl
                     sx={{
@@ -340,14 +363,27 @@ const Register = () => {
                     }}
                     className={(styles.dropdown, styles.varInput)}
                   >
-                    <InputLabel>Choose Currency</InputLabel>
-                    <Select label='Choose Currency' value={selectedCurrencyIndex} onChange={handleChangeCurrency}>
+                    <TextField
+                      id='outlined-select-currency'
+                      select
+                      defaultValue='EUR'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <PaidIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                      label='Choose Currency'
+                      value={selectedCurrencyIndex}
+                      onChange={handleChangeCurrency}
+                    >
                       {currencies.map((currency, index) => (
                         <MenuItem key={index} value={index}>
                           {currency}
                         </MenuItem>
                       ))}
-                    </Select>
+                    </TextField>
                   </FormControl>
                 </Box>
               </fieldset>
@@ -376,9 +412,15 @@ const Register = () => {
                       }
                     }}
                     className={styles.varInput}
-                    label='Mr/Mrs'
                     value={mrMrs}
                     placeholder='Mr/Mrs'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <AccountCircle />
+                        </InputAdornment>
+                      )
+                    }}
                     onChange={handleMrMrsChange}
                   />
                   <TextField
@@ -394,9 +436,15 @@ const Register = () => {
                       }
                     }}
                     className={styles.varInput}
-                    label='Firstname'
                     value={firstName}
-                    placeholder='johndoe'
+                    placeholder='First Name'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <AccountCircle />
+                        </InputAdornment>
+                      )
+                    }}
                     onChange={handleFirstNameChange}
                   />
                   <TextField
@@ -412,9 +460,15 @@ const Register = () => {
                       }
                     }}
                     className={styles.varInput}
-                    label='Lastname'
                     value={lastName}
-                    placeholder='johndoe'
+                    placeholder='Last Name'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <AccountCircle />
+                        </InputAdornment>
+                      )
+                    }}
                     onChange={handleLastNameChange}
                   />
                   <TextField
@@ -430,9 +484,15 @@ const Register = () => {
                       }
                     }}
                     className={styles.varInput}
-                    label='Surname'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <AccountCircle />
+                        </InputAdornment>
+                      )
+                    }}
                     value={surname}
-                    placeholder='doe'
+                    placeholder='Surname'
                     onChange={handleSurnameChange}
                   />
 
@@ -449,9 +509,15 @@ const Register = () => {
                       }
                     }}
                     className={styles.varInput}
-                    label='Username'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <AccountCircle />
+                        </InputAdornment>
+                      )
+                    }}
                     value={userName}
-                    placeholder='johndoe'
+                    placeholder='User Name'
                     onChange={handleUserNameChange}
                   />
 
@@ -470,7 +536,18 @@ const Register = () => {
                       }
                     }}
                   >
-                    <TextField label='Email' placeholder='user@email.com' onChange={handleEmailChange} value={email} />
+                    <TextField
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <EmailIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                      placeholder='user@email.com'
+                      onChange={handleEmailChange}
+                      value={email}
+                    />
                   </FormControl>
 
                   <FormControl
@@ -588,136 +665,3 @@ Register.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 Register.guestGuard = true
 
 export default Register
-
-// <Box className={`content-center ${styles.register__container}`}>
-//   {/* {!hidden ? (
-//     <Box sx={{ p: 12, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-//       <RegisterIllustration width={700} alt='register-illustration' src={'/izoLogo/loginImage.svg'} />
-//     </Box>
-//   ) : null} */}
-//   <CenterWrapper
-//     className={styles.center_wrapper}
-//     sx={{ ...(skin === 'bordered' && !hidden && { borderLeft: `1px solid ${theme.palette.divider}` }) }}
-//   >
-//     <Box sx={{ mx: 'auto', maxWidth: 2000 }}>
-//       <Box sx={{ mb: 8, display: 'flex', alignItems: 'center' }}>
-//         <Image src={'/izoLogo/Logo.ico'} alt='izo-logo' width={200} height={200} className={styles.izo__logo} />
-//         {/* <Typography
-//           variant='h5'
-//           sx={{
-//             ml: 2,
-//             lineHeight: 1,
-//             fontWeight: 700,
-//             letterSpacing: '-0.45px',
-//             textTransform: 'lowercase',
-//             fontSize: '1.75rem !important'
-//           }}
-//         >
-//           {themeConfig.templateName}
-//         </Typography> */}
-//       </Box>
-//       <Typography variant='h6' sx={{ mb: 1.5 }}>
-//         Adventure starts here 🚀
-//       </Typography>
-//       <Typography sx={{ mb: 6, color: 'text.secondary' }}>Make your app management easy and fun!</Typography>
-//       <form noValidate autoComplete='off' onSubmit={e => handleSubmit(e)} className={styles.form__custom}>
-//         <div className={styles.parts__container}>
-//           <div className={styles.part_1}>
-//             <TextField  label='Activity Name' placeholder='activity name' />
-//             <TextField type='tel' label='Activity Phone umber' placeholder='activity phone number' />
-//             <TextField type='tel' label='Alternate phone number' placeholder='alternate phone number' />
-//             <FormControl className={styles.dropdown}>
-//               <InputLabel>Choose Currency</InputLabel>
-//               <Select label='Choose Currency' value={selectedOption} onChange={handleChange}>
-//                 <MenuItem value='USD'>USD</MenuItem>
-//                 <MenuItem value='EUR'>EUR</MenuItem>
-//                 <MenuItem value='AED '>AED </MenuItem>
-//               </Select>
-//             </FormControl>
-//           </div>
-//           <div className={styles.part_2}>
-//             <TextField  label='Mr/Mrs' placeholder='Mr/Mrs' />
-//             <TextField  label='Firstname' placeholder='johndoe' />
-//             <TextField  label='Lastname' placeholder='johndoe' />
-//             <TextField  label='Username' placeholder='johndoe' />
-
-//             <FormControl
-//               className={styles.dropdown}
-//               sx={{ width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
-//             >
-//               <TextField label='Email' placeholder='user@email.com' />
-//             </FormControl>
-//             <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
-//               <FormControl>
-//                 <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
-//                 <OutlinedInput
-//                   label='Password'
-//                   id='auth-login-v2-password'
-//                   type={showPassword ? 'text' : 'password'}
-//                   endAdornment={
-//                     <InputAdornment position='end'>
-//                       <IconButton
-//                         edge='end'
-//                         onMouseDown={e => e.preventDefault()}
-//                         onClick={() => setShowPassword(!showPassword)}
-//                       >
-//                         <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-//                       </IconButton>
-//                     </InputAdornment>
-//                   }
-//                 />
-//               </FormControl>
-
-//               <FormControl>
-//                 <InputLabel htmlFor='auth-login-v2-password'>confirm Password</InputLabel>
-//                 <OutlinedInput
-//                   label='Password'
-//                   id='auth-login-v2-password'
-//                   type={showPassword ? 'text' : 'password'}
-//                   endAdornment={
-//                     <InputAdornment position='end'>
-//                       <IconButton
-//                         edge='end'
-//                         onMouseDown={e => e.preventDefault()}
-//                         onClick={() => setShowPassword(!showPassword)}
-//                       >
-//                         <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
-//                       </IconButton>
-//                     </InputAdornment>
-//                   }
-//                 />
-//               </FormControl>
-//             </div>
-//           </div>
-//         </div>
-//         <div className={styles.form__controllers}>
-//           <FormControlLabel
-//             sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: '#ec6608' } }}
-//             control={<Checkbox />}
-//             label={
-//               <>
-//                 <Typography variant='body2' component='span'>
-//                   I agree to{' '}
-//                 </Typography>
-//                 <LinkStyled href='/' onClick={e => e.preventDefault()}>
-//                   privacy policy & terms
-//                 </LinkStyled>
-//               </>
-//             }
-//           />
-//           <Button size='large' type='submit' variant='contained' sx={{ mb: 2 }}>
-//             Sign up
-//           </Button>
-//           <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-//             <Typography variant='body2' sx={{ mr: 2 }}>
-//               Already have an account?
-//             </Typography>
-//             <Typography variant='body2'>
-//               <LinkStyled href='/login'>Sign in instead</LinkStyled>
-//             </Typography>
-//           </Box>
-//         </div>
-//       </form>
-//     </Box>
-//   </CenterWrapper>
-// </Box>

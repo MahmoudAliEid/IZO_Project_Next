@@ -21,6 +21,7 @@ import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
+import { AccountCircle } from '@mui/icons-material'
 
 // import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -147,7 +148,13 @@ const LoginFirstTime = () => {
                       sx={{ margin: '7px 7px 0 0', width: '100%' }}
                       value={userName}
                       autoFocus
-                      label='User Name'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <AccountCircle />
+                          </InputAdornment>
+                        )
+                      }}
                       placeholder='user name'
                       onChange={handleUserNameChange}
                     />

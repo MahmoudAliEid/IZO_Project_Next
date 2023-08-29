@@ -4,8 +4,6 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css' // Import the CSS for styling (you may have to adjust the path)
 import { useSelector } from 'react-redux'
 
-//, MouseEvent
-
 // redux
 import { login } from 'src/store/apps/auth/login/index.js'
 import { useDispatch } from 'react-redux'
@@ -17,7 +15,6 @@ import Image from 'next/image'
 // ** MUI Components
 
 import MenuItem from '@mui/material/MenuItem'
-
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -37,15 +34,14 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import { AccountCircle } from '@mui/icons-material'
+import TranslateIcon from '@mui/icons-material/Translate'
 
 // ** Third Party Imports
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-// ** Hooks
-// import { useAuth } from 'src/hooks/useAuth'
-// import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Configs
@@ -53,9 +49,6 @@ import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import { Select, SelectChangeEvent } from '@mui/material'
-
-// AccordionActions
 
 // ** Styled Components
 const LoginIllustration = styled('img')({
@@ -107,7 +100,29 @@ interface FormData {
   logout_other: string
 }
 
-const LoginPage = () => {
+interface UserData {
+  status: string
+  users: object
+}
+export async function getStaticProps() {
+  // Fetch data from the API
+  const apiUrl = 'https://test.izocloud.com/api/get-user'
+  const response = await fetch(apiUrl)
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch data from ${apiUrl}`)
+  }
+
+  const userData: UserData = await response.json()
+
+  return {
+    props: {
+      userData
+    }
+  }
+}
+
+const LoginPage: React.FC<{ userData: UserData }> = ({ userData }) => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
@@ -116,7 +131,7 @@ const LoginPage = () => {
   const [Language, setLanguage] = useState<string>('')
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
-
+  console.log('username', username)
   const messageError = useSelector((state: any) => state.login.data.message)
   const messageStatus = useSelector((state: any) => state.login.data.status)
 
@@ -183,8 +198,6 @@ const LoginPage = () => {
     }
   }
 
-  // ** Hooks
-
   // const auth = useAuth()
   const theme = useTheme()
   const { settings } = useSettings()
@@ -212,7 +225,7 @@ const LoginPage = () => {
   //   })
   // }
 
-  const handleChangeLanguage = (event: SelectChangeEvent) => {
+  const handleChangeLanguage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLanguage(event.target.value)
   }
 
@@ -225,6 +238,7 @@ const LoginPage = () => {
   const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value)
   }
+  const arrUsersData = Object.values(userData.users)
 
   return (
     <Box className='content-right'>
@@ -239,19 +253,7 @@ const LoginPage = () => {
         <Box sx={{ mx: 'auto', maxWidth: 400 }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center' }}>
             <Image src={'/izoLogo/izo_logo_black.png'} alt='logo' width={40} height={40} background-color={'black'} />
-            {/* <Typography
-              variant='h5'
-              sx={{
-                ml: 2,
-                lineHeight: 1,
-                fontWeight: 700,
-                letterSpacing: '-0.45px',
-                textTransform: 'lowercase',
-                fontSize: '1.75rem !important'
-              }}
-            >
-              {themeConfig.templateName}
-            </Typography> */}
+
             <Box sx={{ mx: 'auto', maxWidth: 400 }}>
               <FormControl
                 sx={{
@@ -267,18 +269,22 @@ const LoginPage = () => {
                 }}
                 size='small'
               >
-                <InputLabel id='demo-select-small-label'>Language</InputLabel>
-                <Select
-                  labelId='demo-select-small-label'
-                  id='demo-select-small'
-                  value={Language}
+                <TextField
+                  select
                   label='Language'
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <TranslateIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                  value={Language}
                   onChange={handleChangeLanguage}
                 >
-                  <MenuItem value={'arabic'}>Arabic</MenuItem>
-                  <MenuItem value={'french'}>French</MenuItem>
-                  <MenuItem value={'english'}>English</MenuItem>
-                </Select>
+                  <MenuItem value='ar'>Arabic</MenuItem>
+                  <MenuItem value='en'>English</MenuItem>
+                </TextField>
               </FormControl>
             </Box>
           </Box>
@@ -307,33 +313,39 @@ const LoginPage = () => {
             </Typography>
           </Alert>
           <form noValidate autoComplete='off'>
-            <FormControl fullWidth sx={{ mb: 4 }}>
-              <Controller
-                name='user name'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { onBlur } }) => (
-                  <TextField
-                    sx={{
-                      '& .Mui-focused': {
-                        borderColor: '#ec6608 !important',
-                        color: '#ec6608 !important',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#ec6608 !important'
-                        }
-                      }
-                    }}
-                    autoFocus
-                    label='User Name'
-                    value={username}
-                    onBlur={onBlur}
-                    onChange={handleChangeUserName}
-                    error={Boolean(errors.email)}
-                    placeholder='user name'
-                  />
-                )}
-              />
-              {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
+            <FormControl
+              fullWidth
+              sx={{
+                mb: 2,
+                '& .Mui-focused': {
+                  borderColor: '#ec6608 !important',
+                  color: '#ec6608 !important',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ec6608 !important'
+                  }
+                }
+              }}
+            >
+              <TextField
+                id='outlined-select-currency'
+                select
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <AccountCircle />
+                    </InputAdornment>
+                  )
+                }}
+                label='User Name'
+                value={username}
+                onChange={handleChangeUserName}
+              >
+                {arrUsersData.map((user: any, index: number) => (
+                  <MenuItem key={index} value={user}>
+                    {user}
+                  </MenuItem>
+                ))}
+              </TextField>
             </FormControl>
             <FormControl
               fullWidth
@@ -460,7 +472,6 @@ const LoginPage = () => {
     </Box>
   )
 }
-
 LoginPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
 LoginPage.guestGuard = true
