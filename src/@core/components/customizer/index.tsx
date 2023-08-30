@@ -210,6 +210,7 @@ const Customizer = () => {
                   }}
                 />
                 <ColorBox
+
                   onClick={() => handleChange('themeColor', '#ec6608')}
                   sx={{
                     backgroundColor: '#ec6608',
