@@ -187,6 +187,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
       }
       console.log(loginData)
       dispatch(login(loginData))
+      router.replace('/dashboards/analytics')
 
       //to go into page login for first time
       if (login_first_time) {
@@ -486,6 +487,6 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 }
 LoginPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-LoginPage.guestGuard = true
+// LoginPage.guestGuard = true
 
 export default LoginPage

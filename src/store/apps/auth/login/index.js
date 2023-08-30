@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { setCookie } from 'cookies-next'
 
 import axios from 'axios'
 
@@ -57,7 +58,7 @@ export const loginSlice = createSlice({
           state.token = action.payload.authorization?.token || ''
         }
         state.status = 'success'
-        localStorage.setItem('token', action.payload.authorization?.token)
+        setCookie('token', action.payload.authorization?.token)
       })
       .addCase(login.pending, state => {
         state.status = 'pending'

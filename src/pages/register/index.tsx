@@ -615,6 +615,6 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
 
 Register.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-Register.guestGuard = true
+// Register.guestGuard = true
 
 export default Register
