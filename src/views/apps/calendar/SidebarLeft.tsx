@@ -37,22 +37,22 @@ const SidebarLeft = (props: SidebarLeftType) => {
 
   const renderFilters = colorsArr.length
     ? colorsArr.map(([key, value]: string[]) => {
-        return (
-          <FormControlLabel
-            key={key}
-            label={key}
-            sx={{ mb: -2, '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
-            control={
-              <Checkbox
-                size='small'
-                color={value as ThemeColor}
-                checked={store.selectedCalendars.includes(key as CalendarFiltersType)}
-                onChange={() => dispatch(handleCalendarsUpdate(key as CalendarFiltersType))}
-              />
-            }
-          />
-        )
-      })
+      return (
+        <FormControlLabel
+          key={key}
+          label={key}
+          sx={{ mb: -2, '& .MuiFormControlLabel-label': { color: 'text.secondary' } }}
+          control={
+            <Checkbox
+              size='small'
+              color={value as ThemeColor}
+              checked={store.selectedCalendars.includes(key as CalendarFiltersType)}
+              onChange={() => dispatch(handleCalendarsUpdate(key as CalendarFiltersType))}
+            />
+          }
+        />
+      )
+    })
     : null
 
   const handleSidebarToggleSidebar = () => {
