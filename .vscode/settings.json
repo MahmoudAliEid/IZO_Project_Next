@@ -36,5 +36,8 @@
     "Customizer"
   ],
   "search-node-modules.path": "node_modules",
-  "markdown.extension.toc.updateOnSave": false
+  "markdown.extension.toc.updateOnSave": false,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }
