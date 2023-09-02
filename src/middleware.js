@@ -1,18 +1,44 @@
 import { NextResponse } from 'next/server'
+import { verifyAuth } from './jwt'
 
-// import {decode} from "jsonwebtoken"
-
-export default middleware = req => {
+export default middleware = async req => {
   const token = req.cookies.get('token')
   const url = req.url
+  const validToken = token && (await verifyAuth(token))
+  console.log(`valid token: ${validToken}`)
 
-  // const vaildToken=decode(token,SECRT-KEY)
+  // // ** secretKey
+  // if (secretKey == undefined || token.length === 0 || secretKey == null) {
+  //   if (url.includes('/dashboards') || url == 'http://localhost:3000/') {
+  //     return NextResponse.redirect('http://localhost:3000/login')
+  //   }
+
+  //   return NextResponse.redirect('http://localhost:3000/login')
+  // }
+
+  // // ** token
+  // if (token == undefined || token.length === 0 || token == null) {
+  //   if (url.includes('/dashboards') || url == 'http://localhost:3000/') {
+  //     return NextResponse.redirect('http://localhost:3000/login')
+  //   }
+
+  //   return NextResponse.redirect('http://localhost:3000/login')
+  // }
+
+  // // ** validation
+  // if (validToken) {
+  //   if (url.includes('/login') || url.includes('/register') || url.includes('/loginFirstTime')) {
+  //     return NextResponse.redirect('http://localhost:3000/dashboards/analytics')
+  //   }
+
+  //   return NextResponse.redirect('http://localhost:3000/dashboards/analytics')
+  // }
 
   //  || req.nextUrl.pathname.startsWith('/')
-  if ((token == null && url.includes('/dashboards')) || url == 'http://localhost:3000/') {
+  if ((!validToken && url.includes('/dashboards')) || url == 'http://localhost:3000/') {
     return NextResponse.redirect('http://localhost:3000/login')
   }
-  if (token != null && (url.includes('/login') || url.includes('/register') || url.includes('/loginFirstTime'))) {
+  if (validToken && (url.includes('/login') || url.includes('/register') || url.includes('/loginFirstTime'))) {
     return NextResponse.redirect('http://localhost:3000/dashboards/analytics')
 
     // return NextResponse.next()

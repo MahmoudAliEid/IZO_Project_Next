@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
+import { setCookie } from 'cookies-next'
 
 // redux
 import { login } from 'src/store/apps/auth/login/index.js'
@@ -136,6 +137,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   guestGuard?: boolean
 } = ({ userData }) => {
   const router = useRouter()
+  const secretKey = "izo-"
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
@@ -222,7 +224,9 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
       //@ts-ignore
       dispatch(login(loginData))
-      router.replace('/dashboards/analytics')
+      console.log(secretKey + password + username)
+      setCookie("key", secretKey + password + username)
+      router.replace('/dashboards/analytics/');
 
       //to go into page login for first time
       if (login_first_time) {
@@ -246,7 +250,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
     }
   }
 
-  // secret key ="izo-+username+password"
+
 
   // const auth = useAuth()
   const theme = useTheme()
