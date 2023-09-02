@@ -4,7 +4,7 @@ import { verifyAuth } from './jwt'
 export default middleware = async req => {
   const token = req.cookies.get('token')
   const url = req.url
-  const validToken = token && (await verifyAuth(token))
+  const validToken = token && (await verifyAuth(token, req))
   console.log(`valid token: ${validToken}`)
 
   // // ** secretKey
