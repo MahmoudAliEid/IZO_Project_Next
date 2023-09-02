@@ -1,8 +1,10 @@
 'use client'
 
 // ** React Imports
-import { ReactNode, useState, useEffect } from 'react'
-import axios from 'axios'
+import { ReactNode, useState } from 'react'
+import { useRouter } from 'next/router'
+
+// import axios from 'axios'
 
 // ** Next Import
 // import Link from 'next/link'
@@ -13,7 +15,7 @@ import styles from './styles.module.css'
 
 // ** MUI Components
 import Button from '@mui/material/Button'
-
+import FormHelperText from '@mui/material/FormHelperText'
 import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
@@ -71,16 +73,41 @@ const LoginFirstTime = () => {
   const [password, setPassword] = useState('')
   const [userName, setUserName] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [ipAddress, setIpAddress] = useState(null)
+  const [userNameError, setUserNameError] = useState<string>('')
+  const [passwordError, setPasswordError] = useState<string>('')
+
+  const router = useRouter()
+
 
   //to get ip address
   //Regarding the MAC address, it's not possible to access it through
   //a web browser due to security and privacy restrictions.The MAC address is
   // a low - level hardware address and is not exposed to websites for security reasons.
 
-  console.log('ip address form login for first time:', ipAddress)
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    //handle errors
+    if (!userName || !userName.length) {
+      setUserNameError("The Username cannot be empty!")
+    } else if (userName.length >= 256) {
+      setUserNameError("The User name must be between 3 and 255 characters")
+    } else if (!password || !password.length) {
+      setPasswordError("The Password cannot be empty!")
+    } else if (password.length < 5) {
+      setPasswordError("password is too short!")
+    } else if (password !== confirmPassword) {
+      setPasswordError("The Password and Confirm Password must equal.")
+    }
+    else {
+
+      setUserNameError("")
+      setPasswordError("")
+
+      router.replace("/login")
+    }
+
   }
 
   const handleConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,6 +157,8 @@ const LoginFirstTime = () => {
                   className={styles.inputField_container}
                 >
                   <FormControl
+
+
                     className={styles.varInput}
                     sx={{
                       width: '100%',
@@ -145,6 +174,9 @@ const LoginFirstTime = () => {
                     }}
                   >
                     <TextField
+                      required
+                      error={userNameError ? true : false}
+                      helperText={userNameError}
                       sx={{ margin: '7px 7px 0 0', width: '100%' }}
                       value={userName}
                       autoFocus
@@ -175,8 +207,11 @@ const LoginFirstTime = () => {
                   >
                     <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
                     <OutlinedInput
+                      required
                       label='Password'
+                      error={passwordError ? true : false}
                       value={password}
+                      aria-describedby='component-helper-text'
                       id='auth-login-v2-password'
                       type={showPassword ? 'text' : 'password'}
                       endAdornment={
@@ -192,6 +227,9 @@ const LoginFirstTime = () => {
                       }
                       onChange={handlePasswordChange}
                     />
+                    <FormHelperText error id="component-helper-text">
+                      {passwordError}
+                    </FormHelperText>
                   </FormControl>
 
                   <FormControl
@@ -210,6 +248,7 @@ const LoginFirstTime = () => {
                   >
                     <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
                     <OutlinedInput
+                      required
                       value={confirmPassword}
                       label='Confirm Password'
                       id='auth-login-v2-confirm-password'
