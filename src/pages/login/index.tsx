@@ -68,6 +68,7 @@ import styles from './styles.module.css'
 // import { useNavigateToDashboardAnalysisIfTokenMatches } from 'src/utils/checkLogin'
 import { RootState } from 'src/types/apps/rooteState'
 
+
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   width: '100%',
   display: 'flex',
@@ -224,9 +225,10 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
       //@ts-ignore
       dispatch(login(loginData))
-      console.log(secretKey + password + username)
       setCookie("key", secretKey + password + username)
       router.replace('/dashboards/analytics/');
+
+
 
       //to go into page login for first time
       if (login_first_time) {

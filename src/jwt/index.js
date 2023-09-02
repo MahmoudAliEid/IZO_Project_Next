@@ -1,26 +1,26 @@
-import * as jose from 'jose'
+import jwt_decode from 'jwt-decode'
 
-export const getSecretKey = req => {
-  const secretKey = req.cookies.get('key')
-  if (secretKey === null || secretKey === undefined || secretKey.length === 0 || !secretKey) {
-    return new Error('No secret key')
-  }
+export const verifyAuth = async (token, key) => {
+  const tokenSecret = token
+  const keySecret = key
 
-  const textEncoder = new TextEncoder()
-  const stringKey = toString(secretKey)
-
-  return textEncoder.encode(stringKey)
-}
-export const verifyAuth = async (token, req) => {
-  const stringToken = toString(token)
+  // const stringToken = token.toString()
+  // console.log('Token received:', token.value)
 
   try {
-    const verification = await jose.jwtVerify(stringToken.replace('Bearer ', ''), getSecretKey(req))
-    console.log('verification', verification)
+    const verification = await jwt_decode(tokenSecret.value)
 
-    return verification.payload
+    // console.log('verification', verification)
+    // console.log('verification.secret_k', typeof verification.secret_k)
+    // console.log('keySecret.value', typeof keySecret.value)
+
+    if (verification.secret_k === keySecret.value) {
+      return true
+    } else {
+      return null
+    }
   } catch (e) {
-    console.log('error auth verify:=>', e)
+    // console.log('error auth verify:=>', e)
 
     return null
   }
