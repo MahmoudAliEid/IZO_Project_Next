@@ -1,13 +1,14 @@
 // ** React Imports
 import { useState, ReactNode, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css' // Import the CSS for styling (you may have to adjust the path)
+import 'react-toastify/dist/ReactToastify.css'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 
 // redux
 import { login } from 'src/store/apps/auth/login/index.js'
 import { useDispatch } from 'react-redux'
+import { RootStateRegister } from 'src/types/apps/rooteState'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -16,7 +17,8 @@ import Image from 'next/image'
 // ** MUI Components
 
 import MenuItem from '@mui/material/MenuItem'
-import Alert from '@mui/material/Alert'
+
+// import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
@@ -29,7 +31,8 @@ import FormControl from '@mui/material/FormControl'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
-import FormHelperText from '@mui/material/FormHelperText'
+
+// import FormHelperText from '@mui/material/FormHelperText'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
@@ -39,9 +42,10 @@ import { AccountCircle } from '@mui/icons-material'
 import TranslateIcon from '@mui/icons-material/Translate'
 
 // ** Third Party Imports
-import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+// import * as yup from 'yup'
+// import { Controller } from 'react-hook-form'
+
+// import { yupResolver } from '@hookform/resolvers/yup'
 
 import { useSettings } from 'src/@core/hooks/useSettings'
 
@@ -59,7 +63,8 @@ const LoginIllustration = styled('img')({
 
 // ** styles css
 import styles from './styles.module.css'
-import { useNavigateToDashboardAnalysisIfTokenMatches } from 'src/utils/checkLogin'
+
+// import { useNavigateToDashboardAnalysisIfTokenMatches } from 'src/utils/checkLogin'
 import { RootState } from 'src/types/apps/rooteState'
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -80,21 +85,23 @@ const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   }
 }))
 
+
+
 const LinkStyled = styled(Link)(() => ({
   fontSize: '0.875rem',
   textDecoration: 'none',
   color: '#ec6608 '
 }))
 
-const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(5).required()
-})
+// const schema = yup.object().shape({
+//   email: yup.string().email().required(),
+//   password: yup.string().min(5).required()
+// })
 
-const defaultValues = {
-  password: 'admin',
-  email: 'admin@sneat.com'
-}
+// const defaultValues = {
+//   password: 'admin',
+//   email: 'admin@sneat.com'
+// }
 
 interface FormData {
   username: string
@@ -135,50 +142,76 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const [password, setPassword] = useState<string>('')
   const [username, setUserName] = useState<string>('')
   const [Language, setLanguage] = useState<string>('')
+  const [userNameError, setUserNameError] = useState<string>('')
+  const [passwordError, setPasswordError] = useState<string>('')
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
   console.log('username', username)
   const messageError = useSelector((state: RootState) => state.login.data.message)
   const messageStatus = useSelector((state: RootState) => state.login.data.status)
-
-  //  const login_first_time = useSelector((state: RootState) => state.login.login_first_time)
+  const status = useSelector((state: RootStateRegister) => state.register.data.status)
+  const login_first_time = useSelector((state: RootState) => state.login.login_first_time)
 
   useEffect(() => {
     if (messageStatus) {
       toast.success(`login successfully`, {
         position: 'bottom-right',
-        autoClose: 5000, // Time to close the toast automatically (in milliseconds)
-        hideProgressBar: false, // Whether to hide the progress bar
-        closeOnClick: true, // Close the toast when clicked
-        pauseOnHover: true, // Pause the timer when hovered
-        draggable: true, // Allow the toast to be draggable
-        progress: undefined, // Customize the progress bar (can be a React component)
-        theme: 'colored' // Your desired theme (you can create custom themes)
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored'
+      })
+    }
+    if (status === 200) {
+      toast.success(`Register successfully, now you can Login`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored'
       })
     }
     if (messageError) {
       toast.error(`${messageError} user name or password isn't correct`, {
         position: 'bottom-right',
-        autoClose: 1000, // Time to close the toast automatically (in milliseconds)
-        hideProgressBar: false, // Whether to hide the progress bar
-        closeOnClick: true, // Close the toast when clicked
-        pauseOnHover: true, // Pause the timer when hovered
-        draggable: true, // Allow the toast to be draggable
-        progress: undefined, // Customize the progress bar (can be a React component)
-        theme: 'colored' // Your desired theme (you can create custom themes)
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored'
       })
 
-      // setTimeout(() => {
-      //   window.location.reload()
-      // }, 1000)
-    }
-  }, [messageStatus, messageError])
 
-  const login_first_time = useNavigateToDashboardAnalysisIfTokenMatches()
+    }
+  }, [messageStatus, messageError, status])
+
+  // const login_first_time = useNavigateToDashboardAnalysisIfTokenMatches()
 
   const handleOnSubmit = (e: any) => {
     try {
       e.preventDefault()
+
+      //handle errors
+      if (!username || !username.length) {
+        setUserNameError("The Username cannot be empty!")
+      } else {
+        setUserNameError("")
+      }
+      if (!password || !password.length) {
+        setPasswordError("The Password cannot be empty!")
+      } else if (password.length < 5) {
+        setPasswordError("password is too short!")
+      } else {
+        setPasswordError("")
+      }
 
       const loginData: FormData = {
         username: username,
@@ -186,6 +219,8 @@ const LoginPage: React.FC<{ userData: UserData }> & {
         logout_other: LogoutFromOtherDevices ? '1' : '0'
       }
       console.log(loginData)
+
+      //@ts-ignore
       dispatch(login(loginData))
       router.replace('/dashboards/analytics')
 
@@ -211,6 +246,8 @@ const LoginPage: React.FC<{ userData: UserData }> & {
     }
   }
 
+  // secret key ="izo-+username+password"
+
   // const auth = useAuth()
   const theme = useTheme()
   const { settings } = useSettings()
@@ -219,14 +256,14 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   // ** Var
   const { skin } = settings
 
-  const {
-    control,
-    formState: { errors }
-  } = useForm({
-    defaultValues,
-    mode: 'onBlur',
-    resolver: yupResolver(schema)
-  })
+  // const {
+  //   control,
+  //   formState: { errors }
+  // } = useForm({
+  //   defaultValues,
+  //   mode: 'onBlur',
+  //   resolver: yupResolver(schema)
+  // })
 
   // const onSubmit = (data: FormData) => {
   //   const { email, password } = data
@@ -308,7 +345,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
           <Typography sx={{ mb: 6, color: 'text.secondary' }}>
             Please sign-in to your account and start the adventure
           </Typography>
-          <Alert
+          {/* <Alert
             icon={false}
             sx={{
               py: 3,
@@ -324,7 +361,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
             <Typography variant='caption' sx={{ display: 'block', color: 'text.secondary' }}>
               Client: <strong>client@sneat.com</strong> / Pass: <strong>client</strong>
             </Typography>
-          </Alert>
+          </Alert> */}
           <form noValidate autoComplete='off'>
             <FormControl
               fullWidth
@@ -350,7 +387,9 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                   )
                 }}
                 label='User Name'
+                error={userNameError ? true : false}
                 value={username}
+                helperText={userNameError}
                 onChange={handleChangeUserName}
               >
                 {arrUsersData.map((user: any, index: number) => (
@@ -373,41 +412,29 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                 }
               }}
             >
-              <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
-                Password
-              </InputLabel>
-              <Controller
+              <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
+              <OutlinedInput
+                label='Password'
+                value={password}
+                error={passwordError ? true : false}
+                required
+
+                id='auth-login-v2-password'
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                  <InputAdornment position='end'>
+                    <IconButton
+                      edge='end'
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                    </IconButton>
+                  </InputAdornment>
+                }
                 name='password'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { onBlur } }) => (
-                  <OutlinedInput
-                    value={password}
-                    onBlur={onBlur}
-                    label='Password'
-                    onChange={handleChangePassword}
-                    id='auth-login-v2-password'
-                    error={Boolean(errors.password)}
-                    type={showPassword ? 'text' : 'password'}
-                    endAdornment={
-                      <InputAdornment position='end'>
-                        <IconButton
-                          edge='end'
-                          onMouseDown={e => e.preventDefault()}
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <Icon fontSize={20} icon={showPassword ? 'bx:show' : 'bx:hide'} />
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                )}
+                onChange={handleChangePassword}
               />
-              {errors.password && (
-                <FormHelperText sx={{ color: 'error.main' }} id=''>
-                  {errors.password.message}
-                </FormHelperText>
-              )}
             </FormControl>
             <Box
               sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}

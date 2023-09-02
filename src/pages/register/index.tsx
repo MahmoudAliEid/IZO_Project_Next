@@ -2,13 +2,17 @@
 
 // ** React Imports
 import { ReactNode, useState } from 'react'
+import 'react-toastify/dist/ReactToastify.css'
 
 // ** Next Import
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 // ** Styles
 import * as styles from './styles.module.css'
+
+
 
 // ** MUI Components
 import Button from '@mui/material/Button'
@@ -21,6 +25,7 @@ import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
 
 // import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
@@ -44,12 +49,14 @@ import TranslateIcon from '@mui/icons-material/Translate'
 import PaidIcon from '@mui/icons-material/Paid'
 import EmailIcon from '@mui/icons-material/Email'
 
+
+
 //declare types
 type RegisterData = {
   name: string
-  alternate_number: string
-  mobile: string
-  currency_id: string
+  alternate_number: number
+  mobile: number
+  currency_id: number
   surname: string
   first_name: string
   last_name: string
@@ -116,14 +123,22 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
   getLayout: (page: ReactNode) => ReactNode
   guestGuard?: boolean
 } = ({ currencies }) => {
+  const router = useRouter()
+
   // ** States
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [mrMrs, setMrMrs] = useState('')
+  const [nameError, setNameError] = useState<string>('')
+  const [currencyIDError, setCurrencyIDError] = useState<string>('')
+  const [surnameError, setSurnameError] = useState<string>('')
+  const [firstNameError, setFirstNameError] = useState<string>('')
+  const [usernameError, setUsernameError] = useState<string>('')
+  const [passwordError, setPasswordError] = useState<string>('')
   const [formDataRegister, setFormDataRegister] = useState<RegisterData>({
     name: '',
-    alternate_number: '',
-    mobile: '',
-    currency_id: '',
+    alternate_number: 0,
+    mobile: 0,
+    currency_id: 0,
     surname: '',
     first_name: '',
     last_name: '',
@@ -134,14 +149,76 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
     language: ''
   })
 
+
+
+
   const dispatch = useDispatch<AppDispatch>()
 
   // ** Functions for handle states
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    console.log(formDataRegister)
-    dispatch(register(formDataRegister))
+    //handle inputs errors
+    if (!formDataRegister.name || !formDataRegister.name.length) {
+      setNameError(" The Name field is required and cannot be empty.")
+    } else if (formDataRegister.name.length > 255) {
+      setNameError(" The Name field is too long.")
+    } else if (!formDataRegister.currency_id) {
+      setCurrencyIDError("The Currency id cannot be empty.")
+    } else if (!formDataRegister.first_name || !formDataRegister.first_name.length) {
+      setFirstNameError("The first name cannot be empty.")
+    } else if (formDataRegister.first_name.length > 255) {
+      setFirstNameError("The first name is too long.")
+    } else if (!formDataRegister.password || !formDataRegister.password.length) {
+      setPasswordError("The password cannot be empty")
+    } else if (formDataRegister.password.length > 255) {
+      setPasswordError("The password is too long.")
+    } else if (!formDataRegister.username || !formDataRegister.username.length) {
+      setUsernameError("The username  cannot be empty.")
+    } else if (formDataRegister.username.length > 255) {
+      setPasswordError("The user name is too long.")
+    } else if (!formDataRegister.surname || !formDataRegister.surname.length) {
+      setSurnameError("The surname  cannot be empty.")
+    } else if (formDataRegister.surname.length > 10) {
+      setSurnameError("The surname is too long.")
+    } else if (formDataRegister.password !== formDataRegister.confirm_password) {
+      setPasswordError(" The password does not match the confirm password!")
+    } else {
+      setNameError("")
+      setCurrencyIDError('')
+      setFirstNameError("")
+      setPasswordError('')
+      setUsernameError("")
+      setSurnameError("")
+      if (typeof formDataRegister.currency_id === "string") {
+        const currencyId = Number(formDataRegister.currency_id);
+        const phone = Number(formDataRegister.mobile)
+        const alternativePhone = Number(formDataRegister.alternate_number)
+        console.log("currencyId", currencyId)
+        setFormDataRegister({
+          ...formDataRegister,
+          currency_id: currencyId,
+          mobile: phone,
+          alternate_number: alternativePhone,
+
+        })
+        console.log(formDataRegister)
+
+        //@ts-ignore
+        dispatch(register(formDataRegister))
+        router.push("/login")
+        console.log("status", status)
+
+
+
+
+        // console.log("currency_id", typeof formDataRegister.currency_id)
+      }
+
+
+    }
+
+
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -209,8 +286,11 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                     <TextField
                       sx={{ margin: '7px 7px 0 0', width: '100%' }}
                       value={formDataRegister.name}
+                      required
                       autoFocus
                       placeholder='activity name'
+                      error={nameError ? true : false}
+                      helperText={nameError}
                       name='name'
                       onChange={handleChange}
                       InputProps={{
@@ -317,6 +397,9 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       id='outlined-select-currency'
                       select
                       name='currency_id'
+                      required
+                      error={currencyIDError ? true : false}
+                      helperText={currencyIDError}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
@@ -385,7 +468,10 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       }
                     }}
                     className={styles.varInput}
+                    required
                     name='first_name'
+                    error={firstNameError ? true : false}
+                    helperText={firstNameError}
                     placeholder='First Name'
                     InputProps={{
                       startAdornment: (
@@ -441,6 +527,8 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       )
                     }}
                     name='surname'
+                    error={surnameError ? true : false}
+                    helperText={surnameError}
                     placeholder='Surname'
                     onChange={handleChange}
                   />
@@ -466,6 +554,9 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       )
                     }}
                     name='username'
+                    error={usernameError ? true : false}
+                    helperText={usernameError}
+                    required
                     value={formDataRegister.username}
                     placeholder='User Name'
                     onChange={handleChange}
@@ -517,7 +608,10 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                   >
                     <InputLabel htmlFor='auth-login-v2-password'>Password</InputLabel>
                     <OutlinedInput
+                      aria-describedby="component-helper-text"
                       label='Password'
+                      error={passwordError ? true : false}
+
                       value={formDataRegister.password}
                       id='auth-login-v2-password'
                       type={showPassword ? 'text' : 'password'}
@@ -535,6 +629,9 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       name='password'
                       onChange={handleChange}
                     />
+                    <FormHelperText error id="component-helper-text">
+                      {passwordError}
+                    </FormHelperText>
                   </FormControl>
 
                   <FormControl
@@ -609,6 +706,7 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
           </Grid>
         </form>
       </CenterWrapper>
+
     </Grid>
   )
 }

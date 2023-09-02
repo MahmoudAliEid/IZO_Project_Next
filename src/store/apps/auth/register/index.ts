@@ -5,9 +5,9 @@ interface RegisterData {
   username: string
   password: string
   name: string
-  alternate_number: string
-  mobile: string
-  currency_id: string
+  alternate_number: number
+  mobile: number
+  currency_id: number
   surname: string
   first_name: string
   last_name: string
@@ -16,7 +16,7 @@ interface RegisterData {
   language: string
 }
 
-interface RegisterState {
+export interface RegisterState {
   data: any[] // Define the type for your data
   userType: string
   token: string
@@ -65,7 +65,6 @@ const registerSlice = createSlice({
       state.data = action.payload
 
       state.status = 'success'
-      localStorage.setItem('token', JSON.stringify(action.payload.authorization.token))
       console.log('from reducer register action:', action)
     })
     builder.addCase(register.pending, state => {

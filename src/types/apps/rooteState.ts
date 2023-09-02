@@ -19,3 +19,11 @@ export interface RootState {
     error: Error | null
   }
 }
+
+export interface RootStateRegister {
+  register: {
+    data: {
+      status: number
+    }
+  }
+}

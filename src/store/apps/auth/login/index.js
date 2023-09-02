@@ -58,7 +58,11 @@ export const loginSlice = createSlice({
           state.token = action.payload.authorization?.token || ''
         }
         state.status = 'success'
-        setCookie('token', action.payload.authorization?.token)
+        if (action.payload.authorization?.token) {
+          setCookie('token', action.payload.authorization?.token)
+        } else {
+          setCookie('token', null)
+        }
       })
       .addCase(login.pending, state => {
         state.status = 'pending'
