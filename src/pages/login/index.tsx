@@ -124,14 +124,18 @@ export async function getStaticProps() {
     throw new Error(`Failed to fetch data from ${apiUrl}`)
   }
 
-  const userData: UserData = await response.json()
+  const userData = await response.json()
 
   return {
     props: {
       userData
-    }
+    },
+    revalidate: 1, // In seconds
   }
 }
+
+
+
 
 const LoginPage: React.FC<{ userData: UserData }> & {
   getLayout: (page: ReactNode) => ReactNode
