@@ -1,5 +1,6 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { parseCookies } from 'cookies-next' // Import the parseCookies function
 
 // Define the initial state
 const initialState = {
@@ -9,8 +10,11 @@ const initialState = {
 }
 
 // Define an async thunk to fetch data from the API
-export const fetchData = createAsyncThunk('dashboard/fetchData', async token => {
+export const fetchData = createAsyncThunk('dashboard/fetchData', async () => {
   try {
+    const cookies = parseCookies()
+    const token = cookies.token // Retrieve the token from cookies
+    console.log('token', token)
     const response = await fetch(`https://test.izocloud.com/api/app/react/dashboard?token=${token}&date_type=year`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
@@ -22,6 +26,8 @@ export const fetchData = createAsyncThunk('dashboard/fetchData', async token => 
     throw error
   }
 })
+
+// ... (other code)
 
 // Create a Redux slice
 const dashboardSlice = createSlice({
