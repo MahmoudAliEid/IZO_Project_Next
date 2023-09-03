@@ -37,7 +37,10 @@ export default middleware = async req => {
   // }
 
   //  || req.nextUrl.pathname.startsWith('/')
-  if ((!validToken && url.includes('/dashboards')) || url == 'http://localhost:3000/') {
+  if (
+    (!validToken && url != 'http://localhost:3000/login' && url.includes('/dashboards')) ||
+    url == 'http://localhost:3000/'
+  ) {
     return NextResponse.redirect('http://localhost:3000/login')
   }
   if (validToken && (url.includes('/login') || url.includes('/register') || url.includes('/loginFirstTime'))) {

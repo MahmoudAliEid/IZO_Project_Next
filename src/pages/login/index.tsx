@@ -1,15 +1,19 @@
 // ** React Imports
 import { useState, ReactNode, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { setCookie } from 'cookies-next'
+import { fetchUsers } from 'src/store/apps/users'
 
 // redux
 import { login } from 'src/store/apps/auth/login/index.js'
 import { useDispatch } from 'react-redux'
-import { RootStateRegister } from 'src/types/apps/rooteState'
+
+// import { RootStateRegister } from 'src/types/apps/rooteState'
+import { RootStateUsers } from 'src/types/apps/rooteState'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -141,6 +145,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   getLayout: (page: ReactNode) => ReactNode
   guestGuard?: boolean
 } = ({ userData }) => {
+
   const router = useRouter()
   const secretKey = "izo-"
   const [rememberMe, setRememberMe] = useState<boolean>(true)
@@ -153,52 +158,30 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const [passwordError, setPasswordError] = useState<string>('')
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
-  console.log('username', username)
-  const messageError = useSelector((state: RootState) => state.login.data.message)
-  const messageStatus = useSelector((state: RootState) => state.login.data.status)
-  const status = useSelector((state: RootStateRegister) => state.register.data.status)
+
+
+
+  // const messageLogin = useSelector((state: RootState) => state.login.data?.message)
+  // const messageSuccess = useSelector((state: RootState) => state.login.data?.status)
+
+  // const status = useSelector((state: RootStateRegister) => state.register.data.status)
   const login_first_time = useSelector((state: RootState) => state.login.login_first_time)
+  const usersDataNames = useSelector((state: RootStateUsers) => state.usersNames.data?.users)
 
+
+
+
+
+  // const arrUsersDataNames = Object.values(usersDataNames!)
+
+  // console.log(arrUsersDataNames)
   useEffect(() => {
-    if (messageStatus) {
-      toast.success(`login successfully`, {
-        position: 'bottom-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'colored'
-      })
-    }
-    if (status === 200) {
-      toast.success(`Register successfully, now you can Login`, {
-        position: 'bottom-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'colored'
-      })
-    }
-    if (messageError) {
-      toast.error(`${messageError} user name or password isn't correct`, {
-        position: 'bottom-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'colored'
-      })
+    //fetching users
+    //@ts-ignore
+    dispatch(fetchUsers())
 
 
-    }
-  }, [messageStatus, messageError, status])
+  }, [dispatch])
 
   // const login_first_time = useNavigateToDashboardAnalysisIfTokenMatches()
 
@@ -225,7 +208,19 @@ const LoginPage: React.FC<{ userData: UserData }> & {
         password: password,
         logout_other: LogoutFromOtherDevices ? '1' : '0'
       }
-      console.log(loginData)
+
+      // if (status === 200) {
+      //   toast.success(`Register successfully, now you can Login`, {
+      //     position: 'bottom-right',
+      //     autoClose: 5000,
+      //     hideProgressBar: false,
+      //     closeOnClick: true,
+      //     pauseOnHover: true,
+      //     draggable: true,
+      //     progress: undefined,
+      //     theme: 'colored'
+      //   })
+      // }
 
       //@ts-ignore
       dispatch(login(loginData))
@@ -233,7 +228,51 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
       setTimeout(() => {
         router.replace('/dashboards/analytics/');
-      }, 2000);
+
+      }, 4000);
+
+      // setTimeout(() => {
+
+
+
+      //   if (messageLogin === "Failed to Login" && !messageSuccess) {
+      //     toast.error(`${messageLogin} user name or password isn't correct`, {
+      //       position: 'bottom-right',
+      //       autoClose: 5000,
+      //       hideProgressBar: false,
+      //       closeOnClick: true,
+      //       pauseOnHover: true,
+      //       draggable: true,
+      //       progress: undefined,
+      //       theme: 'colored'
+      //     })
+      //   }
+
+
+
+      // }, 5000);
+      // setTimeout(() => {
+      //   //handle toaster events
+      //   if (messageSuccess && !messageLogin) {
+      //     toast.success(`login successfully`, {
+      //       position: 'bottom-right',
+      //       autoClose: 5000,
+      //       hideProgressBar: false,
+      //       closeOnClick: true,
+      //       pauseOnHover: true,
+      //       draggable: true,
+      //       progress: undefined,
+      //       theme: 'colored'
+      //     })
+
+      //   }
+      // }, 4000);
+
+
+
+
+
+
 
       //to go into page login for first time
       if (login_first_time) {
@@ -252,6 +291,8 @@ const LoginPage: React.FC<{ userData: UserData }> & {
           theme: 'colored'
         })
       }
+
+
     } catch (error: any) {
       console.log(error)
     }
@@ -299,7 +340,12 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value)
   }
-  const arrUsersData = Object.values(userData.users)
+  let arrUsersData = null
+  if (usersDataNames) {
+    arrUsersData = Object.values(usersDataNames)
+  } else {
+    arrUsersData = Object.values(userData.users)
+  }
 
   return (
     <Box className='content-right'>
@@ -403,7 +449,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                 helperText={userNameError}
                 onChange={handleChangeUserName}
               >
-                {arrUsersData.map((user: any, index: number) => (
+                {arrUsersData?.map((user: any, index: number) => (
                   <MenuItem key={index} value={user}>
                     {user}
                   </MenuItem>

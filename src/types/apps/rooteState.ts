@@ -2,6 +2,7 @@ export interface RootState {
   login: {
     data: {
       authorization: {
+        token: string
         user: {
           id: string
           first_name: string
@@ -28,6 +29,14 @@ export interface RootStateRegister {
   register: {
     data: {
       status: number
+    }
+  }
+}
+export interface RootStateUsers {
+  usersNames: {
+    data: {
+      status: number
+      users: object[]
     }
   }
 }

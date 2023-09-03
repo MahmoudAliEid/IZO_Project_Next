@@ -87,6 +87,7 @@ const UserDropdown = (props: Props) => {
     logout()
     deleteCookie("token");
     deleteCookie("key");
+    router.replace("/login")
     handleDropdownClose()
   }
 

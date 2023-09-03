@@ -1,8 +1,11 @@
 'use client'
 
 // ** React Imports
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 import 'react-toastify/dist/ReactToastify.css'
+import { fetchUsers } from 'src/store/apps/users'
+
+
 
 // ** Next Import
 import Link from 'next/link'
@@ -131,6 +134,7 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
   const [nameError, setNameError] = useState<string>('')
   const [currencyIDError, setCurrencyIDError] = useState<string>('')
   const [surnameError, setSurnameError] = useState<string>('')
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string>('')
   const [firstNameError, setFirstNameError] = useState<string>('')
   const [usernameError, setUsernameError] = useState<string>('')
   const [passwordError, setPasswordError] = useState<string>('')
@@ -149,10 +153,13 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
     language: ''
   })
 
-
-
-
   const dispatch = useDispatch<AppDispatch>()
+
+
+  useEffect(() => {
+    dispatch(fetchUsers)
+  }, [dispatch])
+
 
   // ** Functions for handle states
   const handleSubmit = (e: React.FormEvent) => {
@@ -182,7 +189,7 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
     } else if (formDataRegister.surname.length > 10) {
       setSurnameError("The surname is too long.")
     } else if (formDataRegister.password !== formDataRegister.confirm_password) {
-      setPasswordError(" The password does not match the confirm password!")
+      setConfirmPasswordError(" The password does not match the confirm password!")
     } else {
       setNameError("")
       setCurrencyIDError('')
@@ -650,6 +657,8 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                   >
                     <InputLabel htmlFor='auth-login-v2-confirm-password'>Confirm Password</InputLabel>
                     <OutlinedInput
+                      aria-describedby="component-helper-confirm"
+                      error={confirmPasswordError ? true : false}
                       value={formDataRegister.confirm_password}
                       label='Confirm Password'
                       id='auth-login-v2-confirm-password'
@@ -668,6 +677,9 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       name='confirm_password'
                       onChange={handleChange}
                     />
+                    <FormHelperText error id="component-helper-confirm">
+                      {confirmPasswordError}
+                    </FormHelperText>
                   </FormControl>
                 </Box>
               </fieldset>
