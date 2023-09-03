@@ -9,6 +9,9 @@ const initialState = {
   token: '',
   status: 'idle',
   login_first_time: null,
+  apiUrl: '',
+  imgUrl: '',
+  userName: '',
   error: null
 }
 
@@ -51,6 +54,9 @@ export const loginSlice = createSlice({
         console.log('from login  action', action)
         state.data = action.payload
         state.login_first_time = action.payload.login_first_time
+        state.imgUrl = action.payload.authorization?.user?.profile_photo_url
+        state.userName = action.payload.authorization?.user?.first_name
+        state.apiUrl = action.payload?.api_url
 
         // Ensure that authorization and token exist before assigning
         if (action.payload.authorization) {

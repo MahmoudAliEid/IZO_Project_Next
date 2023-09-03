@@ -1,8 +1,11 @@
 // ** React Imports
 import { useState, SyntheticEvent, Fragment } from 'react'
+import { useSelector } from 'react-redux'
 
 // ** Next Import
 import { useRouter } from 'next/router'
+import { RootState } from "src/types/apps/rooteState"
+import { deleteCookie } from 'cookies-next';
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -43,6 +46,10 @@ const UserDropdown = (props: Props) => {
   // ** States
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
 
+  //** Redux
+  const img = useSelector((state: RootState) => state.login.imgUrl)
+  const userName = useSelector((state: RootState) => state.login.userName)
+
   // ** Hooks
   const router = useRouter()
   const { logout } = useAuth()
@@ -78,6 +85,8 @@ const UserDropdown = (props: Props) => {
 
   const handleLogout = () => {
     logout()
+    deleteCookie("token");
+    deleteCookie("key");
     handleDropdownClose()
   }
 
@@ -95,7 +104,7 @@ const UserDropdown = (props: Props) => {
       >
         <Avatar
           alt='John Doe'
-          src='/images/avatars/1.png'
+          src={img ? img : '/images/avatars/1.png'}
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
         />
@@ -118,10 +127,10 @@ const UserDropdown = (props: Props) => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar alt='John Doe' src={img ? img : '/images/avatars/1.png'} sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ ml: 3, display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 500 }}>John Doe</Typography>
+              <Typography sx={{ fontWeight: 500 }}>{userName ? userName : "John Doe"}</Typography>
               <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                 Admin
               </Typography>

@@ -9,6 +9,7 @@ export interface RootState {
       }
       status: string | boolean
       message: string
+      imgUrl: string
     }
     login_first_time: boolean | null
     authorization: any
@@ -17,6 +18,9 @@ export interface RootState {
     token: string
     status: 'idle' | 'loading' | 'success' | 'error'
     error: Error | null
+    imgUrl: string
+    userName: string
+    apiUrl: string
   }
 }
 
