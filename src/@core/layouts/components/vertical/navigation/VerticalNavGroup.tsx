@@ -185,152 +185,150 @@ const VerticalNavGroup = (props: Props) => {
   const menuGroupCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
 
   return (
-    <CanViewNavGroup navGroup={item}>
-      <Fragment>
-        <ListItem
-          disablePadding
-          className='nav-group'
-          sx={{
-            px: '0 !important',
-            flexDirection: 'column',
-            ...(!parent && {
-              mt: 0.5,
-              ...(currentActiveGroup.includes(item.title) && {
-                '&:before': {
-                  right: 0,
-                  width: 4,
-                  height: 42,
-                  content: '""',
-                  position: 'absolute',
-                  backgroundColor: 'primary.main',
-                  borderTopLeftRadius: theme => theme.shape.borderRadius,
-                  borderBottomLeftRadius: theme => theme.shape.borderRadius
-                }
-              })
+    <Fragment>
+      <ListItem
+        disablePadding
+        className='nav-group'
+        sx={{
+          px: '0 !important',
+          flexDirection: 'column',
+          ...(!parent && {
+            mt: 0.5,
+            ...(currentActiveGroup.includes(item.title) && {
+              '&:before': {
+                right: 0,
+                width: 4,
+                height: 42,
+                content: '""',
+                position: 'absolute',
+                backgroundColor: 'primary.main',
+                borderTopLeftRadius: theme => theme.shape.borderRadius,
+                borderBottomLeftRadius: theme => theme.shape.borderRadius
+              }
             })
-          }}
-        >
-          <ListItemButton
-            onClick={handleGroupClick}
-            className={clsx({
-              'Mui-selected': currentActiveGroup.includes(item.title)
-            })}
-            sx={{
-              mx: 4,
-              py: 2.5,
-              borderRadius: 1,
-              transition: 'padding .25s ease-in-out',
-              width: theme => `calc(100% - ${theme.spacing(4 * 2)})`,
-              pr: navCollapsed && !navHover ? ((collapsedNavWidth - navigationBorderWidth - 22) / 4 - 8) / 2 : 2.5,
-              pl:
-                navCollapsed && !navHover
-                  ? ((collapsedNavWidth - navigationBorderWidth - 22) / 4 - 8) / 2
-                  : parent
+          })
+        }}
+      >
+        <ListItemButton
+          onClick={handleGroupClick}
+          className={clsx({
+            'Mui-selected': currentActiveGroup.includes(item.title)
+          })}
+          sx={{
+            mx: 4,
+            py: 2.5,
+            borderRadius: 1,
+            transition: 'padding .25s ease-in-out',
+            width: theme => `calc(100% - ${theme.spacing(4 * 2)})`,
+            pr: navCollapsed && !navHover ? ((collapsedNavWidth - navigationBorderWidth - 22) / 4 - 8) / 2 : 2.5,
+            pl:
+              navCollapsed && !navHover
+                ? ((collapsedNavWidth - navigationBorderWidth - 22) / 4 - 8) / 2
+                : parent
                   ? 6
                   : 4,
-              ...(groupActive.includes(item.title) && {
-                backgroundColor: 'action.hover'
-              }),
-              ...(groupActive.includes(item.title) && {
-                '& .MuiTypography-root, & svg': {
-                  color: 'text.primary'
-                }
-              }),
-              '&.Mui-selected.Mui-focusVisible': {
-                '&, &:hover': {
-                  backgroundColor: theme =>
-                    mode === 'light' ? hexToRGBA(theme.palette.primary.main, 0.24) : 'primary.dark'
-                }
-              },
-              '&.Mui-selected': {
-                '&, &:hover': {
-                  backgroundColor: mode === 'light' ? bgColors.primaryLight.backgroundColor : 'primary.main'
-                },
-                '& .MuiTypography-root, & svg': {
-                  color: mode === 'light' ? 'primary.main' : 'common.white'
-                },
-                '& + .MuiCollapse-root .Mui-selected': {
-                  '&, &:hover': {
-                    backgroundColor: 'action.hover'
-                  },
-                  '& .MuiTypography-root, & svg': { color: 'text.primary' }
-                }
+            ...(groupActive.includes(item.title) && {
+              backgroundColor: 'action.hover'
+            }),
+            ...(groupActive.includes(item.title) && {
+              '& .MuiTypography-root, & svg': {
+                color: 'text.primary'
               }
-            }}
-          >
-            {isSubToSub ? null : (
-              <ListItemIcon
-                sx={{
-                  transition: 'margin .25s ease-in-out',
-                  ...(parent && navCollapsed && !navHover ? {} : { mr: 2.5 }),
-                  ...(navCollapsed && !navHover ? { mr: 0 } : {}), // this condition should come after (parent && navCollapsed && !navHover) condition for proper styling
-                  ...(parent && { mr: 4.25, color: 'text.disabled' })
-                }}
-              >
-                <UserIcon icon={icon as string} fontSize={parent ? '0.4375rem' : '1.375rem'} />
-              </ListItemIcon>
-            )}
-            <MenuItemTextWrapper sx={{ ...menuGroupCollapsedStyles, ...(isSubToSub ? { ml: 9 } : {}) }}>
-              <Typography
-                sx={{ color: 'text.secondary' }}
-                {...((themeConfig.menuTextTruncate || (!themeConfig.menuTextTruncate && navCollapsed && !navHover)) && {
-                  noWrap: true
-                })}
-              >
-                <Translations text={item.title} />
-              </Typography>
-              <Box
-                className='menu-item-meta'
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  '& svg': {
-                    color: 'text.secondary',
-                    transition: 'transform .25s ease-in-out',
-                    ...(groupActive.includes(item.title) && {
-                      transform: direction === 'ltr' ? 'rotate(90deg)' : 'rotate(-90deg)'
-                    })
-                  }
-                }}
-              >
-                {item.badgeContent ? (
-                  <Chip
-                    label={item.badgeContent}
-                    color={item.badgeColor || 'primary'}
-                    sx={{
-                      mr: 1.5,
-                      height: 20,
-                      fontWeight: 500,
-                      '& .MuiChip-label': { px: 1.5, textTransform: 'capitalize' }
-                    }}
-                  />
-                ) : null}
-                <Icon fontSize='1.25rem' icon={direction === 'ltr' ? 'bx:chevron-right' : 'bx:chevron-left'} />
-              </Box>
-            </MenuItemTextWrapper>
-          </ListItemButton>
-          <Collapse
-            component='ul'
-            onClick={e => e.stopPropagation()}
-            in={groupActive.includes(item.title)}
-            sx={{
-              pl: 0,
-              width: '100%',
-              ...menuGroupCollapsedStyles,
-              '& .MuiCollapse-wrapper': { pt: 1 }
-            }}
-          >
-            <VerticalNavItems
-              {...props}
-              parent={item}
-              navVisible={navVisible}
-              verticalNavItems={item.children}
-              isSubToSub={parent && item.children ? item : undefined}
-            />
-          </Collapse>
-        </ListItem>
-      </Fragment>
-    </CanViewNavGroup>
+            }),
+            '&.Mui-selected.Mui-focusVisible': {
+              '&, &:hover': {
+                backgroundColor: theme =>
+                  mode === 'light' ? hexToRGBA(theme.palette.primary.main, 0.24) : 'primary.dark'
+              }
+            },
+            '&.Mui-selected': {
+              '&, &:hover': {
+                backgroundColor: mode === 'light' ? bgColors.primaryLight.backgroundColor : 'primary.main'
+              },
+              '& .MuiTypography-root, & svg': {
+                color: mode === 'light' ? 'primary.main' : 'common.white'
+              },
+              '& + .MuiCollapse-root .Mui-selected': {
+                '&, &:hover': {
+                  backgroundColor: 'action.hover'
+                },
+                '& .MuiTypography-root, & svg': { color: 'text.primary' }
+              }
+            }
+          }}
+        >
+          {isSubToSub ? null : (
+            <ListItemIcon
+              sx={{
+                transition: 'margin .25s ease-in-out',
+                ...(parent && navCollapsed && !navHover ? {} : { mr: 2.5 }),
+                ...(navCollapsed && !navHover ? { mr: 0 } : {}), // this condition should come after (parent && navCollapsed && !navHover) condition for proper styling
+                ...(parent && { mr: 4.25, color: 'text.disabled' })
+              }}
+            >
+              <UserIcon icon={icon as string} fontSize={parent ? '0.4375rem' : '1.375rem'} />
+            </ListItemIcon>
+          )}
+          <MenuItemTextWrapper sx={{ ...menuGroupCollapsedStyles, ...(isSubToSub ? { ml: 9 } : {}) }}>
+            <Typography
+              sx={{ color: 'text.secondary' }}
+              {...((themeConfig.menuTextTruncate || (!themeConfig.menuTextTruncate && navCollapsed && !navHover)) && {
+                noWrap: true
+              })}
+            >
+              <Translations text={item.title} />
+            </Typography>
+            <Box
+              className='menu-item-meta'
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                '& svg': {
+                  color: 'text.secondary',
+                  transition: 'transform .25s ease-in-out',
+                  ...(groupActive.includes(item.title) && {
+                    transform: direction === 'ltr' ? 'rotate(90deg)' : 'rotate(-90deg)'
+                  })
+                }
+              }}
+            >
+              {item.badgeContent ? (
+                <Chip
+                  label={item.badgeContent}
+                  color={item.badgeColor || 'primary'}
+                  sx={{
+                    mr: 1.5,
+                    height: 20,
+                    fontWeight: 500,
+                    '& .MuiChip-label': { px: 1.5, textTransform: 'capitalize' }
+                  }}
+                />
+              ) : null}
+              <Icon fontSize='1.25rem' icon={direction === 'ltr' ? 'bx:chevron-right' : 'bx:chevron-left'} />
+            </Box>
+          </MenuItemTextWrapper>
+        </ListItemButton>
+        <Collapse
+          component='ul'
+          onClick={e => e.stopPropagation()}
+          in={groupActive.includes(item.title)}
+          sx={{
+            pl: 0,
+            width: '100%',
+            ...menuGroupCollapsedStyles,
+            '& .MuiCollapse-wrapper': { pt: 1 }
+          }}
+        >
+          <VerticalNavItems
+            {...props}
+            parent={item}
+            navVisible={navVisible}
+            verticalNavItems={item.children}
+            isSubToSub={parent && item.children ? item : undefined}
+          />
+        </Collapse>
+      </ListItem>
+    </Fragment>
   )
 }
 

@@ -48,41 +48,39 @@ const VerticalNavSectionTitle = (props: Props) => {
   const { navCollapsed } = settings
 
   return (
-    <CanViewNavSectionTitle navTitle={item}>
-      <ListSubheader
-        className='nav-section-title'
-        sx={{
-          ...(navCollapsed &&
-            !navHover && {
-              pl: (collapsedNavWidth - navigationBorderWidth - 16) / 8,
-              pr: (collapsedNavWidth - navigationBorderWidth - 16) / 8
-            })
-        }}
-      >
-        {navCollapsed && !navHover ? (
+    <ListSubheader
+      className='nav-section-title'
+      sx={{
+        ...(navCollapsed &&
+          !navHover && {
+          pl: (collapsedNavWidth - navigationBorderWidth - 16) / 8,
+          pr: (collapsedNavWidth - navigationBorderWidth - 16) / 8
+        })
+      }}
+    >
+      {navCollapsed && !navHover ? (
+        <Divider
+          sx={{
+            width: '1rem',
+            borderColor: 'text.disabled',
+            m: theme => `${theme.spacing(1.625, 0)} !important`
+          }}
+        />
+      ) : (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Divider
             sx={{
               width: '1rem',
               borderColor: 'text.disabled',
-              m: theme => `${theme.spacing(1.625, 0)} !important`
+              m: theme => `${theme.spacing(0, 4, 0, 0)} !important`
             }}
           />
-        ) : (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Divider
-              sx={{
-                width: '1rem',
-                borderColor: 'text.disabled',
-                m: theme => `${theme.spacing(0, 4, 0, 0)} !important`
-              }}
-            />
-            <TypographyHeaderText noWrap sx={{ color: 'text.disabled' }}>
-              <Translations text={item.sectionTitle} />
-            </TypographyHeaderText>
-          </Box>
-        )}
-      </ListSubheader>
-    </CanViewNavSectionTitle>
+          <TypographyHeaderText noWrap sx={{ color: 'text.disabled' }}>
+            <Translations text={item.sectionTitle} />
+          </TypographyHeaderText>
+        </Box>
+      )}
+    </ListSubheader>
   )
 }
 

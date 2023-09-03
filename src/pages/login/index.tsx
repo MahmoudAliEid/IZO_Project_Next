@@ -226,9 +226,10 @@ const LoginPage: React.FC<{ userData: UserData }> & {
       //@ts-ignore
       dispatch(login(loginData))
       setCookie("key", secretKey + password + username)
-      router.replace('/dashboards/analytics/');
 
-
+      setTimeout(() => {
+        router.replace('/dashboards/analytics/');
+      }, 2000);
 
       //to go into page login for first time
       if (login_first_time) {
