@@ -61,10 +61,11 @@ export const loginSlice = createSlice({
           setCookie('token', null)
         }
         notify('تم تسجيل الدخول بنجاح', 'success')
-        setTimeout(() => {
-          // router.replace('/dashboards/analytics/')
-          window.location.href = '/dashboards/analytics/'
-        }, 2000)
+
+        // setTimeout(() => {
+        //   // router.replace('/dashboards/analytics/')
+        //   window.location.href = '/dashboards/analytics/'
+        // }, 2000)
       })
       .addCase(login.pending, state => {
         console.log('from login pending', state)

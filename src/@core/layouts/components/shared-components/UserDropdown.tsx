@@ -1,6 +1,7 @@
 // ** React Imports
 import { useState, SyntheticEvent, Fragment } from 'react'
 import { useSelector } from 'react-redux'
+import notify from '../../../../utils/notify.jsx'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -89,6 +90,7 @@ const UserDropdown = (props: Props) => {
     deleteCookie("key");
     router.replace("/login")
     handleDropdownClose()
+    notify("تم تسجيل الخروج بنجاح", "success")
   }
 
   return (

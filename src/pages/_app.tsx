@@ -1,5 +1,6 @@
 // ** React Imports
 import { ReactNode } from 'react'
+import { ToastContainer } from 'react-toastify'
 
 // ** Next Imports
 import Head from 'next/head'
@@ -147,6 +148,7 @@ const App = (props: ExtendedAppProps) => {
         </SettingsProvider>
         {/* </AuthProvider> */}
       </CacheProvider>
+      <ToastContainer />
     </Provider>
   )
 }

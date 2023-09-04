@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios, { AxiosResponse } from 'axios'
+import notify from '../../../../utils/notify.jsx'
 
 interface RegisterData {
   username: string
@@ -43,16 +44,10 @@ export const register = createAsyncThunk('feature/register', async (registerData
       }
     )
 
-    if (response.status < 200 || response.status >= 300) {
-      // Handle non-2xx status codes as errors
-      throw new Error(response.data.message)
-    }
-
     return response.data
   } catch (error) {
     // Handle network errors or other exceptions
-    console.log('error' + error)
-    throw new Error('Failed to register. Please try again later.')
+    return error
   }
 })
 
@@ -66,6 +61,7 @@ const registerSlice = createSlice({
 
       state.status = 'success'
       console.log('from reducer register action:', action)
+      notify('تم تسجيل الحساب بنجاج يمكن تسجيل الدخول الأن', 'success')
     })
     builder.addCase(register.pending, state => {
       state.status = 'pending'
@@ -73,6 +69,7 @@ const registerSlice = createSlice({
     builder.addCase(register.rejected, (state, action: PayloadAction<any>) => {
       state.status = 'rejected'
       console.error('Register rejected:', action)
+      notify('هناك خطأ في عملية التجيل الرجاء ملئ البيانات بشكل صحيح', 'error')
     })
   }
 })

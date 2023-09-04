@@ -1,11 +1,22 @@
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
+
 import 'react-toastify/dist/ReactToastify.css'
 
 //to make notifactio to any componentet
 const notify = (msg, type) => {
-  if (type === 'warn') toast.warn(msg, { toastId: 'unique-random-text-xAu9C9-' })
-  else if (type === 'success') toast.success(msg, { toastId: 'unique-random-text-xAu9C9-' })
-  else if (type === 'error') toast.error(msg, { toastId: 'unique-random-text-xAu9C9-' })
+  const config = {
+    position: 'bottom-right',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: 'colored'
+  }
+  if (type === 'warn') toast.warn(msg, config)
+  else if (type === 'success') toast.success(msg, config)
+  else if (type === 'error') toast.error(msg, config)
 }
 
 export default notify

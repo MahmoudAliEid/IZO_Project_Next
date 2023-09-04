@@ -1,6 +1,7 @@
 // ** React Imports
 import { useState, ReactNode, useEffect } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+
+
 
 import 'react-toastify/dist/ReactToastify.css'
 import { useSelector } from 'react-redux'
@@ -46,15 +47,10 @@ import Icon from 'src/@core/components/icon'
 import { AccountCircle } from '@mui/icons-material'
 import TranslateIcon from '@mui/icons-material/Translate'
 
-// ** Third Party Imports
-// import * as yup from 'yup'
-// import { Controller } from 'react-hook-form'
 
-// import { yupResolver } from '@hookform/resolvers/yup'
-
-import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Configs
+import { useSettings } from 'src/@core/hooks/useSettings'
 import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
@@ -69,8 +65,8 @@ const LoginIllustration = styled('img')({
 // ** styles css
 import styles from './styles.module.css'
 
-// import { useNavigateToDashboardAnalysisIfTokenMatches } from 'src/utils/checkLogin'
 import { RootState } from 'src/types/apps/rooteState'
+import notify from 'src/utils/notify'
 
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -98,16 +94,6 @@ const LinkStyled = styled(Link)(() => ({
   textDecoration: 'none',
   color: '#ec6608 '
 }))
-
-// const schema = yup.object().shape({
-//   email: yup.string().email().required(),
-//   password: yup.string().min(5).required()
-// })
-
-// const defaultValues = {
-//   password: 'admin',
-//   email: 'admin@sneat.com'
-// }
 
 interface FormData {
   username: string
@@ -159,22 +145,10 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
 
-
-
-  // const messageLogin = useSelector((state: RootState) => state.login.data?.message)
-  // const messageSuccess = useSelector((state: RootState) => state.login.data?.status)
-
-  // const status = useSelector((state: RootStateRegister) => state.register.data.status)
+  // **selecting
   const login_first_time = useSelector((state: RootState) => state.login.login_first_time)
   const usersDataNames = useSelector((state: RootStateUsers) => state.usersNames.data?.users)
 
-
-
-
-
-  // const arrUsersDataNames = Object.values(usersDataNames!)
-
-  // console.log(arrUsersDataNames)
   useEffect(() => {
     //fetching users
     //@ts-ignore
@@ -183,7 +157,6 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
   }, [dispatch])
 
-  // const login_first_time = useNavigateToDashboardAnalysisIfTokenMatches()
 
   const handleOnSubmit = (e: any) => {
     try {
@@ -208,79 +181,22 @@ const LoginPage: React.FC<{ userData: UserData }> & {
         password: password,
         logout_other: LogoutFromOtherDevices ? '1' : '0'
       }
-
-      // if (status === 200) {
-      //   toast.success(`Register successfully, now you can Login`, {
-      //     position: 'bottom-right',
-      //     autoClose: 5000,
-      //     hideProgressBar: false,
-      //     closeOnClick: true,
-      //     pauseOnHover: true,
-      //     draggable: true,
-      //     progress: undefined,
-      //     theme: 'colored'
-      //   })
-      // }
+      if (!password || !username) notify(" يجب ملئ البيانات ولا تكون فارغة", "error");
 
       //@ts-ignore
       dispatch(login(loginData))
       setCookie("key", secretKey + password + username)
 
-      // setTimeout(() => {
-      //   router.replace('/dashboards/analytics/');
+      setTimeout(() => {
+        router.replace('/dashboards/analytics/');
 
-      // }, 4000);
-
-      // setTimeout(() => {
-
-
-
-      //   if (messageLogin === "Failed to Login" && !messageSuccess) {
-      //     toast.error(`${messageLogin} user name or password isn't correct`, {
-      //       position: 'bottom-right',
-      //       autoClose: 5000,
-      //       hisubdeProgressBar: false,
-      //       closeOnClick: true,
-      //       pauseOnHover: true,
-      //       draggable: true,
-      //       progress: undefined,
-      //       theme: 'colored'
-      //     })
-      //   }
-
-
-
-      // }, 5000);
-      // setTimeout(() => {
-      //   //handle toaster events
-      //   if (messageSuccess && !messageLogin) {
-      //     toast.success(`login successfully`, {
-      //       position: 'bottom-right',
-      //       autoClose: 5000,
-      //       hideProgressBar: false,
-      //       closeOnClick: true,
-      //       pauseOnHover: true,
-      //       draggable: true,
-      //       progress: undefined,
-      //       theme: 'colored'
-      //     })
-
-      //   }
-      // }, 4000);
-
-
-
-
-
+      }, 2000);
 
 
       //to go into page login for first time
       if (login_first_time) {
         router.replace('/loginFirstTime')
       }
-
-
-
 
     } catch (error: any) {
       console.log(error)
@@ -289,7 +205,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
 
 
-  // const auth = useAuth()
+
   const theme = useTheme()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
@@ -297,25 +213,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   // ** Var
   const { skin } = settings
 
-  // const {
-  //   control,
-  //   formState: { errors }
-  // } = useForm({
-  //   defaultValues,
-  //   mode: 'onBlur',
-  //   resolver: yupResolver(schema)
-  // })
-
-  // const onSubmit = (data: FormData) => {
-  //   const { email, password } = data
-  //   auth.login({ email, password, rememberMe, LogoutFromOtherDevices }, () => {
-  //     setError('email', {
-  //       type: 'manual',
-  //       message: 'Email or Password is invalid'
-  //     })
-  //   })
-  // }
-
+  // **handle change functions
   const handleChangeLanguage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLanguage(event.target.value)
   }
@@ -329,6 +227,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const handleChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value)
   }
+
   let arrUsersData = null
   if (usersDataNames) {
     arrUsersData = Object.values(usersDataNames)
@@ -391,23 +290,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
           <Typography sx={{ mb: 6, color: 'text.secondary' }}>
             Please sign-in to your account and start the adventure
           </Typography>
-          {/* <Alert
-            icon={false}
-            sx={{
-              py: 3,
-              mb: 6,
-              backgroundColor: '#ec66086b',
 
-              '& .MuiAlert-message': { p: 0 }
-            }}
-          >
-            <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'text.secondary' }}>
-              Admin: <strong>admin@sneat.com</strong> / Pass: <strong>admin</strong>
-            </Typography>
-            <Typography variant='caption' sx={{ display: 'block', color: 'text.secondary' }}>
-              Client: <strong>client@sneat.com</strong> / Pass: <strong>client</strong>
-            </Typography>
-          </Alert> */}
           <form noValidate autoComplete='off'>
             <FormControl
               fullWidth
@@ -554,7 +437,6 @@ const LoginPage: React.FC<{ userData: UserData }> & {
           </form>
         </Box>
       </RightWrapper>
-      <ToastContainer />
     </Box>
   )
 }

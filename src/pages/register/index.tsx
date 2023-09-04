@@ -2,8 +2,8 @@
 
 // ** React Imports
 import { ReactNode, useState, useEffect } from 'react'
-import 'react-toastify/dist/ReactToastify.css'
 import { fetchUsers } from 'src/store/apps/users'
+
 
 
 
@@ -213,7 +213,8 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
 
         //@ts-ignore
         dispatch(register(formDataRegister))
-        router.push("/login")
+        setTimeout(() => { router.push("/login") }, 2000)
+
         console.log("status", status)
 
 
