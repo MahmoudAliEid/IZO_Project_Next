@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import notify from '../../../../utils/notify.jsx'
 import { setCookie } from 'cookies-next'
-
 import axios from 'axios'
 
 const initialState = {
@@ -23,19 +23,10 @@ export const login = createAsyncThunk('feature/login', async loginData => {
         'Content-Type': 'application/json'
       }
     })
-    if (response.status < 200 || response.status >= 300) {
-      // Handle non-2xx status codes as errors
-      throw new Error(response.data.message)
-    }
 
-    return await response.data
+    return response.data
   } catch (error) {
-    // Use rejectWithValue to pass the error message to the rejected action
-
-    return {
-      message: 'Failed to Login',
-      stack: error.stack
-    }
+    return response.data
   }
 })
 
@@ -51,7 +42,7 @@ export const loginSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(login.fulfilled, (state, action) => {
-        console.log('from login  action', action)
+        console.log('from login fulfilled', state)
         state.data = action.payload
         state.login_first_time = action.payload.login_first_time
         state.imgUrl = action.payload.authorization?.user?.profile_photo_url
@@ -69,13 +60,20 @@ export const loginSlice = createSlice({
         } else {
           setCookie('token', null)
         }
+        notify('تم تسجيل الدخول بنجاح', 'success')
+        setTimeout(() => {
+          // router.replace('/dashboards/analytics/')
+          window.location.href = '/dashboards/analytics/'
+        }, 2000)
       })
       .addCase(login.pending, state => {
+        console.log('from login pending', state)
         state.status = 'pending'
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(login.rejected, state => {
+        console.log('from login rejected', state)
         state.status = 'rejected'
-        state.error = action.payload
+        notify('يوجد خطأ في البريد الإلكتروني أو كلمة المرور', 'error')
       })
   }
 })

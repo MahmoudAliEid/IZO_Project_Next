@@ -226,10 +226,10 @@ const LoginPage: React.FC<{ userData: UserData }> & {
       dispatch(login(loginData))
       setCookie("key", secretKey + password + username)
 
-      setTimeout(() => {
-        router.replace('/dashboards/analytics/');
+      // setTimeout(() => {
+      //   router.replace('/dashboards/analytics/');
 
-      }, 4000);
+      // }, 4000);
 
       // setTimeout(() => {
 
@@ -239,7 +239,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
       //     toast.error(`${messageLogin} user name or password isn't correct`, {
       //       position: 'bottom-right',
       //       autoClose: 5000,
-      //       hideProgressBar: false,
+      //       hisubdeProgressBar: false,
       //       closeOnClick: true,
       //       pauseOnHover: true,
       //       draggable: true,
@@ -278,19 +278,8 @@ const LoginPage: React.FC<{ userData: UserData }> & {
       if (login_first_time) {
         router.replace('/loginFirstTime')
       }
-      if (username == '' || password == '') {
-        //handle message alerts errors
-        toast.error(`User name or password can't be empty!!`, {
-          position: 'bottom-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'colored'
-        })
-      }
+
+
 
 
     } catch (error: any) {
