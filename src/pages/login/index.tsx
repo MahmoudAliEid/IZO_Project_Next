@@ -203,9 +203,6 @@ const LoginPage: React.FC<{ userData: UserData }> & {
     }
   }
 
-
-
-
   const theme = useTheme()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
