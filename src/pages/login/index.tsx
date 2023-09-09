@@ -208,7 +208,6 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
       }, 2000);
 
-
       //to go into page login for first time
       if (login_first_time) {
         router.replace('/loginFirstTime')
