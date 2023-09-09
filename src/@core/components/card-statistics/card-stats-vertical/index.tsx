@@ -28,7 +28,8 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
   } = props
 
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }
+    }>
       <CardContent sx={{ p: theme => `${theme.spacing(5, 5, 4)} !important` }}>
         <Box sx={{ display: 'flex', mb: 4, alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <CustomAvatar

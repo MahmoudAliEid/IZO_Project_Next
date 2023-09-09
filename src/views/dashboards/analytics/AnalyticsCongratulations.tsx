@@ -31,7 +31,7 @@ const AnalyticsCongratulations = () => {
   const theme = useTheme()
 
   return (
-    <Card sx={{ position: 'relative' }}>
+    <Card sx={{ position: 'relative' }} style={{ width: "100%", height: "100%" }}>
       <CardContent sx={{ py: theme => `${theme.spacing(5)} !important` }}>
         <Grid container spacing={6}>
           <Grid item xs={12} sm={6} sx={{ textAlign: ['center', 'start'] }}>

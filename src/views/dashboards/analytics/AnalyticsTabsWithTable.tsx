@@ -198,7 +198,7 @@ const AnalyticsTabsWithTable = () => {
   }
 
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <TabContext value={value}>
         <CardContent sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}>
           <TabList

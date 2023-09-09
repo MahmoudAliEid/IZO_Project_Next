@@ -133,7 +133,7 @@ const AnalyticsOrderStatistics = () => {
   }
 
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader
         sx={{ pb: 2.5 }}
         title='Order Statistics'

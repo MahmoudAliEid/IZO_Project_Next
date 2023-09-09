@@ -188,7 +188,7 @@ const AnalyticsTabsWithChart = () => {
   }
 
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <TabContext value={value}>
         <CardContent sx={{ p: `${theme.spacing(5)} !important`, borderBottom: `1px solid ${theme.palette.divider}` }}>
           <TabList variant='scrollable' scrollButtons='auto' onChange={handleChange} aria-label='tab widget card'>

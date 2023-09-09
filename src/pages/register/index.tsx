@@ -119,7 +119,8 @@ export async function getStaticProps() {
   return {
     props: {
       currencies: currencies.currencies
-    }
+    },
+    revalidate: 10,
   }
 }
 const Register: React.FC<{ currencies: CurrenciesType }> & {
@@ -241,7 +242,9 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
   }
 
   //array of currencies
-  const arrCurrencies = Object.keys(currencies)
+
+  const arrCurrenciesValues = Object.values(currencies)
+  const arrCurrenciesKeys = Object.keys(currencies)
 
   return (
     <Grid
@@ -418,10 +421,15 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       label='Choose Currency ID'
                       onChange={handleChange}
                     >
-                      {arrCurrencies.map((currency: any, index: number) => (
-                        <MenuItem key={index} value={currency}>
-                          {currency}
+                      {arrCurrenciesValues.map((currency: any, index: number) => (
+
+
+                        <MenuItem key={index} value={arrCurrenciesKeys[index]}>
+                          {arrCurrenciesKeys[index]} - {currency}
                         </MenuItem>
+
+
+
                       ))}
                     </TextField>
                   </FormControl>

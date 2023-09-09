@@ -83,7 +83,7 @@ const AnalyticsProfitReport = () => {
   }
 
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <CardContent
         sx={{
           display: 'flex',

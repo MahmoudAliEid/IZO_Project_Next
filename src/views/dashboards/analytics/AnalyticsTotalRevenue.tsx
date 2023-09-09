@@ -254,7 +254,7 @@ const AnalyticsTotalRevenue = () => {
   }
 
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <Grid container>
         <StyledGrid
           item

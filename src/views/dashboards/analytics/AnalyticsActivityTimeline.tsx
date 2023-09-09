@@ -32,7 +32,7 @@ const Timeline = styled(MuiTimeline)<TimelineProps>({
 
 const AnalyticsActivityTimeline = () => {
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader
         title='Activity Timeline'
         action={

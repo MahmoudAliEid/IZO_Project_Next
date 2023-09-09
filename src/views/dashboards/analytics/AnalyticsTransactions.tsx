@@ -57,7 +57,7 @@ const data: DataType[] = [
 
 const AnalyticsTransactions = () => {
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader
         title='Transactions'
         action={<OptionsMenu iconButtonProps={{ size: 'small' }} options={['Share', 'Refresh', 'Edit']} />}

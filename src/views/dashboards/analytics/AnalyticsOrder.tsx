@@ -94,7 +94,7 @@ const AnalyticsOrder = () => {
   }
 
   return (
-    <Card>
+    <Card style={{ width: "100%", height: "100%" }}>
       <CardContent sx={{ p: theme => `${theme.spacing(3.5, 5, 0)} !important` }}>
         <Typography sx={{ fontWeight: 600, color: 'text.secondary' }}>Order</Typography>
         <Typography variant='h5'>276k</Typography>

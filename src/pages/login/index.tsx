@@ -38,6 +38,17 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
 
+import RadioGroup from '@mui/material/RadioGroup';
+import {
+  FormControlLabelProps,
+} from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+
+interface StyledFormControlLabelProps extends FormControlLabelProps {
+  checked: boolean;
+}
+
+
 // import FormHelperText from '@mui/material/FormHelperText'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -86,6 +97,8 @@ const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
     padding: theme.spacing(12)
   }
 }))
+
+
 
 
 
@@ -139,11 +152,14 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const [LogoutFromOtherDevices, setLogoutFromOtherDevices] = useState<boolean>(true)
   const [password, setPassword] = useState<string>('')
   const [username, setUserName] = useState<string>('')
+  const [chooseTypeInputName, setChooseTypeInputName] = useState<string>("true")
   const [Language, setLanguage] = useState<string>('')
   const [userNameError, setUserNameError] = useState<string>('')
   const [passwordError, setPasswordError] = useState<string>('')
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
+
+
 
   // **selecting
   const login_first_time = useSelector((state: RootState) => state.login.login_first_time)
@@ -214,6 +230,17 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const handleChangeLanguage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLanguage(event.target.value)
   }
+
+  const handleChooseTypeInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+
+    setChooseTypeInputName(event.target.value)
+
+    console.log("form raido", event.target.value)
+
+
+  }
+
 
   // const handleChangeRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setRememberMe(event.target.checked)
@@ -289,7 +316,23 @@ const LoginPage: React.FC<{ userData: UserData }> & {
           </Typography>
 
           <form noValidate autoComplete='off'>
-            <FormControl
+            <FormControl fullWidth
+              sx={{
+                mb: 2,
+                '& .Mui-focused': {
+                  borderColor: '#ec6608 !important',
+                  color: '#ec6608 !important',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ec6608 !important'
+                  }
+                }
+              }}>
+              <RadioGroup name="use-radio-group" onChange={handleChooseTypeInputName} defaultValue={"true"}>
+                <FormControlLabel value={"true"} label="Choose my User Name" control={<Radio />} />
+                <FormControlLabel value={"false"} label="Write my User Name" control={<Radio />} />
+              </RadioGroup>
+            </FormControl>
+            {chooseTypeInputName === "true" ? (<FormControl
               fullWidth
               sx={{
                 mb: 2,
@@ -324,7 +367,41 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                   </MenuItem>
                 ))}
               </TextField>
-            </FormControl>
+            </FormControl>) : (
+
+              <FormControl
+                fullWidth
+                sx={{
+                  mb: 2,
+                  '& .Mui-focused': {
+                    borderColor: '#ec6608 !important',
+                    color: '#ec6608 !important',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#ec6608 !important'
+                    }
+                  }
+                }}
+              >
+                <TextField
+                  id='outlined-select-currency'
+                  type='text'
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <AccountCircle />
+                      </InputAdornment>
+                    )
+                  }}
+                  label='User Name'
+                  error={userNameError ? true : false}
+                  value={username}
+                  helperText={userNameError}
+                  onChange={handleChangeUserName}
+                >
+                </TextField>
+              </FormControl>
+            )}
+
             <FormControl
               fullWidth
               sx={{

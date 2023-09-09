@@ -31,34 +31,78 @@ type NewLayout = Array<object>
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
+// ** MUI Imports
+
+
+
+
+
+
+// type LayoutsType = [
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+//   { i: string, x: number, y: number, w: number, h: number },
+// ]
+
+
 const AnalyticsDashboard = () => {
   const defaultLayout = [
-    { i: '1', x: 0, y: 0, w: 6, h: 3 },
-    { i: '2', x: 6, y: 0, w: 6, h: 6 },
-    { i: '3', x: 0, y: 3, w: 4, h: 5 },
-    { i: '4', x: 0, y: 8, w: 6, h: 7 },
-    { i: '5', x: 6, y: 6, w: 6, h: 9 },
-    { i: '6', x: 0, y: 15, w: 6, h: 7 },
-    { i: '7', x: 6, y: 15, w: 6, h: 7 },
-    { i: '8', x: 0, y: 22, w: 6, h: 8 },
-    { i: '9', x: 6, y: 22, w: 6, h: 8 },
-    { i: '10', x: 0, y: 30, w: 6, h: 8 },
-    { i: '11', x: 0, y: 38, w: 6, h: 6 },
-    { i: '12', x: 6, y: 38, w: 6, h: 6 },
 
+    { w: 3, h: 7, x: 0, y: 0, i: '1' },
 
+    { w: 2, h: 6, x: 0, y: 18, i: '2' },
+
+    { w: 1, h: 7, x: 3, y: 0, i: '3' },
+
+    { w: 4, h: 11, x: 0, y: 7, i: '4' },
+
+    { w: 2, h: 8, x: 0, y: 24, i: '5' },
+
+    { w: 2, h: 6, x: 2, y: 18, i: '6' },
+
+    { w: 2, h: 6, x: 0, y: 32, i: '7' },
+
+    { w: 2, h: 14, x: 2, y: 24, i: '8' },
+
+    { w: 2, h: 14, x: 0, y: 38, i: '9' },
+
+    { w: 2, h: 14, x: 2, y: 38, i: '10' },
+
+    { w: 2, h: 19, x: 0, y: 52, i: '11' },
+
+    { w: 2, h: 19, x: 2, y: 52, i: '12' }
   ];
 
-  const [layout, setLayout] = useState(() => {
-    const localLayout = typeof window !== 'undefined' ? window.localStorage.getItem('lyo-layout') : undefined;
+  // const [layout, setLayout] = useState([
+  //   { i: '1', x: 0, y: 0, w: 6, h: 3 },
+  //   { i: '2', x: 6, y: 0, w: 6, h: 6 },
+  //   { i: '3', x: 0, y: 3, w: 4, h: 5 },
+  //   { i: '4', x: 0, y: 8, w: 6, h: 7 },
+  //   { i: '5', x: 6, y: 6, w: 6, h: 9 },
+  //   { i: '6', x: 0, y: 15, w: 6, h: 7 },
+  //   { i: '7', x: 6, y: 15, w: 6, h: 7 },
+  //   { i: '8', x: 0, y: 22, w: 6, h: 8 },
+  //   { i: '9', x: 6, y: 22, w: 6, h: 8 },
+  //   { i: '10', x: 0, y: 30, w: 6, h: 8 },
+  //   { i: '11', x: 0, y: 38, w: 6, h: 6 },
+  //   { i: '12', x: 6, y: 38, w: 6, h: 6 },
 
-    return localLayout ? JSON.parse(localLayout) : defaultLayout;
-  });
+
+  // ]);
 
 
   // Save layout to local storage whenever it changes
   const onLayoutChange = (newLayout: NewLayout) => {
-    localStorage.setItem('lyo-layout', JSON.stringify(newLayout));
+    // localStorage.setItem('lyo-layout', JSON.stringify(newLayout));
     console.log("newLayouts:=>", newLayout)
   };
 
@@ -81,53 +125,55 @@ const AnalyticsDashboard = () => {
   }, []);
 
 
+
   return (
-    <ApexChartWrapper style={{ minHeight: 2500 }}>
+    <ApexChartWrapper >
       <ResponsiveGridLayout
         className="layout"
+
         onLayoutChange={onLayoutChange}
-        layouts={layout}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        rowHeight={250}
+        rowHeight={30}
         width={1200}
+        isBounded={true}
         autoSize={true}
-        cols={{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1 }}
+        cols={{ lg: 12, md: 4, sm: 2, xs: 1, xxs: 1 }}
       >
-        <div style={{ backgroundColor: "red" }} key="1">
-          1
+        <div key="1" data-grid={{ w: 3, h: 7, x: 0, y: 0, i: '1' }}>
+          <AnalyticsCongratulations />
         </div>
-        <div style={{ backgroundColor: "blue" }} key="2">
-          2
+        <div data-grid={{ w: 2, h: 6, x: 0, y: 18, i: '2' }} key="2">
+          <AnalyticsOrder />
         </div>
-        <div style={{ backgroundColor: "green" }} key="3">
-          3
+        <div data-grid={{ w: 1, h: 7, x: 3, y: 0, i: '3' }} key="3">
+          <AnalyticsSales />
         </div>
-        <div key="4" style={{ backgroundColor: "orange" }} >
-          4
+        <div key="4" data-grid={{ w: 4, h: 11, x: 0, y: 7, i: '4' }}  >
+          <AnalyticsTotalRevenue />
         </div>
-        <div key="5" style={{ backgroundColor: "purple" }} >
-          5
+        <div key="5" data-grid={{ w: 2, h: 8, x: 0, y: 24, i: '5' }}  >
+          <AnalyticsPayments />
         </div>
-        <div key="6" style={{ backgroundColor: "maroon" }} >
-          6
+        <div key="6" data-grid={{ w: 2, h: 6, x: 2, y: 18, i: '6' }}  >
+          <AnalyticsRevenue />
         </div>
-        <div key="7" style={{ backgroundColor: "black" }} >
-          7
+        <div key="7" data-grid={{ w: 2, h: 6, x: 0, y: 32, i: '7' }} >
+          <AnalyticsProfitReport />
         </div>
-        <div key="8" style={{ backgroundColor: "Navy" }} >
-          8
+        <div key="8" data-grid={{ w: 2, h: 14, x: 2, y: 24, i: '8' }}  >
+          <AnalyticsOrderStatistics />
         </div>
-        <div key="9" style={{ backgroundColor: "brown" }} >
-          9
+        <div key="9" data-grid={{ w: 2, h: 14, x: 0, y: 38, i: '9' }}>
+          <AnalyticsTabsWithChart />
         </div>
-        <div key="10" style={{ backgroundColor: "Cyan" }} >
-          10
+        <div key="10" data-grid={{ w: 2, h: 14, x: 2, y: 38, i: '10' }} >
+          <AnalyticsTransactions />
         </div>
-        <div key="11" style={{ backgroundColor: "yellow" }}>
-          11
+        <div key="11" data-grid={{ w: 2, h: 19, x: 0, y: 52, i: '11' }} >
+          <AnalyticsActivityTimeline />
         </div>
-        <div key="12" style={{ backgroundColor: "maroon" }}>
-          12
+        <div key="12" data-grid={{ w: 2, h: 19, x: 2, y: 52, i: '12' }} >
+          <AnalyticsTabsWithTable />
         </div>
       </ResponsiveGridLayout>
       {/* <Grid container spacing={6}>
