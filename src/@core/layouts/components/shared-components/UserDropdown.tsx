@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment } from 'react'
+import { useState, SyntheticEvent, Fragment, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import notify from '../../../../utils/notify.jsx'
 import { getCookie } from 'cookies-next'
@@ -54,7 +54,16 @@ const UserDropdown = (props: Props) => {
   const userName = useSelector((state: RootState) => state.login.userName)
 
   //** Cookies
-  const imgCookie = getCookie("imgUrl")
+  const [imgCookie, setImgCookie] = useState<string | null>("/images/avatars/1.png")
+
+  const imgCookieFunc = () => {
+    const imgCookie = getCookie("imgUrl")
+    setImgCookie(imgCookie)
+  }
+
+  useEffect(() => {
+    imgCookieFunc()
+  }, [])
   const userNameCookie = getCookie("userName")
 
   // ** Hooks
@@ -113,7 +122,7 @@ const UserDropdown = (props: Props) => {
       >
         <Avatar
           alt='John Doe'
-          src={img ? img : imgCookie ? imgCookie : '/images/avatars/1.png'}
+          src={imgCookie}
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
         />
