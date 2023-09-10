@@ -1,7 +1,8 @@
+'use client'
+
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
-// import { parseCookies } from 'cookies-next' // Import the parseCookies function
+import axios from 'axios'
 
 // Define the initial state
 const initialState = {
@@ -10,23 +11,17 @@ const initialState = {
   error: null
 }
 
-// Define an async thunk to fetch data from the API
-export const fetchDataAnalytics = createAsyncThunk('dashboard/fetchData', async (url, token, date) => {
+export const fetchDataAnalytics = createAsyncThunk('dashboard/fetchData', async payload => {
   try {
-    // const cookies = parseCookies()
-    // const token = cookies.token // Retrieve the token from cookies
-    console.log('token', token)
-    const response = await fetch(`${url}/app/react/dashboard?token=${token}&date_type=${date}`)
-
-    const data = await response.json()
+    const { url, token, typeofData } = payload
+    const response = await axios.get(`${url}/app/react/dashboard?token="${token}"&date_type=${typeofData}`)
+    const data = await response.data
 
     return data
   } catch (error) {
     throw error
   }
 })
-
-// ... (other code)
 
 // Create a Redux slice
 const dashboardSlice = createSlice({

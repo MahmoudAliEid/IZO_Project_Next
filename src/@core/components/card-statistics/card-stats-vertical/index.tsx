@@ -1,3 +1,6 @@
+'use client'
+import { useState, useEffect } from 'react'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -14,7 +17,9 @@ import Icon from 'src/@core/components/icon'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import OptionsMenu from 'src/@core/components/option-menu'
 
+
 const CardStatsVertical = (props: CardStatsVerticalProps) => {
+
   // ** Props
   const {
     title,
@@ -24,7 +29,8 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
     trendNumber,
     optionsMenuProps,
     trend = 'positive',
-    avatarColor = 'primary'
+    avatarColor = 'primary',
+    handleOptionSelect
   } = props
 
   return (
@@ -41,12 +47,18 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
           >
             {avatarIcon && !avatarSrc ? avatarIcon : null}
           </CustomAvatar>
+
+
           {optionsMenuProps ? (
             <OptionsMenu {...optionsMenuProps} />
           ) : (
             <OptionsMenu
-              options={['Refresh', 'Share', 'Update']}
+              options={['year', 'month', 'week', 'day']}
               iconButtonProps={{ size: 'small', className: 'card-more-options', sx: { color: 'text.secondary' } }}
+              handleOptionSelect={handleOptionSelect}
+
+            // Assuming that onSelectOption is a callback provided by OptionsMenu
+
             />
           )}
         </Box>

@@ -1,5 +1,6 @@
 
-"use client"
+'use client'
+
 import { useState, useEffect } from "react"
 
 // ** MUI Imports
@@ -7,7 +8,9 @@ import Grid from '@mui/material/Grid'
 import { Responsive, WidthProvider } from "react-grid-layout";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-
+import { fetchDataAnalytics } from 'src/store/apps/dashboard/dashboardSlice.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCookie } from 'cookies-next'
 
 // ** Demo Component Imports
 import AnalyticsOrder from 'src/views/dashboards/analytics/AnalyticsOrder'
@@ -27,8 +30,6 @@ import AnalyticsActivityTimeline from 'src/views/dashboards/analytics/AnalyticsA
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 type NewLayout = Array<object>
-
-
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 // ** MUI Imports
@@ -54,7 +55,31 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 // ]
 
 
+
+
 const AnalyticsDashboard = () => {
+
+  const [token, setToken] = useState("")
+  const [url, setUrl] = useState("")
+  const [typeofData, setTypeofData] = useState("year")
+  const [dataAnalytics, setDataAnalytics] = useState()
+
+  useEffect(() => {
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+    setToken(token)
+    setUrl(url)
+  }, [token, url])
+
+  // create function to handelchange typeofData
+  const handleChangeTypeofData = (e) => {
+    setTypeofData(e)
+    console.log(e, "e from dashboard")
+  }
+
+  // console.log(token, "token from dashboard")
+  // console.log(url, "url from dashboard")
+
   const defaultLayout = [
 
     { w: 3, h: 7, x: 0, y: 0, i: '1' },
@@ -124,7 +149,21 @@ const AnalyticsDashboard = () => {
     };
   }, []);
 
+  const dispatch = useDispatch()
 
+  // get data from redux
+  useEffect(() => {
+    if (token && url) {
+      dispatch(fetchDataAnalytics({ token, url, typeofData }))
+    }
+  }, [token, url, typeofData])
+
+  const data = useSelector((state: RootState) => state.dashboardAnalytics.data)
+  useEffect(() => {
+    if (data) {
+      setDataAnalytics(data);
+    }
+  }, [data]);
 
   return (
     <ApexChartWrapper >
@@ -146,7 +185,7 @@ const AnalyticsDashboard = () => {
           <AnalyticsOrder />
         </div>
         <div data-grid={{ w: 1, h: 7, x: 3, y: 0, i: '3' }} key="3">
-          <AnalyticsSales />
+          <AnalyticsSales Sale_section={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
         </div>
         <div key="4" data-grid={{ w: 4, h: 11, x: 0, y: 7, i: '4' }}  >
           <AnalyticsTotalRevenue />
