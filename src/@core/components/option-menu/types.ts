@@ -31,11 +31,12 @@ export type OptionMenuItemType = {
 }
 
 export type OptionType = string | OptionDividerType | OptionMenuItemType
-
+export type DateOptions = 'year' | 'month' | 'week' | 'day'
 export type OptionsMenuType = {
   icon?: ReactNode
   options: OptionType[]
   leftAlignMenu?: boolean
+  handleOptionSelect?: (event: DateOptions | OptionType) => void
   iconButtonProps?: IconButtonProps
   iconProps?: Omit<IconProps, 'icon'>
   menuProps?: Omit<MenuProps, 'open'>

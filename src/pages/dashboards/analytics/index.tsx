@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react"
 
 // ** MUI Imports
-import Grid from '@mui/material/Grid'
+// import Grid from '@mui/material/Grid'
 import { Responsive, WidthProvider } from "react-grid-layout";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -28,6 +28,7 @@ import AnalyticsActivityTimeline from 'src/views/dashboards/analytics/AnalyticsA
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import { DashboardAnalytics } from "src/types/apps/rooteState";
 
 type NewLayout = Array<object>
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -54,58 +55,86 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 //   { i: string, x: number, y: number, w: number, h: number },
 // ]
 
-
+type AnalyticsType =
+  {
+    Status: number
+    Message: string
+    Type: string
+    Report: {
+      Sale_section: {
+        Sale: number
+        Percent: number
+      }
+      Purchase_section: {
+        Purchase: number
+        Percent: number
+      }
+      Expense_section: {
+        Expense: string
+        Percent: number
+      }
+    }
+    Currency: string
+    Profit: {
+      Profit: number
+    }
+  }
 
 
 const AnalyticsDashboard = () => {
 
-  const [token, setToken] = useState("")
-  const [url, setUrl] = useState("")
-  const [typeofData, setTypeofData] = useState("year")
-  const [dataAnalytics, setDataAnalytics] = useState()
+  const [token, setToken] = useState<string>("")
+  const [url, setUrl] = useState<string>("")
+  const [typeofData, setTypeofData] = useState<string>("year")
+  const [dataAnalytics, setDataAnalytics] = useState<AnalyticsType>()
 
   useEffect(() => {
     const token = getCookie('token')
     const url = getCookie('apiUrl')
+
+    //@ts-ignore
     setToken(token)
+
+    //@ts-ignore
     setUrl(url)
   }, [token, url])
 
   // create function to handelchange typeofData
-  const handleChangeTypeofData = (e) => {
+  const handleChangeTypeofData = (e: any) => {
     setTypeofData(e)
     console.log(e, "e from dashboard")
   }
 
   // console.log(token, "token from dashboard")
+
   // console.log(url, "url from dashboard")
 
-  const defaultLayout = [
+  // const defaultLayout = [
 
-    { w: 3, h: 7, x: 0, y: 0, i: '1' },
+  //   { w: 3, h: 7, x: 0, y: 0, i: '1' },
 
-    { w: 2, h: 6, x: 0, y: 18, i: '2' },
+  //   { w: 2, h: 6, x: 0, y: 18, i: '2' },
 
-    { w: 1, h: 7, x: 3, y: 0, i: '3' },
+  //   { w: 1, h: 7, x: 3, y: 0, i: '3' },
 
-    { w: 4, h: 11, x: 0, y: 7, i: '4' },
+  //   { w: 4, h: 11, x: 0, y: 7, i: '4' },
 
-    { w: 2, h: 8, x: 0, y: 24, i: '5' },
+  //   { w: 2, h: 8, x: 0, y: 24, i: '5' },
 
-    { w: 2, h: 6, x: 2, y: 18, i: '6' },
+  //   { w: 2, h: 6, x: 2, y: 18, i: '6' },
 
-    { w: 2, h: 6, x: 0, y: 32, i: '7' },
+  //   { w: 2, h: 6, x: 0, y: 32, i: '7' },
 
-    { w: 2, h: 14, x: 2, y: 24, i: '8' },
+  //   { w: 2, h: 14, x: 2, y: 24, i: '8' },
 
-    { w: 2, h: 14, x: 0, y: 38, i: '9' },
+  //   { w: 2, h: 14, x: 0, y: 38, i: '9' },
 
-    { w: 2, h: 14, x: 2, y: 38, i: '10' },
+  //   { w: 2, h: 14, x: 2, y: 38, i: '10' },
 
-    { w: 2, h: 19, x: 0, y: 52, i: '11' },
+  //   { w: 2, h: 19, x: 0, y: 52, i: '11' },
 
-    { w: 2, h: 19, x: 2, y: 52, i: '12' }
-  ];
+  //   { w: 2, h: 19, x: 2, y: 52, i: '12' }
+  // ];
 
   // const [layout, setLayout] = useState([
   //   { i: '1', x: 0, y: 0, w: 6, h: 3 },
@@ -126,39 +155,41 @@ const AnalyticsDashboard = () => {
 
 
   // Save layout to local storage whenever it changes
+
   const onLayoutChange = (newLayout: NewLayout) => {
     // localStorage.setItem('lyo-layout', JSON.stringify(newLayout));
     console.log("newLayouts:=>", newLayout)
   };
 
-  useEffect(() => {
-    // Listen for changes to local storage and update the layout when it changes
+  // useEffect(() => {
+  //   // Listen for changes to local storage and update the layout when it changes
 
-    //@ts-ignore
-    const handleStorageChange = (e) => {
-      if (e.key === 'lyo-layout') {
-        const newLayout = JSON.parse(e.newValue);
-        setLayout(newLayout);
-      }
-    };
+  //   //@ts-ignore
+  //   const handleStorageChange = (e) => {
+  //     if (e.key === 'lyo-layout') {
+  //       const newLayout = JSON.parse(e.newValue);
+  //       setLayout(newLayout);
+  //     }
+  //   };
 
-    window.addEventListener('storage', handleStorageChange);
+  //   window.addEventListener('storage', handleStorageChange);
 
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('storage', handleStorageChange);
+  //   };
+  // }, []);
 
   const dispatch = useDispatch()
 
   // get data from redux
   useEffect(() => {
     if (token && url) {
+      //@ts-ignore
       dispatch(fetchDataAnalytics({ token, url, typeofData }))
     }
-  }, [token, url, typeofData])
+  }, [token, url, typeofData, dispatch])
 
-  const data = useSelector((state: RootState) => state.dashboardAnalytics.data)
+  const data = useSelector((state: DashboardAnalytics) => state.dashboardAnalytics.data)
   useEffect(() => {
     if (data) {
       setDataAnalytics(data);
@@ -185,13 +216,15 @@ const AnalyticsDashboard = () => {
           <AnalyticsOrder />
         </div>
         <div data-grid={{ w: 1, h: 7, x: 3, y: 0, i: '3' }} key="3">
+          {/* @ts-ignore */}
           <AnalyticsSales Sale_section={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
         </div>
         <div key="4" data-grid={{ w: 4, h: 11, x: 0, y: 7, i: '4' }}  >
           <AnalyticsTotalRevenue />
         </div>
         <div key="5" data-grid={{ w: 2, h: 8, x: 0, y: 24, i: '5' }}  >
-          <AnalyticsPayments />
+          {/* @ts-ignore */}
+          <AnalyticsPayments Purchase={dataAnalytics?.Report?.Purchase_section?.Purchase} Percent={dataAnalytics?.Report?.Purchase_section?.Percent} handleOptionSelect={handleChangeTypeofData} />
         </div>
         <div key="6" data-grid={{ w: 2, h: 6, x: 2, y: 18, i: '6' }}  >
           <AnalyticsRevenue />

@@ -1,5 +1,4 @@
-'use client'
-import { useState, useEffect } from 'react'
+
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -55,6 +54,8 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
             <OptionsMenu
               options={['year', 'month', 'week', 'day']}
               iconButtonProps={{ size: 'small', className: 'card-more-options', sx: { color: 'text.secondary' } }}
+
+              //@ts-ignore
               handleOptionSelect={handleOptionSelect}
 
             // Assuming that onSelectOption is a callback provided by OptionsMenu
@@ -64,7 +65,7 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
         </Box>
         <Typography sx={{ mb: 0.5, fontWeight: 600, color: 'text.secondary' }}>{title}</Typography>
         <Typography variant='h5' sx={{ mb: 2 }}>
-          {stats}
+          {Math.floor(Number(stats))}
         </Typography>
         <Box
           sx={{

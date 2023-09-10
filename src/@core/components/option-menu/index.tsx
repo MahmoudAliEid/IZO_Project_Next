@@ -64,8 +64,9 @@ const OptionsMenu = (props: OptionsMenuType) => {
     setAnchorEl(null)
   }
 
-  const handleMenuItemClick = (option) => () => {
-    handleOptionSelect(option)
+  const handleMenuItemClick = (option: OptionType) => () => {
+
+    handleOptionSelect?.(option)
     handleClose();
   };
 

@@ -14,6 +14,8 @@ export type CardStatsHorizontalProps = {
   avatarIconProps?: Omit<IconProps, 'icon'>
 }
 
+export type DateOptions = 'year' | 'month' | 'week' | 'day'
+
 export type CardStatsVerticalProps = {
   title: string
   stats: string
@@ -24,6 +26,7 @@ export type CardStatsVerticalProps = {
   trend?: 'positive' | 'negative'
   optionsMenuProps?: OptionsMenuType
   avatarIconProps?: Omit<IconProps, 'icon'>
+  handleOptionSelect?: (event: DateOptions) => void
 }
 
 export type CardStatsTargetProps = {

@@ -40,3 +40,31 @@ export interface RootStateUsers {
     }
   }
 }
+
+export interface DashboardAnalytics {
+  dashboardAnalytics: {
+    data: {
+      Status: number
+      Message: string
+      Type: string
+      Report: {
+        Sale_section: {
+          Sale: number
+          Percent: number
+        }
+        Purchase_section: {
+          Purchase: number
+          Percent: number
+        }
+        Expense_section: {
+          Expense: string
+          Percent: number
+        }
+      }
+      Currency: string
+      Profit: {
+        Profit: number
+      }
+    }
+  }
+}
