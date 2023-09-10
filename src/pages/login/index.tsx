@@ -21,7 +21,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 // ** MUI Components
-
 import MenuItem from '@mui/material/MenuItem'
 
 // import Alert from '@mui/material/Alert'
@@ -37,16 +36,8 @@ import FormControl from '@mui/material/FormControl'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
-
 import RadioGroup from '@mui/material/RadioGroup';
-import {
-  FormControlLabelProps,
-} from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
-
-interface StyledFormControlLabelProps extends FormControlLabelProps {
-  checked: boolean;
-}
 
 
 // import FormHelperText from '@mui/material/FormHelperText'
@@ -197,7 +188,12 @@ const LoginPage: React.FC<{ userData: UserData }> & {
         password: password,
         logout_other: LogoutFromOtherDevices ? '1' : '0'
       }
-      if (!password || !username) notify(" يجب ملئ البيانات ولا تكون فارغة", "error");
+      if (!password || !username) notify(" Fields can't be Empty", "error");
+
+      //to go into page login for first time
+      if (login_first_time) {
+        router.replace('/loginFirstTime')
+      }
 
       //@ts-ignore
       dispatch(login(loginData))
@@ -208,10 +204,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
       }, 2000);
 
-      //to go into page login for first time
-      if (login_first_time) {
-        router.replace('/loginFirstTime')
-      }
+
 
     } catch (error: any) {
       console.log(error)

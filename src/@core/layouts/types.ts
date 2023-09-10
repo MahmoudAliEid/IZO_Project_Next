@@ -17,7 +17,7 @@ export type AppBar = 'fixed' | 'static' | 'hidden'
 
 export type Footer = 'fixed' | 'static' | 'hidden'
 
-export type ThemeColor = 'primary' | 'secondary' | 'error' | '#ec6608' | 'info' | 'success'
+export type ThemeColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 
 export type VerticalNavToggle = 'accordion' | 'collapse'
 
@@ -46,7 +46,7 @@ export type NavGroup = {
   subject?: string
   badgeContent?: string
   children?: (NavGroup | NavLink)[]
-  badgeColor?: '#ec6608' | 'primary' | 'secondary' | 'success' | 'error' | '#ec6608' | 'info'
+  badgeColor?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 }
 
 export type NavLink = {
@@ -60,7 +60,7 @@ export type NavLink = {
   badgeContent?: string
   externalLink?: boolean
   openInNewTab?: boolean
-  badgeColor?: '#ec6608' | 'primary' | 'secondary' | 'success' | 'error' | '#ec6608' | 'info'
+  badgeColor?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 }
 
 export type VerticalNavItemsType = (NavLink | NavGroup | NavSectionTitle)[]

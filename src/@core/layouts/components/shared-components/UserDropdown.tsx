@@ -2,6 +2,7 @@
 import { useState, SyntheticEvent, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import notify from '../../../../utils/notify.jsx'
+import { getCookie } from 'cookies-next'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -51,6 +52,10 @@ const UserDropdown = (props: Props) => {
   const img = useSelector((state: RootState) => state.login.imgUrl)
   const userName = useSelector((state: RootState) => state.login.userName)
 
+  //** Cookies
+  const imgCookie = getCookie("imgUrl")
+  const userNameCookie = getCookie("userName")
+
   // ** Hooks
   const router = useRouter()
   const { logout } = useAuth()
@@ -90,7 +95,7 @@ const UserDropdown = (props: Props) => {
     deleteCookie("key");
     router.replace("/login")
     handleDropdownClose()
-    notify("تم تسجيل الخروج بنجاح", "success")
+    notify("Logout successfully", "success")
   }
 
   return (
@@ -107,7 +112,7 @@ const UserDropdown = (props: Props) => {
       >
         <Avatar
           alt='John Doe'
-          src={img ? img : '/images/avatars/1.png'}
+          src={img ? img : imgCookie ? imgCookie : '/images/avatars/1.png'}
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
         />
@@ -130,10 +135,10 @@ const UserDropdown = (props: Props) => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='John Doe' src={img ? img : '/images/avatars/1.png'} sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar alt='John Doe' src={img ? img : imgCookie ? imgCookie : '/images/avatars/1.png'} sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ ml: 3, display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 500 }}>{userName ? userName : "John Doe"}</Typography>
+              <Typography sx={{ fontWeight: 500 }}>{userName ? userName : userNameCookie ? userNameCookie : 'John Doe'}</Typography>
               <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                 Admin
               </Typography>

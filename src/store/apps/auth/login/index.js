@@ -55,12 +55,31 @@ export const loginSlice = createSlice({
           state.token = action.payload.authorization?.token || ''
         }
         state.status = 'success'
+
+        //adding to cookies
         if (action.payload.authorization?.token) {
           setCookie('token', action.payload.authorization?.token)
         } else {
           setCookie('token', null)
         }
-        notify('تم تسجيل الدخول بنجاح', 'success')
+
+        if (action.payload.authorization?.user?.profile_photo_url) {
+          setCookie('imgUrl', action.payload.authorization?.user?.profile_photo_url)
+        } else {
+          setCookie('imgUrl', null)
+        }
+
+        if (action.payload.authorization?.user?.first_name) {
+          setCookie('userName', action.payload.authorization?.user?.first_name)
+        } else {
+          setCookie('userName', null)
+        }
+        if (action.payload?.api_url) {
+          setCookie('apiUrl', action.payload?.api_url)
+        } else {
+          setCookie('apiUrl', null)
+        }
+        notify('Login Successfully', 'success')
 
         // setTimeout(() => {
         //   // router.replace('/dashboards/analytics/')
@@ -74,7 +93,7 @@ export const loginSlice = createSlice({
       .addCase(login.rejected, state => {
         console.log('from login rejected', state)
         state.status = 'rejected'
-        notify('يوجد خطأ في البريد الإلكتروني أو كلمة المرور', 'error')
+        notify('User Name or Password is wrong', 'error')
       })
   }
 })

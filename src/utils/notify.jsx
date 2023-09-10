@@ -2,6 +2,7 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 //to make notifactio to any componentet
+
 const notify = (msg, type) => {
   const config = {
     position: 'bottom-right',

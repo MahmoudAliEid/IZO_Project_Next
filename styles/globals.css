@@ -25,15 +25,15 @@ code[class*='language-'] {
   padding: 0;
 }
 
-/* 
+/*
   notifay styles
 */
 
 .Toastify__toast-body {
   text-align: center;
   text-align: center;
-  font-size: 26px;
-  font-weight: 900;
+  font-size: 15px;
+  font-weight: 600;
 }
 .Toastify__toast {
   -webkit-box-shadow: -1px 12px 48px -16px rgba(17, 17, 17, 1);
