@@ -113,11 +113,7 @@ const UserDropdown = (props: Props) => {
       >
         <Avatar
           alt='John Doe'
-<<<<<<< HEAD
           src={img ? img : imgCookie ? imgCookie : '/images/avatars/1.png'}
-=======
-          src={img}
->>>>>>> 23934e3 (update image for dropdownlist)
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
         />
