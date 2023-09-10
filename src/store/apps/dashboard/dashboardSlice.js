@@ -1,6 +1,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { parseCookies } from 'cookies-next' // Import the parseCookies function
+
+// import { parseCookies } from 'cookies-next' // Import the parseCookies function
 
 // Define the initial state
 const initialState = {
@@ -10,15 +11,13 @@ const initialState = {
 }
 
 // Define an async thunk to fetch data from the API
-export const fetchData = createAsyncThunk('dashboard/fetchData', async () => {
+export const fetchDataAnalytics = createAsyncThunk('dashboard/fetchData', async (url, token, date) => {
   try {
-    const cookies = parseCookies()
-    const token = cookies.token // Retrieve the token from cookies
+    // const cookies = parseCookies()
+    // const token = cookies.token // Retrieve the token from cookies
     console.log('token', token)
-    const response = await fetch(`https://test.izocloud.com/api/app/react/dashboard?token=${token}&date_type=year`)
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
+    const response = await fetch(`${url}/app/react/dashboard?token=${token}&date_type=${date}`)
+
     const data = await response.json()
 
     return data
@@ -36,16 +35,16 @@ const dashboardSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchData.pending, state => {
+      .addCase(fetchDataAnalytics.pending, state => {
         state.loading = true
         state.error = null
       })
-      .addCase(fetchData.fulfilled, (state, action) => {
+      .addCase(fetchDataAnalytics.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
         state.error = null
       })
-      .addCase(fetchData.rejected, (state, action) => {
+      .addCase(fetchDataAnalytics.rejected, (state, action) => {
         state.loading = false
         state.data = null
         state.error = action.error.message
