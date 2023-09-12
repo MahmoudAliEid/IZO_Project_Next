@@ -25,6 +25,7 @@ import AnalyticsTabsWithTable from 'src/views/dashboards/analytics/AnalyticsTabs
 import AnalyticsCongratulations from 'src/views/dashboards/analytics/AnalyticsCongratulations'
 import AnalyticsOrderStatistics from 'src/views/dashboards/analytics/AnalyticsOrderStatistics'
 import AnalyticsActivityTimeline from 'src/views/dashboards/analytics/AnalyticsActivityTimeline'
+import Grid from '@mui/material/Grid'
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
@@ -32,29 +33,6 @@ import { DashboardAnalytics } from "src/types/apps/rooteState";
 
 type NewLayout = Array<object>
 const ResponsiveGridLayout = WidthProvider(Responsive);
-
-// ** MUI Imports
-
-
-
-
-
-
-// type LayoutsType = [
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-//   { i: string, x: number, y: number, w: number, h: number },
-// ]
-
 type AnalyticsType =
   {
     Status: number
@@ -105,79 +83,21 @@ const AnalyticsDashboard = () => {
     console.log(e, "e from dashboard")
   }
 
-  // console.log(token, "token from dashboard")
 
-  // console.log(url, "url from dashboard")
+  const defaultLayout = [{ "w": 8, "h": 5, "x": 0, "y": 0, "i": "1", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 0, "i": "2", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 0, "i": "3", "moved": false, "static": false }, { "w": 8, "h": 10, "x": 0, "y": 5, "i": "4", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 5, "i": "5", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 5, "i": "6", "moved": false, "static": false }, { "w": 4, "h": 5, "x": 8, "y": 10, "i": "7", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 0, "y": 15, "i": "8", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 4, "y": 15, "i": "9", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 8, "y": 15, "i": "10", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 0, "y": 28, "i": "11", "moved": false, "static": false }, { "w": 5, "h": 12, "x": 7, "y": 28, "i": "12", "moved": false, "static": false }]
+  const [layout, setLayout] = useState(defaultLayout);
+  useEffect(() => {
+    const savedLayout = JSON.parse(localStorage.getItem("layout"));
+    if (savedLayout) {
+      setLayout(savedLayout);
+    }
+  }, []);
 
-  // const defaultLayout = [
-
-  //   { w: 3, h: 7, x: 0, y: 0, i: '1' },
-
-  //   { w: 2, h: 6, x: 0, y: 18, i: '2' },
-
-  //   { w: 1, h: 7, x: 3, y: 0, i: '3' },
-
-  //   { w: 4, h: 11, x: 0, y: 7, i: '4' },
-
-  //   { w: 2, h: 8, x: 0, y: 24, i: '5' },
-
-  //   { w: 2, h: 6, x: 2, y: 18, i: '6' },
-
-  //   { w: 2, h: 6, x: 0, y: 32, i: '7' },
-
-  //   { w: 2, h: 14, x: 2, y: 24, i: '8' },
-
-  //   { w: 2, h: 14, x: 0, y: 38, i: '9' },
-
-  //   { w: 2, h: 14, x: 2, y: 38, i: '10' },
-
-  //   { w: 2, h: 19, x: 0, y: 52, i: '11' },
-
-  //   { w: 2, h: 19, x: 2, y: 52, i: '12' }
-  // ];
-
-  // const [layout, setLayout] = useState([
-  //   { i: '1', x: 0, y: 0, w: 6, h: 3 },
-  //   { i: '2', x: 6, y: 0, w: 6, h: 6 },
-  //   { i: '3', x: 0, y: 3, w: 4, h: 5 },
-  //   { i: '4', x: 0, y: 8, w: 6, h: 7 },
-  //   { i: '5', x: 6, y: 6, w: 6, h: 9 },
-  //   { i: '6', x: 0, y: 15, w: 6, h: 7 },
-  //   { i: '7', x: 6, y: 15, w: 6, h: 7 },
-  //   { i: '8', x: 0, y: 22, w: 6, h: 8 },
-  //   { i: '9', x: 6, y: 22, w: 6, h: 8 },
-  //   { i: '10', x: 0, y: 30, w: 6, h: 8 },
-  //   { i: '11', x: 0, y: 38, w: 6, h: 6 },
-  //   { i: '12', x: 6, y: 38, w: 6, h: 6 },
-
-
-  // ]);
-
-
-  // Save layout to local storage whenever it changes
 
   const onLayoutChange = (newLayout: NewLayout) => {
     // localStorage.setItem('lyo-layout', JSON.stringify(newLayout));
     console.log("newLayouts:=>", newLayout)
   };
-
-  // useEffect(() => {
-  //   // Listen for changes to local storage and update the layout when it changes
-
-  //   //@ts-ignore
-  //   const handleStorageChange = (e) => {
-  //     if (e.key === 'lyo-layout') {
-  //       const newLayout = JSON.parse(e.newValue);
-  //       setLayout(newLayout);
-  //     }
-  //   };
-
-  //   window.addEventListener('storage', handleStorageChange);
-
-  //   return () => {
-  //     window.removeEventListener('storage', handleStorageChange);
-  //   };
-  // }, []);
 
   const dispatch = useDispatch()
 
@@ -196,55 +116,59 @@ const AnalyticsDashboard = () => {
     }
   }, [data]);
 
+  const handleLayoutChange = (newLayout) => {
+    // console.log(JSON.stringify(newLayout))
+    localStorage.setItem("layout", JSON.stringify(newLayout));
+  };
+
+
   return (
     <ApexChartWrapper >
       <ResponsiveGridLayout
         className="layout"
-
         onLayoutChange={onLayoutChange}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         rowHeight={30}
-        width={1200}
         isBounded={true}
         autoSize={true}
-        cols={{ lg: 12, md: 4, sm: 2, xs: 1, xxs: 1 }}
+        onLayoutChange={handleLayoutChange}
+        layouts={{ lg: (typeof localStorage !== 'undefined' && localStorage.getItem("layout")) ? JSON.parse(localStorage.getItem("layout")) : layout }}
       >
-        <div key="1" data-grid={{ w: 3, h: 7, x: 0, y: 0, i: '1' }}>
+        <div key="1">
           <AnalyticsCongratulations />
         </div>
-        <div data-grid={{ w: 2, h: 6, x: 0, y: 18, i: '2' }} key="2">
+        <div key="2" >
           <AnalyticsOrder />
         </div>
-        <div data-grid={{ w: 1, h: 7, x: 3, y: 0, i: '3' }} key="3">
+        <div key="3" >
           {/* @ts-ignore */}
           <AnalyticsSales Sale_section={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
         </div>
-        <div key="4" data-grid={{ w: 4, h: 11, x: 0, y: 7, i: '4' }}  >
+        <div key="4"   >
           <AnalyticsTotalRevenue />
         </div>
-        <div key="5" data-grid={{ w: 2, h: 8, x: 0, y: 24, i: '5' }}  >
+        <div key="5"  >
           {/* @ts-ignore */}
           <AnalyticsPayments Purchase={dataAnalytics?.Report?.Purchase_section?.Purchase} Percent={dataAnalytics?.Report?.Purchase_section?.Percent} handleOptionSelect={handleChangeTypeofData} />
         </div>
-        <div key="6" data-grid={{ w: 2, h: 6, x: 2, y: 18, i: '6' }}  >
+        <div key="6" >
           <AnalyticsRevenue />
         </div>
-        <div key="7" data-grid={{ w: 2, h: 6, x: 0, y: 32, i: '7' }} >
+        <div key="7" >
           <AnalyticsProfitReport />
         </div>
-        <div key="8" data-grid={{ w: 2, h: 14, x: 2, y: 24, i: '8' }}  >
+        <div key="8"  >
           <AnalyticsOrderStatistics />
         </div>
-        <div key="9" data-grid={{ w: 2, h: 14, x: 0, y: 38, i: '9' }}>
+        <div key="9" >
           <AnalyticsTabsWithChart />
         </div>
-        <div key="10" data-grid={{ w: 2, h: 14, x: 2, y: 38, i: '10' }} >
+        <div key="10"  >
           <AnalyticsTransactions />
         </div>
-        <div key="11" data-grid={{ w: 2, h: 19, x: 0, y: 52, i: '11' }} >
+        <div key="11"  >
           <AnalyticsActivityTimeline />
         </div>
-        <div key="12" data-grid={{ w: 2, h: 19, x: 2, y: 52, i: '12' }} >
+        <div key="12"  >
           <AnalyticsTabsWithTable />
         </div>
       </ResponsiveGridLayout>
@@ -293,7 +217,7 @@ const AnalyticsDashboard = () => {
         <Grid item xs={12} sm={6}>
           <AnalyticsTabsWithTable />
         </Grid>
-      </Grid> */}
+  </Grid> */}
     </ApexChartWrapper>
   )
 }
