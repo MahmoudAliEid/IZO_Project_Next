@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
+import Filter from "src/views/custom/Filter/Filter";
 
 // ** MUI Imports
 // import Grid from '@mui/material/Grid'
@@ -94,10 +95,6 @@ const AnalyticsDashboard = () => {
   }, []);
 
 
-  const onLayoutChange = (newLayout: NewLayout) => {
-    // localStorage.setItem('lyo-layout', JSON.stringify(newLayout));
-    console.log("newLayouts:=>", newLayout)
-  };
 
   const dispatch = useDispatch()
 
@@ -116,7 +113,7 @@ const AnalyticsDashboard = () => {
     }
   }, [data]);
 
-  const handleLayoutChange = (newLayout) => {
+  const handleLayoutChange = (newLayout: NewLayout) => {
     // console.log(JSON.stringify(newLayout))
     localStorage.setItem("layout", JSON.stringify(newLayout));
   };
@@ -124,15 +121,16 @@ const AnalyticsDashboard = () => {
 
   return (
     <ApexChartWrapper >
+      <Filter handleOptionSelect={handleChangeTypeofData} />
       <ResponsiveGridLayout
         className="layout"
-        onLayoutChange={onLayoutChange}
         rowHeight={30}
         isBounded={true}
         autoSize={true}
         onLayoutChange={handleLayoutChange}
         layouts={{ lg: (typeof localStorage !== 'undefined' && localStorage.getItem("layout")) ? JSON.parse(localStorage.getItem("layout")) : layout }}
       >
+
         <div key="1">
           <AnalyticsCongratulations />
         </div>
