@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react"
 import Filter from "src/views/custom/Filter/Filter";
+import React from 'react'
 
 // ** MUI Imports
 // import Grid from '@mui/material/Grid'
@@ -26,6 +27,7 @@ import AnalyticsTabsWithTable from 'src/views/dashboards/analytics/AnalyticsTabs
 import AnalyticsCongratulations from 'src/views/dashboards/analytics/AnalyticsCongratulations'
 import AnalyticsOrderStatistics from 'src/views/dashboards/analytics/AnalyticsOrderStatistics'
 import AnalyticsActivityTimeline from 'src/views/dashboards/analytics/AnalyticsActivityTimeline'
+import RatingComponent from '../../../utils/RatingComponent.jsx'
 import Grid from '@mui/material/Grid'
 
 // ** Styled Component Import
@@ -118,59 +120,66 @@ const AnalyticsDashboard = () => {
     localStorage.setItem("layout", JSON.stringify(newLayout));
   };
 
+  const [showRating, setShowRating] = useState(false);
+
+  setTimeout(() => {
+    setShowRating(true);
+  }, 2000);
 
   return (
-    <ApexChartWrapper >
-      <Filter handleOptionSelect={handleChangeTypeofData} />
-      <ResponsiveGridLayout
-        className="layout"
-        rowHeight={30}
-        isBounded={true}
-        autoSize={true}
-        onLayoutChange={handleLayoutChange}
-        layouts={{ lg: (typeof localStorage !== 'undefined' && localStorage.getItem("layout")) ? JSON.parse(localStorage.getItem("layout")) : layout }}
-      >
+    <React.Fragment>
+      {showRating && <RatingComponent />}
+      <ApexChartWrapper >
+        <Filter handleOptionSelect={handleChangeTypeofData} />
+        <ResponsiveGridLayout
+          className="layout"
+          rowHeight={30}
+          isBounded={true}
+          autoSize={true}
+          onLayoutChange={handleLayoutChange}
+          layouts={{ lg: (typeof localStorage !== 'undefined' && localStorage.getItem("layout")) ? JSON.parse(localStorage.getItem("layout")) : layout }}
+        >
 
-        <div key="1">
-          <AnalyticsCongratulations />
-        </div>
-        <div key="2" >
-          <AnalyticsOrder />
-        </div>
-        <div key="3" >
-          {/* @ts-ignore */}
-          <AnalyticsSales Sale_section={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
-        </div>
-        <div key="4"   >
-          <AnalyticsTotalRevenue />
-        </div>
-        <div key="5"  >
-          {/* @ts-ignore */}
-          <AnalyticsPayments Purchase={dataAnalytics?.Report?.Purchase_section?.Purchase} Percent={dataAnalytics?.Report?.Purchase_section?.Percent} handleOptionSelect={handleChangeTypeofData} />
-        </div>
-        <div key="6" >
-          <AnalyticsRevenue />
-        </div>
-        <div key="7" >
-          <AnalyticsProfitReport />
-        </div>
-        <div key="8"  >
-          <AnalyticsOrderStatistics />
-        </div>
-        <div key="9" >
-          <AnalyticsTabsWithChart />
-        </div>
-        <div key="10"  >
-          <AnalyticsTransactions />
-        </div>
-        <div key="11"  >
-          <AnalyticsActivityTimeline />
-        </div>
-        <div key="12"  >
-          <AnalyticsTabsWithTable />
-        </div>
-      </ResponsiveGridLayout>
-      {/* <Grid container spacing={6}>
+          <div key="1">
+            <AnalyticsCongratulations />
+          </div>
+          <div key="2" >
+            <AnalyticsOrder />
+          </div>
+          <div key="3" >
+            {/* @ts-ignore */}
+            <AnalyticsSales Sale_section={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
+          </div>
+          <div key="4"   >
+            <AnalyticsTotalRevenue />
+          </div>
+          <div key="5"  >
+            {/* @ts-ignore */}
+            <AnalyticsPayments Purchase={dataAnalytics?.Report?.Purchase_section?.Purchase} Percent={dataAnalytics?.Report?.Purchase_section?.Percent} handleOptionSelect={handleChangeTypeofData} />
+          </div>
+          <div key="6" >
+            <AnalyticsRevenue />
+          </div>
+          <div key="7" >
+            <AnalyticsProfitReport />
+          </div>
+          <div key="8"  >
+            <AnalyticsOrderStatistics />
+          </div>
+          <div key="9" >
+            <AnalyticsTabsWithChart />
+          </div>
+          <div key="10"  >
+            <AnalyticsTransactions />
+          </div>
+          <div key="11"  >
+            <AnalyticsActivityTimeline />
+          </div>
+          <div key="12"  >
+            <AnalyticsTabsWithTable />
+          </div>
+        </ResponsiveGridLayout>
+        {/* <Grid container spacing={6}>
         <Grid item xs={12} lg={8} sx={{ order: -1 }}>
           <AnalyticsCongratulations />
         </Grid>
@@ -216,7 +225,8 @@ const AnalyticsDashboard = () => {
           <AnalyticsTabsWithTable />
         </Grid>
   </Grid> */}
-    </ApexChartWrapper>
+      </ApexChartWrapper>
+    </React.Fragment>
   )
 }
 
