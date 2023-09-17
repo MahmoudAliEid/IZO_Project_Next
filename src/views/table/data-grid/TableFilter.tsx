@@ -63,7 +63,7 @@ const escapeRegExp = (value: string) => {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
-const columns: GridColDef[] = [
+const columnsOne: GridColDef[] = [
   {
     flex: 0.275,
     minWidth: 290,
@@ -155,6 +155,68 @@ const columns: GridColDef[] = [
   }
 ]
 
+const columnsTwo: GridColDef[] = [
+  {
+    flex: 0.125,
+    field: 'id',
+    minWidth: 80,
+    headerName: 'ID',
+    renderCell: (params: GridRenderCellParams) => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {params.row.id}
+      </Typography>
+    )
+  },
+  {
+    flex: 0.125,
+    minWidth: 100,
+    field: 'name',
+    headerName: 'Name',
+    renderCell: (params: GridRenderCellParams) => {
+      const { row } = params
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {/* {renderClient(params)} */}
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
+              {row.name}
+            </Typography>
+            <Typography noWrap variant='caption'>
+              {row.account_type_id}
+            </Typography>
+          </Box>
+        </Box>
+      )
+    }
+  },
+
+  {
+    flex: 0.125,
+    minWidth: 100,
+    field: 'account_number',
+    headerName: 'Account Number',
+    renderCell: (params: GridRenderCellParams) => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {params.row.account_number}
+      </Typography>
+    )
+  },
+  {
+    flex: 0.125,
+    minWidth: 100,
+    field: 'balance',
+    headerName: 'Balance',
+    renderCell: (params: GridRenderCellParams) => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {params.row.balance} AED
+      </Typography>
+    )
+  },
+
+]
+
+
 const TableColumns = ({ UserData, title }: any) => {
   if (title === "purchase" && UserData) {
     console.log(UserData.purchase)
@@ -165,15 +227,17 @@ const TableColumns = ({ UserData, title }: any) => {
   const [data, setData] = useState<SalesGridRowType[]>([])
   useEffect(() => {
     if (UserData) {
-      if (title === "sale") {
+      if (title === "Sale") {
         setData(UserData.sale)
-      } else if (title === "purchase") {
+      } else if (title === "Purchase") {
         setData(UserData.purchase)
-      } else (
+      } else if (title === "Bank" || title === "Cash") {
+        setData(UserData)
+      } else {
         setData([])
-      )
+      }
     }
-  }, [UserData])
+  }, [UserData, title])
   const [searchText, setSearchText] = useState<string>('')
   const [filteredData, setFilteredData] = useState<SalesGridRowType[]>([])
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
@@ -194,7 +258,7 @@ const TableColumns = ({ UserData, title }: any) => {
     }
   }
 
-  // lisght to card height 
+  // lisght to card height
   const cardRef = useRef(null);
 
   const handleCardHeightChange = (newHeight) => {
@@ -238,7 +302,7 @@ const TableColumns = ({ UserData, title }: any) => {
       <CardHeader title={`${title} Report`} />
       <DataGrid
         autoHeight
-        columns={columns}
+        columns={title === "Bank" || title === "Cash" ? columnsTwo : columnsOne}
         pageSizeOptions={[7, 10, 25, 50]}
         paginationModel={paginationModel}
         slots={{ toolbar: QuickSearchToolbar }}

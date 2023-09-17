@@ -190,10 +190,16 @@ const AnalyticsDashboard = () => {
             <AnalyticsTabsWithTable />
           </div>
           <div key="13" >
-            <TableFilter UserData={dataAnalytics?.UserData} title="sale" />
+            <TableFilter UserData={dataAnalytics?.UserData} title="Sale" />
           </div>
           <div key="14" >
-            <TableFilter UserData={dataAnalytics?.UserData} title="purchase" />
+            <TableFilter UserData={dataAnalytics?.UserData} title="Purchase" />
+          </div>
+          <div key="15" >
+            <TableFilter UserData={dataAnalytics?.Accounts.cash} title="Cash" />
+          </div>
+          <div key="16" >
+            <TableFilter UserData={dataAnalytics?.Accounts.bank} title="Bank" />
           </div>
         </ResponsiveGridLayout>
         {/* <Grid container spacing={6}>
