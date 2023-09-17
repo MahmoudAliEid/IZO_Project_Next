@@ -190,7 +190,10 @@ const AnalyticsDashboard = () => {
             <AnalyticsTabsWithTable />
           </div>
           <div key="13" >
-            <TableFilter UserData={dataAnalytics?.UserData} />
+            <TableFilter UserData={dataAnalytics?.UserData} title="sale" />
+          </div>
+          <div key="14" >
+            <TableFilter UserData={dataAnalytics?.UserData} title="purchase" />
           </div>
         </ResponsiveGridLayout>
         {/* <Grid container spacing={6}>

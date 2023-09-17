@@ -155,14 +155,23 @@ const columns: GridColDef[] = [
   }
 ]
 
-const TableColumns = ({ UserData }: any) => {
-  // console.log(UserData.sale, "UserData from table")
+const TableColumns = ({ UserData, title }: any) => {
+  if (title === "purchase" && UserData) {
+    console.log(UserData.purchase)
+  }
+
 
   // ** States
   const [data, setData] = useState<SalesGridRowType[]>([])
   useEffect(() => {
     if (UserData) {
-      setData(UserData.sale)
+      if (title === "sale") {
+        setData(UserData.sale)
+      } else if (title === "purchase") {
+        setData(UserData.purchase)
+      } else (
+        setData([])
+      )
     }
   }, [UserData])
   const [searchText, setSearchText] = useState<string>('')
@@ -226,7 +235,7 @@ const TableColumns = ({ UserData }: any) => {
 
   return (
     <Card style={{ height: "100%", width: "100%" }} ref={cardRef}>
-      <CardHeader title='Sales' />
+      <CardHeader title={`${title} Report`} />
       <DataGrid
         autoHeight
         columns={columns}
