@@ -4,6 +4,7 @@ import Card from '@mui/material/Card'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import ProgressCircularColors from 'src/views/components/progress/ProgressCircularColors'
 
 // ** Icon Import
 import Icon from 'src/@core/components/icon'
@@ -20,7 +21,12 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const series = [{ data: [30, 58, 35, 53, 50, 68] }]
 
-const AnalyticsProfitReport = () => {
+type ProfitType = {
+  profitData: {
+    Profit: number,
+  }
+}
+const AnalyticsProfitReport = ({ profitData }: ProfitType) => {
   // ** Hook
   const theme = useTheme()
 
@@ -107,13 +113,14 @@ const AnalyticsProfitReport = () => {
             />
           </div>
           <div>
-            <Box sx={{ display: 'flex', alignItems: 'center', color: 'success.main' }}>
+            {/* <Box sx={{ display: 'flex', alignItems: 'center', color: 'success.main' }}>
               <Icon icon='bx:chevron-up' />
               <Typography variant='body2' sx={{ fontWeight: 500, color: 'success.main' }}>
                 68.2%
               </Typography>
-            </Box>
-            <Typography variant='h5'>$84,686k</Typography>
+            </Box> */}
+            {profitData ? <Typography variant='h6'>{Math.floor(profitData.Profit)} AED</Typography> : <ProgressCircularColors />}
+
           </div>
         </Box>
         <ReactApexcharts type='line' height={131} width='90%' options={options} series={series} />

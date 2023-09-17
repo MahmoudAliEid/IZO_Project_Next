@@ -172,7 +172,7 @@ const AnalyticsDashboard = () => {
             <AnalyticsRevenue />
           </div>
           <div key="7" >
-            <AnalyticsProfitReport />
+            <AnalyticsProfitReport profitData={dataAnalytics?.Profit} />
           </div>
           <div key="8"  >
             <AnalyticsOrderStatistics />
