@@ -1,7 +1,7 @@
 'use client'
 
 // ** React Imports
-import { ChangeEvent, useState, useEffect } from 'react'
+import { ChangeEvent, useState, useEffect, useRef } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -136,9 +136,6 @@ const columns: GridColDef[] = [
     headerName: 'Date',
     renderCell: (params: GridRenderCellParams) => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {
-          console.log(params.row.transaction_date, "params.row.transaction_date")
-        }
         {params.row.transaction_date ? params.row.transaction_date.split(" ")[0] : 'John Doe'}
       </Typography>
     )
@@ -188,9 +185,47 @@ const TableColumns = ({ UserData }: any) => {
     }
   }
 
+  // lisght to card height 
+  const cardRef = useRef(null);
+
+  const handleCardHeightChange = (newHeight) => {
+    // Your custom logic for handling the height change goes here
+    // You can call any function or update state as needed
+    console.log('Handling card height change:', newHeight);
+  };
+  useEffect(() => {
+    const observeCardHeight = () => {
+      const card = cardRef.current;
+
+      if (card) {
+        const observer = new ResizeObserver(entries => {
+          for (const entry of entries) {
+            // Handle the height change here
+            const newHeight = entry.contentRect.height;
+            console.log(`Card height changed to ${newHeight}px`);
+
+            // Call your custom function here with the new height
+            handleCardHeightChange(newHeight);
+          }
+        });
+
+        observer.observe(card);
+
+        return () => {
+          observer.unobserve(card);
+        };
+      }
+    };
+
+    observeCardHeight();
+  }, []);
+
+
+
+
 
   return (
-    <Card style={{ height: "100%", width: "100%" }}>
+    <Card style={{ height: "100%", width: "100%" }} ref={cardRef}>
       <CardHeader title='Sales' />
       <DataGrid
         autoHeight
