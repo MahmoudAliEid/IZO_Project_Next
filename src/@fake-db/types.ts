@@ -157,6 +157,18 @@ export type DataGridRowType = {
   experience: string
 }
 
+// seles grid row type 
+export type SalesGridRowType = {
+  contact: string;
+  final_total: string;
+  id: number;
+  invoice_no: string;
+  payment_status: string;
+  status: string;
+  transaction_date: string;
+  type: string;
+}
+
 // Help Center
 //------------
 export type HelpCenterSubcategoryArticlesType = {

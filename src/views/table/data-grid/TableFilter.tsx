@@ -1,5 +1,7 @@
+'use client'
+
 // ** React Imports
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -15,13 +17,10 @@ import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Types Imports
 import { ThemeColor } from 'src/@core/layouts/types'
-import { DataGridRowType } from 'src/@fake-db/types'
+import { DataGridRowType, SalesGridRowType } from 'src/@fake-db/types'
 
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
-
-// ** Data Import
-import { rows } from 'src/@fake-db/table/static-data'
 
 interface StatusObj {
   [key: number]: {
@@ -75,72 +74,102 @@ const columns: GridColDef[] = [
 
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {renderClient(params)}
+          {/* {renderClient(params)} */}
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-              {row.full_name}
-            </Typography>
-            <Typography noWrap variant='caption'>
-              {row.email}
+              {row.contact ? row.contact : 'John Doe'}
             </Typography>
           </Box>
         </Box>
       )
     }
   },
+
   {
     flex: 0.2,
-    type: 'date',
     minWidth: 120,
-    headerName: 'Date',
-    field: 'start_date',
-    valueGetter: params => new Date(params.value),
+    headerName: 'Total',
+    field: 'final_total',
+    valueGetter: (params: GridRenderCellParams) => {
+      if (params.value !== null && params.value !== undefined) {
+        return Math.round(params.value * 100) / 100;
+      } else {
+        return 'John Doe';
+      }
+    },
     renderCell: (params: GridRenderCellParams) => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.start_date}
+        {params.value}
       </Typography>
-    )
+    ),
   },
   {
     flex: 0.2,
     minWidth: 110,
-    field: 'salary',
-    headerName: 'Salary',
+    field: 'invoice_no',
+    headerName: 'Invoice',
     renderCell: (params: GridRenderCellParams) => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.salary}
+        {params.row.invoice_no ? params.row.invoice_no : 'John Doe'}
       </Typography>
     )
   },
+
   {
     flex: 0.125,
-    field: 'age',
+    field: 'payment_status',
     minWidth: 80,
-    headerName: 'Age',
+    headerName: 'payment status',
     renderCell: (params: GridRenderCellParams) => (
       <Typography variant='body2' sx={{ color: 'text.primary' }}>
-        {params.row.age}
+        {params.row.payment_status ? params.row.payment_status : 'John Doe'}
       </Typography>
     )
   },
+
+
+  {
+
+    flex: 0.2,
+    minWidth: 140,
+    field: 'transaction_date',
+    headerName: 'Date',
+    renderCell: (params: GridRenderCellParams) => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {
+          console.log(params.row.transaction_date, "params.row.transaction_date")
+        }
+        {params.row.transaction_date ? params.row.transaction_date.split(" ")[0] : 'John Doe'}
+      </Typography>
+    )
+
+  },
+
   {
     flex: 0.2,
     minWidth: 140,
-    field: 'status',
-    headerName: 'Status',
-    renderCell: (params: GridRenderCellParams) => {
-      const status = statusObj[params.row.status]
-
-      return <CustomChip rounded size='small' skin='light' color={status.color} label={status.title} />
-    }
+    field: 'type',
+    headerName: 'Type',
+    renderCell: (params: GridRenderCellParams) => (
+      <Typography variant='body2' sx={{ color: 'text.primary' }}>
+        {params.row.type ? params.row.type : 'John Doe'}
+      </Typography>
+    )
   }
 ]
 
-const TableColumns = () => {
+const TableColumns = ({ UserData }: any) => {
+  // console.log(UserData.sale, "UserData from table")
+
   // ** States
-  const [data] = useState<DataGridRowType[]>(rows)
+  const [data, setData] = useState<SalesGridRowType[]>([])
+  useEffect(() => {
+    if (UserData) {
+      setData(UserData.sale)
+    }
+  }, [UserData])
   const [searchText, setSearchText] = useState<string>('')
-  const [filteredData, setFilteredData] = useState<DataGridRowType[]>([])
+  const [filteredData, setFilteredData] = useState<SalesGridRowType[]>([])
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
 
   const handleSearch = (searchValue: string) => {
@@ -159,9 +188,10 @@ const TableColumns = () => {
     }
   }
 
+
   return (
-    <Card>
-      <CardHeader title='Quick Filter' />
+    <Card style={{ height: "100%", width: "100%" }}>
+      <CardHeader title='Sales' />
       <DataGrid
         autoHeight
         columns={columns}

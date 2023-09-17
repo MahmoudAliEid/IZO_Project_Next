@@ -28,6 +28,7 @@ import AnalyticsCongratulations from 'src/views/dashboards/analytics/AnalyticsCo
 import AnalyticsOrderStatistics from 'src/views/dashboards/analytics/AnalyticsOrderStatistics'
 import AnalyticsActivityTimeline from 'src/views/dashboards/analytics/AnalyticsActivityTimeline'
 import RatingComponent from '../../../utils/RatingComponent.jsx'
+import TableFilter from 'src/views/table/data-grid/TableFilter'
 import Grid from '@mui/material/Grid'
 
 // ** Styled Component Import
@@ -87,10 +88,12 @@ const AnalyticsDashboard = () => {
   }
 
 
-  const defaultLayout = [{ "w": 8, "h": 5, "x": 0, "y": 0, "i": "1", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 0, "i": "2", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 0, "i": "3", "moved": false, "static": false }, { "w": 8, "h": 10, "x": 0, "y": 5, "i": "4", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 5, "i": "5", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 5, "i": "6", "moved": false, "static": false }, { "w": 4, "h": 5, "x": 8, "y": 10, "i": "7", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 0, "y": 15, "i": "8", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 4, "y": 15, "i": "9", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 8, "y": 15, "i": "10", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 0, "y": 28, "i": "11", "moved": false, "static": false }, { "w": 5, "h": 12, "x": 7, "y": 28, "i": "12", "moved": false, "static": false }]
+  const defaultLayout = [{ "w": 8, "h": 5, "x": 0, "y": 0, "i": "1", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 22, "i": "2", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 0, "i": "3", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 3, "y": 40, "i": "4", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 22, "i": "5", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 0, "i": "6", "moved": false, "static": false }, { "w": 4, "h": 5, "x": 0, "y": 22, "i": "7", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 8, "y": 27, "i": "8", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 0, "y": 27, "i": "9", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 4, "y": 22, "i": "10", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 0, "y": 52, "i": "11", "moved": false, "static": false }, { "w": 12, "h": 13, "x": 0, "y": 64, "i": "12", "moved": false, "static": false }, { "w": 11, "h": 17, "x": 0, "y": 5, "i": "13", "moved": false, "static": false }]
+
   const [layout, setLayout] = useState(defaultLayout);
   useEffect(() => {
-    const savedLayout = JSON.parse(localStorage.getItem("layout"));
+    const layout = localStorage.getItem("layout");
+    const savedLayout = layout ? JSON.parse(layout) : null;
     if (savedLayout) {
       setLayout(savedLayout);
     }
@@ -112,11 +115,12 @@ const AnalyticsDashboard = () => {
   useEffect(() => {
     if (data) {
       setDataAnalytics(data);
+      console.log(data, "data from dashboard")
     }
   }, [data]);
 
   const handleLayoutChange = (newLayout: NewLayout) => {
-    // console.log(JSON.stringify(newLayout))
+    console.log(JSON.stringify(newLayout))
     localStorage.setItem("layout", JSON.stringify(newLayout));
   };
 
@@ -177,6 +181,9 @@ const AnalyticsDashboard = () => {
           </div>
           <div key="12"  >
             <AnalyticsTabsWithTable />
+          </div>
+          <div key="13" >
+            <TableFilter UserData={dataAnalytics?.UserData} />
           </div>
         </ResponsiveGridLayout>
         {/* <Grid container spacing={6}>
