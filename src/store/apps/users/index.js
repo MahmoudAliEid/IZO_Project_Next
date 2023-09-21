@@ -11,7 +11,7 @@ const initialState = {
 // Define an async thunk to fetch data from the API
 export const fetchUsers = createAsyncThunk('users/fetchData', async () => {
   try {
-    const response = await fetch(`https://test.izocloud.com/api/get-user`)
+    const response = await fetch(`https://test.izocloud.net/api/get-user`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }

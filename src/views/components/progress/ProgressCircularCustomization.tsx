@@ -7,11 +7,11 @@ const CircularProgressDeterminate = styled(CircularProgress)<CircularProgressPro
   color: theme.palette.customColors.trackBg
 }))
 
-const CircularProgressIndeterminate = styled(CircularProgress)<CircularProgressProps>(({ theme }) => ({
+const CircularProgressIndeterminate = styled(CircularProgress)<CircularProgressProps>(() => ({
   left: 0,
   position: 'absolute',
   animationDuration: '550ms',
-  color: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8'
+
 }))
 
 const ProgressCircularCustomization = () => {

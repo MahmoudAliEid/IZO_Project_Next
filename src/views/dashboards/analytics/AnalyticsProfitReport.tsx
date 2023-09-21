@@ -4,10 +4,12 @@ import Card from '@mui/material/Card'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import ProgressCircularColors from 'src/views/components/progress/ProgressCircularColors'
+import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
+
+// import ProgressCircularColors from 'src/views/components/progress/ProgressCircularColors'
 
 // ** Icon Import
-import Icon from 'src/@core/components/icon'
+// import Icon from 'src/@core/components/icon'
 
 // ** Third Party Imports
 import { ApexOptions } from 'apexcharts'
@@ -119,7 +121,7 @@ const AnalyticsProfitReport = ({ profitData }: ProfitType) => {
                 68.2%
               </Typography>
             </Box> */}
-            {profitData ? <Typography variant='h6'>{Math.floor(profitData.Profit)} AED</Typography> : <ProgressCircularColors />}
+            {profitData ? <Typography variant='h6'>{Math.floor(profitData.Profit)} AED</Typography> : <ProgressCustomization />}
 
           </div>
         </Box>

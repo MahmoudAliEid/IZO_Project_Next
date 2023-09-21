@@ -107,7 +107,7 @@ type CurrenciesType = {
 
 export async function getStaticProps() {
   // Fetch data from the API
-  const apiUrl = 'https://test.izocloud.com/api/app/react/currency'
+  const apiUrl = 'https://test.izocloud.net/api/app/react/currency'
   const response = await fetch(apiUrl)
 
   if (!response.ok) {

@@ -13,7 +13,7 @@ const initialState = {
 // Define an async thunk action to handle loginFirstTime
 export const loginFirstTime = createAsyncThunk('feature/loginFirstTime', async loginData => {
   try {
-    const response = await axios.post('https://test.izocloud.com/api/app/front/login', loginData, {
+    const response = await axios.post('https://test.izocloud.net/api/app/front/login', loginData, {
       headers: {
         'Content-Type': 'application/json'
       }

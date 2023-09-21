@@ -17,6 +17,7 @@ import { getCookie } from 'cookies-next'
 // ** Demo Component Imports
 import AnalyticsOrder from 'src/views/dashboards/analytics/AnalyticsOrder'
 import AnalyticsSales from 'src/views/dashboards/analytics/AnalyticsSales'
+import AnalyticsCustomCard from 'src/views/dashboards/analytics/AnalyticsCustomCard'
 import AnalyticsRevenue from 'src/views/dashboards/analytics/AnalyticsRevenue'
 import AnalyticsPayments from 'src/views/dashboards/analytics/AnalyticsPayments'
 import AnalyticsProfitReport from 'src/views/dashboards/analytics/AnalyticsProfitReport'
@@ -67,7 +68,7 @@ const AnalyticsDashboard = () => {
 
   const [token, setToken] = useState<string>("")
   const [url, setUrl] = useState<string>("")
-  const [typeofData, setTypeofData] = useState<string>("year")
+  const [typeofData, setTypeofData] = useState<string>("today")
   const [dataAnalytics, setDataAnalytics] = useState<AnalyticsType>()
 
   useEffect(() => {
@@ -159,7 +160,7 @@ const AnalyticsDashboard = () => {
           </div>
           <div key="3" >
             {/* @ts-ignore */}
-            <AnalyticsSales Sale_section={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
+            <AnalyticsSales data={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
           </div>
           <div key="4"   >
             <AnalyticsTotalRevenue />
@@ -181,7 +182,7 @@ const AnalyticsDashboard = () => {
             <AnalyticsTabsWithChart />
           </div>
           <div key="10"  >
-            <AnalyticsTransactions />
+            <AnalyticsTransactions UserData={dataAnalytics?.Accounts.cash} title="Cash" />
           </div>
           <div key="11"  >
             <AnalyticsActivityTimeline />
@@ -196,10 +197,11 @@ const AnalyticsDashboard = () => {
             <TableFilter UserData={dataAnalytics?.UserData} title="Purchase" />
           </div>
           <div key="15" >
-            <TableFilter UserData={dataAnalytics?.Accounts.cash} title="Cash" />
+            <AnalyticsTransactions UserData={dataAnalytics?.Accounts.bank} title="Bank" />
           </div>
           <div key="16" >
-            <TableFilter UserData={dataAnalytics?.Accounts.bank} title="Bank" />
+            {/* @ts-ignore */}
+            <AnalyticsCustomCard data={dataAnalytics?.Report?.Expense_section} handleOptionSelect={handleChangeTypeofData} title={"Expense"} avatar={'/images/cards/wallet.png'} />
           </div>
         </ResponsiveGridLayout>
         {/* <Grid container spacing={6}>
