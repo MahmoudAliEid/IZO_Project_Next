@@ -66,26 +66,17 @@ type AnalyticsType =
 
 const AnalyticsDashboard = () => {
 
-  const [token, setToken] = useState<string>("")
-  const [url, setUrl] = useState<string>("")
+
   const [typeofData, setTypeofData] = useState<string>("today")
   const [dataAnalytics, setDataAnalytics] = useState<AnalyticsType>()
 
-  useEffect(() => {
-    const token = getCookie('token')
-    const url = getCookie('apiUrl')
 
-    //@ts-ignore
-    setToken(token)
-
-    //@ts-ignore
-    setUrl(url)
-  }, [token, url])
 
   // create function to handelchange typeofData
   const handleChangeTypeofData = (e: any) => {
     setTypeofData(e)
-    console.log(e, "e from dashboard")
+
+    // console.log(e, "e from dashboard")
   }
 
 
@@ -106,17 +97,15 @@ const AnalyticsDashboard = () => {
 
   // get data from redux
   useEffect(() => {
-    if (token && url) {
-      //@ts-ignore
-      dispatch(fetchDataAnalytics({ token, url, typeofData }))
-    }
-  }, [token, url, typeofData, dispatch])
+    //@ts-ignore
+    dispatch(fetchDataAnalytics({ typeofData }))
+  }, [typeofData, dispatch]);
 
   const data = useSelector((state: DashboardAnalytics) => state.dashboardAnalytics.data)
   useEffect(() => {
     if (data) {
       setDataAnalytics(data);
-      console.log(data, "data from dashboard")
+      // console.log(data, "data from dashboard")
     }
   }, [data]);
 

@@ -1,5 +1,8 @@
 'use client'
 
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+
 // ** React Imports
 import { ChangeEvent, useState, useEffect, useRef } from 'react'
 
@@ -218,8 +221,8 @@ const columnsTwo: GridColDef[] = [
 
 
 const TableColumns = ({ UserData, title }: any) => {
-  if (title === "purchase" && UserData) {
-    console.log(UserData.purchase)
+  if (UserData) {
+    console.log(UserData.purchase, "purchase")
   }
 
 
@@ -294,12 +297,29 @@ const TableColumns = ({ UserData, title }: any) => {
   }, []);
 
 
+  const router = useRouter()
 
+  // git current url
+  const currentUrl = router.pathname
+  console.log(currentUrl, "current url")
 
 
   return (
     <Card style={{ height: "100%", width: "100%" }} ref={cardRef}>
-      <CardHeader title={`${title} Report`} />
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
+        <CardHeader title={`${title} Report`} />
+        {/* 
+          link to see all data
+        */}
+        {
+          currentUrl === "/dashboards/analytics" ?
+            <Link href={`/dashboards/${title.toLowerCase()}`} passHref>
+              <CustomChip label={`see all ${title}`} sx={{ mr: 2 }} style={{ cursor: "pointer" }} />
+            </Link>
+            : null
+        }
+      </Box>
+
       <DataGrid
         autoHeight
         columns={title === "Bank" || title === "Cash" ? columnsTwo : columnsOne}

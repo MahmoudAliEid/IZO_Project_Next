@@ -22,6 +22,13 @@ const navigation = (): HorizontalNavItemsType => {
           title: 'eCommerce',
           path: '/dashboards/ecommerce'
         }
+        ,
+        {
+          icon: 'bx:sales',
+          title: 'Sales',
+          path: '/dashboards/sales'
+
+        }
       ]
     },
     {

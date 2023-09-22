@@ -20,6 +20,14 @@ const navigation = (): VerticalNavItemsType => {
         {
           title: 'eCommerce',
           path: '/dashboards/ecommerce'
+        },
+        {
+          title: 'sale',
+          path: '/dashboards/sales'
+        },
+        {
+          title: 'purchase',
+          path: '/dashboards/purchase'
         }
       ]
     },
