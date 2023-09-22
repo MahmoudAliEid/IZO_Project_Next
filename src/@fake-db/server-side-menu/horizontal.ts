@@ -23,6 +23,16 @@ const navigation: HorizontalNavItemsType = [
         icon: 'bx:analyse',
         title: 'eCommerce',
         path: '/dashboards/ecommerce'
+      },
+      {
+        icon: 'bx:analyse',
+        title: 'Sales',
+        path: '/dashboards/sales'
+      },
+      {
+        icon: 'bx:analyse',
+        title: 'Purchases',
+        path: '/dashboards/purchases'
       }
     ]
   },

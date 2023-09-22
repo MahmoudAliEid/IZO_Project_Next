@@ -22,12 +22,12 @@ const navigation = (): VerticalNavItemsType => {
           path: '/dashboards/ecommerce'
         },
         {
-          title: 'sale',
+          title: 'Sales',
           path: '/dashboards/sales'
         },
         {
-          title: 'purchase',
-          path: '/dashboards/purchase'
+          title: 'Purchases',
+          path: '/dashboards/purchases'
         }
       ]
     },

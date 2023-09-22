@@ -30,7 +30,7 @@ import AnalyticsOrderStatistics from 'src/views/dashboards/analytics/AnalyticsOr
 import AnalyticsActivityTimeline from 'src/views/dashboards/analytics/AnalyticsActivityTimeline'
 import RatingComponent from '../../../utils/RatingComponent.jsx'
 import TableFilter from 'src/views/table/data-grid/TableFilter'
-import Grid from '@mui/material/Grid'
+
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
@@ -65,24 +65,30 @@ type AnalyticsType =
 
 
 const AnalyticsDashboard = () => {
-
-
+  // ** Declare variables
+  const [token, setToken] = useState<string>("")
+  const [url, setUrl] = useState<string>("")
   const [typeofData, setTypeofData] = useState<string>("today")
   const [dataAnalytics, setDataAnalytics] = useState<AnalyticsType>()
+  const dispatch = useDispatch()
+  const defaultLayout = [{ "w": 8, "h": 5, "x": 0, "y": 0, "i": "1", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 22, "i": "2", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 0, "i": "3", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 3, "y": 40, "i": "4", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 22, "i": "5", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 0, "i": "6", "moved": false, "static": false }, { "w": 4, "h": 5, "x": 0, "y": 22, "i": "7", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 8, "y": 27, "i": "8", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 0, "y": 27, "i": "9", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 4, "y": 22, "i": "10", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 0, "y": 52, "i": "11", "moved": false, "static": false }, { "w": 12, "h": 13, "x": 0, "y": 64, "i": "12", "moved": false, "static": false }, { "w": 11, "h": 17, "x": 0, "y": 5, "i": "13", "moved": false, "static": false }]
+  const [layout, setLayout] = useState(defaultLayout);
+  const data = useSelector((state: DashboardAnalytics) => state.dashboardAnalytics.data)
+  const [showRating, setShowRating] = useState(false);
 
-
-
-  // create function to handelchange typeofData
+  // create function to handle change typeofData
   const handleChangeTypeofData = (e: any) => {
     setTypeofData(e)
-
-    // console.log(e, "e from dashboard")
   }
 
 
-  const defaultLayout = [{ "w": 8, "h": 5, "x": 0, "y": 0, "i": "1", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 22, "i": "2", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 0, "i": "3", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 3, "y": 40, "i": "4", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 22, "i": "5", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 0, "i": "6", "moved": false, "static": false }, { "w": 4, "h": 5, "x": 0, "y": 22, "i": "7", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 8, "y": 27, "i": "8", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 0, "y": 27, "i": "9", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 4, "y": 22, "i": "10", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 0, "y": 52, "i": "11", "moved": false, "static": false }, { "w": 12, "h": 13, "x": 0, "y": 64, "i": "12", "moved": false, "static": false }, { "w": 11, "h": 17, "x": 0, "y": 5, "i": "13", "moved": false, "static": false }]
+  // ** use Effects
+  useEffect(() => {
+    if (data) {
+      setDataAnalytics(data);
+    }
+  }, [data]);
 
-  const [layout, setLayout] = useState(defaultLayout);
   useEffect(() => {
     const layout = localStorage.getItem("layout");
     const savedLayout = layout ? JSON.parse(layout) : null;
@@ -91,30 +97,32 @@ const AnalyticsDashboard = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
 
+    //@ts-ignore
+    setToken(token)
 
-  const dispatch = useDispatch()
+    //@ts-ignore
+    setUrl(url)
+  }, [token, url])
 
   // get data from redux
   useEffect(() => {
-    //@ts-ignore
-    dispatch(fetchDataAnalytics({ typeofData }))
-  }, [typeofData, dispatch]);
-
-  const data = useSelector((state: DashboardAnalytics) => state.dashboardAnalytics.data)
-  useEffect(() => {
-    if (data) {
-      setDataAnalytics(data);
-      // console.log(data, "data from dashboard")
+    if (token && url) {
+      //@ts-ignore
+      dispatch(fetchDataAnalytics({ token, url, typeofData }))
     }
-  }, [data]);
+  }, [token, url, typeofData, dispatch])
+
+
+
 
   const handleLayoutChange = (newLayout: NewLayout) => {
     console.log(JSON.stringify(newLayout))
     localStorage.setItem("layout", JSON.stringify(newLayout));
   };
-
-  const [showRating, setShowRating] = useState(false);
 
   setTimeout(() => {
     setShowRating(true);
@@ -132,6 +140,8 @@ const AnalyticsDashboard = () => {
           isBounded={false}
           autoSize={true}
           onLayoutChange={handleLayoutChange}
+
+          // @ts-ignore
           layouts={{ lg: (typeof localStorage !== 'undefined' && localStorage.getItem("layout")) ? JSON.parse(localStorage.getItem("layout")) : layout }}
           breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
           cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
@@ -162,6 +172,7 @@ const AnalyticsDashboard = () => {
             <AnalyticsRevenue />
           </div>
           <div key="7" >
+            {/* @ts-ignore */}
             <AnalyticsProfitReport profitData={dataAnalytics?.Profit} />
           </div>
           <div key="8"  >
@@ -171,6 +182,7 @@ const AnalyticsDashboard = () => {
             <AnalyticsTabsWithChart />
           </div>
           <div key="10"  >
+            {/* @ts-ignore */}
             <AnalyticsTransactions UserData={dataAnalytics?.Accounts.cash} title="Cash" />
           </div>
           <div key="11"  >
@@ -180,12 +192,15 @@ const AnalyticsDashboard = () => {
             <AnalyticsTabsWithTable />
           </div>
           <div key="13" >
+            {/* @ts-ignore */}
             <TableFilter UserData={dataAnalytics?.UserData} title="Sale" />
           </div>
           <div key="14" >
+            {/* @ts-ignore */}
             <TableFilter UserData={dataAnalytics?.UserData} title="Purchase" />
           </div>
           <div key="15" >
+            {/* @ts-ignore */}
             <AnalyticsTransactions UserData={dataAnalytics?.Accounts.bank} title="Bank" />
           </div>
           <div key="16" >
@@ -193,52 +208,6 @@ const AnalyticsDashboard = () => {
             <AnalyticsCustomCard data={dataAnalytics?.Report?.Expense_section} handleOptionSelect={handleChangeTypeofData} title={"Expense"} avatar={'/images/cards/wallet.png'} />
           </div>
         </ResponsiveGridLayout>
-        {/* <Grid container spacing={6}>
-        <Grid item xs={12} lg={8} sx={{ order: -1 }}>
-          <AnalyticsCongratulations />
-        </Grid>
-        <Grid item xs={12} md={4} sx={{ order: -1 }}>
-          <Grid container spacing={6}>
-            <Grid item xs={6} md={12} lg={6}>
-              <AnalyticsOrder />
-            </Grid>
-            <Grid item xs={6} md={12} lg={6}>
-              <AnalyticsSales />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} lg={8}>
-          <AnalyticsTotalRevenue />
-        </Grid>
-        <Grid item xs={12} md={8} lg={4} sx={{ order: [-1, -1, -1, 0] }}>
-          <Grid container spacing={6}>
-            <Grid item xs={6}>
-              <AnalyticsPayments />
-            </Grid>
-            <Grid item xs={6}>
-              <AnalyticsRevenue />
-            </Grid>
-            <Grid item xs={12}>
-              <AnalyticsProfitReport />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <AnalyticsOrderStatistics />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <AnalyticsTabsWithChart />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <AnalyticsTransactions />
-        </Grid>
-        <Grid item xs={12} md={6} sx={{ order: [1, 1, 0] }}>
-          <AnalyticsActivityTimeline />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <AnalyticsTabsWithTable />
-        </Grid>
-  </Grid> */}
       </ApexChartWrapper>
     </React.Fragment>
   )
