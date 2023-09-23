@@ -4,20 +4,19 @@ import { OptionType } from 'src/@core/components/option-menu/types'
 
 type AnalyticsSales = {
   Sale_section: {
-    Sale: string,
+    Sale_section: string,
     Percent: number,
   },
-  handleOptionSelect: (event: OptionType) => void,
 }
 const AnalyticsSales = ({
-  Sale_section, handleOptionSelect }: AnalyticsSales) => {
+  Sale_section, Percent }: AnalyticsSales) => {
   return (
     <CardStatisticsVertical
       title='Sales'
-      stats={Sale_section?.Sale ? Sale_section.Sale : " 0"}
-      trendNumber={Sale_section?.Percent ? Number(Sale_section.Percent) : 0}
+      path='/dashboards/sales'
+      stats={Sale_section ? Sale_section : 0}
+      trendNumber={Percent}
       avatarSrc='/images/cards/stats-vertical-wallet.png'
-      handleOptionSelect={handleOptionSelect}
     />
   )
 }

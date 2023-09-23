@@ -11,12 +11,12 @@ import InputAdornment from '@mui/material/InputAdornment'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
-const data = ['year', 'month', 'day']
+const data = ['year', 'month', 'today']
 
 const yearData = ['2023', '2022', '2021', '2020', '2019']
 
-export default function Filter({ handleOptionSelect }) {
-  const [dataType, setDataType] = React.useState('')
+export default function Filter({ handleOptionSelect, teypeofData }) {
+  // const [dataType, setDataType] = React.useState('')
   const [yearType, setYearType] = React.useState('')
   const [loading, setLoading] = React.useState(false)
 
@@ -29,7 +29,6 @@ export default function Filter({ handleOptionSelect }) {
   }
 
   const handleChange = event => {
-    setDataType(event.target.value)
     handleOptionSelect(event.target.value)
   }
   const orangeBoxStyle = {
@@ -56,7 +55,7 @@ export default function Filter({ handleOptionSelect }) {
               }}
               labelId='demo-simple-select-label'
               id='demo-simple-select'
-              value={dataType}
+              value={teypeofData}
               label='Filter based on'
               onChange={handleChange}
             >

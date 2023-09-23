@@ -220,27 +220,29 @@ const columnsTwo: GridColDef[] = [
 ]
 
 
-const TableColumns = ({ UserData, title }: any) => {
-  if (UserData) {
-    console.log(UserData.purchase, "purchase")
-  }
+const TableColumns = ({ UserData, title, TableData }: any) => {
 
+  useEffect(() => {
+    console.log(TableData, "purchase from table columns")
+
+  }, [TableData])
 
   // ** States
   const [data, setData] = useState<SalesGridRowType[]>([])
+  // console.log(data, "data from table columns")
   useEffect(() => {
-    if (UserData) {
+    if (TableData && TableData.UserData) {
       if (title === "Sale") {
-        setData(UserData.sale)
+        setData(TableData.UserData.sale)
       } else if (title === "Purchase") {
-        setData(UserData.purchase)
+        setData(TableData.UserData.purchase)
       } else if (title === "Bank" || title === "Cash") {
         setData(UserData)
       } else {
         setData([])
       }
     }
-  }, [UserData, title])
+  }, [TableData, title])
   const [searchText, setSearchText] = useState<string>('')
   const [filteredData, setFilteredData] = useState<SalesGridRowType[]>([])
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 7 })
@@ -264,60 +266,44 @@ const TableColumns = ({ UserData, title }: any) => {
   // lisght to card height
   const cardRef = useRef(null);
 
-  const handleCardHeightChange = (newHeight) => {
-    // Your custom logic for handling the height change goes here
-    // You can call any function or update state as needed
-    console.log('Handling card height change:', newHeight);
-  };
-  useEffect(() => {
-    const observeCardHeight = () => {
-      const card = cardRef.current;
+  // const handleCardHeightChange = (newHeight) => {
+  //   // Your custom logic for handling the height change goes here
+  //   // You can call any function or update state as needed
+  //   console.log('Handling card height change:', newHeight);
+  // };
+  // useEffect(() => {
+  //   const observeCardHeight = () => {
+  //     const card = cardRef.current;
 
-      if (card) {
-        const observer = new ResizeObserver(entries => {
-          for (const entry of entries) {
-            // Handle the height change here
-            const newHeight = entry.contentRect.height;
-            console.log(`Card height changed to ${newHeight}px`);
+  //     if (card) {
+  //       const observer = new ResizeObserver(entries => {
+  //         for (const entry of entries) {
+  //           // Handle the height change here
+  //           const newHeight = entry.contentRect.height;
+  //           console.log(`Card height changed to ${newHeight}px`);
 
-            // Call your custom function here with the new height
-            handleCardHeightChange(newHeight);
-          }
-        });
+  //           // Call your custom function here with the new height
+  //           handleCardHeightChange(newHeight);
+  //         }
+  //       });
 
-        observer.observe(card);
+  //       observer.observe(card);
 
-        return () => {
-          observer.unobserve(card);
-        };
-      }
-    };
+  //       return () => {
+  //         observer.unobserve(card);
+  //       };
+  //     }
+  //   };
 
-    observeCardHeight();
-  }, []);
-
-
-  const router = useRouter()
-
-  // git current url
-  const currentUrl = router.pathname
-  console.log(currentUrl, "current url")
+  //   observeCardHeight();
+  // }, []);
 
 
   return (
     <Card style={{ height: "100%", width: "100%" }} ref={cardRef}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
         <CardHeader title={`${title} Report`} />
-        {/* 
-          link to see all data
-        */}
-        {
-          currentUrl === "/dashboards/analytics" ?
-            <Link href={`/dashboards/${title.toLowerCase()}`} passHref>
-              <CustomChip label={`see all ${title}`} sx={{ mr: 2 }} style={{ cursor: "pointer" }} />
-            </Link>
-            : null
-        }
+
       </Box>
 
       <DataGrid

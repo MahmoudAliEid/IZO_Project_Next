@@ -3,6 +3,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
@@ -12,12 +13,12 @@ const initialState = {
   TypeOfFilter: null
 }
 
+const token = getCookie('token')
+const url = getCookie('apiUrl')
+
 export const fetchDataAnalytics = createAsyncThunk('dashboard/fetchData', async payload => {
   try {
-    // const { typeofData } = payload
-    const { url, token, typeofData } = payload
-
-    // console.log('typeofData', typeofData, 'token', token, 'url', url)
+    const { typeofData } = payload
     const response = await axios.get(`${url}/app/react/dashboard?token="${token}"&date_type=${typeofData}`)
     const data = await response.data
 
@@ -35,6 +36,7 @@ const dashboardSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchDataAnalytics.pending, state => {
+        console.log('pending')
         state.loading = true
         state.error = null
       })
@@ -46,6 +48,7 @@ const dashboardSlice = createSlice({
         state.TypeOfFilter = action.payload.Type
       })
       .addCase(fetchDataAnalytics.rejected, (state, action) => {
+        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.error = action.error.message

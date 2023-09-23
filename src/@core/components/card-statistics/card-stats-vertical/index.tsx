@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import { useRouter } from 'next/router';
 
 // ** Types Imports
 import { CardStatsVerticalProps } from 'src/@core/components/card-statistics/types'
@@ -29,8 +30,16 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
     optionsMenuProps,
     trend = 'positive',
     avatarColor = 'primary',
-    handleOptionSelect
+    path
   } = props
+  console.log("stats in card stats vertical", stats)
+
+  const router = useRouter();
+
+  const handleOptionSelect = () => {
+    router.push(path)
+  }
+
 
   return (
     <Card style={{ width: "100%", height: "100%" }
@@ -52,10 +61,11 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
             <OptionsMenu {...optionsMenuProps} />
           ) : (
             <OptionsMenu
-              options={['year', 'month', 'week', 'day']}
+              options={['see details']}
               iconButtonProps={{ size: 'small', className: 'card-more-options', sx: { color: 'text.secondary' } }}
 
               //@ts-ignore
+              // go to dashboards/sales
               handleOptionSelect={handleOptionSelect}
 
             // Assuming that onSelectOption is a callback provided by OptionsMenu

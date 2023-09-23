@@ -12,46 +12,34 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 const Sales = () => {
   const [dataAnalytics, setDataAnalytics] = useState(null)
   const [typeofData, setTypeofData] = useState('today')
-  const [token, setToken] = useState('')
-  const [url, setUrl] = useState('')
+
   const dispatch = useDispatch()
   const data = useSelector(state => state.dashboardAnalytics.data)
 
-  useEffect(() => {
-    const token = getCookie('token')
-    const url = getCookie('apiUrl')
-
-    //@ts-ignore
-    setToken(token)
-
-    //@ts-ignore
-    setUrl(url)
-  }, [token, url])
-
   // get data from redux
   useEffect(() => {
-    if (token && url) {
-      //@ts-ignore
-      dispatch(fetchDataAnalytics({ token, url, typeofData }))
-    }
-  }, [token, url, typeofData, dispatch])
+    dispatch(fetchDataAnalytics({ typeofData }))
+  }, [typeofData, dispatch])
 
   useEffect(() => {
     setDataAnalytics(data)
+
+    // console.log('user data from purchase', data)
   }, [data])
 
   const handleChangeTypeofData = e => {
     setTypeofData(e)
+    console.log(e, 'e from purchases')
   }
 
   return (
     <ApexChartWrapper>
       <div style={{ paddingBottom: '20px' }}>
-        <Filter handleOptionSelect={handleChangeTypeofData} />
+        <Filter handleOptionSelect={handleChangeTypeofData} teypeofData={typeofData} />
       </div>
 
       {dataAnalytics !== null ? (
-        <TableFilter UserData={dataAnalytics?.UserData} title='Sale' />
+        <TableFilter UserData={dataAnalytics?.UserData} title='Sale' TableData={dataAnalytics} />
       ) : (
         <ProgressCustomization />
       )}

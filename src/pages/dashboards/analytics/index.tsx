@@ -66,12 +66,10 @@ type AnalyticsType =
 
 const AnalyticsDashboard = () => {
   // ** Declare variables
-  const [token, setToken] = useState<string>("")
-  const [url, setUrl] = useState<string>("")
-  const [typeofData, setTypeofData] = useState<string>("today")
+  const [typeofData, setTypeofData] = useState<string>("year")
   const [dataAnalytics, setDataAnalytics] = useState<AnalyticsType>()
   const dispatch = useDispatch()
-  const defaultLayout = [{ "w": 8, "h": 5, "x": 0, "y": 0, "i": "1", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 22, "i": "2", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 0, "i": "3", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 3, "y": 40, "i": "4", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 22, "i": "5", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 0, "i": "6", "moved": false, "static": false }, { "w": 4, "h": 5, "x": 0, "y": 22, "i": "7", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 8, "y": 27, "i": "8", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 0, "y": 27, "i": "9", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 4, "y": 22, "i": "10", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 0, "y": 52, "i": "11", "moved": false, "static": false }, { "w": 12, "h": 13, "x": 0, "y": 64, "i": "12", "moved": false, "static": false }, { "w": 11, "h": 17, "x": 0, "y": 5, "i": "13", "moved": false, "static": false }]
+  const defaultLayout = [{ "w": 8, "h": 5, "x": 0, "y": 0, "i": "1", "moved": false, "static": false }, { "w": 2, "h": 6, "x": 8, "y": 24, "i": "2", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 10, "y": 0, "i": "3", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 3, "y": 60, "i": "4", "moved": false, "static": false }, { "w": 2, "h": 5, "x": 8, "y": 0, "i": "5", "moved": false, "static": false }, { "w": 2, "h": 6, "x": 10, "y": 24, "i": "6", "moved": false, "static": false }, { "w": 4, "h": 6, "x": 8, "y": 5, "i": "7", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 8, "y": 47, "i": "8", "moved": false, "static": false }, { "w": 4, "h": 13, "x": 0, "y": 47, "i": "9", "moved": false, "static": false }, { "w": 8, "h": 6, "x": 0, "y": 5, "i": "10", "moved": false, "static": false }, { "w": 7, "h": 12, "x": 0, "y": 72, "i": "11", "moved": false, "static": false }, { "w": 12, "h": 13, "x": 0, "y": 11, "i": "12", "moved": false, "static": false }, { "w": 11, "h": 17, "x": 0, "y": 30, "i": "13", "moved": false, "static": false }, { "w": 1, "h": 1, "x": 0, "y": 84, "i": "14", "moved": false, "static": false }, { "w": 1, "h": 1, "x": 0, "y": 85, "i": "15", "moved": false, "static": false }, { "w": 1, "h": 1, "x": 0, "y": 86, "i": "16", "moved": false, "static": false }]
   const [layout, setLayout] = useState(defaultLayout);
   const data = useSelector((state: DashboardAnalytics) => state.dashboardAnalytics.data)
   const [showRating, setShowRating] = useState(false);
@@ -79,6 +77,7 @@ const AnalyticsDashboard = () => {
   // create function to handle change typeofData
   const handleChangeTypeofData = (e: any) => {
     setTypeofData(e)
+    console.log('e from analytics', e)
   }
 
 
@@ -97,24 +96,11 @@ const AnalyticsDashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const token = getCookie('token')
-    const url = getCookie('apiUrl')
-
-    //@ts-ignore
-    setToken(token)
-
-    //@ts-ignore
-    setUrl(url)
-  }, [token, url])
 
   // get data from redux
   useEffect(() => {
-    if (token && url) {
-      //@ts-ignore
-      dispatch(fetchDataAnalytics({ token, url, typeofData }))
-    }
-  }, [token, url, typeofData, dispatch])
+    dispatch(fetchDataAnalytics({ typeofData }))
+  }, [typeofData, dispatch])
 
 
 
@@ -133,7 +119,7 @@ const AnalyticsDashboard = () => {
     <React.Fragment>
       {showRating && <RatingComponent />}
       <ApexChartWrapper >
-        <Filter handleOptionSelect={handleChangeTypeofData} />
+        <Filter handleOptionSelect={handleChangeTypeofData} teypeofData={typeofData} />
         <ResponsiveGridLayout
           className="layout"
           rowHeight={30}
@@ -159,14 +145,16 @@ const AnalyticsDashboard = () => {
           </div>
           <div key="3" >
             {/* @ts-ignore */}
-            <AnalyticsSales data={dataAnalytics?.Report?.Sale_section} handleOptionSelect={handleChangeTypeofData} />
+            <AnalyticsSales
+              Sale_section={dataAnalytics?.Report?.Sale_section?.Sale} Percent={dataAnalytics?.Report?.Sale_section?.Percent} />
           </div>
           <div key="4"   >
             <AnalyticsTotalRevenue />
           </div>
           <div key="5"  >
             {/* @ts-ignore */}
-            <AnalyticsPayments Purchase={dataAnalytics?.Report?.Purchase_section?.Purchase} Percent={dataAnalytics?.Report?.Purchase_section?.Percent} handleOptionSelect={handleChangeTypeofData} />
+            <AnalyticsPayments
+              Purchase={dataAnalytics?.Report?.Purchase_section?.Purchase} Percent={dataAnalytics?.Report?.Purchase_section?.Percent} />
           </div>
           <div key="6" >
             <AnalyticsRevenue />
@@ -191,14 +179,14 @@ const AnalyticsDashboard = () => {
           <div key="12"  >
             <AnalyticsTabsWithTable />
           </div>
-          <div key="13" >
-            {/* @ts-ignore */}
-            <TableFilter UserData={dataAnalytics?.UserData} title="Sale" />
-          </div>
-          <div key="14" >
-            {/* @ts-ignore */}
-            <TableFilter UserData={dataAnalytics?.UserData} title="Purchase" />
-          </div>
+          {/* <div key="13" >
+            @ts-ignore
+            <TableFilter UserData={dataAnalytics?.UserData} title="Sale" TableData={dataAnalytics} />
+          </div> */}
+          {/* <div key="14" >
+            @ts-ignore
+            <TableFilter UserData={dataAnalytics?.UserData} title="Purchase" TableData={dataAnalytics} />
+          </div> */}
           <div key="15" >
             {/* @ts-ignore */}
             <AnalyticsTransactions UserData={dataAnalytics?.Accounts.bank} title="Bank" />
