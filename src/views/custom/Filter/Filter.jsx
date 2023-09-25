@@ -1,6 +1,5 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import TextField from '@mui/material/TextField'
@@ -15,7 +14,7 @@ const data = ['year', 'month', 'today']
 
 const yearData = ['2023', '2022', '2021', '2020', '2019']
 
-export default function Filter({ handleOptionSelect, teypeofData }) {
+export default function Filter({ handleOptionSelect, typeofData }) {
   // const [dataType, setDataType] = React.useState('')
   const [yearType, setYearType] = React.useState('')
   const [loading, setLoading] = React.useState(false)
@@ -55,7 +54,7 @@ export default function Filter({ handleOptionSelect, teypeofData }) {
               }}
               labelId='demo-simple-select-label'
               id='demo-simple-select'
-              value={teypeofData}
+              value={typeofData}
               label='Filter based on'
               onChange={handleChange}
             >

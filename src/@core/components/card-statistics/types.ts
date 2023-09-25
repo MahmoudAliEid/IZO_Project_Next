@@ -25,6 +25,7 @@ export type CardStatsVerticalProps = {
   avatarColor?: ThemeColor
   trend?: 'positive' | 'negative'
   optionsMenuProps?: OptionsMenuType
+  path: string
   avatarIconProps?: Omit<IconProps, 'icon'>
   handleOptionSelect?: (event: DateOptions) => void
 }

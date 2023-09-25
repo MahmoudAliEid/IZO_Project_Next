@@ -47,7 +47,7 @@ const MenuItemWrapper = ({ children, option }: { children: ReactNode; option: Op
 
 const OptionsMenu = (props: OptionsMenuType) => {
   // ** Props
-  const { icon, options, menuProps, iconProps, leftAlignMenu, iconButtonProps, handleOptionSelect } = props
+  const { icon, options, menuProps, iconProps, leftAlignMenu, iconButtonProps, handleShowDetailsSelect } = props
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -64,9 +64,9 @@ const OptionsMenu = (props: OptionsMenuType) => {
     setAnchorEl(null)
   }
 
-  const handleMenuItemClick = (option: OptionType) => () => {
+  const handleMenuItemClick = () => () => {
 
-    handleOptionSelect?.(option)
+    handleShowDetailsSelect?.()
     handleClose();
   };
 
@@ -90,7 +90,7 @@ const OptionsMenu = (props: OptionsMenuType) => {
           if (typeof option === 'string') {
             return (
               <MenuItem key={index}
-                onClick={handleMenuItemClick(option)}
+                onClick={handleMenuItemClick()}
               >
                 {option}
               </MenuItem>

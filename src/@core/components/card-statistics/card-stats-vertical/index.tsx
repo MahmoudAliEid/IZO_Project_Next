@@ -36,7 +36,7 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
 
   const router = useRouter();
 
-  const handleOptionSelect = () => {
+  const handleShowDetailsSelect = () => {
     router.push(path)
   }
 
@@ -66,7 +66,7 @@ const CardStatsVertical = (props: CardStatsVerticalProps) => {
 
               //@ts-ignore
               // go to dashboards/sales
-              handleOptionSelect={handleOptionSelect}
+              handleShowDetailsSelect={handleShowDetailsSelect}
 
             // Assuming that onSelectOption is a callback provided by OptionsMenu
 

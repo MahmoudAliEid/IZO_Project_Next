@@ -1,7 +1,5 @@
 'use client'
 
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 // ** React Imports
 import { ChangeEvent, useState, useEffect, useRef } from 'react'
@@ -220,7 +218,7 @@ const columnsTwo: GridColDef[] = [
 ]
 
 
-const TableColumns = ({ UserData, title, TableData }: any) => {
+const TableColumns = ({ title, TableData }: any) => {
 
   useEffect(() => {
     console.log(TableData, "purchase from table columns")
@@ -229,6 +227,7 @@ const TableColumns = ({ UserData, title, TableData }: any) => {
 
   // ** States
   const [data, setData] = useState<SalesGridRowType[]>([])
+
   // console.log(data, "data from table columns")
   useEffect(() => {
     if (TableData && TableData.UserData) {
@@ -237,7 +236,7 @@ const TableColumns = ({ UserData, title, TableData }: any) => {
       } else if (title === "Purchase") {
         setData(TableData.UserData.purchase)
       } else if (title === "Bank" || title === "Cash") {
-        setData(UserData)
+        setData(TableData.UserData)
       } else {
         setData([])
       }

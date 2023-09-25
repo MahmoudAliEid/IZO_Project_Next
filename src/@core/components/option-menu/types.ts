@@ -36,7 +36,7 @@ export type OptionsMenuType = {
   icon?: ReactNode
   options: OptionType[]
   leftAlignMenu?: boolean
-  handleOptionSelect?: (event: DateOptions | OptionType) => void
+  handleShowDetailsSelect?: () => void
   iconButtonProps?: IconButtonProps
   iconProps?: Omit<IconProps, 'icon'>
   menuProps?: Omit<MenuProps, 'open'>
