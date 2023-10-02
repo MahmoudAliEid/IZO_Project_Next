@@ -111,7 +111,7 @@ interface UserData {
 }
 export async function getStaticProps() {
   // Fetch data from the API
-  const apiUrl = 'https://test.izocloud.net/api/get-user'
+  const apiUrl = 'https://test.izocloud.net/api/app/react/get-user'
   const response = await fetch(apiUrl)
 
   if (!response.ok) {

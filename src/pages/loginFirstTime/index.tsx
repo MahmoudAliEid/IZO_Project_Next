@@ -1,8 +1,11 @@
 'use client'
 
 // ** React Imports
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginFirstTime } from 'src/store/apps/auth/loginFirstTime'
+
 
 // import axios from 'axios'
 
@@ -66,17 +69,31 @@ const CenterWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 //   textDecoration: 'none',
 //   color: '#ec6608'
 // }))
+interface FormData {
+  username: string
+  password: string
+
+}
 
 const LoginFirstTime = () => {
   // ** States
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [password, setPassword] = useState('')
   const [userName, setUserName] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+
+  // const [confirmPassword, setConfirmPassword] = useState('')
   const [userNameError, setUserNameError] = useState<string>('')
   const [passwordError, setPasswordError] = useState<string>('')
+  const dispatch = useDispatch()
 
+  //@ts-ignore
+  const statusCode = useSelector(state => state.loginFirstTime.statusCode)
   const router = useRouter()
+
+  useEffect(() => {
+    if (statusCode === 200) { router.replace("/login") }
+  }, [statusCode, router])
+
 
 
   //to get ip address
@@ -97,23 +114,28 @@ const LoginFirstTime = () => {
       setPasswordError("The Password cannot be empty!")
     } else if (password.length < 5) {
       setPasswordError("password is too short!")
-    } else if (password !== confirmPassword) {
-      setPasswordError("The Password and Confirm Password must equal.")
-    }
-    else {
+    } else {
 
       setUserNameError("")
       setPasswordError("")
+      const loginData: FormData = {
+        username: userName,
+        password: password,
 
-      router.replace("/login")
+      }
+      console.log("from login first time", loginData)
+
+      //@ts-ignore
+      dispatch(loginFirstTime(loginData))
+      if (statusCode === 200) router.replace("/login")
     }
 
   }
 
-  const handleConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
-    setConfirmPassword(e.target.value)
-  }
+  // const handleConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   e.preventDefault()
+  //   setConfirmPassword(e.target.value)
+  // }
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value)
@@ -232,7 +254,7 @@ const LoginFirstTime = () => {
                     </FormHelperText>
                   </FormControl>
 
-                  <FormControl
+                  {/* <FormControl
                     className={styles.varInput}
                     sx={{
                       margin: '5px 2px',
@@ -266,7 +288,7 @@ const LoginFirstTime = () => {
                       }
                       onChange={handleConfirmPassword}
                     />
-                  </FormControl>
+                  </FormControl> */}
                 </Box>
               </fieldset>
             </Grid>

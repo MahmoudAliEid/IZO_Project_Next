@@ -1,36 +1,28 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-
+import notify from '../../../../utils/notify.jsx'
 import axios from 'axios'
 
 const initialState = {
   data: [],
-  userType: '',
-  token: '',
   status: 'idle',
-  error: null
+  error: null,
+  statusCode: '',
+  message: '',
+  api_url: ''
 }
 
 // Define an async thunk action to handle loginFirstTime
-export const loginFirstTime = createAsyncThunk('feature/loginFirstTime', async loginData => {
+export const loginFirstTime = createAsyncThunk('feature/loginFirstTime', async loginFirstTimeData => {
   try {
-    const response = await axios.post('https://test.izocloud.net/api/app/front/login', loginData, {
+    const response = await axios.post('https://admin.izocloud.net/api/app/front/login', loginFirstTimeData, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    if (response.status < 200 || response.status >= 300) {
-      // Handle non-2xx status codes as errors
-      throw new Error(response.data.message)
-    }
 
-    return await response.data
+    return response.data
   } catch (error) {
-    // Use rejectWithValue to pass the error message to the rejected action
-
-    return {
-      message: 'Failed to Login for first time!!',
-      stack: error.stack
-    }
+    return response.data
   }
 })
 
@@ -38,17 +30,17 @@ export const loginFirstTime = createAsyncThunk('feature/loginFirstTime', async l
 export const loginFirstTimeSlice = createSlice({
   name: 'loginFirstTime',
   initialState,
-  reducers: {
-    getToken: state => {
-      state.token = localStorage.getItem('token') || ''
-    }
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(loginFirstTime.fulfilled, (state, action) => {
-        console.log('from login  action', action)
+        console.log('from login first time  action', action)
         state.data = action.payload
+        state.statusCode = action.payload.status
+        state.message = action.payload.message
+        state.api_url = action.payload.api_url
         state.status = 'success'
+        notify('Login for first time Successfully', 'success')
       })
       .addCase(loginFirstTime.pending, state => {
         state.status = 'pending'
@@ -56,6 +48,7 @@ export const loginFirstTimeSlice = createSlice({
       .addCase(loginFirstTime.rejected, (state, action) => {
         state.status = 'rejected'
         state.error = action.payload
+        notify('There is an Error try again!', 'error')
       })
   }
 })
