@@ -1,14 +1,18 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, MouseEvent, useCallback, ChangeEvent } from 'react'
+import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
+import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Next Imports
 import Link from 'next/link'
 import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
+import { getCookie } from 'cookies-next'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Menu from '@mui/material/Menu'
+import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
@@ -27,6 +31,8 @@ import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
+import { fetchIzoUsers } from 'src/store/apps/izoUsers/izoUsersSlice'
+
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
@@ -93,7 +99,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 // ** renders client column
 const renderClient = (row: UsersType) => {
-  if (row.avatar.length) {
+  if (row.avatar?.length) {
     return <CustomAvatar src={row.avatar} sx={{ mr: 3, width: 32, height: 32 }} />
   } else {
     return (
@@ -102,7 +108,7 @@ const renderClient = (row: UsersType) => {
         color={row.avatarColor || 'primary'}
         sx={{ mr: 3, width: 32, height: 32, fontSize: '.875rem' }}
       >
-        {getInitials(row.fullName ? row.fullName : 'John Doe')}
+        {getInitials(row.name ? row.name : 'John Doe')}
       </CustomAvatar>
     )
   }
@@ -175,21 +181,52 @@ const columns: GridColDef[] = [
   {
     flex: 0.25,
     minWidth: 240,
-    field: 'fullName',
-    headerName: 'User',
+    field: 'name',
+    headerName: 'Name',
     renderCell: ({ row }: CellType) => {
-      const { fullName, email } = row
+      const { name, email } = row
 
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {renderClient(row)}
           <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-            <LinkStyled href='/apps/user/view/account'>{fullName}</LinkStyled>
+            <LinkStyled href='/apps/user/view/account'>{name}</LinkStyled>
             <Typography noWrap variant='caption' sx={{ color: 'text.disabled' }}>
-              {email}
+              {email ? email : "defualt@example.com"}
             </Typography>
           </Box>
         </Box>
+      )
+    }
+  },
+  {
+    flex: 0.25,
+    minWidth: 240,
+    field: 'username',
+    headerName: 'User Name',
+    renderCell: ({ row }: CellType) => {
+      const { username } = row
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {renderClient(row)}
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+            <LinkStyled href='/apps/user/view/account'>{username ? username : row.name}</LinkStyled>
+          </Box>
+        </Box>
+      )
+    }
+  },
+  {
+    flex: 0.25,
+    minWidth: 240,
+    field: 'email',
+    headerName: 'Email',
+    renderCell: ({ row }: CellType) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }}>
+          {row.email ? row.email : "defualt@example.com"}
+        </Typography>
       )
     }
   },
@@ -204,52 +241,53 @@ const columns: GridColDef[] = [
           <CustomAvatar
             skin='light'
             sx={{ mr: 3, width: 30, height: 30 }}
-            color={userRoleObj[row.role].color as ThemeColor}
+            color={userRoleObj[row.role ? row.role : "admin"].color as ThemeColor}
           >
-            <Icon fontSize={18} icon={userRoleObj[row.role].icon} />
+            <Icon fontSize={18} icon={userRoleObj[row.role ? row.role : "admin"].icon} />
           </CustomAvatar>
           <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-            {row.role}
+            {row.role ? row.role : "Admin"}
           </Typography>
         </Box>
       )
     }
   },
-  {
-    flex: 0.15,
-    minWidth: 120,
-    headerName: 'Plan',
-    field: 'currentPlan',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Typography noWrap sx={{ fontWeight: 600, color: 'text.secondary', textTransform: 'capitalize' }}>
-          {row.currentPlan}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 185,
-    field: 'billing',
-    headerName: 'Billing',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.billing}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.1,
-    minWidth: 110,
-    field: 'status',
-    headerName: 'Status',
-    renderCell: ({ row }: CellType) => {
-      return <CustomChip rounded skin='light' size='small' label={row.status} color={userStatusObj[row.status]} />
-    }
-  },
+
+  // {
+  //   flex: 0.15,
+  //   minWidth: 120,
+  //   headerName: 'Plan',
+  //   field: 'currentPlan',
+  //   renderCell: ({ row }: CellType) => {
+  //     return (
+  //       <Typography noWrap sx={{ fontWeight: 600, color: 'text.secondary', textTransform: 'capitalize' }}>
+  //         {row.currentPlan}
+  //       </Typography>
+  //     )
+  //   }
+  // },
+  // {
+  //   flex: 0.2,
+  //   minWidth: 185,
+  //   field: 'billing',
+  //   headerName: 'Billing',
+  //   renderCell: ({ row }: CellType) => {
+  //     return (
+  //       <Typography noWrap sx={{ color: 'text.secondary' }}>
+  //         {row.billing}
+  //       </Typography>
+  //     )
+  //   }
+  // },
+  // {
+  //   flex: 0.1,
+  //   minWidth: 110,
+  //   field: 'status',
+  //   headerName: 'Status',
+  //   renderCell: ({ row }: CellType) => {
+  //     return <CustomChip rounded skin='light' size='small' label={row.status} color={userStatusObj[row.status]} />
+  //   }
+  // },
   {
     flex: 0.1,
     minWidth: 90,
@@ -260,6 +298,20 @@ const columns: GridColDef[] = [
   }
 ]
 
+type DataType = {
+  users: {
+    data: {
+      users: {
+        id: string,
+        name: string,
+        email: string,
+        username: string,
+        avatar: string,
+        role: string
+      }
+    }
+  }
+}
 const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   // ** State
   const [role, setRole] = useState<string>('')
@@ -268,21 +320,52 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
   const [status, setStatus] = useState<string>('')
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [token, setToken] = useState('')
+  const [url, setUrl] = useState('')
+  const [searchText, setSearchText] = useState<string>('')
+  const [filteredData, setFilteredData] = useState<DataType[]>([])
+
+  const escapeRegExp = (value: string) => {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+  }
+
+  //@ts-ignore
+  const [data, setData] = useState<DataType[]>(null);
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.user)
+
+  //@ts-ignore
+  const store = useSelector((state) => state.users?.data?.users)
 
   useEffect(() => {
-    dispatch(
-      fetchData({
-        role,
-        status,
-        q: value,
-        currentPlan: plan
-      })
-    )
-  }, [dispatch, plan, role, status, value])
+    setData(store)
+  }, [store])
+
+
+  // ** Cookies
+  useEffect(() => {
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+
+    //@ts-ignore
+    setToken(token)
+
+    //@ts-ignore
+    setUrl(url)
+  }, [token, url])
+
+
+
+
+  useEffect(() => {
+
+    if (token && url) {
+      //@ts-ignore
+      dispatch(fetchIzoUsers(token, url));
+    }
+
+  }, [dispatch, token, url])
 
   const handleFilter = useCallback((val: string) => {
     setValue(val)
@@ -302,6 +385,25 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
+  // ** handle search function
+  const handleSearch = (searchValue: string) => {
+    setSearchText(searchValue)
+    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
+    const filteredRows = data.filter(row => {
+      return Object.keys(row).some(field => {
+        // @ts-ignore
+        return searchRegex.test(row[field].toString())
+      })
+    })
+    if (searchValue.length) {
+      setFilteredData(filteredRows)
+    } else {
+      setFilteredData([])
+    }
+  }
+
+
+
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
@@ -319,8 +421,8 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
       </Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Search Filters' />
-          <CardContent>
+          <CardHeader title='Users List' />
+          {/* <CardContent>
             <Grid container spacing={5}>
               <Grid item sm={4} xs={12}>
                 <FormControl fullWidth>
@@ -383,18 +485,43 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
                 </FormControl>
               </Grid>
             </Grid>
-          </CardContent>
+          </CardContent> */}
           <Divider sx={{ m: '0 !important' }} />
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
-          <DataGrid
+          <Box
+            sx={{ p: 6, gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}
+          >
+            <Button color='secondary' variant='outlined' startIcon={<Icon icon='bx:upload' fontSize={20} />}>
+              Export
+            </Button>
+            <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+
+
+              <Button onClick={toggleAddUserDrawer} variant='contained'>
+                Add User
+              </Button>
+            </Box>
+          </Box>
+          {data ? <DataGrid
             autoHeight
-            rows={store.data}
             columns={columns}
             disableRowSelectionOnClick
             pageSizeOptions={[10, 25, 50]}
             paginationModel={paginationModel}
+            slots={{ toolbar: QuickSearchToolbar }}
             onPaginationModelChange={setPaginationModel}
-          />
+            rows={filteredData.length ? filteredData : data}
+            slotProps={{
+              baseButton: {
+                variant: 'outlined'
+              },
+              toolbar: {
+                value: searchText,
+                clearSearch: () => handleSearch(''),
+                onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
+              }
+            }}
+          /> : <ProgressCustomization />}
+
         </Card>
       </Grid>
 

@@ -16,7 +16,11 @@ export const fetchDataAnalytics = createAsyncThunk('dashboard/fetchData', async 
   try {
     const { token, url, typeofData } = payload
     if (token && url) {
-      const response = await axios.get(`${url}/app/react/dashboard?token="${token}"&date_type=${typeofData}`)
+      const response = await axios.get(`${url}/app/react/dashboard?token="${token}"&date_type=${typeofData}`, {
+        headers: {
+          Authorization: 'Bearer ' + `${token}`
+        }
+      })
 
       const data = await response.data
 

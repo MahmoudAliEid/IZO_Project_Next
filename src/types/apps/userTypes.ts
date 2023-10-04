@@ -13,6 +13,7 @@ export type UsersType = {
   contact: string
   fullName: string
   username: string
+  name: string
   currentPlan: string
   avatarColor?: ThemeColor
 }
