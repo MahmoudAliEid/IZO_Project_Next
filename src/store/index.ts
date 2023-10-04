@@ -13,6 +13,9 @@ import registerSlice from './apps/auth/register'
 import loginFirstTimeSlice from './apps/auth/loginFirstTime'
 import usersSlice from 'src/store/apps/users'
 import dashboardSlice from './apps/dashboard/dashboardSlice'
+import izoUsersSlice from 'src/store/apps/izoUsers/izoUsersSlice'
+import createUsersSlice from 'src/store/apps/izoUsers/createUserSlice'
+import editUsersSlice from 'src/store/apps/izoUsers/editUsersSlice'
 
 export const store = configureStore({
   reducer: {
@@ -26,7 +29,10 @@ export const store = configureStore({
     register: registerSlice,
     loginFirstTime: loginFirstTimeSlice,
     usersNames: usersSlice,
-    dashboardAnalytics: dashboardSlice
+    dashboardAnalytics: dashboardSlice,
+    users: izoUsersSlice,
+    createUser: createUsersSlice,
+    editUsers: editUsersSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
