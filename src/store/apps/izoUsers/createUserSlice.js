@@ -3,6 +3,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
@@ -12,10 +13,11 @@ const initialState = {
   error: null
 }
 
-export const fetchCreateUsers = createAsyncThunk('dashboard/fetchCreateUsers', async payload => {
-  try {
-    const { token, url } = payload
+const token = getCookie('token')
+const url = getCookie('apiUrl')
 
+export const fetchCreateUsers = createAsyncThunk('users/fetchCreateUsers', async payload => {
+  try {
     if (token && url) {
       const config = {
         headers: {
@@ -23,7 +25,9 @@ export const fetchCreateUsers = createAsyncThunk('dashboard/fetchCreateUsers', a
         }
       }
 
-      const response = await axios.get(`${url}/api/app/react/users/create`, config)
+      const response = await axios.get(`${url}/app/react/users/create`, config)
+
+      // console.log(response, '===> response')
 
       const data = response.data
 
@@ -50,7 +54,6 @@ const createUsersSlice = createSlice({
         console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
-        state.status = action.payload.status
         state.error = null
       })
       .addCase(fetchCreateUsers.rejected, (state, action) => {

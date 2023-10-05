@@ -47,6 +47,7 @@
     "cookies-next": "^3.0.0",
     "date-fns": "^2.29.3",
     "draft-js": "^0.11.7",
+    "formik": "^2.4.5",
     "i18next": "^22.4.11",
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-http-backend": "^2.2.0",
