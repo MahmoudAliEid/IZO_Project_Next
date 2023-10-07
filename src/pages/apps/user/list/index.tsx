@@ -1,7 +1,8 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback, ChangeEvent } from 'react'
+import { useState, useEffect, MouseEvent, useCallback, ChangeEvent, useRef } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
+
 
 // ** Next Imports
 import Link from 'next/link'
@@ -314,16 +315,13 @@ type DataType = {
 }
 const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   // ** State
-  const [role, setRole] = useState<string>('')
-  const [plan, setPlan] = useState<string>('')
-  const [value, setValue] = useState<string>('')
-  const [status, setStatus] = useState<string>('')
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
   const [searchText, setSearchText] = useState<string>('')
   const [filteredData, setFilteredData] = useState<DataType[]>([])
+  const title = 'Users List'
 
   const escapeRegExp = (value: string) => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -367,21 +365,28 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
   }, [dispatch, token, url])
 
-  const handleFilter = useCallback((val: string) => {
-    setValue(val)
-  }, [])
+  // const handleFilter = useCallback((val: string) => {
+  //   setValue(val)
+  // }, [])
 
-  const handleRoleChange = useCallback((e: SelectChangeEvent) => {
-    setRole(e.target.value)
-  }, [])
+  // const handleRoleChange = useCallback((e: SelectChangeEvent) => {
+  //   setRole(e.target.value)
+  // }, [])
 
-  const handlePlanChange = useCallback((e: SelectChangeEvent) => {
-    setPlan(e.target.value)
-  }, [])
+  // const handlePlanChange = useCallback((e: SelectChangeEvent) => {
+  //   setPlan(e.target.value)
+  // }, [])
 
-  const handleStatusChange = useCallback((e: SelectChangeEvent) => {
-    setStatus(e.target.value)
-  }, [])
+  // const handleStatusChange = useCallback((e: SelectChangeEvent) => {
+  //   setStatus(e.target.value)
+  // }, [])
+
+  // ** PDF
+  // const generatePDF = useReactToPrint({
+
+  //   content: () => componentPDF.current,
+  //   documentTitle: "UserList",
+  // })
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
@@ -421,7 +426,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
       </Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Users List' />
+          <CardHeader title={title} />
           {/* <CardContent>
             <Grid container spacing={5}>
               <Grid item sm={4} xs={12}>
@@ -490,37 +495,35 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
           <Box
             sx={{ p: 6, gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}
           >
-            <Button color='secondary' variant='outlined' startIcon={<Icon icon='bx:upload' fontSize={20} />}>
-              Export
-            </Button>
             <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-
-
               <Button onClick={toggleAddUserDrawer} variant='contained'>
                 Add User
               </Button>
+
             </Box>
           </Box>
-          {data ? <DataGrid
-            autoHeight
-            columns={columns}
-            disableRowSelectionOnClick
-            pageSizeOptions={[10, 25, 50]}
-            paginationModel={paginationModel}
-            slots={{ toolbar: QuickSearchToolbar }}
-            onPaginationModelChange={setPaginationModel}
-            rows={filteredData.length ? filteredData : data}
-            slotProps={{
-              baseButton: {
-                variant: 'outlined'
-              },
-              toolbar: {
-                value: searchText,
-                clearSearch: () => handleSearch(''),
-                onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
-              }
-            }}
-          /> : <ProgressCustomization />}
+          <Box >
+            {data ? <DataGrid
+              autoHeight
+              columns={columns}
+              disableRowSelectionOnClick
+              pageSizeOptions={[10, 25, 50]}
+              paginationModel={paginationModel}
+              slots={{ toolbar: QuickSearchToolbar }}
+              onPaginationModelChange={setPaginationModel}
+              rows={filteredData.length ? filteredData : data}
+              slotProps={{
+                baseButton: {
+                  variant: 'outlined'
+                },
+                toolbar: {
+                  value: searchText,
+                  clearSearch: () => handleSearch(''),
+                  onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
+                }
+              }}
+            /> : <ProgressCustomization />}
+          </Box>
 
         </Card>
       </Grid>
