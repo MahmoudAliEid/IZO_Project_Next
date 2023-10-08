@@ -7,23 +7,22 @@ import axios from 'axios'
 // Define the initial state
 const initialState = {
   data: null,
-  status: '',
   loading: false,
   error: null
 }
 
-export const fetchEditUsers = createAsyncThunk('dashboard/fetchEditUsers', async payload => {
+export const postDeleteUser = createAsyncThunk('dashboard/postDeleteUser', async payload => {
   try {
     const { token, url, id } = payload
 
-    if (token && url && id) {
+    if (token && url) {
       const config = {
         headers: {
           Authorization: `Bearer ${token}` // Send the token as a Bearer Token in the header
         }
       }
 
-      const response = await axios.get(`${url}/app/react/users/edit/${id}`, config)
+      const response = await axios.get(`${url}/app/react/users/del/${id}`, config)
 
       const data = response.data
 
@@ -35,25 +34,24 @@ export const fetchEditUsers = createAsyncThunk('dashboard/fetchEditUsers', async
 })
 
 // Create a Redux slice
-const editUsersSlice = createSlice({
-  name: 'editUsers',
+const deleteUsersSlice = createSlice({
+  name: 'deleteUser',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchEditUsers.pending, state => {
+      .addCase(postDeleteUser.pending, state => {
         console.log('pending')
         state.loading = true
         state.error = null
       })
-      .addCase(fetchEditUsers.fulfilled, (state, action) => {
+      .addCase(postDeleteUser.fulfilled, (state, action) => {
         console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
-        state.status = action.payload.status
         state.error = null
       })
-      .addCase(fetchEditUsers.rejected, (state, action) => {
+      .addCase(postDeleteUser.rejected, (state, action) => {
         console.log('action.error', action.error)
         state.loading = false
         state.data = null
@@ -62,4 +60,4 @@ const editUsersSlice = createSlice({
   }
 })
 
-export default editUsersSlice.reducer
+export default deleteUsersSlice.reducer

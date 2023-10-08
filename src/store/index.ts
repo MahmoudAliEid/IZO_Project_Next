@@ -16,6 +16,8 @@ import dashboardSlice from './apps/dashboard/dashboardSlice'
 import izoUsersSlice from 'src/store/apps/izoUsers/izoUsersSlice'
 import createUsersSlice from 'src/store/apps/izoUsers/createUserSlice'
 import editUsersSlice from 'src/store/apps/izoUsers/editUsersSlice'
+import deleteUserSlice from './apps/izoUsers/deleteUserSlice'
+import updateUserSlice from './apps/izoUsers/izoUpdateUserSlice'
 
 export const store = configureStore({
   reducer: {
@@ -32,7 +34,9 @@ export const store = configureStore({
     dashboardAnalytics: dashboardSlice,
     users: izoUsersSlice,
     createUser: createUsersSlice,
-    editUsers: editUsersSlice
+    editUsers: editUsersSlice,
+    deleteUser: deleteUserSlice,
+    updateUser: updateUserSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

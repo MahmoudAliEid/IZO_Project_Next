@@ -1,7 +1,8 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback, ChangeEvent, useRef } from 'react'
+import { useState, useEffect, MouseEvent, ChangeEvent } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
+import { postDeleteUser } from 'src/store/apps/izoUsers/deleteUserSlice'
 
 
 // ** Next Imports
@@ -118,6 +119,21 @@ const renderClient = (row: UsersType) => {
 const RowOptions = ({ id }: { id: number | string }) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+  const [token, setToken] = useState('')
+  const [url, setUrl] = useState('')
+
+  // ** Cookies
+  useEffect(() => {
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+
+    //@ts-ignore
+    setToken(token)
+
+    //@ts-ignore
+    setUrl(url)
+  }, [token, url])
+
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -132,7 +148,8 @@ const RowOptions = ({ id }: { id: number | string }) => {
   }
 
   const handleDelete = () => {
-    dispatch(deleteUser(id))
+    //@ts-ignore
+    dispatch(postDeleteUser(token, url, id))
     handleRowOptionsClose()
   }
 
