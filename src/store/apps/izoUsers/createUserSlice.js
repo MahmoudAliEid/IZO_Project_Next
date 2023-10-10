@@ -16,7 +16,7 @@ const initialState = {
 const token = getCookie('token')
 const url = getCookie('apiUrl')
 
-export const fetchCreateUsers = createAsyncThunk('users/fetchCreateUsers', async payload => {
+export const fetchCreateUsers = createAsyncThunk('users/fetchCreateUsers', async () => {
   try {
     if (token && url) {
       const config = {

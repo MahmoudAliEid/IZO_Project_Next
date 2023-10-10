@@ -1,6 +1,10 @@
+'use client';
+
+/* eslint-disable import/newline-after-import */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { useState, useEffect } from 'react'
+import { useTheme } from '@mui/material/styles'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -17,6 +21,7 @@ import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 
 // ** Third Party Imports
 import * as Yup from 'yup';
@@ -37,6 +42,14 @@ import { Formik, Form, Field } from 'formik';
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
+
+// import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
+import useCreateUser from 'src/hooks/useCreateUser'
+
+import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
+import CustomInput from './PickersCustomInput'
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+
 
 interface SidebarAddUserType {
   open: boolean
@@ -67,16 +80,17 @@ const initialValues = {
   lastName: '',
   email: '',
   BusinessLocation: '',
-  ProductPrice: '',
+  ProductPriceItem: '',
   accounts: '',
   visa: '',
   agents: '',
-  contacts: '',
+  selectedContact: '',
   cost_center: '',
   gender: '',
   marital: '',
-  patterns: '',
-  taxes: '',
+  userPattern: '',
+  patternId: '',
+  taxesItem: '',
   warehouse: '',
   isActive: false,
   allowlogin: false,
@@ -88,8 +102,7 @@ const initialValues = {
   AGT: false,
   salesCommission: '',
   maxSalesDiscount: '',
-  allowSlctdContacts: false,
-  dateOfBirth: '',
+  dateOfBirth: new Date(),
   bloodGroup: '',
   mobileNumber: '',
   alternativeMobileNumber: '',
@@ -167,6 +180,7 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 //   contact: Number('')
 // }
 
+
 const SidebarAddUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle } = props
@@ -185,10 +199,13 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     warehouse: []
   });
 
-
-
-
-  const [businessLocation, setBusinessLocation] = useState<string>('')
+  // ** Hook
+  const theme = useTheme()
+  const { direction } = theme
+  const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
+  const [date, setDate] = useState<any>(new Date())
+  const { isLoading, error, responseData, storeNewUser } = useCreateUser();
+  const [allowSlctdContacts, setAllowSlctdContacts] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -211,10 +228,15 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     toggle()
   }
 
+
+
   const handleSubmit = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     // Handle form submission logic here
     console.log(values);
-    resetForm();
+
+    // storeNewUser(values);
+
+    // resetForm();
   };
 
 
@@ -383,133 +405,192 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                         ))}
                   </Select>
                 </FormControl>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: 3,
+                    mb: 2
+                  }}
+                >
+                  <FormControl fullWidth sx={{ mb: 6 }}>
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    > agents </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='agents'
+                      value={values.agents}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label=" agents"
+                    >
+                      {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.agents.map((item: any) => (
+                            <MenuItem
+                              value={item.id}
+                              key={item.id}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth sx={{ mb: 6 }}>
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    > cost_center </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='cost_center'
+                      value={values.cost_center}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label=" cost_center"
+                    >
+                      {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.cost_center.map((item: any) => (
+                            <MenuItem
+                              value={item.id}
+                              key={item.id}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+
+                </Box>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: 3,
+                    mb: 2
+                  }}
+                >
+                  <FormControl fullWidth sx={{ mb: 6 }}>
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    > Warehouse name </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='warehouse'
+                      value={values.warehouse}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label="Warehouse name"
+                    >
+                      {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.warehouse.map((item: any) => (
+                            <MenuItem
+                              value={item.id}
+                              key={item.id}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl fullWidth sx={{ mb: 6 }}>
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    >User Pattern </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='userPattern'
+                      value={values.userPattern}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label="User Pattern"
+                    >
+                      {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.patterns.map((item: any) => (
+                            <MenuItem
+                              value={item.id}
+                              key={item.id}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                {/* 
+                  drop down for ProductPrice
+                */}
+
+                <FormControl fullWidth sx={{ mb: 6 }}>
+                  <InputLabel
+                    id="demo-simple-select-standard-label"
+                  >Product Price </InputLabel>
+                  <Select
+                    fullWidth
+                    labelId="demo-simple-select-standard-label"
+                    name='ProductPriceItem'
+                    value={values.ProductPriceItem}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={!!touched.prefix && !!errors.prefix}
+                    label="Product Price"
+                  >
+                    {
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.ProductPrice.map((item: any) => (
+                          <MenuItem
+                            value={item.id}
+                            key={item.id}
+                          >
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                  </Select>
+                </FormControl>
+                {/* 
+                  drop down for taxes
+                */}
+                <FormControl fullWidth sx={{ mb: 6 }}>
+                  <InputLabel
+                    id="demo-simple-select-standard-label"
+                  >Taxes </InputLabel>
+                  <Select
+                    fullWidth
+                    labelId="demo-simple-select-standard-label"
+                    name='taxesItem'
+                    value={values.taxesItem}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={!!touched.prefix && !!errors.prefix}
+                    label="Taxes"
+                  >
+                    {
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.taxes.map((item: any) => (
+                          <MenuItem
+                            value={item.id}
+                            key={item.id}
+                          >
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                  </Select>
+                </FormControl>
+
               </Box>
 
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
-                }}
-              >
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel
-                    id="demo-simple-select-standard-label"
-                  > agents </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-standard-label"
-                    name='agents'
-                    value={values.agents}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label=" agents"
-                  >
-                    {
-                      Object.keys(Requirements).length === 0 ? null :
-                        Requirements.agents.map((item: any) => (
-                          <MenuItem
-                            value={item.id}
-                            key={item.id}
-                          >
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel
-                    id="demo-simple-select-standard-label"
-                  > cost_center </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-standard-label"
-                    name='cost_center'
-                    value={values.cost_center}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label=" cost_center"
-                  >
-                    {
-                      Object.keys(Requirements).length === 0 ? null :
-                        Requirements.cost_center.map((item: any) => (
-                          <MenuItem
-                            value={item.id}
-                            key={item.id}
-                          >
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                  </Select>
-                </FormControl>
-
-              </Box>
-
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
-                }}
-              >
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel
-                    id="demo-simple-select-standard-label"
-                  > Warehouse name </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-standard-label"
-                    name='warehouse'
-                    value={values.warehouse}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label="Warehouse name"
-                  >
-                    {
-                      Object.keys(Requirements).length === 0 ? null :
-                        Requirements.warehouse.map((item: any) => (
-                          <MenuItem
-                            value={item.id}
-                            key={item.id}
-                          >
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                  </Select>
-                </FormControl>
-
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel
-                    id="demo-simple-select-standard-label"
-                  >List Patterns </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-standard-label"
-                    name='patterns'
-                    value={values.patterns}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label="List Patterns"
-                  >
-                    {
-                      Object.keys(Requirements).length === 0 ? null :
-                        Requirements.patterns.map((item: any) => (
-                          <MenuItem
-                            value={item.id}
-                            key={item.id}
-                          >
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                  </Select>
-                </FormControl>
-              </Box>
               <Divider style={{ margin: '16px 0' }} />
               {/* 
               
@@ -683,54 +764,94 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 {/*
                 list patterns FIELD INPUT
                 */}
-
-                <FormControl
-                  fullWidth
-                  sx={{ m: 0 }}
-                >
-                  <InputLabel
-                    id="demo-simple-select-standard-label"
-                  >List Patterns </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-standard-label"
-                    name='patterns'
-                    value={values.patterns}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label="List Patterns"
+                <Box sx={{ gridColumn: 'span 2' }}>
+                  <FormControl
+                    sx={{ m: 0, width: '100%' }}
                   >
-                    {
-                      Object.keys(Requirements).length === 0 ? null :
-                        Requirements.patterns.map((item: any) => (
-                          <MenuItem
-                            value={item.id}
-                            key={item.id}
-                          >
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                  </Select>
-                </FormControl>
-
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    >List Patterns </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='patternId'
+                      value={values.patternId}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label="List patterns"
+                    >
+                      {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.patterns.map((item: any) => (
+                            <MenuItem
+                              value={item.id}
+                              key={item.id}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+                </Box>
                 {/* 
                   check box for allow selected contacts
                 */}
+
                 <FormControlLabel
                   label="Allow selected contacts"
                   control={
                     <Checkbox
-                      checked={values.allowSlctdContacts}
+                      checked={allowSlctdContacts}
                       onChange={handleChange}
                       name="allowlogin"
                       color="primary"
                       onClick={() => {
-                        values.allowSlctdContacts = !values.allowSlctdContacts
+                        setAllowSlctdContacts(!allowSlctdContacts)
                       }}
                     />
                   }
                 />
+
+                {/* 
+                  filed selected contacts if allow selected contacts is true
+                */}
+                {
+                  allowSlctdContacts ?
+                    <FormControl
+                      fullWidth
+                      sx={{ m: 0 }}
+                    >
+                      <InputLabel
+                        id="demo-simple-select-standard-label"
+                      >Select contact </InputLabel>
+                      <Select
+                        fullWidth
+                        labelId="demo-simple-select-standard-label"
+                        name='selectedContact'
+                        value={values.selectedContact}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={!!touched.prefix && !!errors.prefix}
+                        label="Select contact"
+                      >
+                        {
+                          Object.keys(Requirements).length === 0 ? null :
+                            Requirements.contacts.map((item: any) => (
+                              <MenuItem
+                                value={item.id}
+                                key={item.id}
+                              >
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                      </Select>
+                    </FormControl> : null
+                }
+
+
+
+
               </Box>
 
               <Divider style={{ margin: '16px 0' }} />
@@ -753,15 +874,23 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               >
 
                 {/* 
-                  filed date of birth
-                */}
-                <Field as={TextField}
-                  name="dateOfBirth"
-                  label="Date of Birth" variant="outlined" fullWidth margin="normal"
-                  placeholder="date of birth"
-                  value={values.dateOfBirth}
-                  onChange={handleChange}
-                />
+                filed date of birth using date picker
+                  */}
+                <DatePickerWrapper>
+
+                  <DatePicker
+                    selected={values.dateOfBirth}
+                    id='basic-input'
+                    popperPlacement={popperPlacement}
+                    onChange={(date: any) => {
+                      values.dateOfBirth = date
+                      setDate(date)
+                    }}
+                    placeholderText='Click to select a date'
+                    customInput={<CustomInput label='Basic' />}
+                  />
+
+                </DatePickerWrapper>
 
                 {/* 
                   drop down for Gender

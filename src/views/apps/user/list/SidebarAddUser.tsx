@@ -19,7 +19,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import { Formik, Field } from 'formik';
 import { AppDispatch } from 'src/store';
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice';
-import CustomInput from './PickersComponent';
+import CustomInput from './PickersCustomInput';
 import DatePicker from 'react-datepicker';
 import { DateType } from 'src/types/forms/reactDatepickerTypes';
 import { SidebarAddUserType, Header, initialValues, validationSchema } from './AddUserDrawer';

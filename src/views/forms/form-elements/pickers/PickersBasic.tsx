@@ -29,28 +29,7 @@ const PickersBasic = ({ popperPlacement }: { popperPlacement: ReactDatePickerPro
           customInput={<CustomInput label='Basic' />}
         />
       </div>
-      <div>
-        <DatePicker
-          disabled
-          selected={date}
-          id='disabled-input'
-          popperPlacement={popperPlacement}
-          onChange={(date: Date) => setDate(date)}
-          placeholderText='Click to select a date'
-          customInput={<CustomInput label='Disabled' />}
-        />
-      </div>
-      <div>
-        <DatePicker
-          readOnly
-          selected={date}
-          id='read-only-input'
-          popperPlacement={popperPlacement}
-          onChange={(date: Date) => setDate(date)}
-          placeholderText='Click to select a date'
-          customInput={<CustomInput readOnly label='Readonly' />}
-        />
-      </div>
+
     </Box>
   )
 }

@@ -197,6 +197,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
       //@ts-ignore
       dispatch(login(loginData))
+
       setCookie("key", secretKey + password + username)
 
       setTimeout(() => {
