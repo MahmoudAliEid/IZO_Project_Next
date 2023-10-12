@@ -85,6 +85,7 @@ const initialValues = {
   visa: '',
   agents: '',
   selectedContact: '',
+  allowSlctdContacts: false,
   cost_center: '',
   gender: '',
   marital: '',
@@ -121,15 +122,13 @@ const initialValues = {
   permanentAddress: '',
   currentAddress: '',
   holderName: '',
-  accountName: '',
+  accountNumber: '',
   bankName: '',
   bankIdentifierCode: '',
   bankBranchName: '',
-  bankBranchCode: '',
   taxPayerId: '',
   department: '',
   designation: '',
-
 };
 
 const showErrors = (field: string, valueLen: number, min: number) => {
@@ -150,37 +149,6 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   backgroundColor: theme.palette.background.default
 }))
 
-// const schema = yup.object().shape({
-//   company: yup.string().required(),
-//   country: yup.string().required(),
-//   billing: yup.string().required(),
-//   email: yup.string().email().required(),
-//   contact: yup
-//     .number()
-//     .typeError('Contact Number field is required')
-//     .min(10, obj => showErrors('Contact Number', obj.value.length, obj.min))
-//     .required(),
-//   fullName: yup
-//     .string()
-//     .min(3, obj => showErrors('First Name', obj.value.length, obj.min))
-//     .required(),
-//   username: yup
-//     .string()
-//     .min(3, obj => showErrors('Username', obj.value.length, obj.min))
-//     .required()
-// })
-
-// const defaultValues = {
-//   email: '',
-//   company: '',
-//   country: '',
-//   billing: '',
-//   fullName: '',
-//   username: '',
-//   contact: Number('')
-// }
-
-
 const SidebarAddUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle } = props
@@ -198,14 +166,14 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
     taxes: [],
     warehouse: []
   });
+  const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // ** Hook
   const theme = useTheme()
   const { direction } = theme
   const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const [date, setDate] = useState<any>(new Date())
-  const { isLoading, error, responseData, storeNewUser } = useCreateUser();
-  const [allowSlctdContacts, setAllowSlctdContacts] = useState<boolean>(false)
+  const { storeNewUser } = useCreateUser();
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -232,11 +200,9 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
   const handleSubmit = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     // Handle form submission logic here
-    console.log(values);
-
-    // storeNewUser(values);
-
-    // resetForm();
+    // console.log(values);
+    storeNewUser(values);
+    resetForm();
   };
 
 
@@ -802,12 +768,12 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   label="Allow selected contacts"
                   control={
                     <Checkbox
-                      checked={allowSlctdContacts}
+                      checked={values.allowSlctdContacts}
                       onChange={handleChange}
                       name="allowlogin"
                       color="primary"
                       onClick={() => {
-                        setAllowSlctdContacts(!allowSlctdContacts)
+                        values.allowSlctdContacts = !values.allowSlctdContacts
                       }}
                     />
                   }
@@ -817,7 +783,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   filed selected contacts if allow selected contacts is true
                 */}
                 {
-                  allowSlctdContacts ?
+                  values.allowSlctdContacts ?
                     <FormControl
                       fullWidth
                       sx={{ m: 0 }}
@@ -887,7 +853,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                       setDate(date)
                     }}
                     placeholderText='Click to select a date'
-                    customInput={<CustomInput label='Basic' />}
+                    customInput={<CustomInput label='Date of Birth' />}
                   />
 
                 </DatePickerWrapper>
@@ -957,13 +923,32 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 {/* 
                   filed Blood Group
                 */}
-                <Field as={TextField}
-                  name="bloodGroup"
-                  label="Blood Group" variant="outlined" fullWidth margin="normal"
-                  placeholder="blood group"
-                  value={values.bloodGroup}
-                  onChange={handleChange}
-                />
+                <FormControl fullWidth >
+                  <InputLabel
+                    id="demo-simple-select-standard-label"
+                  >Select blood group </InputLabel>
+                  <Select
+                    fullWidth
+                    labelId="demo-simple-select-standard-label"
+                    name='bloodGroup'
+                    value={values.bloodGroup}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={!!touched.prefix && !!errors.prefix}
+                    label="Select blood group"
+                  >
+                    {
+                      bloodTypes.map((item: any) => (
+                        <MenuItem
+                          value={item}
+                          key={item}
+                        >
+                          {item}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+
 
                 {/* 
                   filel Mobile Number type number
@@ -1182,10 +1167,10 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 filed Account Name
               */}
                 <Field as={TextField}
-                  name="accountName"
-                  label="Account Name" variant="outlined" fullWidth margin="normal"
+                  name="accountNumber"
+                  label="Account Number" variant="outlined" fullWidth margin="normal"
                   placeholder="account name"
-                  value={values.accountName}
+                  value={values.accountNumber}
                   onChange={handleChange}
                 />
 

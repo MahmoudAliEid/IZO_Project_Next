@@ -32,6 +32,7 @@ interface StatusObj {
 
 // ** renders client column
 const renderClient = (params: GridRenderCellParams) => {
+
   const { row } = params
   const stateNum = Math.floor(Math.random() * 6)
   const states = ['success', 'error', 'warning', 'info', 'primary', 'secondary']
@@ -265,37 +266,6 @@ const TableColumns = ({ title, TableData }: any) => {
   // lisght to card height
   const cardRef = useRef(null);
 
-  // const handleCardHeightChange = (newHeight) => {
-  //   // Your custom logic for handling the height change goes here
-  //   // You can call any function or update state as needed
-  //   console.log('Handling card height change:', newHeight);
-  // };
-  // useEffect(() => {
-  //   const observeCardHeight = () => {
-  //     const card = cardRef.current;
-
-  //     if (card) {
-  //       const observer = new ResizeObserver(entries => {
-  //         for (const entry of entries) {
-  //           // Handle the height change here
-  //           const newHeight = entry.contentRect.height;
-  //           console.log(`Card height changed to ${newHeight}px`);
-
-  //           // Call your custom function here with the new height
-  //           handleCardHeightChange(newHeight);
-  //         }
-  //       });
-
-  //       observer.observe(card);
-
-  //       return () => {
-  //         observer.unobserve(card);
-  //       };
-  //     }
-  //   };
-
-  //   observeCardHeight();
-  // }, []);
 
 
   return (
