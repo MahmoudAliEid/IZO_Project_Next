@@ -122,6 +122,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
 
+
   // ** Cookies
   useEffect(() => {
     const token = getCookie('token')
@@ -148,10 +149,22 @@ const RowOptions = ({ id }: { id: number | string }) => {
   }
 
   const handleDelete = () => {
-    //@ts-ignore
-    dispatch(postDeleteUser(token, url, id))
-    handleRowOptionsClose()
+    if (id && token) {
+
+      //@ts-ignore
+      dispatch(postDeleteUser({ token, id }));
+
+      //@ts-ignore
+      dispatch(fetchIzoUsers(token, url));
+      console.log('User deleted id, token, url', id, token, url);
+    } else {
+      // Handle the case when either id or token is not valid
+      console.log('Invalid id or token');
+    }
+
+    handleRowOptionsClose();
   }
+
 
   return (
     <>
