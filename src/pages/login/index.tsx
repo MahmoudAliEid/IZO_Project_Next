@@ -8,6 +8,10 @@ import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { setCookie } from 'cookies-next'
 import { fetchUsers } from 'src/store/apps/users'
+import axios from 'axios'
+import { getCookie } from 'cookies-next'
+
+
 
 // redux
 import { login } from 'src/store/apps/auth/login/index.js'
@@ -111,14 +115,15 @@ interface UserData {
 }
 export async function getStaticProps() {
   // Fetch data from the API
-  const apiUrl = 'https://test.izocloud.net/api/app/react/get-user'
-  const response = await fetch(apiUrl)
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch data from ${apiUrl}`)
-  }
+  const token = getCookie('token')
+  const response = await axios.get(`https://test.izocloud.net/api/app/react/get-user`, {
+    headers: {
+      Authorization: 'Bearer ' + `${token}`
+    }
+  })
 
-  const userData = await response.json()
+  const userData = await response.data
 
   return {
     props: {
@@ -354,9 +359,9 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                 helperText={userNameError}
                 onChange={handleChangeUserName}
               >
-                {arrUsersData?.map((user: any, index: number) => (
-                  <MenuItem key={index} value={user}>
-                    {user}
+                {usersDataNames?.map((user: any, index: number) => (
+                  <MenuItem key={index} value={user.value}>
+                    {user.value}
                   </MenuItem>
                 ))}
               </TextField>

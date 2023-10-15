@@ -187,7 +187,7 @@ const storeUserSlice = createSlice({
       })
       .addCase(storeUser.rejected, (state, action) => {
         state.loading = false
-        state.error = action.payload // You can handle error messages here
+        state.error = action.payload
       })
   }
 })

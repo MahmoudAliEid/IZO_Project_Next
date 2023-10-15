@@ -9,6 +9,7 @@ import { postDeleteUser } from 'src/store/apps/izoUsers/deleteUserSlice'
 import Link from 'next/link'
 import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
 import { getCookie } from 'cookies-next'
+import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -60,6 +61,8 @@ import { CardStatsHorizontalProps } from 'src/@core/components/card-statistics/t
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/user/list/TableHeader'
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
+
+import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
@@ -116,55 +119,84 @@ const renderClient = (row: UsersType) => {
   }
 }
 
+
 const RowOptions = ({ id }: { id: number | string }) => {
   // ** Hooks
-  const dispatch = useDispatch<AppDispatch>()
-  const [token, setToken] = useState('')
-  const [url, setUrl] = useState('')
-
-
-  // ** Cookies
-  useEffect(() => {
-    const token = getCookie('token')
-    const url = getCookie('apiUrl')
-
-    //@ts-ignore
-    setToken(token)
-
-    //@ts-ignore
-    setUrl(url)
-  }, [token, url])
-
+  const dispatch = useDispatch<AppDispatch>();
 
   // ** State
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [dataFetched, setDataFetched] = useState(false);
+  const [editUserOpen, setEditUserOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const rowOptionsOpen = Boolean(anchorEl)
+  const rowOptionsOpen = Boolean(anchorEl);
+
+  // ** Cookies
+
+  const token = getCookie('token');
+  const url = getCookie('apiUrl');
+
 
   const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
+
   const handleRowOptionsClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   const handleDelete = () => {
-    if (id && token) {
-
-      //@ts-ignore
-      dispatch(postDeleteUser({ token, id }));
-
-      //@ts-ignore
-      dispatch(fetchIzoUsers(token, url));
-      console.log('User deleted id, token, url', id, token, url);
-    } else {
-      // Handle the case when either id or token is not valid
+    if (!id || !token) {
       console.log('Invalid id or token');
+      handleRowOptionsClose();
+
+      return;
+    }
+
+    //@ts-ignore
+    dispatch(postDeleteUser({ token, id }))
+      .then(() => {
+        //@ts-ignore
+        dispatch(fetchIzoUsers(token, url));
+        console.log('User deleted id, token, url', id, token, url);
+        handleRowOptionsClose();
+      })
+      .catch(error => {
+        console.error('Error deleting user:', error);
+
+        // Handle the error as needed
+        handleRowOptionsClose();
+      });
+  };
+
+  const handleEdit = () => {
+    console.log("this the user's id : ", id);
+
+    if (!token || !url || !id) {
+      console.log('Invalid token, url, or id');
+      handleRowOptionsClose();
+
+      return;
+    }
+    setEditUserOpen(!editUserOpen);
+    if (!dataFetched) {
+      //@ts-ignore
+      dispatch(fetchEditUsers({ token, url, id }))
+        .then(() => {
+          setDataFetched(true);
+
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+
+          // Handle the error as needed
+        });
+    } else {
+      setEditUserOpen(!editUserOpen);
     }
 
     handleRowOptionsClose();
-  }
-
+  };
 
   return (
     <>
@@ -195,7 +227,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
           <Icon icon='bx:show' fontSize={20} />
           View
         </MenuItem>
-        <MenuItem onClick={handleRowOptionsClose} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem onClick={handleEdit} sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='bx:pencil' fontSize={20} />
           Edit
         </MenuItem>
@@ -204,9 +236,10 @@ const RowOptions = ({ id }: { id: number | string }) => {
           Delete
         </MenuItem>
       </Menu>
+      <SidebarEditUser open={editUserOpen} toggle={handleEdit} />
     </>
   )
-}
+};
 
 const columns: GridColDef[] = [
   {
@@ -420,6 +453,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
+
   // ** handle search function
   const handleSearch = (searchValue: string) => {
     setSearchText(searchValue)
@@ -552,6 +586,8 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
                   onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
                 }
               }}
+
+
             /> : <ProgressCustomization />}
           </Box>
 
@@ -559,6 +595,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
       </Grid>
 
       <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+
     </Grid>
   )
 }

@@ -1,5 +1,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import axios from 'axios'
+import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
@@ -8,14 +10,18 @@ const initialState = {
   error: null
 }
 
+const token = getCookie('token')
+
 // Define an async thunk to fetch data from the API
 export const fetchUsers = createAsyncThunk('users/fetchData', async () => {
   try {
-    const response = await fetch(`https://test.izocloud.net/api/get-user`)
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
-    const data = await response.json()
+    const response = await axios.get(`https://test.izocloud.net/api/app/react/get-user`, {
+      headers: {
+        Authorization: 'Bearer ' + `${token}`
+      }
+    })
+
+    const data = await response.data
 
     return data
   } catch (error) {

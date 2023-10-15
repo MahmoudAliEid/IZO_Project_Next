@@ -3,6 +3,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import notify from 'src/utils/notify'
 
 // Define the initial state
 const initialState = {
@@ -45,6 +46,7 @@ const editUsersSlice = createSlice({
         console.log('pending')
         state.loading = true
         state.error = null
+        notify('pending', 'error')
       })
       .addCase(fetchEditUsers.fulfilled, (state, action) => {
         console.log('action.payload', action.payload)
@@ -52,12 +54,14 @@ const editUsersSlice = createSlice({
         state.data = action.payload
         state.status = action.payload.status
         state.error = null
+        notify('fetch user to edit is done', 'success')
       })
       .addCase(fetchEditUsers.rejected, (state, action) => {
         console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.error = action.error.message
+        notify('There is an error try again later', 'error')
       })
   }
 })

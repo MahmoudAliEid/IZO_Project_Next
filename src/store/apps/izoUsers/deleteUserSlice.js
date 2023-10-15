@@ -5,7 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import notify from 'src/utils/notify'
 
-import { getCookie } from 'cookies-next'
+// import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
@@ -14,7 +14,7 @@ const initialState = {
   error: null
 }
 
-const token =getCookie('token')
+// const token =getCookie('token')
 
 // const url = getCookie('apiUrl')
 
@@ -24,11 +24,16 @@ export const postDeleteUser = createAsyncThunk('dashboard/postDeleteUser', async
 
     const config = {
       headers: {
-        Authorization: `Bearer ${token}` // Send the token as a Bearer Token in the header
+        Authorization: {
+          Bearer: 'Mahmoud'
+        }
       }
     }
-
-    const response = await axios.post(`https://test.izocloud.net/api/app/react/users/del/${id}`, config)
+    const response = await axios.post(`https://test.izocloud.net/api/app/react/users/del/${id}`, {
+      Authorization: {
+        Bearer: 'Mahmoud'
+      }
+    })
 
     console.log('response delete', response)
     const data = response.data
