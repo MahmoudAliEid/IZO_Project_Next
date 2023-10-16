@@ -154,7 +154,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
     }
 
     //@ts-ignore
-    dispatch(postDeleteUser({ token, id }))
+    dispatch(postDeleteUser({ id }))
       .then(() => {
         //@ts-ignore
         dispatch(fetchIzoUsers(token, url));

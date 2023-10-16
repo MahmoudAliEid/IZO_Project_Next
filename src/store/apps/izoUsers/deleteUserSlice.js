@@ -1,11 +1,8 @@
-'use client'
-
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import notify from 'src/utils/notify'
-
-// import { getCookie } from 'cookies-next'
+import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
@@ -14,32 +11,29 @@ const initialState = {
   error: null
 }
 
-// const token =getCookie('token')
+const token = getCookie('token')
+const apiUrl = getCookie('apiUrl')
 
-// const url = getCookie('apiUrl')
+// Create an Axios instance with common headers
+const axiosInstance = axios.create({
+  baseURL: apiUrl,
+  headers: {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+})
 
+// Define an async thunk for deleting a user
 export const postDeleteUser = createAsyncThunk('dashboard/postDeleteUser', async payload => {
   try {
     const { id } = payload
-
-    const config = {
-      headers: {
-        Authorization: {
-          Bearer: 'Mahmoud'
-        }
-      }
-    }
-    const response = await axios.post(`https://test.izocloud.net/api/app/react/users/del/${id}`, {
-      Authorization: {
-        Bearer: 'Mahmoud'
-      }
-    })
-
-    console.log('response delete', response)
+    const response = await axiosInstance.delete(`/app/react/users/del/${id}`)
     const data = response.data
+    notify('The User has been deleted successfully', 'success')
 
     return data
   } catch (error) {
+    notify('There was an error, try again later!', 'error')
     throw error
   }
 })
@@ -56,18 +50,14 @@ const deleteUsersSlice = createSlice({
         state.error = null
       })
       .addCase(postDeleteUser.fulfilled, (state, action) => {
-        console.log('action from delete', action)
+        console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
-        state.error = null
-        notify('The User has been deleted successfully', 'success')
       })
       .addCase(postDeleteUser.rejected, (state, action) => {
-        console.log('action.error from delete', action.error)
+        console.log('rejected action from delete', action)
         state.loading = false
-        state.data = null
         state.error = action.error.message
-        notify('There was an error try again later!', 'error')
       })
   }
 })
