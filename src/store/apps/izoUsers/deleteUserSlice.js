@@ -12,11 +12,11 @@ const initialState = {
 }
 
 const token = getCookie('token')
-const apiUrl = getCookie('apiUrl')
+
+// const apiUrl = getCookie('apiUrl')
 
 // Create an Axios instance with common headers
 const axiosInstance = axios.create({
-  baseURL: apiUrl,
   headers: {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json'
@@ -27,7 +27,7 @@ const axiosInstance = axios.create({
 export const postDeleteUser = createAsyncThunk('dashboard/postDeleteUser', async payload => {
   try {
     const { id } = payload
-    const response = await axiosInstance.delete(`/app/react/users/del/${id}`)
+    const response = await axiosInstance.delete(`https://test.izocloud.net/api/app/react/users/del/${id}`)
     const data = response.data
     notify('The User has been deleted successfully', 'success')
 

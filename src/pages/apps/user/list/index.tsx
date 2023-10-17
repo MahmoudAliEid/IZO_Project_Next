@@ -170,7 +170,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
   };
 
   const handleEdit = () => {
-    console.log("this the user's id : ", id);
+    console.log("this the user's id ,token,url form edit: ", id, token, url);
 
     if (!token || !url || !id) {
       console.log('Invalid token, url, or id');
@@ -179,7 +179,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
       return;
     }
     setEditUserOpen(!editUserOpen);
-    if (!dataFetched) {
+    if (dataFetched === false) {
       //@ts-ignore
       dispatch(fetchEditUsers({ token, url, id }))
         .then(() => {
@@ -187,7 +187,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
 
         })
         .catch(error => {
-          console.error('Error fetching user data:', error);
+          console.error('Error fetching edit user data:', error);
 
           // Handle the error as needed
         });

@@ -159,8 +159,6 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle } = props
 
-  // const [token, setToken] = useState('')
-  // const [url, setUrl] = useState('')
   const data = useSelector((state: { editUsers: { data: any } }) => state.editUsers.data)
 
   // const [data?.Requirement, setdata?.Requirement] = useState<object>({
@@ -279,6 +277,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
 
   console.log(data?.Requirement, '===> data')
   console.log(data?.UserInfo, '===> user info')
+  console.log("welcome ali hatem")
 
   const handleClose = () => {
     toggle()
