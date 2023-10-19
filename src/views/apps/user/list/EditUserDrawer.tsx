@@ -47,6 +47,7 @@ import { Formik, Form, Field } from 'formik';
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
+import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice'
 
 // import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
 import useCreateUser from 'src/hooks/useCreateUser'
@@ -59,7 +60,7 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 interface SidebarAddUserType {
   open: boolean
   toggle: () => void
-
+  itemId?: any
 }
 
 // interface UserData {
@@ -157,7 +158,7 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 
 const SidebarEditUser = (props: SidebarAddUserType) => {
   // ** Props
-  const { open, toggle } = props
+  const { open, toggle, itemId } = props
 
   const data = useSelector((state: { editUsers: { data: any } }) => state.editUsers.data)
 
@@ -241,25 +242,16 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   const { storeNewUser } = useCreateUser();
 
   // // ** Hooks
-  // const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>()
+  const token = getCookie('token')
+  const url = getCookie('apiUrl')
 
-  // useEffect(() => {
-  //   const token = getCookie('token')
-  //   const url = getCookie('apiUrl')
-
-  //   //@ts-ignore
-  //   setToken(token)
-
-  //   //@ts-ignore
-  //   setUrl(url)
-  // }, [token, url])
-
-  // useEffect(() => {
-  //   if (token && url && id) {
-  //     //@ts-ignore
-  //     dispatch(fetchEditUsers({ token, url, id }))
-  //   }
-  // }, [dispatch, id, token, url])
+  useEffect(() => {
+    if (token && url && itemId) {
+      //@ts-ignore
+      dispatch(fetchEditUsers({ token, url, itemId }))
+    }
+  }, [dispatch])
 
 
 
@@ -282,6 +274,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   const handleClose = () => {
     toggle()
   }
+
+  
 
 
 

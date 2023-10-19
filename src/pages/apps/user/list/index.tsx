@@ -170,32 +170,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
   };
 
   const handleEdit = () => {
-    console.log("this the user's id ,token,url form edit: ", id, token, url);
-
-    if (!token || !url || !id) {
-      console.log('Invalid token, url, or id');
-      handleRowOptionsClose();
-
-      return;
-    }
     setEditUserOpen(!editUserOpen);
-    if (dataFetched === false) {
-      //@ts-ignore
-      dispatch(fetchEditUsers({ token, url, id }))
-        .then(() => {
-          setDataFetched(true);
-
-        })
-        .catch(error => {
-          console.error('Error fetching edit user data:', error);
-
-          // Handle the error as needed
-        });
-    } else {
-      setEditUserOpen(!editUserOpen);
-    }
-
-    handleRowOptionsClose();
   };
 
   return (
@@ -227,7 +202,13 @@ const RowOptions = ({ id }: { id: number | string }) => {
           <Icon icon='bx:show' fontSize={20} />
           View
         </MenuItem>
-        <MenuItem onClick={handleEdit} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem onClick={() => {
+          handleEdit();
+          handleRowOptionsClose();
+        }
+        }
+
+          sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='bx:pencil' fontSize={20} />
           Edit
         </MenuItem>
@@ -236,7 +217,10 @@ const RowOptions = ({ id }: { id: number | string }) => {
           Delete
         </MenuItem>
       </Menu>
-      <SidebarEditUser open={editUserOpen} toggle={handleEdit} />
+      {
+        editUserOpen && <SidebarEditUser open={editUserOpen} toggle={handleEdit} itemId={id} />
+      }
+
     </>
   )
 };

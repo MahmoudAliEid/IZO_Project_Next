@@ -15,16 +15,17 @@ const initialState = {
 
 export const fetchEditUsers = createAsyncThunk('dashboard/fetchEditUsers', async payload => {
   try {
-    const { token, url, id } = payload
-
-    if (token && url && id) {
+    const { token, url, itemId } = payload
+    console.log(token, url, itemId, 'from editUsersSlice.js')
+    if (token && url && itemId) {
       const config = {
         headers: {
           Authorization: `Bearer ${token}` // Send the token as a Bearer Token in the header
         }
       }
 
-      const response = await axios.get(`${url}/app/react/users/edit/${id}`, config)
+      const response = await axios.get(`${url}/app/react/users/edit/${itemId}`, config)
+      console.log(response, 'from editUsersSlice.js')
 
       const data = response.data
 
@@ -52,7 +53,6 @@ const editUsersSlice = createSlice({
         console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
-        state.status = action.payload.status
         state.error = null
         notify('fetch user to edit is done', 'success')
       })
