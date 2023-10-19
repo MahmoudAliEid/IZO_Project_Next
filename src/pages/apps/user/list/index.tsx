@@ -588,7 +588,12 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
               }}
 
 
-            /> : <ProgressCustomization />}
+            /> : <Grid>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: "center" }}>
+                <Box><ProgressCustomization /></Box>
+              </Box>
+
+            </Grid>}
           </Box>
 
         </Card>

@@ -5,6 +5,7 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
+import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -223,7 +224,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
         </IconButton>
       </Header>
       <Box sx={{ p: 5 }}>
-        <Formik
+        {Requirements ? (<Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -238,7 +239,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
           }) => (
             <form onSubmit={handleSubmit}>
 
-              {/* 
+              {/*
                 header first section
               */}
               <Box
@@ -280,7 +281,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 }}
               >
                 <Field as={TextField} name="email" label="E-mail" variant="outlined" fullWidth margin="normal" />
-                {/* 
+                {/*
                  check box for is active
                */}
 
@@ -302,7 +303,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
               <Divider style={{ margin: '16px 0' }} />
 
-              {/* 
+              {/*
                 second section header
               */}
 
@@ -495,7 +496,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     </Select>
                   </FormControl>
                 </Box>
-                {/* 
+                {/*
                   drop down for ProductPrice
                 */}
 
@@ -525,7 +526,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                         ))}
                   </Select>
                 </FormControl>
-                {/* 
+                {/*
                   drop down for taxes
                 */}
                 <FormControl fullWidth sx={{ mb: 6 }}>
@@ -558,8 +559,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               </Box>
 
               <Divider style={{ margin: '16px 0' }} />
-              {/* 
-              
+              {/*
+
               third section header
               */}
 
@@ -689,8 +690,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
               </Box>
               <Divider style={{ margin: '16px 0' }} />
-              {/* 
-              
+              {/*
+
               fourth section header
               */}
 
@@ -706,7 +707,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 }}
               >
 
-                {/*  
+                {/*
                     sales commission precentage (%) FIELD INPUT
                   */}
                 <Field as={TextField}
@@ -716,7 +717,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   label="Sales Commission Precentage (%)" variant="outlined" fullWidth margin="normal"
                   placeholder="sales commission precentage (%)"
                 />
-                {/* 
+                {/*
                   max sales discount precentage (%) FIELD INPUT
                 */}
                 <Field as={TextField}
@@ -760,7 +761,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     </Select>
                   </FormControl>
                 </Box>
-                {/* 
+                {/*
                   check box for allow selected contacts
                 */}
 
@@ -779,7 +780,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   }
                 />
 
-                {/* 
+                {/*
                   filed selected contacts if allow selected contacts is true
                 */}
                 {
@@ -839,7 +840,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 }}
               >
 
-                {/* 
+                {/*
                 filed date of birth using date picker
                   */}
                 <DatePickerWrapper>
@@ -858,7 +859,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
                 </DatePickerWrapper>
 
-                {/* 
+                {/*
                   drop down for Gender
                 */}
 
@@ -889,7 +890,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   </Select>
                 </FormControl>
 
-                {/* 
+                {/*
                   drop down for marital status
                 */}
 
@@ -920,7 +921,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                         ))}
                   </Select>
                 </FormControl>
-                {/* 
+                {/*
                   filed Blood Group
                 */}
                 <FormControl fullWidth >
@@ -950,7 +951,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 </FormControl>
 
 
-                {/* 
+                {/*
                   filel Mobile Number type number
                 */}
                 <Field as={TextField}
@@ -961,7 +962,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                     filed alternative mobile number
                   */}
                 <Field as={TextField}
@@ -972,7 +973,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                   filed family contact number
                 */}
                 <Field as={TextField}
@@ -983,7 +984,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                   filed facebook link
                 */}
                 <Field as={TextField}
@@ -994,7 +995,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                     filed twitter link
                   */}
 
@@ -1006,7 +1007,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                   filed social media 1
                 */}
                 <Field as={TextField}
@@ -1017,7 +1018,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                     filed social media 2
                   */}
                 <Field as={TextField}
@@ -1028,7 +1029,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                     filed custom field 1
                   */}
                 <Field as={TextField}
@@ -1039,7 +1040,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                     filed custom field 2
                   */}
                 <Field as={TextField}
@@ -1050,7 +1051,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                     filed custom field 3
                   */}
                 <Field as={TextField}
@@ -1061,7 +1062,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                       filed custom field 4
                     */}
 
@@ -1073,7 +1074,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                       filed cuardiand name
                     */}
                 <Field as={TextField}
@@ -1084,7 +1085,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                         filed ID Proof name
                       */}
                 <Field as={TextField}
@@ -1095,7 +1096,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                             filed ID Proof Number
                           */}
                 <Field as={TextField}
@@ -1106,7 +1107,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                   filed premanent address
                   */}
 
@@ -1118,7 +1119,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                     filed current address
                     */}
 
@@ -1151,8 +1152,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 }}
               >
 
-                {/* 
-              
+                {/*
+
                 fild Acount Holder Name
               */}
                 <Field as={TextField}
@@ -1163,7 +1164,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                 filed Account Name
               */}
                 <Field as={TextField}
@@ -1174,7 +1175,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                 filed Bank Name
               */}
 
@@ -1186,7 +1187,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                 filed Bank identifier name
               */}
                 <Field as={TextField}
@@ -1197,7 +1198,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                 filed Bank Branch Name
               */}
 
@@ -1209,7 +1210,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   onChange={handleChange}
                 />
 
-                {/* 
+                {/*
                 filed tax payer id
               */}
                 <Field as={TextField}
@@ -1241,8 +1242,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   alignItems: 'center'
                 }}
               >
-                {/* 
-                
+                {/*
+
                   filed department
                 */}
                 <Field as={TextField}
@@ -1252,7 +1253,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   value={values.department}
                   onChange={handleChange}
                 />
-                {/* 
+                {/*
                   filed designation
                 */}
 
@@ -1275,7 +1276,12 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
               </Box>
             </form>
           )}
-        </Formik>
+        </Formik>) : (<Grid>
+          <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+            <ProgressCustomization />
+          </Box>
+
+        </Grid>)}
       </Box>
     </Drawer>
   )
