@@ -5,8 +5,12 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { getCookie } from 'cookies-next';
+import { fetchIzoUsers } from 'src/store/apps/izoUsers/izoUsersSlice'
+import useSubmitUser from 'src/hooks/useSubmitUser';
+import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice';
+import { postEditUser } from 'src/store/apps/izoUsers/postEditUserSlice';
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
-
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -24,9 +28,6 @@ import FormHelperText from '@mui/material/FormHelperText'
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
-import { getCookie } from 'cookies-next'
-
-// import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice'
 
 // ** Third Party Imports
 import * as Yup from 'yup';
@@ -47,7 +48,6 @@ import { Formik, Form, Field } from 'formik';
 import { RootState, AppDispatch } from 'src/store'
 import { UsersType } from 'src/types/apps/userTypes'
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
-import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice'
 
 // import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
 import useCreateUser from 'src/hooks/useCreateUser'
@@ -60,7 +60,7 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 interface SidebarAddUserType {
   open: boolean
   toggle: () => void
-  itemId?: any
+  itemId: number
 }
 
 // interface UserData {
@@ -81,62 +81,62 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Email is required'),
 });
 
-// const initialValues = {
-//   prefix: '',
-//   firstName: '',
-//   lastName: '',
-//   email: '',
-//   BusinessLocation: '',
-//   ProductPriceItem: '',
-//   accounts: '',
-//   visa: '',
-//   agents: '',
-//   selectedContact: '',
-//   allowSlctdContacts: false,
-//   cost_center: '',
-//   gender: '',
-//   marital: '',
-//   userPattern: '',
-//   patternId: '',
-//   taxesItem: '',
-//   warehouse: '',
-//   isActive: false,
-//   allowlogin: false,
-//   username: '',
-//   password: '',
-//   confirmPassword: '',
-//   roles: '',
-//   allLocations: false,
-//   AGT: false,
-//   salesCommission: '',
-//   maxSalesDiscount: '',
-//   dateOfBirth: new Date(),
-//   bloodGroup: '',
-//   mobileNumber: '',
-//   alternativeMobileNumber: '',
-//   familyContactNumber: '',
-//   facebookLink: '',
-//   twitterLink: '',
-//   socialMedia1: '',
-//   socialMedia2: '',
-//   customField1: '',
-//   customField2: '',
-//   customField3: '',
-//   customField4: '',
-//   guardianName: '',
-//   idProofName: '',
-//   idProofNumber: '',
-//   permanentAddress: '',
-//   currentAddress: '',
-//   holderName: '',
-//   accountNumber: '',
-//   bankName: '',
-//   bankIdentifierCode: '',
-//   bankBranchName: '',
-//   taxPayerId: '',
-//   department: '',
-//   designation: '',
-// };
+const initialValues = {
+  prefix: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  BusinessLocation: '',
+  ProductPriceItem: '',
+  accounts: '',
+  visa: '',
+  agents: '',
+  selectedContact: '',
+  allowSlctdContacts: false,
+  cost_center: '',
+  gender: '',
+  marital: '',
+  userPattern: '',
+  patternId: '',
+  taxesItem: '',
+  warehouse: '',
+  isActive: false,
+  allowlogin: false,
+  username: '',
+  password: '',
+  confirmPassword: '',
+  roles: '',
+  allLocations: false,
+  AGT: false,
+  salesCommission: '',
+  maxSalesDiscount: '',
+  dateOfBirth: new Date(),
+  bloodGroup: '',
+  mobileNumber: '',
+  alternativeMobileNumber: '',
+  familyContactNumber: '',
+  facebookLink: '',
+  twitterLink: '',
+  socialMedia1: '',
+  socialMedia2: '',
+  customField1: '',
+  customField2: '',
+  customField3: '',
+  customField4: '',
+  guardianName: '',
+  idProofName: '',
+  idProofNumber: '',
+  permanentAddress: '',
+  currentAddress: '',
+  holderName: '',
+  accountNumber: '',
+  bankName: '',
+  bankIdentifierCode: '',
+  bankBranchName: '',
+  taxPayerId: '',
+  department: '',
+  designation: '',
+};
 
 const showErrors = (field: string, valueLen: number, min: number) => {
   if (valueLen === 0) {
@@ -159,79 +159,20 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 const SidebarEditUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle, itemId } = props
-
-  const data = useSelector((state: { editUsers: { data: any } }) => state.editUsers.data)
-
-  // const [data?.Requirement, setdata?.Requirement] = useState<object>({
-  //   BusinessLocation: [],
-  //   ProductPrice: [],
-  //   accounts: [],
-  //   agents: [],
-  //   contacts: [],
-  //   cost_center: [],
-  //   gender: [],
-  //   marital: [],
-  //   patterns: [],
-  //   roles: [],
-  //   taxes: [],
-  //   warehouse: []
-  // });
-  const [initialValues, setInitialValues] = useState({
-    prefix: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    BusinessLocation: '',
-    ProductPriceItem: '',
-    accounts: '',
-    visa: '',
-    agents: '',
-    selectedContact: '',
-    allowSlctdContacts: false,
-    cost_center: '',
-    gender: '',
-    marital: '',
-    userPattern: '',
-    patternId: '',
-    taxesItem: '',
-    warehouse: '',
-    isActive: false,
-    allowlogin: false,
-    username: '',
-    password: '',
-    confirmPassword: '',
-    roles: '',
-    allLocations: false,
-    AGT: false,
-    salesCommission: '',
-    maxSalesDiscount: '',
-    dateOfBirth: new Date(),
-    bloodGroup: '',
-    mobileNumber: '',
-    alternativeMobileNumber: '',
-    familyContactNumber: '',
-    facebookLink: '',
-    twitterLink: '',
-    socialMedia1: '',
-    socialMedia2: '',
-    customField1: '',
-    customField2: '',
-    customField3: '',
-    customField4: '',
-    guardianName: '',
-    idProofName: '',
-    idProofNumber: '',
-    permanentAddress: '',
-    currentAddress: '',
-    holderName: '',
-    accountNumber: '',
-    bankName: '',
-    bankIdentifierCode: '',
-    bankBranchName: '',
-    taxPayerId: '',
-    department: '',
-    designation: '',
-  })
+  const [Requirements, setRequirements] = useState<object>({
+    BusinessLocation: [],
+    ProductPrice: [],
+    accounts: [],
+    agents: [],
+    contacts: [],
+    cost_center: [],
+    gender: [],
+    marital: [],
+    patterns: [],
+    roles: [],
+    taxes: [],
+    warehouse: []
+  });
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // ** Hook
@@ -239,10 +180,28 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   const { direction } = theme
   const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const [date, setDate] = useState<any>(new Date())
-  const { storeNewUser } = useCreateUser();
+  const { handleSubmitData } = useSubmitUser();
 
-  // // ** Hooks
+  // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+
+
+  const data = useSelector((state: { editUsers: { data: any } }) => state.editUsers.data)
+
+
+
+  useEffect(() => {
+    if (data !== null && data !== undefined) {
+      setRequirements(data.Requirement)
+      console.log(data.Requirement, '====> data from update page')
+    }
+  }, [data])
+
+
+
+
+
+
   const token = getCookie('token')
   const url = getCookie('apiUrl')
 
@@ -251,40 +210,39 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
       //@ts-ignore
       dispatch(fetchEditUsers({ token, url, itemId }))
     }
-  }, [dispatch])
+  }, [dispatch, token, url, itemId])
 
 
 
 
-  // console.log(data, '====> data')
 
-  // useEffect(() => {
-  //   if (data !== null && data !== undefined) {
-  //     setdata?.Requirement(data.Requirement)
-  //     setInitialValues(data.UserInfo)
-  //     console.log(data.Requirement, '===> data')
-  //     console.log(data.UserInfo, '===> user info')
-  //   }
-  // }, [data])
 
   console.log(data?.Requirement, '===> data')
   console.log(data?.UserInfo, '===> user info')
-  console.log("welcome ali hatem")
+
 
   const handleClose = () => {
     toggle()
   }
 
-  
 
 
 
   const handleSubmit = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     // Handle form submission logic here
-    // console.log(values);
-    storeNewUser(values);
-    resetForm();
+    console.log(values, "form edit user");
+    console.log("update btn clicked")
+
+    handleSubmitData(postEditUser, fetchIzoUsers, values, itemId);
+
+    // resetForm();
   };
+
+
+
+
+
+
 
 
   return (
@@ -304,7 +262,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
         </IconButton>
       </Header>
       <Box sx={{ p: 5 }}>
-        {data ? (<Formik
+        {Requirements ? (<Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -415,8 +373,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     label="Acount Cash"
                   >
                     {
-                      Object.keys(data.Requirement).length === 0 ? null :
-                        data?.Requirement?.accounts?.map((item: any) => (
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.accounts.map((item: any) => (
                           <MenuItem
                             value={item.id}
                             key={item.id}
@@ -441,8 +399,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     label="Visa Account"
                   >
                     {
-                      Object.keys(data?.Requirement).length === 0 ? null :
-                        data?.Requirement?.accounts?.map((item: any) => (
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.accounts.map((item: any) => (
                           <MenuItem
                             value={item.id}
                             key={item.id}
@@ -475,8 +433,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       label=" agents"
                     >
                       {
-                        Object.keys(data?.Requirement).length === 0 ? null :
-                          data?.Requirement?.agents?.map((item: any) => (
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.agents.map((item: any) => (
                             <MenuItem
                               value={item.id}
                               key={item.id}
@@ -501,8 +459,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       label=" cost_center"
                     >
                       {
-                        Object.keys(data?.Requirement).length === 0 ? null :
-                          data?.Requirement?.cost_center?.map((item: any) => (
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.cost_center.map((item: any) => (
                             <MenuItem
                               value={item.id}
                               key={item.id}
@@ -537,8 +495,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       label="Warehouse name"
                     >
                       {
-                        Object.keys(data?.Requirement).length === 0 ? null :
-                          data?.Requirement?.warehouse?.map((item: any) => (
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.warehouse.map((item: any) => (
                             <MenuItem
                               value={item.id}
                               key={item.id}
@@ -564,8 +522,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       label="User Pattern"
                     >
                       {
-                        Object.keys(data?.Requirement).length === 0 ? null :
-                          data?.Requirement?.patterns?.map((item: any) => (
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.patterns.map((item: any) => (
                             <MenuItem
                               value={item.id}
                               key={item.id}
@@ -595,8 +553,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     label="Product Price"
                   >
                     {
-                      Object.keys(data?.Requirement).length === 0 ? null :
-                        data?.Requirement?.ProductPrice?.map((item: any) => (
+                      Object.keys(Requirements).length === 0 ? null :
+                        data?.Requirement?.pPrice.map((item: any) => (
                           <MenuItem
                             value={item.id}
                             key={item.id}
@@ -624,8 +582,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     label="Taxes"
                   >
                     {
-                      Object.keys(data?.Requirement).length === 0 ? null :
-                        data?.Requirement?.taxes?.map((item: any) => (
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.taxes.map((item: any) => (
                           <MenuItem
                             value={item.id}
                             key={item.id}
@@ -711,8 +669,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                   >
                     <MenuItem value="">None</MenuItem>
                     {
-                      Object.keys(data?.Requirement).length === 0 ? null :
-                        data?.Requirement?.roles?.map((item: any) => (
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.roles.map((item: any) => (
                           <MenuItem
                             value={item.id}
                             key={item.id}
@@ -829,8 +787,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       label="List patterns"
                     >
                       {
-                        Object.keys(data?.Requirement).length === 0 ? null :
-                          data?.Requirement?.patterns?.map((item: any) => (
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.patterns.map((item: any) => (
                             <MenuItem
                               value={item.id}
                               key={item.id}
@@ -883,8 +841,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                         label="Select contact"
                       >
                         {
-                          Object.keys(data?.Requirement).length === 0 ? null :
-                            data?.Requirement?.contacts?.map((item: any) => (
+                          Object.keys(Requirements).length === 0 ? null :
+                            Requirements.contacts.map((item: any) => (
                               <MenuItem
                                 value={item.id}
                                 key={item.id}
@@ -958,8 +916,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     label="Select gender"
                   >
                     {
-                      Object.keys(data?.Requirement).length === 0 ? null :
-                        data?.Requirement?.gender?.map((item: any) => (
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.gender.map((item: any) => (
                           <MenuItem
                             value={item.id}
                             key={item.id}
@@ -990,8 +948,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     label="Select marital"
                   >
                     {
-                      Object.keys(data?.Requirement).length === 0 ? null :
-                        data?.Requirement?.marital?.map((item: any) => (
+                      Object.keys(Requirements).length === 0 ? null :
+                        Requirements.marital.map((item: any) => (
                           <MenuItem
                             value={item.id}
                             key={item.id}
@@ -1019,7 +977,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     label="Select blood group"
                   >
                     {
-                      bloodTypes?.map((item: any) => (
+                      bloodTypes.map((item: any) => (
                         <MenuItem
                           value={item}
                           key={item}
@@ -1348,7 +1306,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-                  Submit
+                  Update
                 </Button>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
                   Cancel
@@ -1356,7 +1314,12 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
               </Box>
             </form>
           )}
-        </Formik>) : (<ProgressCustomization />)}
+        </Formik>) : (<Grid>
+          <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+            <ProgressCustomization />
+          </Box>
+
+        </Grid>)}
       </Box>
     </Drawer>
   )

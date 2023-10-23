@@ -8,8 +8,10 @@ import notify from 'src/utils/notify'
 const token = getCookie('token')
 
 // Async Thunk Action for storing user
-export const storeUser = createAsyncThunk('user/storeUser', async (userData, { rejectWithValue }) => {
-  console.log(userData, '===> userData from storeUser')
+export const postEditUser = createAsyncThunk('user/postEditUser', async payload => {
+  const { userData, itemId } = payload
+
+  console.log(userData, itemId, '===> userData  & itemId from post Edit User ')
 
   // this function is used format the data to be sent to the server like this 1992-09-10
   const formatDate = (userData, key) => {
@@ -85,112 +87,62 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
   formData.append('bank_details[branch]', userData.bankBranchName || '')
   formData.append('bank_details[tax_payer_id]', userData.taxPayerId || '')
 
-  // Add each field to the FormData object
-  // formData.append('surname', 'Mr')
-  // formData.append('first_name', 'iebrahem44')
-  // formData.append('last_name', 'sai')
-  // formData.append('email', 'iebrahemsai445@gmail.com')
-  // formData.append('is_active', '1')
-  // formData.append('user_visa_account_id', '113')
-  // formData.append('user_agent_id', '4')
-  // formData.append('user_cost_center_id', '114')
-  // formData.append('user_store_id', '2')
-  // formData.append('user_account_id', '109')
-  // formData.append('user_pattern_id', '1')
-  // formData.append('allow_login', '1')
-  // formData.append('username', 'nour232sd')   // username must be unique
-  // formData.append('password', '12345678')
-  // formData.append('confirm_password', '12345678')
-  // formData.append('role', '1')
-  // formData.append('access_all_locations', '1')
-  // formData.append('location_permissions[0]', '1')
-  // formData.append('location_permissions[1]', '2')
-  // formData.append('cmmsn_percent', '10')
-  // formData.append('max_sales_discount_percent', '50')
-  // formData.append('pattern_id', '')
-  // formData.append('selected_contacts', '1')
-  // formData.append('selected_contact_ids', '1')
-  // formData.append('dob', '1992-09-10')
-  // formData.append('gender', 'male')
-  // formData.append('marital_status', 'unmarried')
-  // formData.append('blood_group', 'A+')
-  // formData.append('contact_number', '0521214036')
-  // formData.append('alt_number', '0545412541')
-  // formData.append('family_number', '04512565')
-  // formData.append('fb_link', 'https://facebook.com/ede1234')
-  // formData.append('twitter_link', 'https://twitter.com/te1234')
-  // formData.append('social_media_1', '1')
-  // formData.append('social_media_2', '2')
-  // formData.append('custom_field_1', '11')
-  // formData.append('custom_field_2', '12')
-  // formData.append('custom_field_3', '13')
-  // formData.append('custom_field_4', '14')
-  // formData.append('guardian_name', 'test')
-  // formData.append('id_proof_name', 'test1')
-  // formData.append('id_proof_number', 'test2')
-  // formData.append('permanent_address', 'dubai')
-  // formData.append('current_address', 'dubai, dera')
-  // formData.append('bank_details[account_holder_name]', 'iebrahem123')
-  // formData.append('bank_details[account_number]', '123123')
-  // formData.append('bank_details[bank_name]', 'adib')
-  // formData.append('bank_details[bank_code]', '332324')
-  // formData.append('bank_details[branch]', 'dubai')
-  // formData.append('bank_details[tax_payer_id]', '12')
-
-  // this prints all the key value pairs of formData
-  // for (const [key, value] of formData.entries()) {
-  //   console.log(`Key: ${key}, Value: ${value}`)
-  // }
-
   try {
-    console.log(token, '===> token from STORE USER')
-    if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
+    console.log(token, itemId, '===> token & id from EDIT USER slice')
+    if (
+      token !== undefined &&
+      token !== null &&
+      userData !== undefined &&
+      userData !== null &&
+      itemId !== null &&
+      itemId !== undefined
+    ) {
       const headers = {
         Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
-        'Content-Type': 'application/json'
+        'Content-Type': 'multipart/form-data'
       }
 
-      const response = await axios.post('https://test.izocloud.net/api/app/react/users/store', formData, {
+      const response = await axios.post(`https://test.izocloud.net/api/app/react/users/update/${itemId}`, formData, {
         headers // Pass the headers to the Axios request
       })
-      console.log(response, '===>  from STORE USER')
-      if (response.status === 200) {
-        notify('user created successfully', 'success')
-      }
+
+      console.log(response, '===>  from EDIT  USER')
 
       return response.data
     }
   } catch (error) {
-    return rejectWithValue(error.response.data)
+    console.log('Error form update user', error)
   }
 })
 
 // Define the user slice
-const storeUserSlice = createSlice({
-  name: 'user',
+const postEditUserSlice = createSlice({
+  name: 'PostEditUser',
   initialState: {
     loading: false,
     error: null,
-    data: null
+    data: []
   },
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(storeUser.pending, state => {
+      .addCase(postEditUser.pending, state => {
         state.loading = true
         state.error = null
         state.data = null
       })
-      .addCase(storeUser.fulfilled, (state, action) => {
+      .addCase(postEditUser.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
+        state.error = null
+        notify('user edit successfully', 'success')
       })
-      .addCase(storeUser.rejected, (state, action) => {
+      .addCase(postEditUser.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
-        notify('There is an Error try again later', 'error')
+        notify('There is an error try again later', 'error')
       })
   }
 })
 
-export default storeUserSlice.reducer
+export default postEditUserSlice.reducer

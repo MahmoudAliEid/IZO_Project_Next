@@ -301,41 +301,7 @@ const columns: GridColDef[] = [
     }
   },
 
-  // {
-  //   flex: 0.15,
-  //   minWidth: 120,
-  //   headerName: 'Plan',
-  //   field: 'currentPlan',
-  //   renderCell: ({ row }: CellType) => {
-  //     return (
-  //       <Typography noWrap sx={{ fontWeight: 600, color: 'text.secondary', textTransform: 'capitalize' }}>
-  //         {row.currentPlan}
-  //       </Typography>
-  //     )
-  //   }
-  // },
-  // {
-  //   flex: 0.2,
-  //   minWidth: 185,
-  //   field: 'billing',
-  //   headerName: 'Billing',
-  //   renderCell: ({ row }: CellType) => {
-  //     return (
-  //       <Typography noWrap sx={{ color: 'text.secondary' }}>
-  //         {row.billing}
-  //       </Typography>
-  //     )
-  //   }
-  // },
-  // {
-  //   flex: 0.1,
-  //   minWidth: 110,
-  //   field: 'status',
-  //   headerName: 'Status',
-  //   renderCell: ({ row }: CellType) => {
-  //     return <CustomChip rounded skin='light' size='small' label={row.status} color={userStatusObj[row.status]} />
-  //   }
-  // },
+
   {
     flex: 0.1,
     minWidth: 90,
@@ -573,7 +539,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
 
             /> : <Grid>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: "center" }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: "center", padding: "20px" }}>
                 <Box><ProgressCustomization /></Box>
               </Box>
 

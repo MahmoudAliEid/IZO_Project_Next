@@ -17,7 +17,7 @@ import izoUsersSlice from 'src/store/apps/izoUsers/izoUsersSlice'
 import createUsersSlice from 'src/store/apps/izoUsers/createUserSlice'
 import editUsersSlice from 'src/store/apps/izoUsers/editUsersSlice'
 import deleteUserSlice from './apps/izoUsers/deleteUserSlice'
-import updateUserSlice from './apps/izoUsers/izoUpdateUserSlice'
+import postEditUserSlice from './apps/izoUsers/postEditUserSlice'
 import storeUserSlice from './apps/izoUsers/storeUserSlice'
 
 export const store = configureStore({
@@ -37,7 +37,7 @@ export const store = configureStore({
     createUser: createUsersSlice,
     editUsers: editUsersSlice,
     deleteUser: deleteUserSlice,
-    updateUser: updateUserSlice,
+    postEditUser: postEditUserSlice,
     storeUser: storeUserSlice
   },
   middleware: getDefaultMiddleware =>

@@ -5,6 +5,9 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { fetchIzoUsers } from 'src/store/apps/izoUsers/izoUsersSlice'
+import useSubmitUser from 'src/hooks/useSubmitUser';
+import { storeUser } from 'src/store/apps/izoUsers/storeUserSlice.js'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 
 // ** MUI Imports
@@ -174,7 +177,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const { direction } = theme
   const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const [date, setDate] = useState<any>(new Date())
-  const { storeNewUser } = useCreateUser();
+  const { handleSubmitData } = useSubmitUser();
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -202,7 +205,9 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const handleSubmit = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     // Handle form submission logic here
     // console.log(values);
-    storeNewUser(values);
+    console.log("add btn clicked");
+    handleSubmitData(storeUser, fetchIzoUsers, values);
+
     resetForm();
   };
 
