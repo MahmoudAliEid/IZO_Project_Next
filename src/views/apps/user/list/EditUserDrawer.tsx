@@ -50,7 +50,6 @@ import { UsersType } from 'src/types/apps/userTypes'
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
 
 // import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
-import useCreateUser from 'src/hooks/useCreateUser'
 
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
 import CustomInput from './PickersCustomInput'
@@ -83,7 +82,7 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
   prefix: '',
-  firstName: '',
+  firstName: 'Ali',
   lastName: '',
   email: '',
   BusinessLocation: '',
@@ -105,7 +104,7 @@ const initialValues = {
   username: '',
   password: '',
   confirmPassword: '',
-  roles: '',
+  roles: '1',
   allLocations: false,
   AGT: false,
   salesCommission: '',
@@ -253,7 +252,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
       variant='temporary'
       onClose={handleClose}
       ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 900, md: 1000 } } }}
+      sx={{ '& .MuiDrawer-paper': { width: '100%' } }}
     >
       <Header>
         <Typography variant='h6'>Edit User</Typography>

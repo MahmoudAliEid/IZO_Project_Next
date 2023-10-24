@@ -47,21 +47,18 @@ const editUsersSlice = createSlice({
         console.log('pending')
         state.loading = true
         state.error = null
-        notify('pending', 'error')
       })
       .addCase(fetchEditUsers.fulfilled, (state, action) => {
         console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.error = null
-        notify('fetch user to edit is done', 'success')
       })
       .addCase(fetchEditUsers.rejected, (state, action) => {
         console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.error = action.error.message
-        notify('There is an error try again later', 'error')
       })
   }
 })

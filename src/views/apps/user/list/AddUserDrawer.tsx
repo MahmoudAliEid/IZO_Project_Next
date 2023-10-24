@@ -26,6 +26,8 @@ import FormHelperText from '@mui/material/FormHelperText'
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import Chip from "@mui/material/Chip";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 // ** Third Party Imports
 import * as Yup from 'yup';
@@ -48,7 +50,6 @@ import { UsersType } from 'src/types/apps/userTypes'
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
 
 // import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
-import useCreateUser from 'src/hooks/useCreateUser'
 
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
 import CustomInput from './PickersCustomInput'
@@ -94,7 +95,7 @@ const initialValues = {
   gender: '',
   marital: '',
   userPattern: '',
-  patternId: '',
+  patternList: [],
   taxesItem: '',
   warehouse: '',
   isActive: false,
@@ -220,8 +221,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
       variant='temporary'
       onClose={handleClose}
       ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 800, sm: 900, md: 1000 } } }}
-    >
+      sx={{ '& .MuiDrawer-paper': { width: '100%' } }}    >
       <Header>
         <Typography variant='h6'>Add User</Typography>
         <IconButton size='small' onClick={handleClose} sx={{ color: 'text.primary' }}>
@@ -241,6 +241,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue
           }) => (
             <form onSubmit={handleSubmit}>
 
@@ -266,6 +267,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     onBlur={handleBlur}
                     error={!!touched.prefix && !!errors.prefix}
                     label="Prefix"
+                    required
                   >
                     <MenuItem value="">None</MenuItem>
                     <MenuItem value="Mr.">Mr.</MenuItem>
@@ -273,8 +275,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     <MenuItem value="Ms.">Ms.</MenuItem>
                   </Select>
                 </FormControl>
-                <Field as={TextField} name="firstName" label="First Name" variant="outlined" fullWidth margin="normal" />
-                <Field as={TextField} name="lastName" label="Last Name" variant="outlined" fullWidth margin="normal" />
+                <Field as={TextField} name="firstName" label="First Name" variant="outlined" fullWidth margin="normal" required />
+                <Field as={TextField} name="lastName" label="Last Name" variant="outlined" fullWidth margin="normal" required />
               </Box>
 
               <Box
@@ -285,7 +287,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   mb: 6
                 }}
               >
-                <Field as={TextField} name="email" label="E-mail" variant="outlined" fullWidth margin="normal" />
+                <Field as={TextField} name="email" label="E-mail" variant="outlined" fullWidth margin="normal" required />
                 {/*
                  check box for is active
                */}
@@ -301,6 +303,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                       onClick={() => {
                         values.isActive = !values.isActive
                       }}
+                      required
                     />
                   }
                 />
@@ -588,6 +591,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                       }}
                     />
                   }
+                  required
                 />
                 <Box
                   sx={{
@@ -598,7 +602,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   }}
                 >
 
-                  <Field as={TextField} name="username" label="Username" variant="outlined" fullWidth margin="normal" />
+                  <Field as={TextField} name="username" label="Username" variant="outlined" fullWidth margin="normal" required />
                   <TextField
                     label="Password"
                     type="password"
@@ -608,6 +612,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     value={values.password}
                     name='password'
                     onChange={handleChange}
+                    required
                   />
                   <TextField
                     label="Confirm Password"
@@ -618,6 +623,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     value={values.confirmPassword}
                     name='confirmPassword'
                     onChange={handleChange}
+                    required
                   />
                 </Box>
                 <FormControl fullWidth sx={{ mb: 6 }}>
@@ -633,6 +639,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     onBlur={handleBlur}
                     error={!!touched.prefix && !!errors.prefix}
                     label="Select roles"
+                    required
                   >
                     <MenuItem value="">None</MenuItem>
                     {
@@ -736,36 +743,101 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 {/*
                 list patterns FIELD INPUT
                 */}
-                <Box sx={{ gridColumn: 'span 2' }}>
-                  <FormControl
-                    sx={{ m: 0, width: '100%' }}
-                  >
-                    <InputLabel
-                      id="demo-simple-select-standard-label"
-                    >List Patterns </InputLabel>
-                    <Select
-                      fullWidth
-                      labelId="demo-simple-select-standard-label"
-                      name='patternId'
-                      value={values.patternId}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={!!touched.prefix && !!errors.prefix}
-                      label="List patterns"
-                    >
-                      {
-                        Object.keys(Requirements).length === 0 ? null :
-                          Requirements.patterns.map((item: any) => (
-                            <MenuItem
-                              value={item.id}
-                              key={item.id}
-                            >
-                              {item.name}
-                            </MenuItem>
+                {
+
+                  //    <Box sx={{ gridColumn: 'span 2' }}>
+                  //    <FormControl
+                  //      sx={{ m: 0, width: '100%' }}
+                  //    >
+                  //      <InputLabel
+                  //        id="demo-simple-select-standard-label"
+                  //      >List Patterns </InputLabel>
+                  //      <Select
+                  //        fullWidth
+                  //        labelId="demo-simple-select-standard-label"
+                  //        name='patternId'
+                  //        value={values.patternId}
+                  //        onChange={handleChange}
+                  //        onBlur={handleBlur}
+                  //        error={!!touched.prefix && !!errors.prefix}
+                  //        label="List patterns"
+                  //      >
+                  //        {
+                  //          Object.keys(Requirements).length === 0 ? null :
+                  //            Requirements.patterns.map((item: any) => (
+                  //              <MenuItem
+                  //                value={item.id}
+                  //                key={item.id}
+                  //              >
+                  //                {item.name}
+                  //              </MenuItem>
+                  //            ))}
+                  //      </Select>
+                  //    </FormControl>
+                  //  </Box>
+
+                }
+
+                <FormControl>
+                  <InputLabel id="demo-multiple-chip-label">
+                    List Patterns
+                  </InputLabel>
+                  <Select
+                    labelId="demo-multiple-chip-label"
+                    id="demo-multiple-chip"
+                    name="patternList"
+                    multiple
+                    value={values.patternList}
+                    onChange={(e) => {
+                      setFieldValue("patternList", e.target.value);
+                    }}
+                    input={
+                      <OutlinedInput
+                        id="select-multiple-chip"
+                        label="list patterns"
+                      />
+                    }
+                    renderValue={(selected) => (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "0.5rem",
+                          padding: "0.5rem",
+                        }}
+                      >
+
+                        {
+                          selected.map((value) => (
+                            <Box key={value}>
+                              <Chip
+                                variant="outlined"
+                                label={Requirements.patterns.find(
+                                  (option: any) => option.id === value
+                                ).name}
+
+                                onDelete={(value) => {
+                                  setFieldValue(
+                                    "patternList",
+                                    values.patternList.filter(
+                                      (option) => option !== value
+                                    )
+                                  );
+                                }}
+                              />
+                            </Box>
                           ))}
-                    </Select>
-                  </FormControl>
-                </Box>
+                      </Box>
+                    )}
+                  >
+                    {Requirements.patterns.map((option: any) => (
+                      <MenuItem key={option.id} value={option.id}>
+                        {option.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
                 {/*
                   check box for allow selected contacts
                 */}
