@@ -11,6 +11,7 @@ import { fetchUsers } from 'src/store/apps/users'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import axios from "axios"
 
 // ** Styles
 import * as styles from './styles.module.css'
@@ -101,24 +102,30 @@ const LinkStyled = styled(Link)(() => ({
 }))
 
 type CurrenciesType = {
-  status: string
+  data: {
+    status: string
+    currencies: object
+  }
   currencies: object
+
 }
 
 export async function getStaticProps() {
   // Fetch data from the API
-  const apiUrl = 'https://test.izocloud.net/api/app/react/currency'
-  const response = await fetch(apiUrl)
+  const apiUrl = 'https://test.izocloud.net/api/app/react/currency/all'
 
-  if (!response.ok) {
+  const response = await axios.get(apiUrl)
+
+  if (!response) {
     throw new Error(`Failed to fetch data from ${apiUrl}`)
   }
 
-  const currencies: CurrenciesType = await response.json()
+  const data: CurrenciesType = response.data
+  console.log("from register currency:", data)
 
   return {
     props: {
-      currencies: currencies.currencies
+      currencies: data.currencies
     },
     revalidate: 10,
   }
@@ -237,6 +244,9 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
     }))
   }
 
+
+
+
   const handleMrMrsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMrMrs(event.target.value)
   }
@@ -265,6 +275,7 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
           height={200}
           className={styles.izo__logo}
         />
+
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid spacing={2} item xs={12} sx={{ padding: '20px 0' }}>

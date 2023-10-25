@@ -28,6 +28,8 @@ import FormHelperText from '@mui/material/FormHelperText'
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
+import Chip from "@mui/material/Chip";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 // ** Third Party Imports
 import * as Yup from 'yup';
@@ -80,62 +82,6 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Email is required'),
 });
 
-const initialValues = {
-  prefix: '',
-  firstName: 'Ali',
-  lastName: '',
-  email: '',
-  BusinessLocation: '',
-  ProductPriceItem: '',
-  accounts: '',
-  visa: '',
-  agents: '',
-  selectedContact: '',
-  allowSlctdContacts: false,
-  cost_center: '',
-  gender: '',
-  marital: '',
-  userPattern: '',
-  patternId: '',
-  taxesItem: '',
-  warehouse: '',
-  isActive: false,
-  allowlogin: false,
-  username: '',
-  password: '',
-  confirmPassword: '',
-  roles: '1',
-  allLocations: false,
-  AGT: false,
-  salesCommission: '',
-  maxSalesDiscount: '',
-  dateOfBirth: new Date(),
-  bloodGroup: '',
-  mobileNumber: '',
-  alternativeMobileNumber: '',
-  familyContactNumber: '',
-  facebookLink: '',
-  twitterLink: '',
-  socialMedia1: '',
-  socialMedia2: '',
-  customField1: '',
-  customField2: '',
-  customField3: '',
-  customField4: '',
-  guardianName: '',
-  idProofName: '',
-  idProofNumber: '',
-  permanentAddress: '',
-  currentAddress: '',
-  holderName: '',
-  accountNumber: '',
-  bankName: '',
-  bankIdentifierCode: '',
-  bankBranchName: '',
-  taxPayerId: '',
-  department: '',
-  designation: '',
-};
 
 const showErrors = (field: string, valueLen: number, min: number) => {
   if (valueLen === 0) {
@@ -158,6 +104,7 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 const SidebarEditUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle, itemId } = props
+
   const [Requirements, setRequirements] = useState<object>({
     BusinessLocation: [],
     ProductPrice: [],
@@ -172,6 +119,65 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
     taxes: [],
     warehouse: []
   });
+  const [initialValues, setInitialValues] = useState({
+
+    prefix: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    businessLocation: '',
+    ProductPriceItem: '',
+    accounts: '',
+    visa: '',
+    agents: '',
+    selectedContact: '',
+    allowSlctdContacts: false,
+    cost_center: '',
+    gender: '',
+    marital: '',
+    userPattern: '',
+    patternList: [],
+    taxesItem: '',
+    warehouse: '',
+    isActive: false,
+    allowlogin: false,
+    username: '',
+    password: '',
+    confirmPassword: '',
+    roles: '',
+    allLocations: false,
+    AGT: false,
+    salesCommission: '',
+    maxSalesDiscount: '',
+    dateOfBirth: new Date(),
+    bloodGroup: '',
+    mobileNumber: '',
+    alternativeMobileNumber: '',
+    familyContactNumber: '',
+    facebookLink: '',
+    twitterLink: '',
+    socialMedia1: '',
+    socialMedia2: '',
+    customField1: '',
+    customField2: '',
+    customField3: '',
+    customField4: '',
+    guardianName: '',
+    idProofName: '',
+    idProofNumber: '',
+    permanentAddress: '',
+    currentAddress: '',
+    holderName: '',
+    accountNumber: '',
+    bankName: '',
+    bankIdentifierCode: '',
+    bankBranchName: '',
+    taxPayerId: '',
+    department: '',
+    designation: '',
+  }
+  )
+
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // ** Hook
@@ -192,9 +198,91 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   useEffect(() => {
     if (data !== null && data !== undefined) {
       setRequirements(data.Requirement)
+
       console.log(data.Requirement, '====> data from update page')
     }
   }, [data])
+
+  // useEffect(() => {
+  //   if (data?.UserInfo !== null && data?.UserInfo !== undefined) {
+  //     setInitialValues(prev => ({
+  //       ...prev,
+
+  //       prefix: data.UserInfo.prefix || prev.prefix,
+  //       firstName: data.UserInfo.firstName || prev.firstName,
+  //       lastName: data.UserInfo.lastName || prev.lastName,
+  //       email: data.UserInfo.email || prev.email,
+  //       businessLocation: data.UserInfo.businessLocation || prev.businessLocation,
+  //       ProductPriceItem: data.UserInfo.ProductPriceItem || prev.ProductPriceItem,
+  //       visa: data.UserInfo.visa || prev.visa,
+  //       agents: data.UserInfo.agents || prev.agents,
+  //       selectedContact: data.UserInfo.selectedContact || prev.selectedContact,
+  //       allowSlctdContacts: data.UserInfo.allowSlctdContacts || prev.allowSlctdContacts,
+  //       cost_center: data.UserInfo.cost_center || prev.cost_center,
+  //       gender: data.UserInfo.gender || prev.gender,
+  //       marital: data.UserInfo.marital || prev.marital,
+  //       userPattern: data.UserInfo.userPattern || prev.userPattern,
+  //       patternList: data.UserInfo.patternList || prev.patternList,
+  //       taxesItem: data.UserInfo.taxesItem || prev.taxesItem,
+  //       warehouse: data.UserInfo.warehouse || prev.warehouse,
+  //       isActive: data.UserInfo.isActive || prev.isActive,
+  //       allowlogin: data.UserInfo.allowlogin || prev.allowlogin,
+  //       username: data.UserInfo.username || prev.username,
+  //       password: data.UserInfo.password || prev.password,
+  //       confirmPassword: data.UserInfo.confirmPassword || prev.confirmPassword,
+  //       roles: data.UserInfo.roles || prev.roles,
+  //       allLocations: data.UserInfo.allLocations || prev.allLocations,
+  //       AGT: data.UserInfo.AGT || prev.AGT,
+  //       salesCommission: data.UserInfo.salesCommission || prev.salesCommission,
+  //       maxSalesDiscount: data.UserInfo.maxSalesDiscount || prev.maxSalesDiscount,
+
+  //       // dateOfBirth: data.UserInfo.dateOfBirth || prev.dateOfBirth,
+  //       bloodGroup: data.UserInfo.bloodGroup || prev.bloodGroup,
+  //       mobileNumber: data.UserInfo.mobileNumber || prev.mobileNumber,
+  //       accounts: data.UserInfo.accounts || prev.accounts,
+  //       alternativeMobileNumber: data.UserInfo.alternativeMobileNumber || prev.alternativeMobileNumber,
+  //       familyContactNumber: data.UserInfo.familyContactNumber || prev.familyContactNumber,
+  //       facebookLink: data.UserInfo.facebookLink || prev.facebookLink,
+  //       twitterLink: data.UserInfo.twitterLink || prev.twitterLink,
+  //       socialMedia1: data.UserInfo.socialMedia1 || prev.socialMedia1,
+  //       socialMedia2: data.UserInfo.socialMedia2 || prev.socialMedia2,
+  //       customField1: data.UserInfo.customField1 || prev.customField1,
+  //       customField2: data.UserInfo.customField2 || prev.customField2,
+  //       customField3: data.UserInfo.customField3 || prev.customField3,
+  //       customField4: data.UserInfo.customField4 || prev.customField4,
+  //       guardianName: data.UserInfo.guardianName || prev.guardianName,
+  //       idProofName: data.UserInfo.idProofName || prev.idProofName,
+  //       idProofNumber: data.UserInfo.idProofNumber || prev.idProofNumber,
+  //       permanentAddress: data.UserInfo.permanentAddress || prev.permanentAddress,
+  //       currentAddress: data.UserInfo.currentAddress || prev.currentAddress,
+  //       holderName: data.UserInfo.holderName || prev.holderName,
+  //       accountNumber: data.UserInfo.accountNumber || prev.accountNumber,
+  //       bankName: data.UserInfo.bankName || prev.bankName,
+  //       bankIdentifierCode: data.UserInfo.bankIdentifierCode || prev.bankIdentifierCode,
+  //       bankBranchName: data.UserInfo.bankBranchName || prev.bankBranchName,
+  //       taxPayerId: data.UserInfo.taxPayerId || prev.taxPayerId,
+  //       department: data.UserInfo.department || prev.department,
+  //       designation: data.UserInfo.designation || prev.designation,
+  //     }))
+  //     console.log("form set intit user info", data.UserInfo)
+
+  //   }
+  // }, [data?.UserInfo])
+
+  const handleTestInit = () => {
+
+    setInitialValues(prev => ({
+      ...prev,
+      firstName: "Mahmoud Ali"
+
+    }))
+
+    console.log("frist name update successfully")
+
+  }
+  console.log("after update initialvalue frist name", initialValues.firstName)
+
+  // console.log("initialValues after set:", initialValues)
 
 
 
@@ -261,6 +349,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
         </IconButton>
       </Header>
       <Box sx={{ p: 5 }}>
+        <button onClick={handleTestInit}>update initialValues</button>
         {Requirements ? (<Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -273,6 +362,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue
           }) => (
             <form onSubmit={handleSubmit}>
 
@@ -298,6 +388,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     onBlur={handleBlur}
                     error={!!touched.prefix && !!errors.prefix}
                     label="Prefix"
+                    required
                   >
                     <MenuItem value="">None</MenuItem>
                     <MenuItem value="Mr.">Mr.</MenuItem>
@@ -305,8 +396,8 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     <MenuItem value="Ms.">Ms.</MenuItem>
                   </Select>
                 </FormControl>
-                <Field as={TextField} name="firstName" label="First Name" variant="outlined" fullWidth margin="normal" />
-                <Field as={TextField} name="lastName" label="Last Name" variant="outlined" fullWidth margin="normal" />
+                <Field as={TextField} name="firstName" value={values.firstName} label="First Name" variant="outlined" fullWidth margin="normal" required />
+                <Field as={TextField} name="lastName" value={values.lastName} label="Last Name" variant="outlined" fullWidth margin="normal" required />
               </Box>
 
               <Box
@@ -317,7 +408,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                   mb: 6
                 }}
               >
-                <Field as={TextField} name="email" label="E-mail" variant="outlined" fullWidth margin="normal" />
+                <Field as={TextField} name="email" value={values.email} label="E-mail" variant="outlined" fullWidth margin="normal" required />
                 {/*
                  check box for is active
                */}
@@ -333,6 +424,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       onClick={() => {
                         values.isActive = !values.isActive
                       }}
+                      required
                     />
                   }
                 />
@@ -360,7 +452,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                 <FormControl fullWidth sx={{ mb: 6 }}>
                   <InputLabel
                     id="demo-simple-select-standard-label"
-                  >Acount Cash </InputLabel>
+                  >Account Cash </InputLabel>
                   <Select
                     fullWidth
                     labelId="demo-simple-select-standard-label"
@@ -620,6 +712,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       }}
                     />
                   }
+                  required
                 />
                 <Box
                   sx={{
@@ -630,7 +723,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                   }}
                 >
 
-                  <Field as={TextField} name="username" label="Username" variant="outlined" fullWidth margin="normal" />
+                  <Field as={TextField} name="username" label="Username" variant="outlined" fullWidth margin="normal" required />
                   <TextField
                     label="Password"
                     type="password"
@@ -640,6 +733,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     value={values.password}
                     name='password'
                     onChange={handleChange}
+                    required
                   />
                   <TextField
                     label="Confirm Password"
@@ -650,35 +744,79 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     value={values.confirmPassword}
                     name='confirmPassword'
                     onChange={handleChange}
+                    required
                   />
                 </Box>
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel
-                    id="demo-simple-select-standard-label"
-                  >Select roles </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-standard-label"
-                    name='roles'
-                    value={values.roles}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label="Select roles"
-                  >
-                    <MenuItem value="">None</MenuItem>
-                    {
-                      Object.keys(Requirements).length === 0 ? null :
-                        Requirements.roles.map((item: any) => (
-                          <MenuItem
-                            value={item.id}
-                            key={item.id}
-                          >
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                  </Select>
-                </FormControl>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: 3,
+                    mb: 2
+                  }}
+                >
+                  <FormControl sx={{ mb: 6 }} fullWidth>
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    >Select roles </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='roles'
+                      value={values.roles}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label="Select roles"
+                      required
+                    >
+                      <MenuItem value="">None</MenuItem>
+                      {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.roles.map((item: any) => (
+                            <MenuItem
+                              value={item.id}
+                              key={item.id}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl sx={{ mb: 6 }} fullWidth>
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    >Business Location
+                    </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='businessLocation
+'
+                      value={values.businessLocation
+                      }
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label="Business Location
+"
+                      required
+                    >
+                      <MenuItem value="">None</MenuItem>
+                      {/* {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements?.BusinessLocation
+                            .map((item: any) => (
+                              <MenuItem
+                                value={item.id}
+                                key={item.id}
+                              >
+                                {item.name}
+                              </MenuItem>
+                            ))} */}
+                    </Select>
+                  </FormControl>
+                </Box>
                 <Box
                   sx={{
                     display: 'grid',
@@ -769,32 +907,63 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                 list patterns FIELD INPUT
                 */}
                 <Box sx={{ gridColumn: 'span 2' }}>
-                  <FormControl
-                    sx={{ m: 0, width: '100%' }}
-                  >
-                    <InputLabel
-                      id="demo-simple-select-standard-label"
-                    >List Patterns </InputLabel>
+                  <FormControl sx={{ m: 0, width: '100%' }}>
+                    <InputLabel id="demo-multiple-chip-label">
+                      List Patterns
+                    </InputLabel>
                     <Select
-                      fullWidth
-                      labelId="demo-simple-select-standard-label"
-                      name='patternId'
-                      value={values.patternId}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={!!touched.prefix && !!errors.prefix}
-                      label="List patterns"
+                      labelId="demo-multiple-chip-label"
+                      id="demo-multiple-chip"
+                      name="patternList"
+                      multiple
+                      value={values.patternList}
+                      onChange={(e) => {
+                        setFieldValue("patternList", e.target.value);
+                      }}
+                      input={
+                        <OutlinedInput
+                          id="select-multiple-chip"
+                          label="list patterns"
+                        />
+                      }
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "0.5rem",
+                            padding: "0.5rem",
+                          }}
+                        >
+
+                          {
+                            selected.map((value) => (
+                              <Box key={value}>
+                                <Chip
+                                  variant="outlined"
+                                  label={Requirements.patterns.find(
+                                    (option: any) => option.id === value
+                                  ).name}
+
+                                  onDelete={(value) => {
+                                    setFieldValue(
+                                      "patternList",
+                                      values.patternList.filter(
+                                        (option) => option !== value
+                                      )
+                                    );
+                                  }}
+                                />
+                              </Box>
+                            ))}
+                        </Box>
+                      )}
                     >
-                      {
-                        Object.keys(Requirements).length === 0 ? null :
-                          Requirements.patterns.map((item: any) => (
-                            <MenuItem
-                              value={item.id}
-                              key={item.id}
-                            >
-                              {item.name}
-                            </MenuItem>
-                          ))}
+                      {Requirements.patterns.map((option: any) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Box>
