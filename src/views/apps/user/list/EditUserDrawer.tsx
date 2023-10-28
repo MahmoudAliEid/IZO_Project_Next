@@ -30,6 +30,7 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import { convertDateFormat } from 'src/@core/layouts/utils';
 
 // ** Third Party Imports
 import * as Yup from 'yup';
@@ -178,6 +179,16 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   }
   )
 
+
+  // update initial values
+  // useEffect(() => {
+  //   setInitialValues(prevState => ({
+  //     ...prevState,
+  //     prefix: 'Mr.',
+  //     firstName: 'Ali',
+  //   }))
+  // }, [])
+
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // ** Hook
@@ -200,89 +211,81 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
       setRequirements(data.Requirement)
 
       console.log(data.Requirement, '====> data from update page')
+
+      // print now date
+      console.log("now date", new Date());
     }
   }, [data])
 
-  // useEffect(() => {
-  //   if (data?.UserInfo !== null && data?.UserInfo !== undefined) {
-  //     setInitialValues(prev => ({
-  //       ...prev,
 
-  //       prefix: data.UserInfo.prefix || prev.prefix,
-  //       firstName: data.UserInfo.firstName || prev.firstName,
-  //       lastName: data.UserInfo.lastName || prev.lastName,
-  //       email: data.UserInfo.email || prev.email,
-  //       businessLocation: data.UserInfo.businessLocation || prev.businessLocation,
-  //       ProductPriceItem: data.UserInfo.ProductPriceItem || prev.ProductPriceItem,
-  //       visa: data.UserInfo.visa || prev.visa,
-  //       agents: data.UserInfo.agents || prev.agents,
-  //       selectedContact: data.UserInfo.selectedContact || prev.selectedContact,
-  //       allowSlctdContacts: data.UserInfo.allowSlctdContacts || prev.allowSlctdContacts,
-  //       cost_center: data.UserInfo.cost_center || prev.cost_center,
-  //       gender: data.UserInfo.gender || prev.gender,
-  //       marital: data.UserInfo.marital || prev.marital,
-  //       userPattern: data.UserInfo.userPattern || prev.userPattern,
-  //       patternList: data.UserInfo.patternList || prev.patternList,
-  //       taxesItem: data.UserInfo.taxesItem || prev.taxesItem,
-  //       warehouse: data.UserInfo.warehouse || prev.warehouse,
-  //       isActive: data.UserInfo.isActive || prev.isActive,
-  //       allowlogin: data.UserInfo.allowlogin || prev.allowlogin,
-  //       username: data.UserInfo.username || prev.username,
-  //       password: data.UserInfo.password || prev.password,
-  //       confirmPassword: data.UserInfo.confirmPassword || prev.confirmPassword,
-  //       roles: data.UserInfo.roles || prev.roles,
-  //       allLocations: data.UserInfo.allLocations || prev.allLocations,
-  //       AGT: data.UserInfo.AGT || prev.AGT,
-  //       salesCommission: data.UserInfo.salesCommission || prev.salesCommission,
-  //       maxSalesDiscount: data.UserInfo.maxSalesDiscount || prev.maxSalesDiscount,
+  useEffect(() => {
+    if (data?.UserInfo !== null && data?.UserInfo !== undefined) {
+      const newDateOfBirth = convertDateFormat(data.UserInfo.dateOfBirth)
 
-  //       // dateOfBirth: data.UserInfo.dateOfBirth || prev.dateOfBirth,
-  //       bloodGroup: data.UserInfo.bloodGroup || prev.bloodGroup,
-  //       mobileNumber: data.UserInfo.mobileNumber || prev.mobileNumber,
-  //       accounts: data.UserInfo.accounts || prev.accounts,
-  //       alternativeMobileNumber: data.UserInfo.alternativeMobileNumber || prev.alternativeMobileNumber,
-  //       familyContactNumber: data.UserInfo.familyContactNumber || prev.familyContactNumber,
-  //       facebookLink: data.UserInfo.facebookLink || prev.facebookLink,
-  //       twitterLink: data.UserInfo.twitterLink || prev.twitterLink,
-  //       socialMedia1: data.UserInfo.socialMedia1 || prev.socialMedia1,
-  //       socialMedia2: data.UserInfo.socialMedia2 || prev.socialMedia2,
-  //       customField1: data.UserInfo.customField1 || prev.customField1,
-  //       customField2: data.UserInfo.customField2 || prev.customField2,
-  //       customField3: data.UserInfo.customField3 || prev.customField3,
-  //       customField4: data.UserInfo.customField4 || prev.customField4,
-  //       guardianName: data.UserInfo.guardianName || prev.guardianName,
-  //       idProofName: data.UserInfo.idProofName || prev.idProofName,
-  //       idProofNumber: data.UserInfo.idProofNumber || prev.idProofNumber,
-  //       permanentAddress: data.UserInfo.permanentAddress || prev.permanentAddress,
-  //       currentAddress: data.UserInfo.currentAddress || prev.currentAddress,
-  //       holderName: data.UserInfo.holderName || prev.holderName,
-  //       accountNumber: data.UserInfo.accountNumber || prev.accountNumber,
-  //       bankName: data.UserInfo.bankName || prev.bankName,
-  //       bankIdentifierCode: data.UserInfo.bankIdentifierCode || prev.bankIdentifierCode,
-  //       bankBranchName: data.UserInfo.bankBranchName || prev.bankBranchName,
-  //       taxPayerId: data.UserInfo.taxPayerId || prev.taxPayerId,
-  //       department: data.UserInfo.department || prev.department,
-  //       designation: data.UserInfo.designation || prev.designation,
-  //     }))
-  //     console.log("form set intit user info", data.UserInfo)
+      // @ts-ignore
+      setInitialValues(prev => ({
+        ...prev,
 
-  //   }
-  // }, [data?.UserInfo])
+        prefix: data.UserInfo.prefix || prev.prefix,
+        firstName: data.UserInfo.firstName || prev.firstName,
+        lastName: data.UserInfo.lastName || prev.lastName,
+        email: data.UserInfo.email || prev.email,
+        businessLocation: data.UserInfo.businessLocation || prev.businessLocation,
+        ProductPriceItem: data.UserInfo.ProductPriceItem || prev.ProductPriceItem,
+        visa: data.UserInfo.visa || prev.visa,
+        agents: data.UserInfo.agents || prev.agents,
+        selectedContact: data.UserInfo.selectedContact || prev.selectedContact,
+        allowSlctdContacts: data.UserInfo.allowSlctdContacts || prev.allowSlctdContacts,
+        cost_center: data.UserInfo.cost_center || prev.cost_center,
+        gender: data.UserInfo.gender || prev.gender,
+        marital: data.UserInfo.marital || prev.marital,
+        userPattern: data.UserInfo.userPattern || prev.userPattern,
+        patternList: data.UserInfo.patternList || prev.patternList,
+        taxesItem: data.UserInfo.taxesItem || prev.taxesItem,
+        warehouse: data.UserInfo.warehouse || prev.warehouse,
+        isActive: data.UserInfo.isActive || prev.isActive,
+        allowlogin: data.UserInfo.allowlogin || prev.allowlogin,
+        username: data.UserInfo.username || prev.username,
+        password: data.UserInfo.password || prev.password,
+        confirmPassword: data.UserInfo.confirmPassword || prev.confirmPassword,
+        roles: data.UserInfo.roles || prev.roles,
+        allLocations: data.UserInfo.allLocations || prev.allLocations,
+        AGT: data.UserInfo.AGT || prev.AGT,
+        salesCommission: data.UserInfo.salesCommission || prev.salesCommission,
+        maxSalesDiscount: data.UserInfo.maxSalesDiscount || prev.maxSalesDiscount,
 
-  const handleTestInit = () => {
+        dateOfBirth: new Date(newDateOfBirth) || prev.dateOfBirth,
+        bloodGroup: data.UserInfo.bloodGroup || prev.bloodGroup,
+        mobileNumber: data.UserInfo.mobileNumber || prev.mobileNumber,
+        accounts: data.UserInfo.accounts || prev.accounts,
+        alternativeMobileNumber: data.UserInfo.alternativeMobileNumber || prev.alternativeMobileNumber,
+        familyContactNumber: data.UserInfo.familyContactNumber || prev.familyContactNumber,
+        facebookLink: data.UserInfo.facebookLink || prev.facebookLink,
+        twitterLink: data.UserInfo.twitterLink || prev.twitterLink,
+        socialMedia1: data.UserInfo.socialMedia1 || prev.socialMedia1,
+        socialMedia2: data.UserInfo.socialMedia2 || prev.socialMedia2,
+        customField1: data.UserInfo.customField1 || prev.customField1,
+        customField2: data.UserInfo.customField2 || prev.customField2,
+        customField3: data.UserInfo.customField3 || prev.customField3,
+        customField4: data.UserInfo.customField4 || prev.customField4,
+        guardianName: data.UserInfo.guardianName || prev.guardianName,
+        idProofName: data.UserInfo.idProofName || prev.idProofName,
+        idProofNumber: data.UserInfo.idProofNumber || prev.idProofNumber,
+        permanentAddress: data.UserInfo.permanentAddress || prev.permanentAddress,
+        currentAddress: data.UserInfo.currentAddress || prev.currentAddress,
+        holderName: data.UserInfo.holderName || prev.holderName,
+        accountNumber: data.UserInfo.accountNumber || prev.accountNumber,
+        bankName: data.UserInfo.bankName || prev.bankName,
+        bankIdentifierCode: data.UserInfo.bankIdentifierCode || prev.bankIdentifierCode,
+        bankBranchName: data.UserInfo.bankBranchName || prev.bankBranchName,
+        taxPayerId: data.UserInfo.taxPayerId || prev.taxPayerId,
+        department: data.UserInfo.department || prev.department,
+        designation: data.UserInfo.designation || prev.designation,
+      }))
+      console.log("form set intit user info", data.UserInfo)
 
-    setInitialValues(prev => ({
-      ...prev,
-      firstName: "Mahmoud Ali"
-
-    }))
-
-    console.log("frist name update successfully")
-
-  }
-  console.log("after update initialvalue frist name", initialValues.firstName)
-
-  // console.log("initialValues after set:", initialValues)
+    }
+  }, [data?.UserInfo])
 
 
 
@@ -349,11 +352,11 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
         </IconButton>
       </Header>
       <Box sx={{ p: 5 }}>
-        <button onClick={handleTestInit}>update initialValues</button>
         {Requirements ? (<Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize={true}
         >
           {({
             values,

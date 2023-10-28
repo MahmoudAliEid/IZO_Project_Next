@@ -74,3 +74,23 @@ export const removeChildren = (children: NavLink[], openGroup: string[], current
     }
   })
 }
+
+export const convertDateFormat = (inputDate: string) => {
+  // Parse the input date string
+  const parts = inputDate.split('-')
+  if (parts.length !== 3) {
+    return 'Invalid date format'
+  }
+
+  const year = parseInt(parts[0])
+  const month = parseInt(parts[1])
+  const day = parseInt(parts[2])
+
+  // Create a new Date object
+  const date = new Date(year, month - 1, day)
+
+  // Format the date as desired
+  const formattedDate = date.toDateString() + ' ' + date.toTimeString()
+
+  return formattedDate
+}
