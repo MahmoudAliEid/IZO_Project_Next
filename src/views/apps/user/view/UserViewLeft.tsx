@@ -1,6 +1,7 @@
 // ** React Imports
 import { useState } from 'react'
 
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -49,6 +50,7 @@ interface ColorsType {
 const data: UsersType = {
   id: 1,
   role: 'admin',
+  name: "Mahmoud",
   status: 'active',
   username: 'gslixby0',
   billing: 'Enterprise',
@@ -92,13 +94,38 @@ const Sub = styled('sub')(({ theme }) => ({
   alignSelf: 'flex-end',
   color: theme.palette.text.secondary
 }))
+type UserInfo = {
+  userInfo: {
+    firstName: string,
+    avatar: string,
+    lastName: string,
+    username: string,
+    dateOfBirth: string,
+    currentAddress: string,
+    language: string,
+    mobileNumber: string,
+    email: string,
+    roles: number,
+    taxPayerId: string,
+  }
+  firstName: string,
+  lastName: string,
+  username: string,
+  dateOfBirth: string,
+  currentAddress: string,
+  language: string,
+  mobileNumber: string,
+  email: string,
 
-const UserViewLeft = () => {
+}
+const UserViewLeft = ({ userInfo }: UserInfo) => {
   // ** States
   const [openEdit, setOpenEdit] = useState<boolean>(false)
   const [openPlans, setOpenPlans] = useState<boolean>(false)
   const [suspendDialogOpen, setSuspendDialogOpen] = useState<boolean>(false)
   const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState<boolean>(false)
+  const fullName = `${userInfo.firstName} ${userInfo.lastName}`
+
 
   // Handle Edit dialog
   const handleEditClickOpen = () => setOpenEdit(true)
@@ -108,13 +135,15 @@ const UserViewLeft = () => {
   const handlePlansClickOpen = () => setOpenPlans(true)
   const handlePlansClose = () => setOpenPlans(false)
 
-  if (data) {
+  console.log("userInfo from view:=>", userInfo)
+
+  if (data && userInfo) {
     return (
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Card>
             <CardContent sx={{ pt: 12, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-              {data.avatar ? (
+              {userInfo.avatar ? (
                 <CustomAvatar
                   src={data.avatar}
                   variant='rounded'
@@ -128,17 +157,17 @@ const UserViewLeft = () => {
                   color={data.avatarColor as ThemeColor}
                   sx={{ width: 110, height: 110, fontWeight: 600, mb: 6, fontSize: '3rem' }}
                 >
-                  {getInitials(data.fullName)}
+                  {getInitials(fullName)}
                 </CustomAvatar>
               )}
               <Typography variant='h5' sx={{ mb: 2.5, fontSize: '1.375rem !important' }}>
-                {data.fullName}
+                {fullName}
               </Typography>
               <CustomChip
                 rounded
                 skin='light'
                 size='small'
-                label={data.role}
+                label={userInfo.roles === 1 ? "Admin" : "User"}
                 sx={{ fontWeight: 500 }}
                 color={roleColors[data.role]}
               />
@@ -177,11 +206,11 @@ const UserViewLeft = () => {
               <Box sx={{ pt: 4, pb: 2 }}>
                 <Box sx={{ display: 'flex', mb: 4 }}>
                   <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Username:</Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>@{data.username}</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>@{userInfo.username}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', mb: 4 }}>
-                  <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Billing Email:</Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>{data.email}</Typography>
+                  <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Email:</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>{userInfo.email}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', mb: 4 }}>
                   <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Status:</Typography>
@@ -196,23 +225,27 @@ const UserViewLeft = () => {
                 </Box>
                 <Box sx={{ display: 'flex', mb: 4 }}>
                   <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Role:</Typography>
-                  <Typography sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>{data.role}</Typography>
+                  <Typography sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>{userInfo.roles === 1 ? "Admin" : "User"}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', mb: 4 }}>
                   <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Tax ID:</Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>Tax-8894</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>Tax-{userInfo.taxPayerId}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', mb: 4 }}>
                   <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Contact:</Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>+1 {data.contact}</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>+1 {userInfo.mobileNumber}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', mb: 4 }}>
                   <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Language:</Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>English</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>{userInfo.language === "en" ? "English" : userInfo.language === "ar" ? "Arabic" : ""}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', mb: 4 }}>
+                  <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Birthday:</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>{userInfo.dateOfBirth}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex' }}>
-                  <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Country:</Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>{data.country}</Typography>
+                  <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Address:</Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>{userInfo.currentAddress}</Typography>
                 </Box>
               </Box>
             </CardContent>

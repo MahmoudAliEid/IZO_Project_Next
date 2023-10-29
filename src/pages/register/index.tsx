@@ -121,7 +121,7 @@ export async function getStaticProps() {
   }
 
   const data: CurrenciesType = response.data
-  console.log("from register currency:", data)
+
 
   return {
     props: {

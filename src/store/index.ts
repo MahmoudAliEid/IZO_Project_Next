@@ -19,6 +19,7 @@ import editUsersSlice from 'src/store/apps/izoUsers/editUsersSlice'
 import deleteUserSlice from './apps/izoUsers/deleteUserSlice'
 import postEditUserSlice from './apps/izoUsers/postEditUserSlice'
 import storeUserSlice from './apps/izoUsers/storeUserSlice'
+import viewUserSlice from './apps/izoUsers/viewUserSlice'
 
 export const store = configureStore({
   reducer: {
@@ -38,7 +39,8 @@ export const store = configureStore({
     editUsers: editUsersSlice,
     deleteUser: deleteUserSlice,
     postEditUser: postEditUserSlice,
-    storeUser: storeUserSlice
+    storeUser: storeUserSlice,
+    viewUser: viewUserSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

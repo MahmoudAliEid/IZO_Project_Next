@@ -5,11 +5,12 @@ import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import { postDeleteUser } from 'src/store/apps/izoUsers/deleteUserSlice'
 
 
+
 // ** Next Imports
 import Link from 'next/link'
 import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
 import { getCookie } from 'cookies-next'
-import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice'
+
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -196,7 +197,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
         <MenuItem
           component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href='/apps/user/view/account'
+          href={`/apps/user/view/account/${id}`}
           onClick={handleRowOptionsClose}
         >
           <Icon icon='bx:show' fontSize={20} />
