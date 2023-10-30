@@ -101,12 +101,26 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   justifyContent: 'space-between',
   backgroundColor: theme.palette.background.default
 }))
+type RequirementsType = {
+  BusinessLocation: [],
+  ProductPrice: [],
+  accounts: [],
+  agents: [],
+  contacts: [],
+  cost_center: [],
+  gender: [],
+  marital: [],
+  patterns: [],
+  roles: [],
+  taxes: [],
+  warehouse: []
+}
 
 const SidebarEditUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle, itemId } = props
 
-  const [Requirements, setRequirements] = useState<object>({
+  const [Requirements, setRequirements] = useState<RequirementsType>({
     BusinessLocation: [],
     ProductPrice: [],
     accounts: [],
@@ -806,7 +820,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                       required
                     >
                       <MenuItem value="">None</MenuItem>
-                      {/* {
+                      {
                         Object.keys(Requirements).length === 0 ? null :
                           Requirements?.BusinessLocation
                             .map((item: any) => (
@@ -816,7 +830,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                               >
                                 {item.name}
                               </MenuItem>
-                            ))} */}
+                            ))}
                     </Select>
                   </FormControl>
                 </Box>
@@ -944,9 +958,10 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                               <Box key={value}>
                                 <Chip
                                   variant="outlined"
-                                  label={Requirements.patterns.find(
-                                    (option: any) => option.id === value
-                                  ).name}
+
+                                  //@ts-ignore
+                                  label={Requirements?.patterns?.find(
+                                    (option: any) => option?.id === value).name}
 
                                   onDelete={(value) => {
                                     setFieldValue(
@@ -1052,9 +1067,10 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                 {/*
                 filed date of birth using date picker
                   */}
-                <DatePickerWrapper>
+                <DatePickerWrapper  >
 
                   <DatePicker
+
                     selected={values.dateOfBirth}
                     id='basic-input'
                     popperPlacement={popperPlacement}

@@ -71,6 +71,20 @@ interface SidebarAddUserType {
 //   username: string
 // }
 
+type RequirementsType = {
+  BusinessLocation: [],
+  ProductPrice: [],
+  accounts: [],
+  agents: [],
+  contacts: [],
+  cost_center: [],
+  gender: [],
+  marital: [],
+  patterns: [],
+  roles: [],
+  taxes: [],
+  warehouse: []
+}
 
 const validationSchema = Yup.object().shape({
   prefix: Yup.string(),
@@ -157,7 +171,7 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 const SidebarAddUser = (props: SidebarAddUserType) => {
   // ** Props
   const { open, toggle } = props
-  const [Requirements, setRequirements] = useState<object>({
+  const [Requirements, setRequirements] = useState<RequirementsType>({
     BusinessLocation: [],
     ProductPrice: [],
     accounts: [],
@@ -812,9 +826,11 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                             <Box key={value}>
                               <Chip
                                 variant="outlined"
-                                label={Requirements.patterns.find(
-                                  (option: any) => option.id === value
-                                ).name}
+
+                                //@ts-ignore
+                                label={Requirements?.patterns?.find(
+                                  (option: any) => option?.id === value).name}
+
 
                                 onDelete={(value) => {
                                   setFieldValue(
