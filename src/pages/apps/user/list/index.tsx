@@ -30,6 +30,7 @@ import CardContent from '@mui/material/CardContent'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -64,6 +65,7 @@ import TableHeader from 'src/views/apps/user/list/TableHeader'
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 
 import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
+import DialogAddUser from 'src/views/apps/user/list/DialogAddUser'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
@@ -219,7 +221,11 @@ const RowOptions = ({ id }: { id: number | string }) => {
         </MenuItem>
       </Menu>
       {
-        editUserOpen && <SidebarEditUser open={editUserOpen} toggle={handleEdit} itemId={id} />
+
+        // editUserOpen && <SidebarEditUser open={editUserOpen} toggle={handleEdit} itemId={id} />
+      }
+      {
+        editUserOpen && <DialogAddUser open={editUserOpen} toggle={handleEdit} isEdit={true} itemId={id} />
       }
 
     </>
@@ -379,28 +385,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
   }, [dispatch, token, url])
 
-  // const handleFilter = useCallback((val: string) => {
-  //   setValue(val)
-  // }, [])
 
-  // const handleRoleChange = useCallback((e: SelectChangeEvent) => {
-  //   setRole(e.target.value)
-  // }, [])
-
-  // const handlePlanChange = useCallback((e: SelectChangeEvent) => {
-  //   setPlan(e.target.value)
-  // }, [])
-
-  // const handleStatusChange = useCallback((e: SelectChangeEvent) => {
-  //   setStatus(e.target.value)
-  // }, [])
-
-  // ** PDF
-  // const generatePDF = useReactToPrint({
-
-  //   content: () => componentPDF.current,
-  //   documentTitle: "UserList",
-  // })
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
@@ -442,70 +427,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
       <Grid item xs={12}>
         <Card>
           <CardHeader title={title} />
-          {/* <CardContent>
-            <Grid container spacing={5}>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id='role-select'>Select Role</InputLabel>
-                  <Select
-                    fullWidth
-                    value={role}
-                    id='select-role'
-                    label='Select Role'
-                    labelId='role-select'
-                    onChange={handleRoleChange}
-                    inputProps={{ placeholder: 'Select Role' }}
-                  >
-                    <MenuItem value=''>Select Role</MenuItem>
-                    <MenuItem value='admin'>Admin</MenuItem>
-                    <MenuItem value='author'>Author</MenuItem>
-                    <MenuItem value='editor'>Editor</MenuItem>
-                    <MenuItem value='maintainer'>Maintainer</MenuItem>
-                    <MenuItem value='subscriber'>Subscriber</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id='plan-select'>Select Plan</InputLabel>
-                  <Select
-                    fullWidth
-                    value={plan}
-                    id='select-plan'
-                    label='Select Plan'
-                    labelId='plan-select'
-                    onChange={handlePlanChange}
-                    inputProps={{ placeholder: 'Select Plan' }}
-                  >
-                    <MenuItem value=''>Select Plan</MenuItem>
-                    <MenuItem value='basic'>Basic</MenuItem>
-                    <MenuItem value='company'>Company</MenuItem>
-                    <MenuItem value='enterprise'>Enterprise</MenuItem>
-                    <MenuItem value='team'>Team</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id='status-select'>Select Status</InputLabel>
-                  <Select
-                    fullWidth
-                    value={status}
-                    id='select-status'
-                    label='Select Status'
-                    labelId='status-select'
-                    onChange={handleStatusChange}
-                    inputProps={{ placeholder: 'Select Role' }}
-                  >
-                    <MenuItem value=''>Select Role</MenuItem>
-                    <MenuItem value='pending'>Pending</MenuItem>
-                    <MenuItem value='active'>Active</MenuItem>
-                    <MenuItem value='inactive'>Inactive</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </CardContent> */}
+
           <Divider sx={{ m: '0 !important' }} />
           <Box
             sx={{ p: 6, gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}
@@ -550,8 +472,17 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
         </Card>
       </Grid>
 
-      <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+      {
 
+        // <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+
+      }
+
+      {
+
+        <DialogAddUser open={addUserOpen} toggle={toggleAddUserDrawer} isEdit={false} />
+
+      }
     </Grid>
   )
 }

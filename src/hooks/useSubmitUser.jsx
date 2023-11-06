@@ -9,6 +9,7 @@ const useSubmitUser = () => {
   const token = getCookie('token')
   const url = getCookie('apiUrl')
   const dispatch = useDispatch()
+
   const handleSubmitData = async (mainFunPost, mainFunGet, userData, itemId) => {
     console.log('itemId from handleSubmitData', itemId)
     if (itemId) {

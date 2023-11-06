@@ -26,9 +26,17 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
     }
   }
 
+  const convertToStringArray = arr => {
+    const newArr = JSON.stringify(arr).replace(/\d+/g, s => `"${s}"`)
+    console.log(newArr, '===> newArr from convertToStringArray')
+
+    return newArr
+  }
+
   const formData = new FormData()
 
   // Add each field to the FormData object
+  formData.append('business_id', userData.business_id || '')
   formData.append('surname', userData.prefix || '')
   formData.append('first_name', userData.firstName || '')
   formData.append('last_name', userData.lastName || '')
@@ -45,16 +53,19 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
   formData.append('password', userData.password || '')
   formData.append('confirm_password', userData.confirmPassword || '')
   formData.append('role', userData.roles || '1')
-  formData.append('access_all_locations', userData.allLocations ? (userData.allLocations === true ? '1' : '0') : '0')
-  formData.append('location_permissions', userData.AGT ? (userData.AGT === true ? '1' : '0') : '0')
+  formData.append('access_all_locations', userData.allLocations ? 'access_all_locations' : '')
+  formData.append('location_permissions', userData.allLocations ? '[]' : JSON.stringify(userData.location_permissions))
   formData.append('cmmsn_percent', userData.salesCommission || '')
   formData.append('max_sales_discount_percent', userData.maxSalesDiscount || '')
-  formData.append('pattern_id', userData.patternList || '')
+  formData.append(
+    'pattern_id',
+    userData.patternList ? convertToStringArray(userData.patternList) : convertToStringArray([]) || '[]'
+  )
   formData.append(
     'selected_contacts',
     userData.allowSlctdContacts ? (userData.allowSlctdContacts === true ? '1' : '0') : '0'
   )
-  formData.append('selected_contact_ids', userData.selectedContact || '')
+  formData.append('selected_contact_ids', JSON.stringify(userData.selectedContact) || '[]')
 
   // send date in this format 1992-09-10
   formData.append('dob', formatDate(userData, 'dateOfBirth') || '')
@@ -84,6 +95,9 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
   formData.append('bank_details[bank_code]', userData.bankIdentifierCode || '')
   formData.append('bank_details[branch]', userData.bankBranchName || '')
   formData.append('bank_details[tax_payer_id]', userData.taxPayerId || '')
+
+  let object = Object.fromEntries(formData)
+  console.log(object, '===> formData from as object 👀')
 
   try {
     console.log(token, '===> token from STORE USER')

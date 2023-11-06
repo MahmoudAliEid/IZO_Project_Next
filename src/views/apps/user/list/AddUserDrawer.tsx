@@ -52,8 +52,23 @@ import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
 // import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
 
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
-import CustomInput from './PickersCustomInput'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+
+// ** React Imports
+import { forwardRef } from 'react'
+interface PickerProps {
+  label?: string
+  readOnly?: boolean
+}
+
+const CustomInput = forwardRef(({ ...props }: PickerProps, ref) => {
+  // ** Props
+  const { label, readOnly } = props
+
+  return (
+    <TextField inputRef={ref} {...props} label={label || ''} {...(readOnly && { inputProps: { readOnly: true } })} />
+  )
+})
 
 
 interface SidebarAddUserType {
@@ -98,12 +113,11 @@ const initialValues = {
   firstName: '',
   lastName: '',
   email: '',
-  BusinessLocation: '',
   ProductPriceItem: '',
   accounts: '',
   visa: '',
   agents: '',
-  selectedContact: '',
+  selectedContact: [],
   allowSlctdContacts: false,
   cost_center: '',
   gender: '',
@@ -119,7 +133,8 @@ const initialValues = {
   confirmPassword: '',
   roles: '',
   allLocations: false,
-  AGT: false,
+  location_permissions: [],
+  business_id: "",
   salesCommission: '',
   maxSalesDiscount: '',
   dateOfBirth: new Date(),
@@ -150,15 +165,6 @@ const initialValues = {
   designation: '',
 };
 
-const showErrors = (field: string, valueLen: number, min: number) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
@@ -192,6 +198,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const { direction } = theme
   const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const [date, setDate] = useState<any>(new Date())
+
+
   const { handleSubmitData } = useSubmitUser();
 
   // ** Hooks
@@ -207,7 +215,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   useEffect(() => {
     if (data !== null && data !== undefined) {
       setRequirements(data.Requirement)
-      console.log(data.Requirement, '====> data')
+
+      // console.log(data.Requirement, '====> data')
     }
   }, [data])
 
@@ -220,7 +229,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const handleSubmit = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     // Handle form submission logic here
     // console.log(values);
-    console.log("add btn clicked");
+
     handleSubmitData(storeUser, fetchIzoUsers, values);
 
     resetForm();
@@ -671,7 +680,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 <Box
                   sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
                     gap: 3,
                     mb: 2
                   }}
@@ -681,6 +690,8 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                   <Typography variant="body1" gutterBottom component="div">
                     Access Location  <PriorityHighIcon />
                   </Typography>
+
+
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <FormControlLabel
                       label="all locations"
@@ -697,22 +708,106 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                       }
                     />
 
-                    <FormControlLabel
-                      label="ACT"
-                      control={
-                        <Checkbox
-                          checked={values.AGT}
-                          onChange={handleChange}
-                          name="AGT"
-                          color="primary"
-                          onClick={() => {
-                            values.AGT = !values.AGT
-                          }}
-                        />
-                      }
-                    />
                   </Box>
+
+                  {values.allLocations ? null :
+                    <FormControl>
+                      <InputLabel id="demo-multiple-chip-label">
+                        location permissions
+                      </InputLabel>
+                      <Select
+                        labelId="demo-multiple-chip-label"
+                        id="demo-multiple-chip"
+                        name="location_permissions"
+                        multiple
+                        value={values.location_permissions}
+                        onChange={(e) => {
+                          setFieldValue("location_permissions", e.target.value);
+                        }}
+                        input={
+                          <OutlinedInput
+                            id="select-multiple-chip"
+                            label="location_permissions"
+                          />
+                        }
+                        renderValue={(selected) => (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "0.5rem",
+                              padding: "0.5rem",
+                            }}
+                          >
+
+                            {
+                              selected.map((value) => (
+                                <Box key={value}>
+                                  <Chip
+                                    variant="outlined"
+
+                                    //@ts-ignore
+                                    label={Requirements?.BusinessLocation?.find(
+                                      (option: any) => option?.id === value).name}
+
+
+                                    onDelete={(value) => {
+                                      setFieldValue(
+                                        "location_permissions",
+                                        values.location_permissions.filter(
+                                          (option) => option !== value
+                                        )
+                                      );
+                                    }}
+                                  />
+                                </Box>
+                              ))}
+                          </Box>
+                        )}
+                      >
+                        {Requirements.BusinessLocation.map((option: any) => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  }
+
+
+                  <FormControl fullWidth >
+                    <InputLabel
+                      id="demo-simple-select-standard-label"
+                    >Select location </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-standard-label"
+                      name='business_id'
+                      value={values.business_id}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={!!touched.prefix && !!errors.prefix}
+                      label="Select Location"
+                      sx={{
+                        height: '100%'
+                      }}
+                    >
+                      {
+                        Object.keys(Requirements).length === 0 ? null :
+                          Requirements.BusinessLocation.map((item: any) => (
+                            <MenuItem
+                              value={item.id}
+                              key={item.id}
+                            >
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+
                 </Box>
+
+
 
               </Box>
               <Divider style={{ margin: '16px 0' }} />
@@ -878,33 +973,65 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 */}
                 {
                   values.allowSlctdContacts ?
-                    <FormControl
-                      fullWidth
-                      sx={{ m: 0 }}
-                    >
-                      <InputLabel
-                        id="demo-simple-select-standard-label"
-                      >Select contact </InputLabel>
+                    <FormControl>
+                      <InputLabel id="demo-multiple-chip-label">
+                        selected contacts
+                      </InputLabel>
                       <Select
-                        fullWidth
-                        labelId="demo-simple-select-standard-label"
-                        name='selectedContact'
+                        labelId="demo-multiple-chip-label"
+                        id="demo-multiple-chip"
+                        name="selectedContact"
+                        multiple
                         value={values.selectedContact}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={!!touched.prefix && !!errors.prefix}
-                        label="Select contact"
+                        onChange={(e) => {
+                          setFieldValue("selectedContact", e.target.value);
+                        }}
+                        input={
+                          <OutlinedInput
+                            id="select-multiple-chip"
+                            label="selectedContact"
+                          />
+                        }
+                        renderValue={(selected) => (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "0.5rem",
+                              padding: "0.5rem",
+                            }}
+                          >
+
+                            {
+                              selected.map((value) => (
+                                <Box key={value}>
+                                  <Chip
+                                    variant="outlined"
+
+                                    //@ts-ignore
+                                    label={Requirements?.contacts?.find(
+                                      (option: any) => option?.id === value).name}
+
+
+                                    onDelete={(value) => {
+                                      setFieldValue(
+                                        "selectedContact",
+                                        values.selectedContact.filter(
+                                          (option) => option !== value
+                                        )
+                                      );
+                                    }}
+                                  />
+                                </Box>
+                              ))}
+                          </Box>
+                        )}
                       >
-                        {
-                          Object.keys(Requirements).length === 0 ? null :
-                            Requirements.contacts.map((item: any) => (
-                              <MenuItem
-                                value={item.id}
-                                key={item.id}
-                              >
-                                {item.name}
-                              </MenuItem>
-                            ))}
+                        {Requirements.contacts.map((option: any) => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl> : null
                 }

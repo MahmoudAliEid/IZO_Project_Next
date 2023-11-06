@@ -194,15 +194,6 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   )
 
 
-  // update initial values
-  // useEffect(() => {
-  //   setInitialValues(prevState => ({
-  //     ...prevState,
-  //     prefix: 'Mr.',
-  //     firstName: 'Ali',
-  //   }))
-  // }, [])
-
   const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   // ** Hook
