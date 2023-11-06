@@ -77,6 +77,7 @@ const navigation: HorizontalNavItemsType = [
           }
         ]
       },
+
       {
         title: 'User',
         icon: 'bx:user',
@@ -109,6 +110,28 @@ const navigation: HorizontalNavItemsType = [
                 path: '/apps/user/view/connection'
               }
             ]
+          }
+        ]
+      },
+      {
+        title: 'Contacts',
+        icon: 'bxs:contact',
+        children: [
+          {
+            title: 'Suppliers',
+            path: '/apps/contacts/suppliers'
+          },
+          {
+            title: 'Customers',
+            path: '/apps/contacts/customers'
+          },
+          {
+            title: 'Customer Groups',
+            path: '/apps/contacts/customerGroups'
+          },
+          {
+            title: 'Import Contacts',
+            path: '/apps/contacts/importContacts'
           }
         ]
       },

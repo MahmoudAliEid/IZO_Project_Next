@@ -107,6 +107,28 @@ const navigation = (): VerticalNavItemsType => {
       ]
     },
     {
+      title: 'Contacts',
+      icon: 'bxs:contact',
+      children: [
+        {
+          title: 'Suppliers',
+          path: '/apps/contacts/suppliers'
+        },
+        {
+          title: 'Customers',
+          path: '/apps/contacts/customers'
+        },
+        {
+          title: 'Customer Groups',
+          path: '/apps/contacts/customerGroups'
+        },
+        {
+          title: 'Import Contacts',
+          path: '/apps/contacts/importContacts'
+        }
+      ]
+    },
+    {
       title: 'Roles & Permissions',
       icon: 'bx:check-shield',
       children: [

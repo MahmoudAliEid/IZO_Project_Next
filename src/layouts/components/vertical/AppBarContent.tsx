@@ -93,6 +93,12 @@ const shortcuts: ShortcutsType[] = [
     subtitle: 'Manage Users'
   },
   {
+    title: 'Contacts',
+    icon: 'bx:phone-call',
+    url: '/apps/contacts/suppliers',
+    subtitle: 'Manage Contacts'
+  },
+  {
     url: '/apps/roles',
     icon: 'bx:check-shield',
     title: 'Role Management',

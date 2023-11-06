@@ -725,6 +725,34 @@ const searchData: AppBarSearchType[] = [
     icon: 'bx:shield',
     title: 'Access Control (ACL)',
     category: 'chartsMisc'
+  },
+  {
+    id: 104,
+    url: '/apps/contacts/suppliers',
+    icon: 'bx:file',
+    title: 'Suppliers - Contact',
+    category: 'appsPages'
+  },
+  {
+    id: 105,
+    url: '/apps/contacts/customers',
+    icon: 'bx:file',
+    title: 'Customers - Contact',
+    category: 'appsPages'
+  },
+  {
+    id: 106,
+    url: '/apps/contacts/customerGroups',
+    icon: 'bx:file',
+    title: 'Customer Groups - Contact',
+    category: 'appsPages'
+  },
+  {
+    id: 107,
+    url: '/apps/contacts/importContacts',
+    icon: 'bx:upload',
+    title: 'Import Contacts  - Contact',
+    category: 'appsPages'
   }
 ]
 

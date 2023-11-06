@@ -20,6 +20,13 @@ import deleteUserSlice from './apps/izoUsers/deleteUserSlice'
 import postEditUserSlice from './apps/izoUsers/postEditUserSlice'
 import storeUserSlice from './apps/izoUsers/storeUserSlice'
 import viewUserSlice from './apps/izoUsers/viewUserSlice'
+import customersSlice from './apps/contacts/getCustomersSlice'
+import getSuppliersSlice from './apps/contacts/getSuppliersSlice'
+import getCustomerGroupSlice from './apps/contacts/CustomerGroup/getCustomerGroupSlice'
+import getCreateCGSlice from './apps/contacts/CustomerGroup/getCreateCGSlice'
+import postCreateCGSlice from './apps/contacts/CustomerGroup/postCreateCGSlice'
+import getEditCGSlice from './apps/contacts/CustomerGroup/getEditCGSlice'
+import postEditCGSlice from './apps/contacts/CustomerGroup/postEditCGSlice'
 
 export const store = configureStore({
   reducer: {
@@ -40,7 +47,14 @@ export const store = configureStore({
     deleteUser: deleteUserSlice,
     postEditUser: postEditUserSlice,
     storeUser: storeUserSlice,
-    viewUser: viewUserSlice
+    viewUser: viewUserSlice,
+    getCustomers: customersSlice,
+    getSuppliers: getSuppliersSlice,
+    getCustomerGroup: getCustomerGroupSlice,
+    getCreateCustomerGroup: getCreateCGSlice,
+    postCreateCustomerGroup: postCreateCGSlice,
+    getEditCustomerGroup: getEditCGSlice,
+    postEditCustomerGroup: postEditCGSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

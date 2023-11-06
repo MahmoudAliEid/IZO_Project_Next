@@ -21,13 +21,11 @@ const navigation = (): HorizontalNavItemsType => {
           icon: 'bx:analyse',
           title: 'eCommerce',
           path: '/dashboards/ecommerce'
-        }
-        ,
+        },
         {
           icon: 'bx:sales',
           title: 'Sales',
           path: '/dashboards/sales'
-
         }
       ]
     },
@@ -104,6 +102,28 @@ const navigation = (): HorizontalNavItemsType => {
                   path: '/apps/user/view/connection'
                 }
               ]
+            }
+          ]
+        },
+        {
+          title: 'Contacts',
+          icon: 'bxs:contact',
+          children: [
+            {
+              title: 'Suppliers',
+              path: '/apps/contacts/suppliers'
+            },
+            {
+              title: 'Customers',
+              path: '/apps/contacts/customers'
+            },
+            {
+              title: 'Customer Groups',
+              path: '/apps/contacts/customerGroups'
+            },
+            {
+              title: 'Import Contacts',
+              path: '/apps/contacts/importContacts'
             }
           ]
         },
