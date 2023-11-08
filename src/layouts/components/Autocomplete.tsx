@@ -82,8 +82,13 @@ const defaultSuggestionsData: DefaultSuggestionsType[] = [
       },
       {
         icon: 'bx:phone-call',
-        suggestion: 'Contacts Suppliers',
+        suggestion: 'Contacts - Suppliers',
         link: '/apps/contacts/suppliers'
+      },
+      {
+        icon: 'bx:package',
+        suggestion: 'Products',
+        link: '/apps/products/listProducts'
       }
     ]
   },

@@ -753,6 +753,83 @@ const searchData: AppBarSearchType[] = [
     icon: 'bx:upload',
     title: 'Import Contacts  - Contact',
     category: 'appsPages'
+  },
+  {
+    id: 108,
+    url: '/apps/products/listProducts',
+    icon: 'bx:list-check',
+    title: 'List Products - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 109,
+    url: '/apps/products/addProduct',
+    icon: 'bx:plus',
+    title: 'Add Product - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 110,
+    url: '/apps/products/variations',
+    icon: 'bx:grid-alt',
+    title: 'Variations - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 111,
+    url: '/apps/products/importProducts',
+    icon: 'bx:upload',
+    title: 'Import Products - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 112,
+    url: '/apps/products/addOpeningStock',
+    icon: 'bx:plus',
+    title: 'Add Opening Stock - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 113,
+    url: '/apps/products/importOpeningStock',
+    icon: 'bx:upload',
+    title: 'Import Opening Stock - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 114,
+    url: '/apps/products/salePriceGroup',
+    icon: 'bx:money',
+    title: 'Sale Price Group - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 115,
+    url: '/apps/products/units',
+    icon: 'bx:ruler',
+    title: 'Units - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 116,
+    url: '/apps/products/categories',
+    icon: 'bx:list-ul',
+    title: 'Categories - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 117,
+    url: '/apps/products/brands',
+    icon: 'bx:badge-check',
+    title: 'Brands - Products',
+    category: 'appsPages'
+  },
+  {
+    id: 118,
+    url: '/apps/products/warranties',
+    icon: 'bx:shield',
+    title: 'Warranties - Products',
+    category: 'appsPages'
   }
 ]
 

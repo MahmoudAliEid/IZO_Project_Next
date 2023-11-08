@@ -827,9 +827,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                         </Box>
                       )}
                     >
-                      {Requirements.BusinessLocation.map((option: any) => (
-                        <MenuItem key={option.id} value={option.id}>
-                          {option.name}
+                      {Requirements?.BusinessLocation.map((option: any) => (
+                        <MenuItem key={option?.id} value={option?.id}>
+                          {option?.name}
                         </MenuItem>
                       ))}
                     </Select>
@@ -932,7 +932,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                             variant='outlined'
 
                             //@ts-ignore
-                            label={Requirements?.patterns?.find((option: any) => option?.id === value).name}
+                            label={Requirements?.patterns?.find((option: any) => option?.id === value)?.name}
                             onDelete={value => {
                               setFieldValue(
                                 'patternList',

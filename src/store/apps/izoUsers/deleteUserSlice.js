@@ -27,7 +27,7 @@ const axiosInstance = axios.create({
 export const postDeleteUser = createAsyncThunk('dashboard/postDeleteUser', async payload => {
   try {
     const { id } = payload
-    const response = await axiosInstance.delete(`https://test.izocloud.net/api/app/react/users/del/${id}`)
+    const response = await axiosInstance.post(`https://test.izocloud.net/api/app/react/users/del/${id}`)
     const data = response.data
     notify('The User has been deleted successfully', 'success')
 

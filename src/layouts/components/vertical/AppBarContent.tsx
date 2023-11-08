@@ -99,6 +99,12 @@ const shortcuts: ShortcutsType[] = [
     subtitle: 'Manage Contacts'
   },
   {
+    title: 'Products',
+    icon: 'bx:package',
+    url: '/apps/products/listProducts',
+    subtitle: 'Manage Products'
+  },
+  {
     url: '/apps/roles',
     icon: 'bx:check-shield',
     title: 'Role Management',

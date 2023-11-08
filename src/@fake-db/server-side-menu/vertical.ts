@@ -131,6 +131,56 @@ const navigation: VerticalNavItemsType = [
     ]
   },
   {
+    title: 'Products',
+    icon: 'bxs:package',
+    children: [
+      {
+        title: 'List Products',
+        path: '/apps/products/listProducts'
+      },
+      {
+        title: 'Add Product',
+        path: '/apps/products/addProduct'
+      },
+      {
+        title: 'Variations',
+        path: '/apps/products/variations'
+      },
+      {
+        title: 'Import Products',
+        path: '/apps/products/importProducts'
+      },
+      {
+        title: 'Add Opening Stock',
+        path: '/apps/products/addOpeningStock'
+      },
+      {
+        title: 'Import Opening Stock',
+        path: '/apps/products/importOpeningStock'
+      },
+      {
+        title: 'Sale Price Group',
+        path: '/apps/products/salePriceGroup'
+      },
+      {
+        title: 'Units',
+        path: '/apps/products/units'
+      },
+      {
+        title: 'Categories',
+        path: '/apps/products/categories'
+      },
+      {
+        title: 'Brands',
+        path: '/apps/products/brands'
+      },
+      {
+        title: 'Warranties',
+        path: '/apps/products/warranties'
+      }
+    ]
+  },
+  {
     title: 'Roles & Permissions',
     icon: 'bx:check-shield',
     children: [
