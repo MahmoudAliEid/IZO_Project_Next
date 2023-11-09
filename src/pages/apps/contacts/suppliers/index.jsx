@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import { postDeleteUser } from 'src/store/apps/izoUsers/deleteUserSlice'
@@ -69,7 +69,7 @@ import axios from 'axios'
 // ** Custom Table Components Imports
 // import TableHeader from 'src/views/apps/user/list/TableHeader'
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
-
+import DialogAddSuppliers from 'src/views/apps/contacts/suppliers/DialogAddSuppliers'
 import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
 
 // ** Vars
@@ -165,7 +165,7 @@ const RowOptions = ({ id }) => {
   }
 
   return (
-    <>
+    <Fragment>
       <IconButton size='small' onClick={handleRowOptionsClick}>
         <Icon icon='bx:dots-vertical-rounded' />
       </IconButton>
@@ -225,7 +225,7 @@ const RowOptions = ({ id }) => {
         </MenuItem>
       </Menu>
       {editUserOpen && <SidebarEditUser open={editUserOpen} toggle={handleEdit} itemId={id} />}
-    </>
+    </Fragment>
   )
 }
 
@@ -400,7 +400,7 @@ const columns = [
     renderCell: ({ row }) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row?.created_at ? new Date(row.created_at).toLocaleString() : 'No Data'}
+          {row && row.created_at ? new Date(row.created_at).toLocaleString() : 'No Data'}
         </Typography>
       )
     }
@@ -615,8 +615,8 @@ const columns = [
 ]
 
 const Suppliers = ({ apiData }) => {
-  // ** State
-  const [addUserOpen, setAddUserOpen] = useState(false)
+  // ** States
+  const [addSupplierOpen, setSupplierOpen] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
@@ -678,7 +678,7 @@ const Suppliers = ({ apiData }) => {
   //   documentTitle: "Suppliers",
   // })
 
-  const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
+  const toggleAddSuppliersDrawer = () => setSupplierOpen(!addSupplierOpen)
 
   // ** handle search function
   const handleSearch = searchValue => {
@@ -726,7 +726,7 @@ const Suppliers = ({ apiData }) => {
             }}
           >
             <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-              <Button startIcon={<AddCircleOutlineIcon />} onClick={toggleAddUserDrawer} variant='contained'>
+              <Button startIcon={<AddCircleOutlineIcon />} onClick={toggleAddSuppliersDrawer} variant='contained'>
                 Add
               </Button>
             </Box>
@@ -796,7 +796,7 @@ const Suppliers = ({ apiData }) => {
         </Card>
       </Grid>
 
-      <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+      <DialogAddSuppliers open={addSupplierOpen} toggle={toggleAddSuppliersDrawer} isEdit={false} />
     </Grid>
   )
 }

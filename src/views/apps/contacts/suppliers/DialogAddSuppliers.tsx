@@ -14,7 +14,7 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import StepperStoreUser from './StepperStoreUser'
+import StepperStoreSuppliers from './StepperStoreSuppliers'
 
 // ** Styled close button
 const CustomCloseButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
@@ -36,26 +36,18 @@ const CustomCloseButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
 }))
 
 
-const DialogAddUser = ({ open, toggle, isEdit, itemId }: any) => {
 
+const DialogAddSuppliers = ({ open, toggle, isEdit, itemId }: any) => {
   const handleClose = () => {
     toggle()
   }
 
   return (
     <Fragment>
-
-      <Dialog
-        open={open}
-        maxWidth="lg"
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-
-      >
+      <Dialog open={open} maxWidth='lg' fullWidth={true} onClose={handleClose} aria-labelledby='max-width-dialog-title'>
         <DialogTitle id='customized-dialog-title' sx={{ position: 'relative' }}>
           <Typography variant='h6' component='span'>
-            {isEdit ? 'Edit User' : 'Add User'}
+            {isEdit ? 'Edit Suppliers' : 'Add Suppliers'}
           </Typography>
           <CustomCloseButton size='small' aria-label='close' onClick={handleClose}>
             <Icon icon='bx:x' />
@@ -63,15 +55,18 @@ const DialogAddUser = ({ open, toggle, isEdit, itemId }: any) => {
         </DialogTitle>
         <DialogContent
           sx={{
-            padding: '0 !important',
+            padding: '0 !important'
           }}
         >
-          <StepperStoreUser isEdit={isEdit} itemId={itemId} />
-        </DialogContent>
+          {
 
+            <StepperStoreSuppliers isEdit={isEdit} itemId={itemId} />
+
+          }
+        </DialogContent>
       </Dialog>
     </Fragment>
   )
 }
 
-export default DialogAddUser
+export default DialogAddSuppliers
