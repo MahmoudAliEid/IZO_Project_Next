@@ -51,6 +51,7 @@ const DialogAddUser = ({ open, toggle, isEdit, itemId }: any) => {
         fullWidth={true}
         onClose={handleClose}
         aria-labelledby='max-width-dialog-title'
+
       >
         <DialogTitle id='customized-dialog-title' sx={{ position: 'relative' }}>
           <Typography variant='h6' component='span'>
@@ -60,7 +61,11 @@ const DialogAddUser = ({ open, toggle, isEdit, itemId }: any) => {
             <Icon icon='bx:x' />
           </CustomCloseButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent
+          sx={{
+            padding: '0 !important',
+          }}
+        >
           <StepperStoreUser isEdit={isEdit} itemId={itemId} />
         </DialogContent>
 

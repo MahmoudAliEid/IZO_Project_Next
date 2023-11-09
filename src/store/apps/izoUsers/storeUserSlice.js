@@ -53,7 +53,7 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
   formData.append('password', userData.password || '')
   formData.append('confirm_password', userData.confirmPassword || '')
   formData.append('role', userData.roles || '1')
-  formData.append('access_all_locations', userData.allLocations ? 'access_all_locations' : '')
+  userData.allLocations && formData.append('access_all_locations', 'access_all_locations')
   formData.append('location_permissions', userData.allLocations ? '[]' : JSON.stringify(userData.location_permissions))
   formData.append('cmmsn_percent', userData.salesCommission || '')
   formData.append('max_sales_discount_percent', userData.maxSalesDiscount || '')

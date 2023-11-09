@@ -1583,7 +1583,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
         >
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
             <form >
-              <Grid container spacing={5}>
+              <Grid container spacing={5} mt={5}>
                 <Grid item xs={12} mb={5}>
                   <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
                     {steps[activeStep].title}
@@ -1639,43 +1639,80 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
   }
 
   return (
-    <Card>
-      <CardContent>
+    <Card
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(12, 1fr)',
+        gap: 3,
+        height: '600px',
+      }}
+    >
+      <CardContent
+        sx={{
+          overflowY: 'auto',
+          gridColumn: 'span 3',
+          borderRight: theme => `1px solid ${theme.palette.divider}`,
+        }}
+      >
         <StepperWrapper>
           <Stepper
             activeStep={activeStep}
-            connector={<Icon icon='bx:chevron-right' />}
+            connector={<Icon icon='bx:chevron-down' width='20px' height='20px' />}
             sx={{
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
               flexWrap: 'wrap',
-              gap: '2rem'
+              gap: '2rem',
+
             }}
           >
             {steps.map((step, index) => {
               return (
-                <Step key={index}>
-                  <StepLabel StepIconComponent={StepperCustomDot}>
+                <Step key={index} sx={{
+                  padding: '0px !important',
+                }}>
+                  <StepLabel StepIconComponent={StepperCustomDot}
+
+                  >
                     <div
                       className='step-label'
+                      style={{
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                      }}
+
+                      onClick={() => {
+                        setActiveStep(index)
+                      }}
                     >
                       <CustomAvatar
                         variant='rounded'
                         skin={activeStep === index ? 'filled' : 'light'}
                         color={activeStep >= index ? 'primary' : 'secondary'}
                         sx={{
-                          mr: 2.5,
                           borderRadius: 1,
                           ...(activeStep === index && {
                             boxShadow: theme => `0 0.1875rem 0.375rem 0 ${hexToRGBA(theme.palette.primary.main, 0.4)}`
                           })
                         }}
                       >
-                        <Icon icon={step.icon} />
                       </CustomAvatar>
-                      <div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.5rem',
+                          marginTop: '0.5rem'
+                        }}
+                      >
                         <Typography className='step-title'>{step.title}</Typography>
                         <Typography className='step-subtitle'>{step.subtitle}</Typography>
                       </div>
@@ -1687,8 +1724,15 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
           </Stepper>
         </StepperWrapper>
       </CardContent>
-      <Divider sx={{ m: '0 !important' }} />
-      <CardContent>{renderContent()}</CardContent>
+      <CardContent
+        sx={{
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          gridColumn: 'span 9',
+          padding: '2rem',
+
+        }}
+      >{renderContent()}</CardContent>
     </Card>
   )
 }
