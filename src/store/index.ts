@@ -27,6 +27,10 @@ import getCreateCGSlice from './apps/contacts/CustomerGroup/getCreateCGSlice'
 import postCreateCGSlice from './apps/contacts/CustomerGroup/postCreateCGSlice'
 import getEditCGSlice from './apps/contacts/CustomerGroup/getEditCGSlice'
 import postEditCGSlice from './apps/contacts/CustomerGroup/postEditCGSlice'
+import getVariationsSlice from './apps/products/variations/getVariationsSlice'
+import getCreateVariationsSlice from './apps/products/variations/getCreateVariationsSlice'
+import postCreateVariationsSlice from './apps/products/variations/postCreateVariations'
+import deleteVariationsSlice from './apps/products/variations/deleteVariationsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -54,7 +58,11 @@ export const store = configureStore({
     getCreateCustomerGroup: getCreateCGSlice,
     postCreateCustomerGroup: postCreateCGSlice,
     getEditCustomerGroup: getEditCGSlice,
-    postEditCustomerGroup: postEditCGSlice
+    postEditCustomerGroup: postEditCGSlice,
+    getVariations: getVariationsSlice,
+    getCreateVariations: getCreateVariationsSlice,
+    postCreateVariations: postCreateVariationsSlice,
+    deleteVariations: deleteVariationsSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

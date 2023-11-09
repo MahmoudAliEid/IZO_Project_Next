@@ -470,7 +470,7 @@ const CustomerGroups = () => {
             }}
           >
             <DialogContentText variant='body2' id='customer-group-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
-              Updating user details will receive a privacy audit.
+              Add Customer Group details will receive a privacy audit.
             </DialogContentText>
             <Formik initialValues={formInputData} onSubmit={handleSubmit} enableReinitialize={true}>
               {({ values, handleBlur, handleChange, handleSubmit }) => (
