@@ -97,6 +97,7 @@ export const postEditUser = createAsyncThunk('user/postEditUser', async payload 
   formData.append('bank_details[bank_code]', userData.bankIdentifierCode || '')
   formData.append('bank_details[branch]', userData.bankBranchName || '')
   formData.append('bank_details[tax_payer_id]', userData.taxPayerId || '')
+  formData.append('user_tax_id', userData.taxesItem || '')
 
   let object = Object.fromEntries(formData)
   console.log(object, '===> formData from as object 👀')

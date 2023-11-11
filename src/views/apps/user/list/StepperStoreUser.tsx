@@ -771,7 +771,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <FormControlLabel
-                    label='all locations'
+                    label='All Locations'
                     control={
                       <Checkbox
                         checked={values.allLocations}
@@ -788,7 +788,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
                 {values.allLocations ? null : (
                   <FormControl>
-                    <InputLabel id='demo-multiple-chip-label'>location permissions</InputLabel>
+                    <InputLabel id='demo-multiple-chip-label'>Location Permissions</InputLabel>
                     <Select
                       labelId='demo-multiple-chip-label'
                       id='demo-multiple-chip'

@@ -53,7 +53,11 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
   formData.append('password', userData.password || '')
   formData.append('confirm_password', userData.confirmPassword || '')
   formData.append('role', userData.roles || '1')
-  userData.allLocations && formData.append('access_all_locations', 'access_all_locations')
+  if (userData.allLocations === true) {
+    formData.append('access_all_locations', 'access_all_locations')
+  }
+
+  // userData.allLocations && formData.append('access_all_locations', 'access_all_locations')
   formData.append('location_permissions', userData.allLocations ? '[]' : JSON.stringify(userData.location_permissions))
   formData.append('cmmsn_percent', userData.salesCommission || '')
   formData.append('max_sales_discount_percent', userData.maxSalesDiscount || '')
@@ -95,10 +99,12 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
   formData.append('bank_details[bank_code]', userData.bankIdentifierCode || '')
   formData.append('bank_details[branch]', userData.bankBranchName || '')
   formData.append('bank_details[tax_payer_id]', userData.taxPayerId || '')
+  formData.append('user_tax_id', userData.taxesItem || '')
 
   let object = Object.fromEntries(formData)
   console.log(object, '===> formData from as object 👀')
 
+  console.log(formData, 'formData from  add  user slice')
   try {
     console.log(token, '===> token from STORE USER')
     if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
