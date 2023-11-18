@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import useSubmitUser from 'src/hooks/useSubmitUser'
+import VariationsForm from 'src/@core/components/products/variations/variationForm/VariationsForm'
+import VariationFormEdit from 'src/@core/components/products/variations/variationForm/VariationFormEdit'
 
 // import DialogEdit from 'src/@core/components/Variatons/dialogEdit'
 
@@ -22,22 +24,23 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import Card from '@mui/material/Card'
-import Dialog from '@mui/material/Dialog'
-import Select from '@mui/material/Select'
-import { Chip } from '@mui/material'
+
+// import Dialog from '@mui/material/Dialog'
+// import Select from '@mui/material/Select'
+// import { Chip } from '@mui/material'
 
 // import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
-import InputLabel from '@mui/material/InputLabel'
-import DialogTitle from '@mui/material/DialogTitle'
-import FormControl from '@mui/material/FormControl'
-import DialogContent from '@mui/material/DialogContent'
+// import TextField from '@mui/material/TextField'
+// import InputLabel from '@mui/material/InputLabel'
+// import DialogTitle from '@mui/material/DialogTitle'
+// import FormControl from '@mui/material/FormControl'
+// import DialogContent from '@mui/material/DialogContent'
 
 // import DialogActions from '@mui/material/DialogActions'
 // import InputAdornment from '@mui/material/InputAdornment'
 // import FormControlLabel from '@mui/material/FormControlLabel'
-import DialogContentText from '@mui/material/DialogContentText'
-import { Formik } from 'formik'
+// import DialogContentText from '@mui/material/DialogContentText'
+// import { Formik } from 'formik'
 
 // import { styled } from '@mui/material/styles'
 // import * as Yup from 'yup'
@@ -136,7 +139,7 @@ const RowOptions = ({ id }) => {
   const dispatch = useDispatch()
 
   // ** State
-  const [editCustomerGroupOpen, setEditCustomerGroupOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
 
   const rowOptionsOpen = anchorEl
@@ -180,7 +183,7 @@ const RowOptions = ({ id }) => {
   }
 
   // const handleEdit = () => {
-  //   setEditCustomerGroupOpen(true)
+  //   setOpen(true)
   //   console.log(id)
   // }
 
@@ -206,7 +209,7 @@ const RowOptions = ({ id }) => {
       >
         <MenuItem
           onClick={() => {
-            setEditCustomerGroupOpen(true)
+            setOpen(true)
             handleRowOptionsClose()
           }}
           sx={{ '& svg': { mr: 2 } }}
@@ -219,9 +222,7 @@ const RowOptions = ({ id }) => {
           Delete
         </MenuItem>
       </Menu>
-      {editCustomerGroupOpen && (
-        <DialogEdit openEdit={editCustomerGroupOpen} setOpenEdit={setEditCustomerGroupOpen} itemId={id} />
-      )}
+      {open && <VariationFormEdit type={'Edit'} open={open} setOpen={setOpen} itemId={id} />}
     </>
   )
 }
@@ -266,23 +267,14 @@ const columns = [
 
 const Variations = () => {
   // ** State
-  const [listValues, setListValues] = useState([])
-  const [currValue, setCurrValue] = useState('')
 
-  const [openAdd, setOpenAdd] = useState(false)
+  const [open, setOpen] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-  const [vName, setVname] = useState('')
-  const [valueToShow, setValueToShow] = useState('percentage')
-  const formInputData = {
-    name: vName,
-    items: listValues
-  }
 
-  console.log(formInputData.items, 'items')
   const [data, setData] = useState(null)
   const [dataForm, setDataForm] = useState(null)
   const title = 'Variations List'
@@ -320,12 +312,7 @@ const Variations = () => {
     }
   }, [dispatch, token, url])
 
-  const handleAddClickOpen = () => setOpenAdd(true)
-  const handleAddClose = () => {
-    setVname('')
-    setListValues([])
-    setOpenAdd(false)
-  }
+  const handleAddClickOpen = () => setOpen(true)
 
   // ** handle search function
   const handleSearch = searchValue => {
@@ -348,35 +335,13 @@ const Variations = () => {
     console.log(values, 'form  add variations')
     console.log('Add btn clicked')
     handleSubmitData(postAddVariations, fetchVariations, values)
-
+    setOpen(false)
     resetForm()
   }
 
   // const onchangeHandle = event => {
   //   setValueToShow(event.target.value)
   // }
-
-  console.log(valueToShow)
-  const handleKeyUp = e => {
-    if (e.keyCode === 32 && currValue.trim() !== '') {
-      setListValues(oldState => [...oldState, currValue])
-      setCurrValue('')
-    }
-  }
-
-  useEffect(() => {
-    console.log(listValues)
-  }, [listValues])
-
-  const handleChangeTwo = e => {
-    setCurrValue(e.target.value)
-  }
-
-  const handleDelete = (item, index) => {
-    let arr = [...listValues]
-    arr.splice(index, 1)
-    setListValues(arr)
-  }
 
   return (
     <Grid container spacing={6}>
@@ -442,103 +407,7 @@ const Variations = () => {
           </Box>
         </Card>
       </Grid>
-      {dataForm && (
-        <Dialog
-          scroll='body'
-          open={openAdd}
-          onClose={handleAddClose}
-          aria-labelledby='customer-group-edit'
-          sx={{
-            '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] },
-            '& .MuiDialogTitle-root + .MuiDialogContent-root': { pt: theme => `${theme.spacing(2)} !important` }
-          }}
-          aria-describedby='customer-group-edit-description'
-        >
-          <DialogTitle
-            id='customer-group-edit'
-            sx={{
-              textAlign: 'center',
-              fontSize: '1.5rem !important',
-              px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-              pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
-            }}
-          >
-            Add Variation Information
-          </DialogTitle>
-          <DialogContent
-            sx={{
-              pb: theme => `${theme.spacing(8)} !important`,
-              px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`]
-            }}
-          >
-            <DialogContentText variant='body2' id='customer-group-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
-              Variations details will receive a privacy audit.
-            </DialogContentText>
-            <Formik initialValues={formInputData} onSubmit={handleSubmit} enableReinitialize={true}>
-              {({ values, handleBlur, handleChange, handleSubmit }) => (
-                <form onSubmit={handleSubmit}>
-                  <Grid container spacing={6}>
-                    <Grid item xs={12}>
-                      <FormControl fullWidth>
-                        <TextField
-                          fullWidth
-                          label='Variation Name'
-                          value={vName}
-                          onChange={e => {
-                            setVname(e.target.value)
-                          }}
-                          onBlur={handleBlur}
-                          name='name'
-                          required
-                        />
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormControl fullWidth>
-                        <TextField
-                          fullWidth
-                          label='Add Variation Values'
-                          value={currValue}
-                          onChange={event => handleChangeTwo(event)}
-                          onKeyDown={handleKeyUp}
-                          name='items'
-                          required
-                          InputProps={{
-                            endAdornment: (
-                              <Grid container spacing={6}>
-                                <Grid item sx={12}>
-                                  {listValues &&
-                                    listValues.map((item, index) => (
-                                      <Chip
-                                        sx={{ margin: '5px' }}
-                                        size='small'
-                                        onDelete={() => handleDelete(item, index)}
-                                        label={item}
-                                        key={index}
-                                      />
-                                    ))}
-                                </Grid>
-                              </Grid>
-                            )
-                          }}
-                        />
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
-                    <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-                      Add
-                    </Button>
-                    <Button size='large' variant='outlined' color='secondary' onClick={handleAddClose}>
-                      Close
-                    </Button>
-                  </Box>
-                </form>
-              )}
-            </Formik>
-          </DialogContent>
-        </Dialog>
-      )}
+      {dataForm && <VariationsForm type={'Add'} open={open} setOpen={setOpen} handleSubmit={handleSubmit} />}
     </Grid>
   )
 }

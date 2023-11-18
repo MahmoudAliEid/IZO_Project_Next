@@ -24,7 +24,7 @@ export const postAddVariations = createAsyncThunk('dashboard/postAddVariations',
 
     const headers = {
       Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
-      'Content-Type': 'application/json'
+      'Content-Type': ' multipart/form-data'
     }
 
     const response = await axios.post('https://test.izocloud.net/api/app/react/variations/save', formData, {

@@ -115,7 +115,7 @@ const renderClient = row => {
   }
 }
 
-const RowOptions = ({ id }) => {
+const RowOptions = ({ id, type }) => {
   // ** Hooks
   const dispatch = useDispatch()
 
@@ -187,7 +187,7 @@ const RowOptions = ({ id }) => {
         <MenuItem
           component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href={`/apps/user/view/account/${id}`}
+          href={`/apps/contacts/view/${id}/?type=${type}`}
           onClick={handleRowOptionsClose}
         >
           <Icon icon='bx:show' fontSize={20} />
@@ -238,7 +238,7 @@ const columns = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }) => <RowOptions id={row.id} />
+    renderCell: ({ row }) => <RowOptions id={row.id} type={row.type} />
   },
   {
     flex: 0.25,
@@ -444,9 +444,17 @@ const columns = [
           {row.total_purchase_due ? `${row.total_purchase_due} AED` : 'No Data'}
         </Typography>
       )
+    },
+    footerName: 'Total Purchase Due', // Add a footerName property for reference
+    footerRender: params => {
+      const totalPurchaseDue = params.api
+        .getDisplayedRows()
+        .reduce((sum, row) => sum + (row.data.total_purchase_due || 0), 0)
+
+      return <Typography noWrap sx={{ color: 'text.secondary' }}>{`Total: ${totalPurchaseDue} AED`}</Typography>
     }
   },
-  ,
+
   {
     flex: 0.25,
     minWidth: 200,
@@ -458,6 +466,32 @@ const columns = [
           {row.total_purchase_return_due ? `${row.total_purchase_return_due} AED` : 'No Data'}
         </Typography>
       )
+    },
+    footerName: 'Total Purchase Return Due', // Add a footerName property for reference
+    footerRender: params => {
+      const totalPurchaseReturnDue = params.api
+        .getDisplayedRows()
+        .reduce((sum, row) => sum + (row.data.total_purchase_return_due || 0), 0)
+
+      return <Typography noWrap sx={{ color: 'text.secondary' }}>{`Total: ${totalPurchaseReturnDue} AED`}</Typography>
+    }
+  },
+  {
+    flex: 0.25,
+    minWidth: 200,
+    field: 'total_all_due',
+    headerName: 'Total All Due',
+    renderCell: () => null,
+    footerRender: params => {
+      const totalPurchaseDue = params.api
+        .getDisplayedRows()
+        .reduce((sum, row) => sum + (row.data.total_purchase_due || 0), 0)
+      const totalPurchaseReturnDue = params.api
+        .getDisplayedRows()
+        .reduce((sum, row) => sum + (row.data.total_purchase_return_due || 0), 0)
+      const totalAllDue = totalPurchaseDue + totalPurchaseReturnDue
+
+      return <Typography noWrap sx={{ color: 'text.secondary' }}>{`Total: ${totalAllDue} AED`}</Typography>
     }
   },
   {
@@ -757,7 +791,7 @@ const Suppliers = ({ apiData }) => {
                     }
                   }}
                 />
-                <TableContainer component={Paper}>
+                {/* <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 700 }} aria-label='spanning table'>
                     <TableBody>
                       <TableRow>
@@ -775,7 +809,7 @@ const Suppliers = ({ apiData }) => {
                       </TableRow>
                     </TableBody>
                   </Table>
-                </TableContainer>
+                </TableContainer> */}
               </>
             ) : (
               <Grid>

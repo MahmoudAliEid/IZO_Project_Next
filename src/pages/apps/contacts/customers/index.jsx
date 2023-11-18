@@ -181,7 +181,7 @@ const RowOptions = ({ id }) => {
         <MenuItem
           component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href={`/apps/user/view/account/${id}`}
+          href={`/apps/contacts/view/${id}`}
           onClick={handleRowOptionsClose}
         >
           <Icon icon='bx:show' fontSize={20} />
