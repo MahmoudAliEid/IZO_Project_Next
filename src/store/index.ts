@@ -31,6 +31,10 @@ import getVariationsSlice from './apps/products/variations/getVariationsSlice'
 import getCreateVariationsSlice from './apps/products/variations/getCreateVariationsSlice'
 import postCreateVariationsSlice from './apps/products/variations/postCreateVariations'
 import deleteVariationsSlice from './apps/products/variations/deleteVariationsSlice'
+import contactCreateSlice from './apps/contacts/contactCreateSlice'
+import contactStoreSlice from './apps/contacts/contactStoreSlice'
+import contactEditSlice from './apps/contacts/contactEditSlice'
+import contactUpdateSlice from './apps/contacts/contactUpdateSlice'
 
 export const store = configureStore({
   reducer: {
@@ -62,7 +66,11 @@ export const store = configureStore({
     getVariations: getVariationsSlice,
     getCreateVariations: getCreateVariationsSlice,
     postCreateVariations: postCreateVariationsSlice,
-    deleteVariations: deleteVariationsSlice
+    deleteVariations: deleteVariationsSlice,
+    contactCreateSlice: contactCreateSlice,
+    contactStoreSlice: contactStoreSlice,
+    contactEditSlice: contactEditSlice,
+    contactUpdateSlice: contactUpdateSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

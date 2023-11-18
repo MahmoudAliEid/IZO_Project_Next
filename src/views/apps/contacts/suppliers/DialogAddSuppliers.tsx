@@ -37,7 +37,7 @@ const CustomCloseButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
 
 
 
-const DialogAddSuppliers = ({ open, toggle, isEdit, itemId }: any) => {
+const DialogAddSuppliers = ({ open, toggle, isEdit, itemId, contact }: any) => {
   const handleClose = () => {
     toggle()
   }
@@ -46,8 +46,10 @@ const DialogAddSuppliers = ({ open, toggle, isEdit, itemId }: any) => {
     <Fragment>
       <Dialog open={open} maxWidth='lg' fullWidth={true} onClose={handleClose} aria-labelledby='max-width-dialog-title'>
         <DialogTitle id='customized-dialog-title' sx={{ position: 'relative' }}>
-          <Typography variant='h6' component='span'>
-            {isEdit ? 'Edit Suppliers' : 'Add Suppliers'}
+          <Typography variant='h6' component='span' sx={{
+            textTransform: 'capitalize'
+          }}>
+            {isEdit ? `Edit ${contact}` : `Add New ${contact}`}
           </Typography>
           <CustomCloseButton size='small' aria-label='close' onClick={handleClose}>
             <Icon icon='bx:x' />
@@ -60,7 +62,7 @@ const DialogAddSuppliers = ({ open, toggle, isEdit, itemId }: any) => {
         >
           {
 
-            <StepperStoreSuppliers isEdit={isEdit} itemId={itemId} />
+            <StepperStoreSuppliers isEdit={isEdit} itemId={itemId} contact={contact} />
 
           }
         </DialogContent>

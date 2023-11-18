@@ -13,7 +13,7 @@ export const fetchCreateContactData = createAsyncThunk('contact/fetchCreateConta
     }
   })
 
-  return response.data
+  return response.data.response
 })
 
 // Step 3: Create a slice

@@ -16,6 +16,7 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import DialogAddSuppliers from 'src/views/apps/contacts/suppliers/DialogAddSuppliers'
 
 // import { styled } from '@mui/material/styles'
 import MenuItem from '@mui/material/MenuItem'
@@ -217,7 +218,9 @@ const RowOptions = ({ id }) => {
           Documents & Notes
         </MenuItem>
       </Menu>
-      {editUserOpen && <SidebarEditUser open={editUserOpen} toggle={handleEdit} itemId={id} />}
+      {editUserOpen && (
+        <DialogAddSuppliers open={editUserOpen} toggle={handleEdit} isEdit={true} itemId={id} contact='customer' />
+      )}
     </>
   )
 }
@@ -393,7 +396,7 @@ const columns = [
     renderCell: ({ row }) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row?.created_at ? new Date(row.created_at).toLocaleString() : 'No Data'}
+          {row && row.created_at ? new Date(row.created_at).toLocaleString() : 'No Data'}
         </Typography>
       )
     }
@@ -609,7 +612,7 @@ const columns = [
 
 const Customers = ({ apiData }) => {
   // ** State
-  const [addUserOpen, setAddUserOpen] = useState(false)
+  const [addCustomerOpen, setAddCustomerOpen] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
@@ -671,7 +674,7 @@ const Customers = ({ apiData }) => {
   //   documentTitle: "Customers",
   // })
 
-  const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
+  const toggleAddCustomerDrawer = () => setAddCustomerOpen(!addCustomerOpen)
 
   // ** handle search function
   const handleSearch = searchValue => {
@@ -719,7 +722,7 @@ const Customers = ({ apiData }) => {
             }}
           >
             <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-              <Button startIcon={<AddCircleOutlineIcon />} onClick={toggleAddUserDrawer} variant='contained'>
+              <Button startIcon={<AddCircleOutlineIcon />} onClick={toggleAddCustomerDrawer} variant='contained'>
                 Add
               </Button>
             </Box>
@@ -767,7 +770,7 @@ const Customers = ({ apiData }) => {
         </Card>
       </Grid>
 
-      <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+      <DialogAddSuppliers open={addCustomerOpen} toggle={toggleAddCustomerDrawer} isEdit={false} contact='customer' />
     </Grid>
   )
 }

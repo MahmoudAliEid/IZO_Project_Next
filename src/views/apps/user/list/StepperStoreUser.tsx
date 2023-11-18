@@ -163,8 +163,11 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
 }))
 
 const StepperStoreUser = ({ isEdit, itemId }: any) => {
-  console.log(itemId, '====> itemId from stepper');
+  // console.log(itemId, '====> itemId from stepper');
+  // console.log(isEdit, '====> isEdit from stepper');
+
   console.log(isEdit, '====> isEdit from stepper');
+
 
   const [initialValues, setInitialValues] = useState<any>({
     prefix: '',
@@ -244,6 +247,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+
   useEffect(() => {
     dispatch(fetchCreateUsers())
   }, [dispatch])
@@ -255,8 +259,6 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
   useEffect(() => {
     if (data !== null && data !== undefined) {
       setRequirements(data.Requirement)
-
-      console.log(data.Requirement, '====> Requirement from stepper 🐐')
     }
   }, [data])
 
@@ -265,10 +267,12 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
   const token = getCookie('token')
   const url = getCookie('apiUrl')
 
+
+
   useEffect(() => {
     if (token && url && itemId) {
       //@ts-ignore
-      dispatch(fetchEditUsers({ token, url, itemId }))
+      isEdit ? dispatch(fetchEditUsers({ token, url, itemId })) : resetForm()
     }
   }, [dispatch, token, url, itemId])
 
@@ -276,13 +280,13 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
 
   useEffect(() => {
-    if (editData?.UserInfo !== null && editData?.UserInfo !== undefined) {
+    if (editData?.UserInfo !== null && editData?.UserInfo !== undefined && isEdit) {
       const newDateOfBirth = convertDateFormat(editData.UserInfo.dateOfBirth)
 
       // @ts-ignore
       setInitialValues(prev => ({
         ...prev,
-        business_id: editData.UserInfo.business_id || prev.business_id,
+        business_id: editData.UserInfo.Location || prev.Location,
         prefix: editData.UserInfo.prefix || prev.prefix,
         firstName: editData.UserInfo.firstName || prev.firstName,
         lastName: editData.UserInfo.lastName || prev.lastName,
@@ -341,10 +345,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
       }))
 
     }
-  }, [editData?.UserInfo])
+  }, [editData?.UserInfo, isEdit])
 
-  //  log intial values after edit
-  console.log("form intial after edit ❤❤❤", initialValues)
+
 
 
   // Handle Stepper

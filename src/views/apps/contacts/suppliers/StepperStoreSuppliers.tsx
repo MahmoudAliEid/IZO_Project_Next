@@ -7,26 +7,23 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Stepper from '@mui/material/Stepper'
 import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import StepLabel from '@mui/material/StepLabel'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import MuiStep, { StepProps } from '@mui/material/Step'
 import InputAdornment from '@mui/material/InputAdornment'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Chip from '@mui/material/Chip'
-import Checkbox from '@mui/material/Checkbox'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import PublicIcon from '@mui/icons-material/Public'
+import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
 
 // ** Third Party Imports
 import toast from 'react-hot-toast'
@@ -46,46 +43,16 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
 import { AppDispatch } from 'src/redux/store'
-import { fetchIzoUsers } from 'src/store/apps/izoUsers/izoUsersSlice'
-import useSubmitUser from 'src/hooks/useSubmitUser';
-import { storeUser } from 'src/store/apps/izoUsers/storeUserSlice.js'
-import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice';
-import { postEditUser } from 'src/store/apps/izoUsers/postEditUserSlice';
-
-
-// icons
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
+import { fetchCreateContactData } from 'src/store/apps/contacts/contactCreateSlice'
+import { saveNewContact } from 'src/store/apps/contacts/contactStoreSlice'
+import { fetchContactData } from 'src/store/apps/contacts/contactEditSlice'
+import { updateContact } from 'src/store/apps/contacts/contactUpdateSlice'
 
 // Date Picker Imports
-import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
+import DatePicker from 'react-datepicker'
 import CustomInput from './PickersCustomInput'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import { getCookie } from 'cookies-next'
-import { convertDateFormat } from 'src/@core/layouts/utils';
-
-interface State {
-  password: string
-  password2: string
-  showPassword: boolean
-  showPassword2: boolean
-}
-
-type RequirementsType = {
-  BusinessLocation: []
-  ProductPrice: []
-  accounts: []
-  agents: []
-  contacts: []
-  cost_center: []
-  gender: []
-  marital: []
-  patterns: []
-  roles: []
-  taxes: []
-  warehouse: []
-}
 
 const steps = [
   {
@@ -98,6 +65,11 @@ const steps = [
     title: 'More Information',
     subtitle: 'Provide Additional Information'
   },
+  {
+    icon: 'bx:info-circle',
+    title: 'Custom Field',
+    subtitle: 'Provide Additional Information'
+  }
 ]
 
 const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
@@ -136,190 +108,81 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   }
 }))
 
-const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
-  console.log(itemId, '====> itemId from stepper');
-  console.log(isEdit, '====> isEdit from stepper');
-
+const StepperStoreSuppliers = ({ isEdit, itemId, contact }: any) => {
   const [initialValues, setInitialValues] = useState<any>({
+    type: '',
+    supplier_business_name: '',
     prefix: '',
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+    tax_number: '',
+    pay_term_number: '',
+    pay_term_type: '',
+    mobile: '',
+    landline: '',
+    alternate_number: '',
+    city: '',
+    state: '',
+    country: '',
+    address_line_1: '',
+    address_line_2: '',
+    customer_group_id: '',
+    zip_code: '',
+    contact_id: '',
+    custom_field1: '',
+    custom_field2: '',
+    custom_field3: '',
+    custom_field4: '',
+    custom_field5: '',
+    custom_field6: '',
+    custom_field7: '',
+    custom_field8: '',
+    custom_field9: '',
+    custom_field10: '',
     email: '',
-    ProductPriceItem: '',
-    accounts: '',
-    visa: '',
-    agents: '',
-    selectedContact: [],
-    allowSlctdContacts: false,
-    cost_center: '',
-    gender: '',
-    marital: '',
-    userPattern: '',
-    patternList: [],
-    taxesItem: '',
-    warehouse: '',
-    isActive: false,
-    allowlogin: false,
-    username: '',
-    password: '',
-    confirmPassword: '',
-    roles: '',
-    allLocations: false,
-    location_permissions: [],
-    business_id: '',
-    salesCommission: '',
-    maxSalesDiscount: '',
-    dateOfBirth: new Date(),
-    bloodGroup: '',
-    mobileNumber: '',
-    alternativeMobileNumber: '',
-    familyContactNumber: '',
-    facebookLink: '',
-    twitterLink: '',
-    socialMedia1: '',
-    socialMedia2: '',
-    customField1: '',
-    customField2: '',
-    customField3: '',
-    customField4: '',
-    guardianName: '',
-    idProofName: '',
-    idProofNumber: '',
-    permanentAddress: '',
-    currentAddress: '',
-    holderName: '',
-    accountNumber: '',
-    bankName: '',
-    bankIdentifierCode: '',
-    bankBranchName: '',
-    taxPayerId: '',
-    department: '',
-    designation: ''
+    shipping_address: '',
+    position: '',
+    dob: new Date(),
+    credit_limit: '',
+    opening_balance: ''
   })
 
   const [activeStep, setActiveStep] = useState<number>(0)
   const [date, setDate] = useState<any>(new Date())
+  const [customer_group, setCustomerGroup] = useState<any>([])
+  const [ContactType, setContactType] = useState<any>([
+    { id: 1, name: 'customer' },
+    { id: 2, name: 'supplier' },
+    { id: 3, name: 'Both' }
+  ])
 
-  const [Requirements, setRequirements] = useState<RequirementsType>({
-    BusinessLocation: [],
-    ProductPrice: [],
-    accounts: [],
-    agents: [],
-    contacts: [],
-    cost_center: [],
-    gender: [],
-    marital: [],
-    patterns: [],
-    roles: [],
-    taxes: [],
-    warehouse: []
-  })
-  const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+  const [PayTermType, setPayTermType] = useState<any>([
+    { id: 1, name: 'days' },
+    { id: 2, name: 'months' }
+  ])
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+
   useEffect(() => {
-    dispatch(fetchCreateUsers())
+    dispatch(fetchCreateContactData(contact))
   }, [dispatch])
 
-  const data = useSelector((state: { createUser: { data: any } }) => state.createUser.data)
-
-  // console.log(data, '====> data')
+  // ** States
+  const data = useSelector((state: { createUser: { data: any } }) => state.contactCreateSlice.data)
 
   useEffect(() => {
-    if (data !== null && data !== undefined) {
-      setRequirements(data.Requirement)
+    if (data !== null && data !== undefined && data.type !== undefined) {
+      setCustomerGroup(data.customer_group)
 
-      console.log(data.Requirement, '====> Requirement from stepper 🐐')
+      // set type of contact in initial values
+      setInitialValues((prev: any) => ({
+        ...prev,
+        type: data.type.value
+      }))
     }
   }, [data])
-
-  // ===================== hande part for edit user ===========================
-  // ===========================================================================
-  const token = getCookie('token')
-  const url = getCookie('apiUrl')
-
-  useEffect(() => {
-    if (token && url && itemId) {
-      //@ts-ignore
-      dispatch(fetchEditUsers({ token, url, itemId }))
-    }
-  }, [dispatch, token, url, itemId])
-
-  const editData = useSelector((state: { editUsers: { data: any } }) => state.editUsers.data)
-
-
-  useEffect(() => {
-    if (editData?.UserInfo !== null && editData?.UserInfo !== undefined) {
-      const newDateOfBirth = convertDateFormat(editData.UserInfo.dateOfBirth)
-
-      // @ts-ignore
-      setInitialValues(prev => ({
-        ...prev,
-        business_id: editData.UserInfo.business_id || prev.business_id,
-        prefix: editData.UserInfo.prefix || prev.prefix,
-        firstName: editData.UserInfo.firstName || prev.firstName,
-        lastName: editData.UserInfo.lastName || prev.lastName,
-        email: editData.UserInfo.email || prev.email,
-        businessLocation: editData.UserInfo.businessLocation || prev.businessLocation,
-        ProductPriceItem: editData.UserInfo.ProductPriceItem || prev.ProductPriceItem,
-        visa: editData.UserInfo.visa || prev.visa,
-        agents: editData.UserInfo.agents || prev.agents,
-        selectedContact: editData.UserInfo.selectedContact || prev.selectedContact,
-        allowSlctdContacts: editData.UserInfo.allowSlctdContacts || prev.allowSlctdContacts,
-        cost_center: editData.UserInfo.costCenter || prev.costCenter,
-        gender: editData.UserInfo.gender || prev.gender,
-        marital: editData.UserInfo.marital || prev.marital,
-        userPattern: editData.UserInfo.userPattern || prev.userPattern,
-        patternList: editData.UserInfo.patternId || prev.patternId,
-        taxesItem: editData.UserInfo.taxesItem || prev.taxesItem,
-        warehouse: editData.UserInfo.warehouse || prev.warehouse,
-        isActive: editData.UserInfo.isActive || prev.isActive,
-        allowlogin: editData.UserInfo.allowlogin || prev.allowlogin,
-        username: editData.UserInfo.username || prev.username,
-        password: editData.UserInfo.password || prev.password,
-        confirmPassword: editData.UserInfo.confirmPassword || prev.confirmPassword,
-        roles: editData.UserInfo.roles || prev.roles,
-        allLocations: editData.UserInfo.allLocations || prev.allLocations,
-        AGT: editData.UserInfo.AGT || prev.AGT,
-        salesCommission: editData.UserInfo.salesCommission || prev.salesCommission,
-        maxSalesDiscount: editData.UserInfo.maxSalesDiscount || prev.maxSalesDiscount,
-
-        dateOfBirth: new Date(newDateOfBirth) || prev.dateOfBirth,
-        bloodGroup: editData.UserInfo.bloodGroup || prev.bloodGroup,
-        mobileNumber: editData.UserInfo.mobileNumber || prev.mobileNumber,
-        accounts: editData.UserInfo.accounts || prev.accounts,
-        alternativeMobileNumber: editData.UserInfo.alternativeMobileNumber || prev.alternativeMobileNumber,
-        familyContactNumber: editData.UserInfo.familyContactNumber || prev.familyContactNumber,
-        facebookLink: editData.UserInfo.facebookLink || prev.facebookLink,
-        twitterLink: editData.UserInfo.twitterLink || prev.twitterLink,
-        socialMedia1: editData.UserInfo.socialMedia1 || prev.socialMedia1,
-        socialMedia2: editData.UserInfo.socialMedia2 || prev.socialMedia2,
-        customField1: editData.UserInfo.customField1 || prev.customField1,
-        customField2: editData.UserInfo.customField2 || prev.customField2,
-        customField3: editData.UserInfo.customField3 || prev.customField3,
-        customField4: editData.UserInfo.customField4 || prev.customField4,
-        guardianName: editData.UserInfo.guardianName || prev.guardianName,
-        idProofName: editData.UserInfo.idProofName || prev.idProofName,
-        idProofNumber: editData.UserInfo.idProofNumber || prev.idProofNumber,
-        permanentAddress: editData.UserInfo.permanentAddress || prev.permanentAddress,
-        currentAddress: editData.UserInfo.currentAddress || prev.currentAddress,
-        holderName: editData.UserInfo.holderName || prev.holderName,
-        accountNumber: editData.UserInfo.accountNumber || prev.accountNumber,
-        bankName: editData.UserInfo.bankName || prev.bankName,
-        bankIdentifierCode: editData.UserInfo.bankIdentifierCode || prev.bankIdentifierCode,
-        bankBranchName: editData.UserInfo.bankBranchName || prev.bankBranchName,
-        taxPayerId: editData.UserInfo.taxPayerId || prev.taxPayerId,
-        department: editData.UserInfo.department || prev.department,
-        designation: editData.UserInfo.designation || prev.designation,
-      }))
-
-    }
-  }, [editData?.UserInfo])
-
-  //  log intial values after edit
-  console.log("form intial after edit ❤❤❤", initialValues)
-
 
   // Handle Stepper
   const handleBack = () => {
@@ -336,19 +199,68 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
     setActiveStep(0)
   }
 
-  const getStepContent = ({
-    values,
-    errors,
-    touched,
-    handleBlur,
-    handleChange,
-    setFieldValue,
-    step
-  }: any) => {
+  const getStepContent = ({ values, errors, touched, handleBlur, handleChange, setFieldValue, step }: any) => {
     switch (step) {
       case 0:
         return (
           <Fragment key={step}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                width: '100%',
+                gap: '1.2rem',
+                padding: '0 1.2rem'
+              }}
+            >
+              <Grid item lg={6} md={6} sm={12} xs={12}>
+                {
+                  <FormControl fullWidth>
+                    <InputLabel id='demo-simple-select-standard-label'>Contact type </InputLabel>
+                    <Select
+                      fullWidth
+                      labelId='demo-simple-select-standard-label'
+                      name='type'
+                      value={values.type}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      label='Contact type'
+                    >
+                      {ContactType.map((item: any) => (
+                        <MenuItem value={item.name} key={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                }
+              </Grid>
+
+              <Grid
+                item
+                lg={6}
+                md={6}
+                sm={12}
+                xs={12}
+                sx={{
+                  mb: 2
+                }}
+              >
+                {/* form input for Business Name */}
+                <Field
+                  as={TextField}
+                  name='supplier_business_name'
+                  label='Business Name'
+                  variant='outlined'
+                  fullWidth
+                  margin='normal'
+                  required
+                  sx={{ gridColumn: 'span 6' }}
+                />
+              </Grid>
+            </div>
+
             <Grid item lg={12} md={12} sm={12} xs={12}>
               <FormControl fullWidth variant='outlined'>
                 <InputLabel id='prefix-label'>Prefix</InputLabel>
@@ -374,7 +286,7 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
             <Grid item lg={4} xs={12} sm={6}>
               <Field
                 as={TextField}
-                name='firstName'
+                name='first_name'
                 label='First Name'
                 variant='outlined'
                 fullWidth
@@ -387,7 +299,7 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
             <Grid item lg={4} xs={12} sm={6}>
               <Field
                 as={TextField}
-                name='middleName'
+                name='middle_name'
                 label='Middle Name'
                 variant='outlined'
                 fullWidth
@@ -399,7 +311,7 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
             <Grid item lg={4} xs={12} sm={6}>
               <Field
                 as={TextField}
-                name='lastName'
+                name='last_name'
                 label='Last Name'
                 variant='outlined'
                 fullWidth
@@ -409,18 +321,19 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
               />
             </Grid>
 
-
             <Grid item lg={4} xs={12} sm={6}>
               <Field
                 as={TextField}
-                name='mobileNumber'
+                name='mobile'
                 label='Mobile Number'
                 variant='outlined'
                 fullWidth
                 margin='normal'
                 placeholder='mobile number'
-                value={values.mobileNumber}
+                value={values.mobile}
                 onChange={handleChange}
+                required
+                type='number'
               />
             </Grid>
 
@@ -428,17 +341,17 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
                     filed alternative mobile number
                   */}
             <Grid item lg={4} xs={12} sm={6}>
-
               <Field
                 as={TextField}
-                name='alternativeMobileNumber'
+                name='alternate_number'
                 label='Alternative Mobile Number'
                 variant='outlined'
                 fullWidth
                 margin='normal'
                 placeholder='alternative mobile number'
-                value={values.alternativeMobileNumber}
+                value={values.alternate_number}
                 onChange={handleChange}
+                type='number'
               />
             </Grid>
 
@@ -446,13 +359,13 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
             <Grid item lg={4} xs={12} sm={6}>
               <Field
                 as={TextField}
-                name='LandlinetNumber'
+                name='landline'
                 label='Landline Number'
                 variant='outlined'
                 fullWidth
                 margin='normal'
                 placeholder='family contact number'
-                value={values.LandlinetNumber}
+                value={values.landline}
                 onChange={handleChange}
               />
             </Grid>
@@ -468,16 +381,24 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
               }}
             >
               <Grid item xs={12} sm={6}>
-                <Field as={TextField} name='email' label='E-mail' variant='outlined' fullWidth margin='normal' required />
+                <Field
+                  as={TextField}
+                  name='email'
+                  label='E-mail'
+                  variant='outlined'
+                  fullWidth
+                  margin='normal'
+                  required
+                />
               </Grid>
 
               <Grid item xs={12} sm={6}>
                 <DatePickerWrapper>
                   <DatePicker
-                    selected={values.dateOfBirth}
+                    selected={values.dob}
                     id='basic-input'
                     onChange={(date: any) => {
-                      values.dateOfBirth = date
+                      values.dob = date
                       setDate(date)
                     }}
                     placeholderText='Click to select a date'
@@ -486,1112 +407,417 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
                 </DatePickerWrapper>
               </Grid>
             </div>
-
-
           </Fragment>
         )
       case 1:
         return (
           <Fragment key={step}>
-            <Box
+            {/* Tax number input  */}
+            <Grid item lg={4} xs={12} sm={6}>
+              <Field
+                as={TextField}
+                name='tax_number'
+                label='Tax Number'
+                variant='outlined'
+                fullWidth
+                margin='normal'
+                placeholder='tax number'
+                value={values.tax_number}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item lg={4} xs={12} sm={6}>
+              {/* opening Balance input */}
+              <Field
+                as={TextField}
+                name='opening_balance'
+                label='Opening Balance'
+                variant='outlined'
+                fullWidth
+                margin='normal'
+                placeholder='opening balance'
+                value={values.opening_balance}
+                onChange={handleChange}
+                type='number'
+              />
+            </Grid>
+            <Grid
+              item
+              lg={4}
+              xs={12}
+              sm={6}
               sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 3,
-                mb: 2,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
                 width: '100%'
               }}
             >
-              <FormControl fullWidth sx={{ mb: 6 }}>
-                <InputLabel id='demo-simple-select-standard-label'>Acount Cash </InputLabel>
-                <Select
-                  fullWidth
-                  labelId='demo-simple-select-standard-label'
-                  name='accounts'
-                  value={values.accounts}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.prefix && !!errors.prefix}
-                  label='Acount Cash'
-                >
-                  {Object.keys(Requirements).length === 0
-                    ? null
-                    : Requirements.accounts.map((item: any) => (
-                      <MenuItem value={item.id} key={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ mb: 6 }}>
-                <InputLabel id='demo-simple-select-standard-label'>Visa Account </InputLabel>
-                <Select
-                  fullWidth
-                  labelId='demo-simple-select-standard-label'
-                  name='visa'
-                  value={values.visa}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.prefix && !!errors.prefix}
-                  label='Visa Account'
-                >
-                  {Object.keys(Requirements).length === 0
-                    ? null
-                    : Requirements.accounts.map((item: any) => (
-                      <MenuItem value={item.id} key={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <Box
+              {/* pay term input with pay term type */}
+              <Field
+                as={TextField}
+                name='pay_term_number'
+                label='Pay Term'
+                variant='outlined'
+                fullWidth
+                margin='normal'
+                placeholder='pay term'
+                value={values.pay_term_number}
+                onChange={handleChange}
+                type='number'
+              />
+              {/* select pay term type */}
+              <FormControl
+                fullWidth
                 sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
+                  mt: 2
                 }}
               >
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel id='demo-simple-select-standard-label'> agents </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId='demo-simple-select-standard-label'
-                    name='agents'
-                    value={values.agents}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label=' agents'
-                  >
-                    {Object.keys(Requirements).length === 0
-                      ? null
-                      : Requirements.agents.map((item: any) => (
-                        <MenuItem value={item.id} key={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel id='demo-simple-select-standard-label'> cost_center </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId='demo-simple-select-standard-label'
-                    name='cost_center'
-                    value={values.cost_center}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label=' cost_center'
-                  >
-                    {Object.keys(Requirements).length === 0
-                      ? null
-                      : Requirements.cost_center.map((item: any) => (
-                        <MenuItem value={item.id} key={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
-                }}
-              >
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel id='demo-simple-select-standard-label'> Warehouse name </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId='demo-simple-select-standard-label'
-                    name='warehouse'
-                    value={values.warehouse}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label='Warehouse name'
-                  >
-                    {Object.keys(Requirements).length === 0
-                      ? null
-                      : Requirements.warehouse.map((item: any) => (
-                        <MenuItem value={item.id} key={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel id='demo-simple-select-standard-label'>User Pattern </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId='demo-simple-select-standard-label'
-                    name='userPattern'
-                    value={values.userPattern}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label='User Pattern'
-                  >
-                    {Object.keys(Requirements).length === 0
-                      ? null
-                      : Requirements.patterns.map((item: any) => (
-                        <MenuItem value={item.id} key={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Box>
-              {/*
-                  drop down for ProductPrice
-                */}
-
-              {
-
-                <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel id='demo-simple-select-standard-label'>Product Price </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId='demo-simple-select-standard-label'
-                    name='ProductPriceItem'
-                    value={values.ProductPriceItem}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label='Product Price'
-                  >
-                    {Object.keys(Requirements).length === 0
-                      ? null
-                      : Requirements.ProductPrice.map((item: any) => (
-                        <MenuItem value={parseInt(item.id)} key={parseInt(item.id)}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-
-              }
-              {/*
-                  drop down for taxes
-                */}
-              <FormControl fullWidth sx={{ mb: 6 }}>
-                <InputLabel id='demo-simple-select-standard-label'>Taxes </InputLabel>
+                <InputLabel id='demo-simple-select-standard-label'>Select pay term type </InputLabel>
                 <Select
                   fullWidth
                   labelId='demo-simple-select-standard-label'
-                  name='taxesItem'
-                  value={values.taxesItem}
+                  name='pay_term_type'
+                  value={values.pay_term_type}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={!!touched.prefix && !!errors.prefix}
-                  label='Taxes'
+                  label='Select pay term type'
                 >
-                  {Object.keys(Requirements).length === 0
-                    ? null
-                    : Requirements.taxes.map((item: any) => (
-                      <MenuItem value={item.id} key={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
+                  {PayTermType.map((item: any) => (
+                    <MenuItem
+                      value={item.name}
+                      key={item.id}
+                      sx={{
+                        textTransform: 'capitalize'
+                      }}
+                    >
+                      {item.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
-            </Box>
+            </Grid>
+
+            {/*  filed for address line 1 and 2 */}
+            <Grid item lg={6} xs={12} sm={12}>
+              <Field
+                as={TextField}
+                name='address_line_1'
+                label='Address Line 1'
+                variant='outlined'
+                fullWidth
+                margin='normal'
+                placeholder='address line 1'
+                value={values.address_line_1}
+                onChange={handleChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <LocationOnIcon />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+            <Grid item lg={6} xs={12} sm={12}>
+              <Field
+                as={TextField}
+                name='address_line_2'
+                label='Address Line 2'
+                variant='outlined'
+                fullWidth
+                margin='normal'
+                placeholder='address line 2'
+                value={values.address_line_2}
+                onChange={handleChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <LocationOnIcon />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+            <Grid container spacing={3} px={6}>
+              <Grid item xs={3}>
+                {/* filed for city */}
+                <Field
+                  as={TextField}
+                  name='city'
+                  label='City'
+                  variant='outlined'
+                  fullWidth
+                  margin='normal'
+                  placeholder='city'
+                  value={values.city}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <LocationOnIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                {/*  filed for state */}
+                <Field
+                  as={TextField}
+                  name='state'
+                  label='State'
+                  variant='outlined'
+                  fullWidth
+                  margin='normal'
+                  placeholder='state'
+                  value={values.state}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <LocationOnIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                {/* filed for country */}
+                <Field
+                  as={TextField}
+                  name='country'
+                  label='Country'
+                  variant='outlined'
+                  fullWidth
+                  margin='normal'
+                  placeholder='country'
+                  value={values.country}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <PublicIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                {/* filed for zip code */}
+                <Field
+                  as={TextField}
+                  name='zip_code'
+                  label='Zip Code'
+                  variant='outlined'
+                  fullWidth
+                  margin='normal'
+                  placeholder='zip code'
+                  value={values.zip_code}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <LocalPostOfficeIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                  type='number'
+                />
+              </Grid>
+            </Grid>
           </Fragment>
         )
       case 2:
         return (
           <Fragment key={step}>
-            <Box
-              sx={{
-                width: '100%'
-              }}
-            >
-              {/* check box  */}
-              <FormControlLabel
-                label='allow login'
-                control={
-                  <Checkbox
-                    checked={values.allowlogin}
-                    onChange={handleChange}
-                    name='allowlogin'
-                    color='primary'
-                    onClick={() => {
-                      values.allowlogin = !values.allowlogin
-                    }}
-                  />
-                }
-                required
-              />
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 3,
-                  mb: 2,
-                  width: '100%'
-                }}
-              >
+            {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
+              <Grid item xs={3} key={num}>
                 <Field
                   as={TextField}
-                  name='username'
-                  label='Username'
+                  name={`custom_field${num}`}
+                  label={`Custom Field ${num}`}
                   variant='outlined'
                   fullWidth
                   margin='normal'
-                  required
-                />
-                <TextField
-                  label='Password'
-                  type='password'
-                  variant='outlined'
-                  fullWidth
-                  margin='normal'
-                  value={values.password}
-                  name='password'
+                  placeholder={`custom field ${num}`}
+                  value={values[`custom_field${num}`]}
                   onChange={handleChange}
-                  required
                 />
-                <TextField
-                  label='Confirm Password'
-                  type='password'
-                  variant='outlined'
-                  fullWidth
-                  margin='normal'
-                  value={values.confirmPassword}
-                  name='confirmPassword'
-                  onChange={handleChange}
-                  required
-                />
-              </Box>
-              <FormControl fullWidth sx={{ mb: 6 }}>
-                <InputLabel id='demo-simple-select-standard-label'>Select roles </InputLabel>
-                <Select
-                  fullWidth
-                  labelId='demo-simple-select-standard-label'
-                  name='roles'
-                  value={values.roles}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.prefix && !!errors.prefix}
-                  label='Select roles'
-                  required
-                >
-                  <MenuItem value=''>None</MenuItem>
-                  {Object.keys(Requirements).length === 0
-                    ? null
-                    : Requirements.roles.map((item: any) => (
-                      <MenuItem value={item.id} key={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
-                }}
-              >
-                <Typography variant='body1' gutterBottom component='div'>
-                  Access Location <PriorityHighIcon />
-                </Typography>
+              </Grid>
+            ))}
 
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <FormControlLabel
-                    label='all locations'
-                    control={
-                      <Checkbox
-                        checked={values.allLocations}
-                        onChange={handleChange}
-                        name='allLocations'
-                        color='primary'
-                        onClick={() => {
-                          values.allLocations = !values.allLocations
-                        }}
-                      />
-                    }
-                  />
-                </Box>
-
-                {values.allLocations ? null : (
-                  <FormControl>
-                    <InputLabel id='demo-multiple-chip-label'>location permissions</InputLabel>
-                    <Select
-                      labelId='demo-multiple-chip-label'
-                      id='demo-multiple-chip'
-                      name='location_permissions'
-                      multiple
-                      value={values.location_permissions}
-                      onChange={e => {
-                        setFieldValue('location_permissions', e.target.value)
-                      }}
-                      input={<OutlinedInput id='select-multiple-chip' label='location_permissions' />}
-                      renderValue={selected => (
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            flexWrap: 'wrap',
-                            gap: '0.5rem',
-                            padding: '0.5rem'
-                          }}
-                        >
-                          {selected.map(value => (
-                            <Box key={value}>
-                              <Chip
-                                variant='outlined'
-
-                                //@ts-ignore
-                                label={Requirements?.BusinessLocation?.find((option: any) => option?.id === value).name}
-                                onDelete={value => {
-                                  setFieldValue(
-                                    'location_permissions',
-                                    values.location_permissions.filter(option => option !== value)
-                                  )
-                                }}
-                              />
-                            </Box>
-                          ))}
-                        </Box>
-                      )}
-                    >
-                      {Requirements?.BusinessLocation.map((option: any) => (
-                        <MenuItem key={option?.id} value={option?.id}>
-                          {option?.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-
-                <FormControl fullWidth>
-                  <InputLabel id='demo-simple-select-standard-label'>Select location </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId='demo-simple-select-standard-label'
-                    name='business_id'
-                    value={values.business_id}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label='Select Location'
-                    sx={{
-                      height: '100%'
-                    }}
-                  >
-                    {Object.keys(Requirements).length === 0
-                      ? null
-                      : Requirements.BusinessLocation.map((item: any) => (
-                        <MenuItem value={item.id} key={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Box>
+            {/* Shipping Address input */}
+            <Grid item lg={12} xs={12} sm={12}>
+              <Field
+                as={TextField}
+                name='shipping_address'
+                label='Shipping Address'
+                variant='outlined'
+                fullWidth
+                margin='normal'
+                placeholder='shipping address'
+                value={values.shipping_address}
+                onChange={handleChange}
+              />
+            </Grid>
           </Fragment>
         )
       case 3:
-        return (
-          <Fragment key={step}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 3,
-                mb: 2,
-                width: '100%'
-              }}
-            >
-              {/*
-                    sales commission precentage (%) FIELD INPUT
-                  */}
-              <Field
-                as={TextField}
-                name='salesCommission'
-                value={values.salesCommission}
-                onChange={handleChange}
-                label='Sales Commission Precentage (%)'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='sales commission precentage (%)'
-              />
-              {/*
-                  max sales discount precentage (%) FIELD INPUT
-                */}
-              <Field
-                as={TextField}
-                name='maxSalesDiscount'
-                label='Max Sales Discount Precentage (%)'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='max sales discount precentage (%)'
-                value={values.maxSalesDiscount}
-                onChange={handleChange}
-              />
-
-              <FormControl>
-                <InputLabel id='demo-multiple-chip-label'>List Patterns</InputLabel>
-                <Select
-                  labelId='demo-multiple-chip-label'
-                  id='demo-multiple-chip'
-                  name='patternList'
-                  multiple
-                  value={values.patternList}
-                  onChange={e => {
-                    setFieldValue('patternList', e.target.value)
-                  }}
-                  input={<OutlinedInput id='select-multiple-chip' label='list patterns' />}
-                  renderValue={selected => (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: '0.5rem',
-                        padding: '0.5rem'
-                      }}
-                    >
-                      {selected.map(value => (
-                        <Box key={value}>
-                          <Chip
-                            variant='outlined'
-
-                            //@ts-ignore
-                            label={Requirements?.patterns?.find((option: any) => option?.id === value)?.name}
-                            onDelete={value => {
-                              setFieldValue(
-                                'patternList',
-                                values.patternList.filter(option => option !== value)
-                              )
-                            }}
-                          />
-                        </Box>
-                      ))}
-                    </Box>
-                  )}
-                >
-                  {Requirements.patterns.map((option: any) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/*
-                  check box for allow selected contacts
-                */}
-
-              <FormControlLabel
-                label='Allow selected contacts'
-                control={
-                  <Checkbox
-                    checked={values.allowSlctdContacts}
-                    onChange={handleChange}
-                    name='allowlogin'
-                    color='primary'
-                    onClick={() => {
-                      values.allowSlctdContacts = !values.allowSlctdContacts
-                    }}
-                  />
-                }
-              />
-
-              {/*
-                  filed selected contacts if allow selected contacts is true
-                */}
-              {values.allowSlctdContacts ? (
-                <FormControl>
-                  <InputLabel id='demo-multiple-chip-label'>selected contacts</InputLabel>
-                  <Select
-                    labelId='demo-multiple-chip-label'
-                    id='demo-multiple-chip'
-                    name='selectedContact'
-                    multiple
-                    value={values.selectedContact}
-                    onChange={e => {
-                      setFieldValue('selectedContact', e.target.value)
-                    }}
-                    input={<OutlinedInput id='select-multiple-chip' label='selectedContact' />}
-                    renderValue={selected => (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: '0.5rem',
-                          padding: '0.5rem'
-                        }}
-                      >
-                        {selected.map(value => (
-                          <Box key={value}>
-                            <Chip
-                              variant='outlined'
-
-                              //@ts-ignore
-                              label={Requirements?.contacts?.find((option: any) => option?.id === value).name}
-                              onDelete={value => {
-                                setFieldValue(
-                                  'selectedContact',
-                                  values.selectedContact.filter(option => option !== value)
-                                )
-                              }}
-                            />
-                          </Box>
-                        ))}
-                      </Box>
-                    )}
-                  >
-                    {Requirements.contacts.map((option: any) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              ) : null}
-            </Box>
-          </Fragment>
-        )
-      case 4:
-        return (
-          <Fragment key={step}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 3,
-                mb: 2,
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%'
-              }}
-            >
-              {/*
-                filed date of birth using date picker
-                  */}
-              <DatePickerWrapper>
-                <DatePicker
-                  selected={values.dateOfBirth}
-                  id='basic-input'
-                  onChange={(date: any) => {
-                    values.dateOfBirth = date
-                    setDate(date)
-                  }}
-                  placeholderText='Click to select a date'
-                  customInput={<CustomInput label='Date of Birth' />}
-                />
-              </DatePickerWrapper>
-
-              {/*
-                  drop down for Gender
-                */}
-
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-standard-label'>Select gender </InputLabel>
-                <Select
-                  fullWidth
-                  labelId='demo-simple-select-standard-label'
-                  name='gender'
-                  value={values.gender}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.prefix && !!errors.prefix}
-                  label='Select gender'
-                >
-                  {Object.keys(Requirements).length === 0
-                    ? null
-                    : Requirements.gender.map((item: any) => (
-                      <MenuItem value={item.id} key={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-
-              {/*
-                  drop down for marital status
-                */}
-
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-standard-label'>Select marital </InputLabel>
-                <Select
-                  fullWidth
-                  labelId='demo-simple-select-standard-label'
-                  name='marital'
-                  value={values.marital}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.prefix && !!errors.prefix}
-                  label='Select marital'
-                >
-                  {Object.keys(Requirements).length === 0
-                    ? null
-                    : Requirements.marital.map((item: any) => (
-                      <MenuItem value={item.id} key={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              {/*
-                  filed Blood Group
-                */}
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-standard-label'>Select blood group </InputLabel>
-                <Select
-                  fullWidth
-                  labelId='demo-simple-select-standard-label'
-                  name='bloodGroup'
-                  value={values.bloodGroup}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.prefix && !!errors.prefix}
-                  label='Select blood group'
-                >
-                  {bloodTypes.map((item: any) => (
-                    <MenuItem value={item} key={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/*
-                  filel Mobile Number type number
-                */}
-              <Field
-                as={TextField}
-                name='mobileNumber'
-                label='Mobile Number'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='mobile number'
-                value={values.mobileNumber}
-                onChange={handleChange}
-              />
-
-              {/*
-                    filed alternative mobile number
-                  */}
-              <Field
-                as={TextField}
-                name='alternativeMobileNumber'
-                label='Alternative Mobile Number'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='alternative mobile number'
-                value={values.alternativeMobileNumber}
-                onChange={handleChange}
-              />
-
-              {/*
-                  filed family contact number
-                */}
-              <Field
-                as={TextField}
-                name='familyContactNumber'
-                label='Family Contact Number'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='family contact number'
-                value={values.familyContactNumber}
-                onChange={handleChange}
-              />
-
-              {/*
-                  filed facebook link
-                */}
-              <Field
-                as={TextField}
-                name='facebookLink'
-                label='Facebook Link'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='facebook link'
-                value={values.facebookLink}
-                onChange={handleChange}
-              />
-
-              {/*
-                    filed twitter link
-                  */}
-
-              <Field
-                as={TextField}
-                name='twitterLink'
-                label='Twitter Link'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='twitter link'
-                value={values.twitterLink}
-                onChange={handleChange}
-              />
-
-              {/*
-                  filed social media 1
-                */}
-              <Field
-                as={TextField}
-                name='socialMedia1'
-                label='Social Media 1'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='social media 1'
-                value={values.socialMedia1}
-                onChange={handleChange}
-              />
-
-              {/*
-                    filed social media 2
-                  */}
-              <Field
-                as={TextField}
-                name='socialMedia2'
-                label='Social Media 2'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='social media 2'
-                value={values.socialMedia2}
-                onChange={handleChange}
-              />
-
-              {/*
-                    filed custom field 1
-                  */}
-              <Field
-                as={TextField}
-                name='customField1'
-                label='Custom Field 1'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='custom field 1'
-                value={values.customField1}
-                onChange={handleChange}
-              />
-
-              {/*
-                    filed custom field 2
-                  */}
-              <Field
-                as={TextField}
-                name='customField2'
-                label='Custom Field 2'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='custom field 2'
-                value={values.customField2}
-                onChange={handleChange}
-              />
-
-              {/*
-                    filed custom field 3
-                  */}
-              <Field
-                as={TextField}
-                name='customField3'
-                label='Custom Field 3'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='custom field 3'
-                value={values.customField3}
-                onChange={handleChange}
-              />
-
-              {/*
-                      filed custom field 4
-                    */}
-
-              <Field
-                as={TextField}
-                name='customField4'
-                label='Custom Field 4'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='custom field 4'
-                value={values.customField4}
-                onChange={handleChange}
-              />
-
-              {/*
-                      filed cuardiand name
-                    */}
-              <Field
-                as={TextField}
-                name='guardianName'
-                label='Guardian Name'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='guardian name'
-                value={values.guardianName}
-                onChange={handleChange}
-              />
-
-              {/*
-                        filed ID Proof name
-                      */}
-              <Field
-                as={TextField}
-                name='idProofName'
-                label='ID Proof Name'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='id proof name'
-                value={values.idProofName}
-                onChange={handleChange}
-              />
-
-              {/*
-                            filed ID Proof Number
-                          */}
-              <Field
-                as={TextField}
-                name='idProofNumber'
-                label='ID Proof Number'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='id proof number'
-                value={values.idProofNumber}
-                onChange={handleChange}
-              />
-
-              {/*
-                  filed premanent address
-                  */}
-
-              <Field
-                as={TextField}
-                name='permanentAddress'
-                label='Permanent Address'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='permanent address'
-                value={values.permanentAddress}
-                onChange={handleChange}
-              />
-
-              {/*
-                    filed current address
-                    */}
-
-              <Field
-                as={TextField}
-                name='currentAddress'
-                label='Current Address'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='current address'
-                value={values.currentAddress}
-                onChange={handleChange}
-              />
-            </Box>
-          </Fragment>
-        )
-      case 5:
-        return (
-          <Fragment key={step}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 3,
-                mb: 2,
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%'
-              }}
-            >
-              {/*
-
-                fild Acount Holder Name
-              */}
-              <Field
-                as={TextField}
-                name='holderName'
-                label='Acount Holder Name'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='acount holder name'
-                value={values.holderName}
-                onChange={handleChange}
-              />
-
-              {/*
-                filed Account Name
-              */}
-              <Field
-                as={TextField}
-                name='accountNumber'
-                label='Account Number'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='account name'
-                value={values.accountNumber}
-                onChange={handleChange}
-              />
-
-              {/*
-                filed Bank Name
-              */}
-
-              <Field
-                as={TextField}
-                name='bankName'
-                label='Bank Name'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='bank name'
-                value={values.bankName}
-                onChange={handleChange}
-              />
-
-              {/*
-                filed Bank identifier name
-              */}
-              <Field
-                as={TextField}
-                name='bankIdentifierCode'
-                label='Bank Identifier Code'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='bank identifier code'
-                value={values.bankIdentifierCode}
-                onChange={handleChange}
-              />
-
-              {/*
-                filed Bank Branch Name
-              */}
-
-              <Field
-                as={TextField}
-                name='bankBranchName'
-                label='Bank Branch Name'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='bank branch name'
-                value={values.bankBranchName}
-                onChange={handleChange}
-              />
-
-              {/*
-                filed tax payer id
-              */}
-              <Field
-                as={TextField}
-                name='taxPayerId'
-                label='Tax Payer Id'
-                variant='outlined'
-                fullWidth
-                margin='normal'
-                placeholder='tax payer id'
-                value={values.taxPayerId}
-                onChange={handleChange}
-              />
-            </Box>
-          </Fragment>
-        )
-      case 6:
-        return (
-          <Fragment key={step}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(12, 1fr)',
-                gap: 3,
-                mb: 2,
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%'
-              }}
-            >
-              {/*
-
-                  filed department
-                */}
-              <Field as={TextField}
-                name="department"
-                label="Department" variant="outlined" fullWidth margin="normal"
-                placeholder="department"
-                value={values.department}
-                onChange={handleChange}
-                sx={{ gridColumn: 'span 6' }}
-              />
-              {/*
-                  filed designation
-                */}
-
-              <Field as={TextField}
-                name="designation"
-                label="Designation" variant="outlined" fullWidth margin="normal"
-                placeholder="designation"
-                value={values.designation}
-                onChange={handleChange}
-                sx={{ gridColumn: 'span 6' }}
-              />
-
-            </Box>
-          </Fragment>
-        )
-      case 7:
-        return (
-          <Fragment key={step}>
-
-          </Fragment>
-        )
+        return <Fragment key={step}></Fragment>
       default:
         return 'Unknown Step'
     }
   }
 
   const validationSchema = Yup.object().shape({
-    prefix: Yup.string(),
-    firstName: Yup.string().required('First name is required'),
-    lastName: Yup.string().required('Last name is required'),
-    email: Yup.string().email('Invalid email address').required('Email is required')
-  })
+    type: Yup.string().required('Type is required'),
+    supplier_business_name: Yup.string().required('Supplier business name is required'),
+    prefix: Yup.string().required('Prefix is required'),
+    first_name: Yup.string().required('First name is required'),
+    middle_name: Yup.string(),
+    last_name: Yup.string().required('Last name is required'),
+    tax_number: Yup.string().required('Tax number is required'),
+    pay_term_number: Yup.string(),
+    pay_term_type: Yup.string(),
+    mobile: Yup.string().required('Mobile number is required'),
+    landline: Yup.string().required('Landline is required'),
+    alternate_number: Yup.string(),
+    city: Yup.string().required('City is required'),
+    state: Yup.string().required('State is required'),
+    country: Yup.string().required('Country is required'),
+    address_line_1: Yup.string(),
+    address_line_2: Yup.string(),
+    customer_group_id: Yup.string().required('Customer group ID is required'),
+    zip_code: Yup.string().required('Zip code is required'),
+    contact_id: Yup.string(),
+    custom_field1: Yup.string(),
+    custom_field2: Yup.string(),
+    custom_field3: Yup.string(),
+    custom_field4: Yup.string(),
+    custom_field5: Yup.string(),
+    custom_field6: Yup.string(),
+    custom_field7: Yup.string(),
+    custom_field8: Yup.string(),
+    custom_field9: Yup.string(),
+    custom_field10: Yup.string(),
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+    shipping_address: Yup.string().required('Shipping address is required'),
+    position: Yup.string().required('Position is required'),
+    dob: Yup.date().required('Date of birth is required'),
+    credit_limit: Yup.string().required('Credit limit is required'),
+    opening_balance: Yup.string().required('Opening balance is required'),
+  });
 
-  const { handleSubmitData } = useSubmitUser();
+  // ======================== handle Edit contact ==============================
+
+  useEffect(() => {
+    if (itemId && isEdit) {
+      dispatch(fetchContactData({ itemId }))
+    }
+  }, [dispatch, itemId, isEdit])
+
+  const contactEditData = useSelector((state: { contactEditSlice: { data: any } }) => state.contactEditSlice.contact)
+
+  useEffect(() => {
+    if (
+      isEdit &&
+      contactEditData !== null &&
+      contactEditData !== undefined &&
+      contactEditData.contact !== null &&
+      contactEditData.contact !== undefined
+    ) {
+
+      console.log('contactEditData ✨', contactEditData);
+
+      // Update initial values with edit data
+      const {
+        type,
+        supplier_business_name,
+        prefix,
+        first_name,
+        middle_name,
+        last_name,
+        tax_number,
+        pay_term_number,
+        pay_term_type,
+        mobile,
+        landline,
+        alternate_number,
+        city,
+        state,
+        country,
+        address_line_1,
+        address_line_2,
+        customer_group_id,
+        zip_code,
+        contact_id,
+        custom_field1,
+        custom_field2,
+        custom_field3,
+        custom_field4,
+        custom_field5,
+        custom_field6,
+        custom_field7,
+        custom_field8,
+        custom_field9,
+        custom_field10,
+        email,
+        shipping_address,
+        position,
+        dob,
+        credit_limit,
+        opening_balance
+      } = contactEditData.contact
+      setInitialValues({
+        type,
+        supplier_business_name,
+        prefix,
+        first_name,
+        middle_name,
+        last_name,
+        tax_number,
+        pay_term_number,
+        pay_term_type,
+        mobile,
+        landline,
+        alternate_number,
+        city,
+        state,
+        country,
+        address_line_1,
+        address_line_2,
+        customer_group_id,
+        zip_code,
+        contact_id,
+        custom_field1,
+        custom_field2,
+        custom_field3,
+        custom_field4,
+        custom_field5,
+        custom_field6,
+        custom_field7,
+        custom_field8,
+        custom_field9,
+        custom_field10,
+        email,
+        shipping_address,
+        position,
+
+        dob: new Date(dob),
+        credit_limit,
+        opening_balance
+      })
+    }
+  }, [contactEditData, isEdit])
 
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
-    // Handle form submission logic here
-
-    console.log(values)
-
-    if (isEdit) {
-      handleSubmitData(postEditUser, fetchIzoUsers, values, itemId);
+    if (!isEdit) {
+      dispatch(saveNewContact(values))
     } else {
-      handleSubmitData(storeUser, fetchIzoUsers, values);
-
+      dispatch(updateContact({ updateData: values, id: itemId }))
     }
 
     // activeStep === steps.length - 1 ? toast.success('Form Submitted') : null
@@ -1603,7 +829,7 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
     if (activeStep === steps.length) {
       return (
         <>
-          <Typography align="center">All steps are completed! 🎉</Typography>
+          <Typography align='center'>All steps are completed! 🎉</Typography>
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
             <Button size='large' variant='contained' onClick={handleReset}>
               Reset
@@ -1613,10 +839,14 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
       )
     } else {
       return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmitForm} enableReinitialize={true}
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmitForm}
+          enableReinitialize={true}
         >
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
-            <form >
+            <form>
               <Grid container spacing={5} mt={5}>
                 <Grid item xs={12} mb={5}>
                   <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -1635,7 +865,6 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
                   handleChange,
                   setFieldValue,
                   step: activeStep
-
                 })}
 
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -1648,21 +877,20 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
                   >
                     Back
                   </Button>
-                  {
-                    activeStep === steps.length - 1 ?
-                      <Button
-                        size='large'
-                        variant='contained'
-                        color='primary'
-                        onClick={() => handleSubmitForm(values, { resetForm })}
-                      >
-                        {isEdit ? "Update User" : "Create User"}
-                      </Button>
-                      :
-                      <Button size='large' variant='contained' color='primary' onClick={handleNext}>
-                        Next
-                      </Button>
-                  }
+                  {activeStep === steps.length - 1 ? (
+                    <Button
+                      size='large'
+                      variant='contained'
+                      color='primary'
+                      onClick={() => handleSubmitForm(values, { resetForm })}
+                    >
+                      {isEdit ? 'Update User' : 'Create User'}
+                    </Button>
+                  ) : (
+                    <Button size='large' variant='contained' color='primary' onClick={handleNext}>
+                      Next
+                    </Button>
+                  )}
                 </Grid>
               </Grid>
             </form>
@@ -1678,14 +906,14 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
         display: 'grid',
         gridTemplateColumns: 'repeat(12, 1fr)',
         gap: 3,
-        height: '600px',
+        height: '600px'
       }}
     >
       <CardContent
         sx={{
           overflowY: 'auto',
           gridColumn: 'span 3',
-          borderRight: theme => `1px solid ${theme.palette.divider}`,
+          borderRight: theme => `1px solid ${theme.palette.divider}`
         }}
       >
         <StepperWrapper>
@@ -1698,18 +926,18 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
               alignItems: 'center',
               justifyContent: 'center',
               flexWrap: 'wrap',
-              gap: '2rem',
-
+              gap: '2rem'
             }}
           >
             {steps.map((step, index) => {
               return (
-                <Step key={index} sx={{
-                  padding: '0px !important',
-                }}>
-                  <StepLabel StepIconComponent={StepperCustomDot}
-
-                  >
+                <Step
+                  key={index}
+                  sx={{
+                    padding: '0px !important'
+                  }}
+                >
+                  <StepLabel StepIconComponent={StepperCustomDot}>
                     <div
                       className='step-label'
                       style={{
@@ -1718,9 +946,8 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: '100%',
+                        width: '100%'
                       }}
-
                       onClick={() => {
                         setActiveStep(index)
                       }}
@@ -1735,8 +962,7 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
                             boxShadow: theme => `0 0.1875rem 0.375rem 0 ${hexToRGBA(theme.palette.primary.main, 0.4)}`
                           })
                         }}
-                      >
-                      </CustomAvatar>
+                      ></CustomAvatar>
                       <div
                         style={{
                           display: 'flex',
@@ -1763,10 +989,11 @@ const StepperStoreSuppliers = ({ isEdit, itemId }: any) => {
           overflowY: 'auto',
           overflowX: 'hidden',
           gridColumn: 'span 9',
-          padding: '2rem',
-
+          padding: '2rem'
         }}
-      >{renderContent()}</CardContent>
+      >
+        {renderContent()}
+      </CardContent>
     </Card>
   )
 }

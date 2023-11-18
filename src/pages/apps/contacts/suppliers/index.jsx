@@ -224,7 +224,9 @@ const RowOptions = ({ id }) => {
           Documents & Notes
         </MenuItem>
       </Menu>
-      {editUserOpen && <SidebarEditUser open={editUserOpen} toggle={handleEdit} itemId={id} />}
+      {editUserOpen && (
+        <DialogAddSuppliers open={editUserOpen} toggle={handleEdit} isEdit={true} contact='supplier' itemId={id} />
+      )}
     </Fragment>
   )
 }
@@ -796,7 +798,7 @@ const Suppliers = ({ apiData }) => {
         </Card>
       </Grid>
 
-      <DialogAddSuppliers open={addSupplierOpen} toggle={toggleAddSuppliersDrawer} isEdit={false} />
+      <DialogAddSuppliers open={addSupplierOpen} toggle={toggleAddSuppliersDrawer} isEdit={false} contact='supplier' />
     </Grid>
   )
 }
