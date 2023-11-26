@@ -8,6 +8,10 @@ const path = require('path')
 module.exports = {
   trailingSlash: true,
   reactStrictMode: false,
+  images: {
+    domains: ['test.izocloud.net']
+  },
+
   webpack: config => {
     config.resolve.alias = {
       ...config.resolve.alias,

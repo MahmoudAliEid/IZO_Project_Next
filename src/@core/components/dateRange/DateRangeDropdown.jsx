@@ -87,12 +87,12 @@ const DateRangeDropdown = ({ selectedRange, setSelectedRange, getDateRange }) =>
         </Grid>
       )}
 
-      {getDateRange() && (
+      {/* {getDateRange() && (
         <div xs={12} md={6}>
           <p>Start Date: {getDateRange()[0].toLocaleDateString()}</p>
           <p>End Date: {getDateRange()[1].toLocaleDateString()}</p>
         </div>
-      )}
+      )} */}
     </Grid>
   )
 }

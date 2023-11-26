@@ -14,17 +14,18 @@ export const postAddVariations = createAsyncThunk('dashboard/postAddVariations',
     formData.append('name', userData.name || '')
 
     // Append each item individually to the FormData
-    if (Array.isArray(userData.items)) {
+    if (userData.items && Array.isArray(userData.items)) {
       userData.items.forEach(item => {
         formData.append('items[]', item)
+        console.log(item, 'item form new items variations')
       })
     }
 
     console.log(formData, userData, '===> formData, userData variations add slice')
 
     const headers = {
-      Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
-      'Content-Type': ' multipart/form-data'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
     }
 
     const response = await axios.post('https://test.izocloud.net/api/app/react/variations/save', formData, {
@@ -63,8 +64,13 @@ const postAddVariationsSlice = createSlice({
       .addCase(postAddVariations.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
-        console.log(action.payload)
-        notify('There is an error; try again later', 'error')
+        if (action.payload && action.payload.message) {
+          console.log(action.payload.message, 'form add variation')
+          notify(action.payload.message, 'error')
+        } else {
+          console.log('Unknown error occurred in form add variation:', action.payload)
+          notify('An unknown error occurred', 'error')
+        }
       })
   }
 })

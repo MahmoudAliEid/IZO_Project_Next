@@ -7,36 +7,12 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import { styled } from '@mui/material/styles'
+import CustomProgress from '../customProgress/CustomProgress'
+import Grid from '@mui/material/Grid'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
-// const StyledTableCell =
-//   styled(TableCell) <
-//   TableCellProps >
-//   (({ theme }) => ({
-//     [`&.${tableCellClasses.head}`]: {
-//       color: theme.palette.common.white,
-//       backgroundColor: theme.palette.common.black
-//     },
-//     [`&.${tableCellClasses.body}`]: {
-//       fontSize: 14
-//     }
-//   }))
-
-// const StyledTableRow =
-//   styled(TableRow) <
-//   TableRowProps >
-//   (({ theme }) => ({
-//     '&:nth-of-type(odd)': {
-//       backgroundColor: theme.palette.action.hover
-//     },
-
-//     // hide last border
-//     '&:last-of-type td, &:last-of-type th': {
-//       border: 0
-//     }
-//   }))
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.06)} !important`,
 
@@ -57,24 +33,32 @@ const TotalTable = ({ data }) => {
   const columnNames = data.map(item => item.name)
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <StyledTableRow>
-            {columnNames.map(columnName => (
-              <StyledTableCell key={columnName}>{columnName}</StyledTableCell>
-            ))}
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>
-          <StyledTableRow>
-            {data.map(item => (
-              <StyledTableCell key={item.name}>{item.value}</StyledTableCell>
-            ))}
-          </StyledTableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <StyledTableRow>
+                {data ? (
+                  columnNames.map(columnName => <StyledTableCell key={columnName}>{columnName}</StyledTableCell>)
+                ) : (
+                  <CustomProgress />
+                )}
+              </StyledTableRow>
+            </TableHead>
+            <TableBody>
+              <StyledTableRow>
+                {data ? (
+                  data.map(item => <StyledTableCell key={item.name}>{item.value} AED</StyledTableCell>)
+                ) : (
+                  <CustomProgress />
+                )}
+              </StyledTableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+    </Grid>
   )
 }
 

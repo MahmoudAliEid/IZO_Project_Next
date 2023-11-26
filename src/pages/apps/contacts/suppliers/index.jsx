@@ -69,6 +69,7 @@ import axios from 'axios'
 // ** Custom Table Components Imports
 // import TableHeader from 'src/views/apps/user/list/TableHeader'
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
+import { postDeleteContact } from 'src/store/apps/contacts/deleteContactSlice'
 import DialogAddSuppliers from 'src/views/apps/contacts/suppliers/DialogAddSuppliers'
 import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
 
@@ -146,10 +147,10 @@ const RowOptions = ({ id, type }) => {
       return
     }
 
-    dispatch(postDeleteUser({ id }))
+    dispatch(postDeleteContact({ id, url }))
       .then(() => {
-        dispatch(fetchIzoUsers(token, url))
-        console.log('User deleted id, token, url', id, token, url)
+        dispatch(fetchSuppliers(token, url))
+
         handleRowOptionsClose()
       })
       .catch(error => {
@@ -187,11 +188,11 @@ const RowOptions = ({ id, type }) => {
         <MenuItem
           component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href={`/apps/contacts/view/${id}/?type=${type}`}
+          href={`/apps/contacts/viewStatement/${id}/?type=${type}`}
           onClick={handleRowOptionsClose}
         >
           <Icon icon='bx:show' fontSize={20} />
-          View
+          View Statement
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -717,14 +718,18 @@ const Suppliers = ({ apiData }) => {
   const toggleAddSuppliersDrawer = () => setSupplierOpen(!addSupplierOpen)
 
   // ** handle search function
+
   const handleSearch = searchValue => {
     setSearchText(searchValue)
     const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
     const filteredRows = data.filter(row => {
       return Object.keys(row).some(field => {
-        return searchRegex.test(row[field].toString())
+        const fieldValue = row[field]
+
+        return fieldValue !== null && fieldValue !== undefined && searchRegex.test(fieldValue.toString())
       })
     })
+
     if (searchValue.length) {
       setFilteredData(filteredRows)
     } else {

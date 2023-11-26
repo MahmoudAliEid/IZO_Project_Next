@@ -14,11 +14,11 @@ const initialState = {
   error: null
 }
 
-export const fetchEditVariations = createAsyncThunk('dashboard/fetchEditVariations', async payload => {
+export const fetchEditCategory = createAsyncThunk('dashboard/fetchEditCategory', async payload => {
   const { itemId } = payload
   const token = getCookie('token')
   try {
-    const response = await axios.get(`https://test.izocloud.net/api/app/react/variations/edit/${itemId}`, {
+    const response = await axios.get(`https://test.izocloud.net/api/app/react/category/edit/${itemId}`, {
       headers: {
         Authorization: 'Bearer ' + `${token}`
       }
@@ -33,19 +33,19 @@ export const fetchEditVariations = createAsyncThunk('dashboard/fetchEditVariatio
 })
 
 // Create a Redux slice
-const editVariationsSlice = createSlice({
-  name: 'fetchEditVariations',
+const getEditCategorySlice = createSlice({
+  name: 'fetchEditCategory',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchEditVariations.pending, state => {
+      .addCase(fetchEditCategory.pending, state => {
         console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
-      .addCase(fetchEditVariations.fulfilled, (state, action) => {
+      .addCase(fetchEditCategory.fulfilled, (state, action) => {
         console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
@@ -53,7 +53,7 @@ const editVariationsSlice = createSlice({
         state.error = null
         state.msg = action.payload.msg
       })
-      .addCase(fetchEditVariations.rejected, (state, action) => {
+      .addCase(fetchEditCategory.rejected, (state, action) => {
         console.log('action.error', action.error)
         state.loading = false
         state.data = null
@@ -63,4 +63,4 @@ const editVariationsSlice = createSlice({
   }
 })
 
-export default editVariationsSlice.reducer
+export default getEditCategorySlice.reducer

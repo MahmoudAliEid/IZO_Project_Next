@@ -100,6 +100,7 @@ const VariationsForm = ({ type, open, setOpen, handleSubmit }) => {
                     <TextField
                       fullWidth
                       label='Add Variation Values'
+                      helperText='Press space to add'
                       value={currValue}
                       onChange={event => handleChangeTwo(event)}
                       onKeyDown={handleKeyUp}

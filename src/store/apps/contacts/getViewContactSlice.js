@@ -14,14 +14,44 @@ const initialState = {
 }
 
 export const fetchViewContact = createAsyncThunk('dashboard/fetchViewContact', async payload => {
-  const { token, id } = payload
+  const { token, id, startDate, endDate } = payload
+
+  function convertDateFormat(inputDate) {
+    // Split the input date using '/'
+    var dateParts = inputDate.split('/')
+
+    // Extract day, month, and year
+    var day = dateParts[1]
+    var month = dateParts[0]
+    var year = dateParts[2]
+
+    // Ensure single-digit month and day have leading zeros
+    if (month.length === 1) {
+      month = '0' + month
+    }
+
+    if (day.length === 1) {
+      day = '0' + day
+    }
+
+    // Form the converted date string in the desired format
+    var convertedDate = year + '-' + month + '-' + day
+
+    return convertedDate
+  }
+  const start_date = convertDateFormat(startDate)
+  const end_date = convertDateFormat(endDate)
+  console.log(start_date, end_date)
   console.log(token, id, 'from contact view slice')
   try {
-    const response = await axios.get(`https://test.izocloud.net/api/app/react/contact/view/${id}`, {
-      headers: {
-        Authorization: 'Bearer ' + `${token}`
+    const response = await axios.get(
+      `https://test.izocloud.net/api/app/react/contact/view/${id}?start_date=${start_date}&end_date=${end_date}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + `${token}`
+        }
       }
-    })
+    )
 
     const data = response.data
 

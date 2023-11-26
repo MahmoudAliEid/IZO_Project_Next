@@ -5,6 +5,7 @@ import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import useSubmitUser from 'src/hooks/useSubmitUser'
 import VariationsForm from 'src/@core/components/products/variations/variationForm/VariationsForm'
 import VariationFormEdit from 'src/@core/components/products/variations/variationForm/VariationFormEdit'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 
 // import DialogEdit from 'src/@core/components/Variatons/dialogEdit'
 
@@ -140,6 +141,7 @@ const RowOptions = ({ id }) => {
 
   // ** State
   const [open, setOpen] = useState(false)
+  const [openAlert, setOpenAlert] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
 
   const rowOptionsOpen = anchorEl
@@ -159,8 +161,6 @@ const RowOptions = ({ id }) => {
   }
 
   const handleDelete = () => {
-    console.log('handleDelete')
-
     if (!id || !token) {
       console.log('Invalid id or token')
       handleRowOptionsClose()
@@ -171,7 +171,6 @@ const RowOptions = ({ id }) => {
     dispatch(deleteVariations({ id }))
       .then(() => {
         dispatch(fetchVariations(token, url))
-        console.log('User deleted id, token, url', id, token, url)
         handleRowOptionsClose()
       })
       .catch(error => {
@@ -180,6 +179,10 @@ const RowOptions = ({ id }) => {
         // Handle the error as needed
         handleRowOptionsClose()
       })
+  }
+
+  const handleDeleteAlert = () => {
+    setOpenAlert(prev => !prev)
   }
 
   // const handleEdit = () => {
@@ -217,17 +220,32 @@ const RowOptions = ({ id }) => {
           <Icon icon='bx:pencil' fontSize={20} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem
+          onClick={() => {
+            handleDeleteAlert()
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
           <Icon icon='bx:trash-alt' fontSize={20} />
           Delete
         </MenuItem>
       </Menu>
       {open && <VariationFormEdit type={'Edit'} open={open} setOpen={setOpen} itemId={id} />}
+      {openAlert && <DeleteGlobalAlert open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />}
     </>
   )
 }
 
 const columns = [
+  {
+    flex: 0.1,
+    minWidth: 90,
+    sortable: false,
+    field: 'actions',
+    headerName: 'Actions',
+    renderCell: ({ row }) => <RowOptions id={row.id} />
+  },
   {
     flex: 0.25,
     minWidth: 200,
@@ -253,15 +271,6 @@ const columns = [
         </Typography>
       )
     }
-  },
-
-  {
-    flex: 0.1,
-    minWidth: 90,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }) => <RowOptions id={row.id} />
   }
 ]
 

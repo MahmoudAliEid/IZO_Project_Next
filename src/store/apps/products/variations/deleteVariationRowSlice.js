@@ -24,12 +24,13 @@ const axiosInstance = axios.create({
 })
 
 // Define an async thunk for deleting a user
-export const deleteVariations = createAsyncThunk('dashboard/deleteVariations', async payload => {
+export const deleteVariationRow = createAsyncThunk('dashboard/deleteVariationRow', async payload => {
   try {
     const { id } = payload
-    const response = await axiosInstance.post(`https://test.izocloud.net/api/app/react/variations/del/${id}`)
+    console.log(id, 'from redux to delete row')
+    const response = await axiosInstance.post(`https://test.izocloud.net/api/app/react/variations/del/row/${id}`)
     const data = response.data
-    notify('Variation successfully deleted.', 'success')
+    notify('Variation Value successfully deleted.', 'success')
 
     return data
   } catch (error) {
@@ -39,22 +40,22 @@ export const deleteVariations = createAsyncThunk('dashboard/deleteVariations', a
 })
 
 // Create a Redux slice
-const deleteVariationsSlice = createSlice({
+const deleteVariationRowSlice = createSlice({
   name: 'deleteVariation',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(deleteVariations.pending, state => {
+      .addCase(deleteVariationRow.pending, state => {
         state.loading = true
         state.error = null
       })
-      .addCase(deleteVariations.fulfilled, (state, action) => {
+      .addCase(deleteVariationRow.fulfilled, (state, action) => {
         console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
       })
-      .addCase(deleteVariations.rejected, (state, action) => {
+      .addCase(deleteVariationRow.rejected, (state, action) => {
         console.log('rejected action from delete', action)
         state.loading = false
         state.error = action.error.message
@@ -62,4 +63,4 @@ const deleteVariationsSlice = createSlice({
   }
 })
 
-export default deleteVariationsSlice.reducer
+export default deleteVariationRowSlice.reducer

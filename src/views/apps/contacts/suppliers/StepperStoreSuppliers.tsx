@@ -24,6 +24,7 @@ import * as Yup from 'yup'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PublicIcon from '@mui/icons-material/Public'
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
+import { fetchViewContact } from 'src/store/apps/contacts/getViewContactSlice'
 
 // ** Third Party Imports
 import toast from 'react-hot-toast'
@@ -40,6 +41,7 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 // ** Styled Component
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+import { getCookie } from 'cookies-next'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
@@ -108,7 +110,18 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   }
 }))
 
-const StepperStoreSuppliers = ({ isEdit, itemId, contact }: any) => {
+
+
+const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
+  const [token, setToken] = useState('')
+  const [url, setUrl] = useState('')
+
+  useEffect(() => {
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+    setToken(token)
+    setUrl(url)
+  }, [token, url])
   const [initialValues, setInitialValues] = useState<any>({
     type: '',
     supplier_business_name: '',
@@ -170,7 +183,7 @@ const StepperStoreSuppliers = ({ isEdit, itemId, contact }: any) => {
   }, [dispatch])
 
   // ** States
-  const data = useSelector((state: { createUser: { data: any } }) => state.contactCreateSlice.data)
+  const data = useSelector((state: { createUser: { data: any } }) => state.contactCreateSlice?.data)
 
   useEffect(() => {
     if (data !== null && data !== undefined && data.type !== undefined) {
@@ -719,7 +732,7 @@ const StepperStoreSuppliers = ({ isEdit, itemId, contact }: any) => {
     }
   }, [dispatch, itemId, isEdit])
 
-  const contactEditData = useSelector((state: { contactEditSlice: { data: any } }) => state.contactEditSlice.contact)
+  const contactEditData = useSelector((state: { contactEditSlice: { data: any } }) => state.contactEditSlice?.contact)
 
   useEffect(() => {
     if (
@@ -817,12 +830,16 @@ const StepperStoreSuppliers = ({ isEdit, itemId, contact }: any) => {
     if (!isEdit) {
       dispatch(saveNewContact(values))
     } else {
-      dispatch(updateContact({ updateData: values, id: itemId }))
-    }
+      dispatch(updateContact({ updateData: values, id: itemId })).then(() => {
+        dispatch(fetchViewContact({ token, id: itemId }))
 
-    // activeStep === steps.length - 1 ? toast.success('Form Submitted') : null
-    setActiveStep(activeStep + 1)
-    resetForm()
+      }
+      )
+
+      // activeStep === steps.length - 1 ? toast.success('Form Submitted') : null
+      setActiveStep(activeStep + 1)
+      resetForm()
+    }
   }
 
   const renderContent = () => {

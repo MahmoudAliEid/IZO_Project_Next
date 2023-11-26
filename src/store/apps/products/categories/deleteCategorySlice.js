@@ -10,10 +10,7 @@ const initialState = {
   loading: false,
   error: null
 }
-
 const token = getCookie('token')
-
-// const apiUrl = getCookie('apiUrl')
 
 // Create an Axios instance with common headers
 const axiosInstance = axios.create({
@@ -24,42 +21,41 @@ const axiosInstance = axios.create({
 })
 
 // Define an async thunk for deleting a user
-export const deleteVariations = createAsyncThunk('dashboard/deleteVariations', async payload => {
-  try {
-    const { id } = payload
-    const response = await axiosInstance.post(`https://test.izocloud.net/api/app/react/variations/del/${id}`)
-    const data = response.data
-    notify('Variation successfully deleted.', 'success')
+export const deleteCategory = createAsyncThunk('dashboard/deleteCategory', async payload => {
+  const { id } = payload
 
-    return data
-  } catch (error) {
-    notify('There was an error, try again later!', 'error')
-    throw error
-  }
+  const apiUrl = getCookie('apiUrl')
+  const response = await axiosInstance.post(`${apiUrl}/app/react/category/del/${id}`)
+  const data = response.data
+
+  return data
 })
 
 // Create a Redux slice
-const deleteVariationsSlice = createSlice({
-  name: 'deleteVariation',
+const deleteCategorySlice = createSlice({
+  name: 'deleteCategory',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(deleteVariations.pending, state => {
+      .addCase(deleteCategory.pending, state => {
         state.loading = true
         state.error = null
       })
-      .addCase(deleteVariations.fulfilled, (state, action) => {
+      .addCase(deleteCategory.fulfilled, (state, action) => {
         console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
+        notify(action.payload.message, 'success')
       })
-      .addCase(deleteVariations.rejected, (state, action) => {
+      .addCase(deleteCategory.rejected, (state, action) => {
         console.log('rejected action from delete', action)
         state.loading = false
         state.error = action.error.message
+        notify(action.payload.message, 'error')
+        notify(action.error.message, 'error')
       })
   }
 })
 
-export default deleteVariationsSlice.reducer
+export default deleteCategorySlice.reducer

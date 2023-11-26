@@ -5,6 +5,17 @@ import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
 import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
+import CustomTable from 'src/@core/components/customerGroups/contactView/customTable/CustomTable'
+import SalesTable from 'src/@core/components/customerGroups/contactView/salesTable/SalesTable'
+import PurchasesTable from 'src/@core/components/customerGroups/contactView/purchasesTable/PurchasesTable'
+import FormSendEmail from 'src/@core/components/customerGroups/contactView/formSendEmail/FormSendEmail'
+
+// ** Next Import
+import Link from 'next/link'
+
+// import PrintButton from 'src/@core/components/customerGroups/contactView/printButton/PrintButton'
+
+// import ReactToPrint from 'react-to-print'
 
 // ** Hooks
 // import { useSettings } from 'src/@core/hooks/useSettings' // ** Hooks Imports
@@ -13,33 +24,37 @@ import { styled } from '@mui/material/styles'
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
-// import { MenuItem, Select, FormControl, InputLabel } from '@mui/material'
+import { MenuItem, Select, FormControl, InputLabel, FormControlLabel, Checkbox } from '@mui/material'
 import { sub, startOfDay, endOfDay, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns'
 
 import LedgerTable from 'src/@core/components/customerGroups/contactView'
+import PaymentTable from 'src/@core/components/customerGroups/contactView/paymentTable/PaymentTable'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import BusinessIcon from '@mui/icons-material/Business' // Business Icon
-import DomainIcon from '@mui/icons-material/Domain' // Type Icon
+// import { Button } from '@mui/material'
+
+// import DomainIcon from '@mui/icons-material/Domain' // Type Icon
 import ThreePIcon from '@mui/icons-material/ThreeP'
-import FilePresentIcon from '@mui/icons-material/FilePresent'
+
+// import FilePresentIcon from '@mui/icons-material/FilePresent'
 import PersonIcon from '@mui/icons-material/Person' // Name Icon
 import EmailIcon from '@mui/icons-material/Email' // Email Icon
-import CallIcon from '@mui/icons-material/Call' // Mobile Icon
-import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
-import LocationOnIcon from '@mui/icons-material/LocationOn' // Address Icon
-import EventIcon from '@mui/icons-material/Event' // Date of Birth Icon
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
-import RadarIcon from '@mui/icons-material/Radar'
-import SourceIcon from '@mui/icons-material/Source'
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance' // Payment Term Number Icon
-import AccessTimeIcon from '@mui/icons-material/AccessTime' // Payment Term Type Icon
-import ApprovalIcon from '@mui/icons-material/Approval'
-import DeleteIcon from '@mui/icons-material/Delete' // Deleted At Icon
-import CreateIcon from '@mui/icons-material/Create' // Created At Icon
-import UpdateIcon from '@mui/icons-material/Update' // Updated At Icon
-import PaymentIcon from '@mui/icons-material/Payment' // Price Group ID Icon
+// import CallIcon from '@mui/icons-material/Call' // Mobile Icon
+// import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+// import LocationOnIcon from '@mui/icons-material/LocationOn' // Address Icon
+// import EventIcon from '@mui/icons-material/Event' // Date of Birth Icon
+// import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
+// import RadarIcon from '@mui/icons-material/Radar'
+// import SourceIcon from '@mui/icons-material/Source'
+// import AccountBalanceIcon from '@mui/icons-material/AccountBalance' // Payment Term Number Icon
+// import AccessTimeIcon from '@mui/icons-material/AccessTime' // Payment Term Type Icon
+// import ApprovalIcon from '@mui/icons-material/Approval'
+// import DeleteIcon from '@mui/icons-material/Delete' // Deleted At Icon
+// import CreateIcon from '@mui/icons-material/Create' // Created At Icon
+// import UpdateIcon from '@mui/icons-material/Update' // Updated At Icon
+// import PaymentIcon from '@mui/icons-material/Payment' // Price Group ID Icon
 import CreditCardIcon from '@mui/icons-material/CreditCard' // Tax Number Icon
 // import CheckIcon from '@mui/icons-material/Check' // Contact Status Icon
 // import LocationCityIcon from '@mui/icons-material/LocationCity' // City Icon
@@ -47,19 +62,22 @@ import CreditCardIcon from '@mui/icons-material/CreditCard' // Tax Number Icon
 // import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined' // Country Icon
 // import PersonOutlineIcon from '@mui/icons-material/PersonOutline' // Contact ID Icon
 // import PlaceIcon from '@mui/icons-material/Place' // Zip Code Icon
-import BadgeIcon from '@mui/icons-material/Badge'
-import BorderColorIcon from '@mui/icons-material/BorderColor'
+// import BadgeIcon from '@mui/icons-material/Badge'
+
+// import BorderColorIcon from '@mui/icons-material/BorderColor'
 
 // import EditCalendarIcon from '@mui/icons-material/EditCalendar'
-import CropRotateIcon from '@mui/icons-material/CropRotate'
+// import CropRotateIcon from '@mui/icons-material/CropRotate'
 
 // ** React Imports
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCookie } from 'cookies-next'
 import { fetchViewContact } from 'src/store/apps/contacts/getViewContactSlice'
-import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
+
+// import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
+import DialogAddSuppliers from 'src/views/apps/contacts/suppliers/DialogAddSuppliers'
 import DateRangeDropdown from 'src/@core/components/dateRange/DateRangeDropdown'
 
 // ** MUI Imports
@@ -95,6 +113,7 @@ import CardActions from '@mui/material/CardActions'
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
+import ViewPopUp from 'src/@core/components/customerGroups/contactView/contactViewPopUp/ViewPopUp'
 
 // import UserSuspendDialog from 'src/views/apps/user/view/UserSuspendDialog'
 // import UserSubscriptionDialog from 'src/views/apps/user/view/UserSubscriptionDialog'
@@ -137,7 +156,7 @@ const data = {
 }
 
 //** Styled Components */
-const IconBox = styled(Box)(({ theme }) => {
+const ButtonStyled = styled(Button)(({ theme }) => {
   // ** Hook
   // const { settings } = useSettings()
   // const bgColors = useBgColor()
@@ -150,10 +169,10 @@ const IconBox = styled(Box)(({ theme }) => {
     textAlign: 'center', // Center text content if any
 
     // color: theme.palette.text.primary,
-    color: theme.palette.primary.main,
+    color: 'white',
     borderRadius: theme.shape.borderRadius,
     fontFamily: theme.typography.fontFamily,
-    backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.06)} !important`,
+    backgroundColor: `${hexToRGBA(theme.palette.primary.main, 1)} !important`,
 
     // boxShadow: theme.shadows[settings.skin === 'bordered' ? 0 : 7],
     border: `1px solid ${theme.palette.primary.main}`,
@@ -169,93 +188,24 @@ const TabsIcon = ({ id, type }) => {
   const [value, setValue] = useState('1')
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
-
+  const [paymentStatus, setPaymentStatus] = useState('All')
+  const [agent, setAgent] = useState('')
+  const [listPatterns, setListPatterns] = useState('')
+  const [checkBox, setCheckBox] = useState(false)
+  const [openSendEmail, setOpenSendEmail] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const [viewOpen, setViewOpen] = useState(false)
   const [selectedRange, setSelectedRange] = useState('This Year')
-  const [ContactData, setContactData] = useState({
-    business_id: 1,
-    type: 'supplier',
-    supplier_business_name: 'Helwan University',
-    name: 'Ali',
-    prefix: 'Mr.',
-    first_name: 'Ali',
-    middle_name: 'sd',
-    last_name: 'Hatem',
-    email: 'alihatem7201738@gmail.com',
-    contact_id: '00019',
-    contact_status: 'active',
-    tax_number: '435',
-    city: 'Giza',
-    state: 'Qanater facility',
-    country: 'Egypt',
-    address_line_1: 'Egypt | Giza | The origin of the Qanater | BaHarmes',
-    address_line_2: 'Egypt | Giza | The origin of the Qanater | BaHarmes',
-    zip_code: '12966',
-    dob: '0000-00-00',
-    mobile: '1026159353',
-    landline: '12',
-    alternate_number: '1026159353',
-    pay_term_number: 34,
-    pay_term_type: 'days',
-    credit_limit: 1,
-    created_by: 3,
-    converted_by: 1,
-    converted_on: 1,
-    balance: '0.0000',
-    total_rp: 0,
-    total_rp_used: 0,
-    total_rp_expired: 0,
-    is_default: 0,
-    shipping_address: 'Egypt/Giza/The origin of the Qanater/BaHarmes',
-    position: 1,
-    customer_group_id: 1,
-    crm_source: 1,
-    crm_life_stage: 1,
-    custom_field1: 'wewe',
-    custom_field2: 'dfsdf',
-    custom_field3: 'dsd',
-    custom_field4: 'sdfsdf',
-    custom_field5: 'sdfsdf',
-    custom_field6: 'sdfsdf',
-    custom_field7: 'sdfsdf',
-    custom_field8: 'sdfs',
-    custom_field9: 'sdfsd',
-    custom_field10: 'sdf',
-    deleted_at: 1,
-    created_at: '2023-11-16T12:03:39.000000Z',
-    updated_at: '2023-11-16T12:03:39.000000Z',
-    price_group_id: 1
-  })
-
-  //** Variables
-  const fullName = `${ContactData?.first_name} ${ContactData?.last_name} `
-
-  // ** Hooks
-  const dispatch = useDispatch()
-  const dataFetch = useSelector(state => state.getViewContact?.contact)
+  const [ContactData, setContactData] = useState({})
+  const [contactInfo, setContactInfo] = useState({})
+  const contentRef = useRef()
 
   useEffect(() => {
-    const token = getCookie('token')
-    const url = getCookie('apiUrl')
-    setToken(token)
-    setUrl(url)
-  }, [token, url])
-
-  // ** Fetch data from redux
-  useEffect(() => {
-    if (token && url && id) {
-      dispatch(fetchViewContact({ token, id }))
+    if (contentRef.current) {
+      // Trigger the print action when the component mounts
+      contentRef.current.handlePrint()
     }
-  }, [token, url, id, dispatch])
-
-  useEffect(() => {
-    if (dataFetch) {
-      setContactData(dataFetch)
-    }
-  }, [dataFetch])
-
-  //** Functions
-
+  }, []) // Run this effect once when the component mounts
   const getDateRange = () => {
     const today = new Date()
     switch (selectedRange) {
@@ -291,18 +241,123 @@ const TabsIcon = ({ id, type }) => {
       case 'Current financial year':
         // Add logic for your financial year
         // Example: return [financialYearStart, financialYearEnd];
+        return [startOfYear(today), endOfYear(today)]
         break
       case 'Last financial year':
         // Add logic for your last financial year
         // Example: return [lastFinancialYearStart, lastFinancialYearEnd];
+        const lastFinancialYearStart = sub(startOfYear(today), { years: 1 })
+        const lastFinancialYearEnd = sub(endOfYear(today), { years: 1 })
+
+        return [lastFinancialYearStart, lastFinancialYearEnd]
         break
       default:
         return null
     }
   }
 
+  const startDate = getDateRange()[0].toLocaleDateString()
+  const endDate = getDateRange()[1].toLocaleDateString()
+
+  // const [responseData, setResponseData] = useState({})
+
+  // const [dataAccountSummary, setDataAccountSummary] = useState([])
+  console.log(selectedRange, 'selectedRange')
+  console.log(startDate, endDate, 'start date, and end date')
+
+  //** Variables
+  const fullName = `${ContactData?.first_name} ${ContactData?.last_name} `
+
+  // ** Hooks
+  const dispatch = useDispatch()
+  const dataFetch = useSelector(state => state.getViewContact?.data?.response)
+
+  useEffect(() => {
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+    setToken(token)
+    setUrl(url)
+  }, [token, url])
+
+  // ** Fetch data from redux
+  useEffect(() => {
+    if (token && url && id) {
+      dispatch(fetchViewContact({ token, id, startDate, endDate }))
+    }
+  }, [token, url, id, startDate, endDate, dispatch])
+
+  useEffect(() => {
+    if (dataFetch) {
+      setContactData(dataFetch.contact)
+      setContactInfo(dataFetch.ledger.info)
+    }
+  }, [dataFetch])
+
+  //** Functions
+
+  //** data for CustomTable
+  // if (type === 'customer') {
+  //   setDataAccountSummary(prev => [
+  //     ...prev,
+  //     { label: 'Total Bill', value: 'AED' },
+  //     { label: 'Total Payment', value: 'AED 0.00' },
+  //     { label: 'Total Sales', value: 'AED 0.00' },
+  //     { label: 'Total Received', value: 'AED 0.00' },
+  //     { label: 'Advance Balance', value: 'AED 0.00' },
+  //     { label: 'Balance due', value: 'AED 0.00' }
+  //   ])
+  // } else if (type === 'supplier') {
+  //   setDataAccountSummary(prev => [
+  //     ...prev,
+  //     { label: 'Total Bill', value: 'AED' },
+  //     { label: 'Total Payments', value: 'AED 0.00' },
+  //     { label: 'Total Purchases', value: 'AED 0.00' },
+  //     { label: 'Total paid', value: 'AED 0.00' },
+  //     { label: 'Advance Balance', value: 'AED 0.00' },
+  //     { label: 'Balance due', value: 'AED 0.00' }
+  //   ])
+  // }
+
+  //second box
+  const formatLabel = property => {
+    // Remove hyphens and capitalize the first letter of each word
+    const formattedProperty = property.replace(/_/g, ' ').replace(/(?:^|\s)\S/g, match => match.toUpperCase())
+
+    return formattedProperty
+  }
+  const To = () => {
+    const contactProperties = [
+      'supplier_business_name',
+      'name',
+      'address_line_1',
+      'address_line_2',
+      'country',
+      'state',
+      'city',
+      'email',
+      'mobile',
+      'pay_term_number'
+    ]
+
+    const resultArray = contactProperties
+      .map(property => {
+        const value = ContactData[property]
+
+        if (value) {
+          return { label: formatLabel(property), value }
+        }
+
+        return null
+      })
+      .filter(item => item !== null)
+
+    return resultArray
+  }
+
+  const resultArray = To()
+
   const handleViewMore = () => {
-    console.log('handle view more')
+    setViewOpen(prev => !prev)
   }
 
   const toggle = () => {
@@ -313,94 +368,106 @@ const TabsIcon = ({ id, type }) => {
     setValue(newValue)
   }
 
+  const handlePaymentStatusChange = event => {
+    setPaymentStatus(event.target.value)
+  }
+  const handleAgentChange = event => {
+    setAgent(event.target.value)
+  }
+  const handleListPatternsChange = event => {
+    setListPatterns(event.target.value)
+  }
+  const handleCheckBoxChange = () => {
+    setCheckBox(prev => !prev)
+  }
+  const handleToggleSendEmail = () => {
+    setOpenSendEmail(prev => !prev)
+  }
+
   //test date range
   console.log(selectedRange)
 
   // print contact type
   console.log(type, 'print contact type')
+  console.log(ContactData, 'ContactData')
 
   return (
     <>
       {ContactData ? (
-        <Card>
-          <CardContent sx={{ pt: 12, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-            {ContactData?.avatar ? (
-              <CustomAvatar
-                src={data.avatar}
-                variant='rounded'
-                alt={data.fullName}
-                sx={{ width: 110, height: 110, mb: 6 }}
-              />
-            ) : (
-              <CustomAvatar
+        <>
+          <Card>
+            <CardContent sx={{ pt: 12, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              {ContactData?.avatar ? (
+                <CustomAvatar
+                  src={data.avatar}
+                  variant='rounded'
+                  alt={data.fullName}
+                  sx={{ width: 110, height: 110, mb: 6 }}
+                />
+              ) : (
+                <CustomAvatar
+                  skin='light'
+                  variant='rounded'
+                  color={data.avatarColor}
+                  sx={{ width: 110, height: 110, fontWeight: 600, mb: 6, fontSize: '3rem' }}
+                >
+                  {getInitials(fullName)}
+                </CustomAvatar>
+              )}
+              <Typography variant='h5' sx={{ mb: 2.5, fontSize: '1.375rem !important' }}>
+                {fullName}
+              </Typography>
+              <CustomChip
+                rounded
                 skin='light'
-                variant='rounded'
-                color={data.avatarColor}
-                sx={{ width: 110, height: 110, fontWeight: 600, mb: 6, fontSize: '3rem' }}
-              >
-                {getInitials(fullName)}
-              </CustomAvatar>
-            )}
-            <Typography variant='h5' sx={{ mb: 2.5, fontSize: '1.375rem !important' }}>
-              {fullName}
-            </Typography>
-            <CustomChip
-              rounded
-              skin='light'
-              size='small'
-              label={ContactData?.type}
-              sx={{ fontWeight: 500 }}
-              color={roleColors[data.role]}
-            />
-          </CardContent>
+                size='small'
+                label={ContactData?.type}
+                sx={{ fontWeight: 500 }}
+                color={roleColors[data.role]}
+              />
+            </CardContent>
 
-          <CardContent>
-            <Typography variant='h6'>Details</Typography>
-            <Divider sx={{ mt: theme => `${theme.spacing(1)} !important` }} />
-            <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
-              <Grid item xs={12} lg={6}>
-                {ContactData.supplier_business_name && (
+            <CardContent>
+              <Typography variant='h6'>Details</Typography>
+              <Divider sx={{ mt: theme => `${theme.spacing(1)} !important` }} />
+              <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
+                <Grid item xs={12} lg={6}>
                   <Box sx={{ display: 'flex', mb: 4 }}>
                     <BusinessIcon sx={{ mr: 2, color: 'text.secondary' }} />
                     <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Business Name:</Typography>
-                    <Typography sx={{ color: 'text.secondary' }}>{ContactData.supplier_business_name}</Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>
+                      {ContactData.supplier_business_name ? ContactData.supplier_business_name : ''}
+                    </Typography>
                   </Box>
-                )}
-                {ContactData.business_id && (
+
                   <Box sx={{ display: 'flex', mb: 4 }}>
                     <BusinessIcon sx={{ mr: 2, color: 'text.secondary' }} />
-                    <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Business Id:</Typography>
+                    <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Location:</Typography>
                     <Typography sx={{ color: 'text.secondary' }}>{ContactData.business_id}</Typography>
                   </Box>
-                )}
-                {ContactData.type && (
-                  <Box sx={{ display: 'flex', mb: 4 }}>
-                    <BadgeIcon sx={{ mr: 2, color: 'text.secondary' }} />
-                    <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Type:</Typography>
-                    <Typography sx={{ color: 'text.secondary' }}>{ContactData.type}</Typography>
-                  </Box>
-                )}
-              </Grid>
 
-              <Grid item xs={12} lg={6}>
-                {ContactData.name && ContactData.middle_name && ContactData.last_name && ContactData.prefix && (
+                  <Box sx={{ display: 'flex', mb: 4 }}>
+                    <CreditCardIcon sx={{ mr: 2, color: 'text.secondary' }} />
+                    <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Tax Number:</Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>{ContactData.tax_number}</Typography>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} lg={6}>
                   <Box sx={{ display: 'flex', mb: 4 }}>
                     <PersonIcon sx={{ mr: 2, color: 'text.secondary' }} />
                     <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Name:</Typography>
                     <Typography sx={{ color: 'text.secondary' }}>
-                      {ContactData.prefix} {ContactData.name} {ContactData.middle_name}
-                      {ContactData.last_name}
+                      {ContactData.prefix} {ContactData.name} {ContactData.middle_name} {ContactData.last_name}
                     </Typography>
                   </Box>
-                )}
-                {ContactData.email && (
+
                   <Box sx={{ display: 'flex', mb: 4 }}>
                     <EmailIcon sx={{ mr: 2, color: 'text.secondary' }} />
                     <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Email:</Typography>
                     <Typography sx={{ color: 'text.secondary' }}>{ContactData.email}</Typography>
                   </Box>
-                )}
-                {ContactData.contact_status && (
+
                   <Box sx={{ display: 'flex', mb: 4 }}>
                     <ThreePIcon sx={{ mr: 2, color: 'text.secondary' }}></ThreePIcon>
                     <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Contact Status:</Typography>
@@ -413,10 +480,9 @@ const TabsIcon = ({ id, type }) => {
                       color={statusColors[ContactData.contact_status]}
                     />
                   </Box>
-                )}
-              </Grid>
+                </Grid>
 
-              <Grid item xs={12} lg={6}>
+                {/* <Grid item xs={12} lg={6}>
                 {ContactData.contact_id && (
                   <Box sx={{ display: 'flex', mb: 4 }}>
                     <EmailIcon sx={{ mr: 2, color: 'text.secondary' }} />
@@ -438,10 +504,10 @@ const TabsIcon = ({ id, type }) => {
                     <Typography sx={{ color: 'text.secondary' }}>{ContactData.landline}</Typography>
                   </Box>
                 )}
+              </Grid> */}
               </Grid>
-            </Grid>
 
-            <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
+              {/* <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
               <Grid item xs={12} lg={6}>
                 {ContactData.alternate_number && (
                   <Box sx={{ display: 'flex', mb: 4 }}>
@@ -505,7 +571,6 @@ const TabsIcon = ({ id, type }) => {
                     <Typography sx={{ color: 'text.secondary' }}>{ContactData.address_line_2}</Typography>
                   </Box>
                 )}
-
                 {ContactData.dob && (
                   <Box sx={{ display: 'flex', mb: 4 }}>
                     <EventIcon sx={{ mr: 2, color: 'text.secondary' }}></EventIcon>
@@ -514,9 +579,9 @@ const TabsIcon = ({ id, type }) => {
                   </Box>
                 )}
               </Grid>
-            </Grid>
+            </Grid> */}
 
-            <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
+              {/* <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
               <Grid item xs={12} lg={6}>
                 {ContactData.pay_term_number && (
                   <Box sx={{ display: 'flex', mb: 4 }}>
@@ -590,9 +655,9 @@ const TabsIcon = ({ id, type }) => {
                   </Box>
                 )}
               </Grid>
-            </Grid>
+            </Grid> */}
 
-            <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
+              {/* <Grid container spacing={6} sx={{ mt: 6, mb: 3 }}>
               <Grid item xs={12} lg={6}>
                 {ContactData.position && (
                   <Box sx={{ display: 'flex', mb: 4 }}>
@@ -750,17 +815,19 @@ const TabsIcon = ({ id, type }) => {
                   </Box>
                 )}
               </Grid>
-            </Grid>
-          </CardContent>
-          <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button variant='contained' sx={{ mr: 2 }} onClick={toggle}>
-              Edit
-            </Button>
-            <Button variant='contained' sx={{ mr: 2 }} onClick={handleViewMore()}>
-              View More
-            </Button>
-          </CardActions>
-        </Card>
+            </Grid> */}
+            </CardContent>
+            <CardActions sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button variant='contained' sx={{ mr: 2 }} onClick={toggle}>
+                Edit
+              </Button>
+              <Button variant='contained' sx={{ mr: 2 }} onClick={handleViewMore}>
+                View More
+              </Button>
+            </CardActions>
+          </Card>
+          <FormSendEmail data={ContactData} open={openSendEmail} close={handleToggleSendEmail} />
+        </>
       ) : (
         <Grid>
           <Box
@@ -778,14 +845,26 @@ const TabsIcon = ({ id, type }) => {
           </Box>
         </Grid>
       )}
+
       <TabsWrapper panelTopRound='right' sx={{ mt: 12 }}>
         <Card sx={{ mt: 12 }}>
           <CardContent>
             <TabContext value={value}>
               <TabList variant='fullWidth' onChange={handleChange} aria-label='icon tabs example'>
                 <Tab value='1' label='Legder' icon={<Icon icon='emojione-monotone:ledger' />} />
-                <Tab value='2' label='Purchases' icon={<Icon icon='mdi:shopping-cart-outline' />} />
-                <Tab value='3' label='Payment' icon={<Icon icon='streamline:payment-10' />} />
+                {type === 'supplier' && (
+                  <Tab value='2' label='Purchases' icon={<Icon icon='mdi:shopping-cart-outline' />} />
+                )}
+                {type === 'both' && (
+                  <Tab value='2' label='Purchases' icon={<Icon icon='mdi:shopping-cart-outline' />} />
+                )}
+
+                {type === 'customer' && (
+                  <Tab value='3' label='Sales' icon={<Icon icon='mdi:shopping-cart-outline' />} />
+                )}
+                {type === 'both' && <Tab value='3' label='Sales' icon={<Icon icon='mdi:shopping-cart-outline' />} />}
+
+                <Tab value='4' label='Payment' icon={<Icon icon='streamline:payment-10' />} />
               </TabList>
 
               <Grid container spacing={6}>
@@ -802,13 +881,25 @@ const TabsIcon = ({ id, type }) => {
                           justifyContent: 'space-between'
                         }}
                       >
-                        <Box>
-                          <DateRangeDropdown
-                            selectedRange={selectedRange}
-                            setSelectedRange={setSelectedRange}
-                            getDateRange={getDateRange}
-                          />
-                        </Box>
+                        <Grid
+                          item
+                          lg={6}
+                          md={6}
+                          sm={12}
+                          xs={12}
+                          sx={{
+                            mb: 5,
+                            mt: 5
+                          }}
+                        >
+                          <FormControl fullWidth>
+                            <DateRangeDropdown
+                              selectedRange={selectedRange}
+                              setSelectedRange={setSelectedRange}
+                              getDateRange={getDateRange}
+                            />
+                          </FormControl>
+                        </Grid>
                         <Box
                           sx={{
                             gap: 4,
@@ -817,42 +908,270 @@ const TabsIcon = ({ id, type }) => {
                             alignItems: 'center'
                           }}
                         >
-                          <IconBox>
+                          {/* <Button variant='contained' endIcon={<Icon icon='fa-solid:file-pdf' />}>
+                            PDF
+                          </Button> */}
+                          {/* <PrintButton /> */}
+                          <Button
+                            target='_blank'
+                            component={Link}
+                            variant='contained'
+                            href={`/apps/contacts/print/${id}/?type=${type}&startDate=${startDate}&endDate=${endDate}`}
+                            endIcon={<Icon icon='fa-solid:file-pdf' />}
+                          >
+                            Print
+                          </Button>
+                          <Button
+                            onClick={handleToggleSendEmail}
+                            variant='contained'
+                            endIcon={<Icon icon='clarity:email-solid' />}
+                          >
+                            Email
+                          </Button>
+                          {/* <IconBox>
                             <Icon icon='fa-solid:file-pdf' />
                             <Typography variant='caption'>PDF</Typography>
                           </IconBox>
                           <IconBox>
                             <Icon icon='clarity:email-solid' />
                             <Typography variant='caption'>Email</Typography>
-                          </IconBox>
+                          </IconBox> */}
                         </Box>
                       </Box>
                     </Grid>
-                    {getDateRange() && (
-                      <LedgerTable
-                        title={`Showing all invoices and payments between ${getDateRange()[0].toLocaleDateString()} and ${getDateRange()[1].toLocaleDateString()}`}
-                      />
-                    )}
+                    <Divider sx={{ m: '0 !important' }} />
+                    <div id='yourPrintableAreaId'>
+                      <Box sx={{ display: 'flex', padding: '10px 0', justifyContent: 'flex-start' }}>
+                        <Typography sx={{ color: 'text.secondary' }}>
+                          TEST 33002, Dubai,<br></br> Dubai Dubai, 00426
+                        </Typography>
+                      </Box>
+                      <Grid container spacing={6} sx={{ padding: '25px 0' }}>
+                        <Grid item xs={12} lg={6} md={12}>
+                          <CustomTable data={resultArray} title='To' />
+                        </Grid>
+                        <Grid item xs={12} lg={6} md={12}>
+                          {type === 'customer' && (
+                            <CustomTable
+                              data={[
+                                { label: 'Total Sales', value: `${contactInfo.total_bill} AED` },
+                                { label: 'Total Paid', value: `${contactInfo.total_paid} AED` },
+                                { label: 'Advance Balance', value: `${contactInfo.advance_balance} AED` },
+                                { label: 'Balance Due', value: `${contactInfo.balance_due} AED` }
+                              ]}
+                              title='Account Summary'
+                              range={`${getDateRange()[0].toLocaleDateString()} - ${getDateRange()[1].toLocaleDateString()}`}
+                            />
+                          )}
+                          {type === 'supplier' && (
+                            <CustomTable
+                              data={[
+                                { label: 'Total Purchases', value: `${contactInfo.total_bill} AED` },
+                                { label: 'Total Received', value: `${contactInfo.total_received} AED` },
+                                { label: 'Advance Balance', value: `${contactInfo.advance_balance} AED` },
+                                { label: 'Balance Due', value: `${contactInfo.balance_due} AED` }
+                              ]}
+                              title='Account Summary'
+                              range={`${getDateRange()[0].toLocaleDateString()} - ${getDateRange()[1].toLocaleDateString()}`}
+                            />
+                          )}
+                        </Grid>
+                      </Grid>
+                      {getDateRange() && (
+                        <LedgerTable
+                          title={`Showing all invoices and payments between ${getDateRange()[0].toLocaleDateString()} and ${getDateRange()[1].toLocaleDateString()}`}
+                        />
+                      )}
+                    </div>
                   </TabPanel>
                 </Grid>
               </Grid>
-              <TabPanel value='2'>
-                <Typography>
-                  Chocolate bar carrot cake candy canes sesame snaps. Cupcake pie gummi bears jujubes candy canes. Chupa
-                  chups sesame snaps halvah.
-                </Typography>
-              </TabPanel>
-              <TabPanel value='3'>
-                <Typography>
-                  Danish tiramisu jujubes cupcake chocolate bar cake cheesecake chupa chups. Macaroon ice cream tootsie
-                  roll carrot cake gummi bears.
-                </Typography>
-              </TabPanel>
+
+              <Grid container spacing={6}>
+                <Grid item xs={12}>
+                  <TabPanel value='2'>
+                    <Grid container spacing={6}>
+                      <Grid
+                        item
+                        lg={6}
+                        md={6}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          mb: 5,
+                          mt: 5
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <DateRangeDropdown
+                            selectedRange={selectedRange}
+                            setSelectedRange={setSelectedRange}
+                            getDateRange={getDateRange}
+                          />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                    <Divider sx={{ m: '0 !important' }} />
+                    <PurchasesTable />
+                  </TabPanel>
+                </Grid>
+              </Grid>
+              <Grid container spacing={6}>
+                <Grid item xs={12}>
+                  <TabPanel value='3'>
+                    <Grid container spacing={6}>
+                      <Grid
+                        item
+                        lg={6}
+                        md={6}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          mb: 2
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <DateRangeDropdown
+                            selectedRange={selectedRange}
+                            setSelectedRange={setSelectedRange}
+                            getDateRange={getDateRange}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid
+                        item
+                        lg={6}
+                        md={6}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          mb: 2
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <InputLabel id='demo-simple-select-standard-label'>Agent</InputLabel>
+                          <Select
+                            value={agent}
+                            onChange={handleAgentChange}
+                            displayEmpty
+                            label='Agent'
+                            labelId='demo-simple-select-standard-label'
+                            inputProps={{ 'aria-label': 'Agent' }}
+                          >
+                            <MenuItem value='ashraf'>Ashraf</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid
+                        item
+                        lg={6}
+                        md={6}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          mb: 2
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <InputLabel id='demo-simple-select-standard-label'>Payment Status</InputLabel>
+                          <Select
+                            value={paymentStatus}
+                            onChange={handlePaymentStatusChange}
+                            displayEmpty
+                            label='Payment Status'
+                            labelId='demo-simple-select-standard-label'
+                            inputProps={{ 'aria-label': 'Payment Status' }}
+                          >
+                            <MenuItem value='Due'>Due</MenuItem>
+                            <MenuItem value='All'>All</MenuItem>
+                            <MenuItem value='Paid'>Paid</MenuItem>
+                            <MenuItem value='Partial'>Partial</MenuItem>
+                            <MenuItem value='Overdue'>Overdue</MenuItem>
+                            <MenuItem value='Unclassified'>Unclassified</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid
+                        item
+                        lg={6}
+                        md={6}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          mb: 2
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <InputLabel id='demo-simple-select-standard-label'>List Patterns</InputLabel>
+                          <Select
+                            value={listPatterns}
+                            onChange={handleListPatternsChange}
+                            displayEmpty
+                            label=' List Patterns'
+                            labelId='demo-simple-select-standard-label'
+                            inputProps={{ 'aria-label': ' List Patterns' }}
+                          >
+                            <MenuItem value='default'>Default</MenuItem>
+                            <MenuItem value='agt'>AGT</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid
+                        item
+                        lg={6}
+                        md={6}
+                        sm={12}
+                        xs={12}
+                        sx={{
+                          mb: 2
+                        }}
+                      >
+                        <FormControl fullWidth>
+                          <FormControlLabel
+                            label='Subscriptions'
+                            sx={{
+                              '& .MuiFormControlLabel-label': {
+                                fontSize: '0.875rem',
+                                color: 'text.secondary'
+                              }
+                            }}
+                            control={<Checkbox checked={checkBox} color='primary' onChange={handleCheckBoxChange} />}
+                          />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                    <Divider sx={{ m: '0 !important' }} />
+                    <SalesTable />
+                  </TabPanel>
+                </Grid>
+              </Grid>
+              <Grid container spacing={6}>
+                <Grid item xs={12}>
+                  <TabPanel value='4'>
+                    <Divider sx={{ m: '0 !important' }} />
+                    <PaymentTable />
+                  </TabPanel>
+                </Grid>
+              </Grid>
             </TabContext>
           </CardContent>
         </Card>
       </TabsWrapper>
-      {editOpen && <SidebarEditUser open={editOpen} toggle={toggle} itemId={id} />}
+
+      {viewOpen && ContactData && (
+        <ViewPopUp
+          open={viewOpen}
+          isEdit={true}
+          toggle={setViewOpen}
+          itemId={id}
+          contact={type}
+          contactData={ContactData}
+        />
+      )}
+
+      {editOpen && (
+        <DialogAddSuppliers isView={true} open={editOpen} isEdit={true} contact={type} toggle={toggle} itemId={id} />
+      )}
     </>
   )
 }

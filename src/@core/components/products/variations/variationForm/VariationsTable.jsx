@@ -1,7 +1,11 @@
 // ** React Imports
 import { useState } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
-import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
+
+// import { getCookie, setCookie } from 'cookies-next'
+
+// import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
+import DeleteAlert from '../variationAlert/DeleteAlert'
 
 // import useSubmitUser from 'src/hooks/useSubmitUser'
 // import VariationsForm from 'src/@core/components/products/variations/variationForm/VariationsForm'
@@ -40,19 +44,21 @@ import { DataGrid } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
-// import { useDispatch, useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
+
 // import { fetchVariations } from 'src/store/apps/products/variations/getVariationsSlice'
 // import { fetchCreateVariations } from 'src/store/apps/products/variations/getCreateVariationsSlice'
 
 // ** Third Party Components
 import axios from 'axios'
 
-const RowOptions = ({ id }) => {
+const RowOptions = ({ idRow, itemId, row }) => {
   // ** Hooks
   // const dispatch = useDispatch()
 
   // ** State
   const [anchorEl, setAnchorEl] = useState(null)
+  const [openAlert, setOpenAlert] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -70,28 +76,36 @@ const RowOptions = ({ id }) => {
     setAnchorEl(null)
   }
 
-  const handleDelete = () => {
-    console.log('handleDelete', id)
+  // const handleDelete = () => {
+  //   console.log('handleDelete', id)
 
-    // if (!id || !token) {
-    //   console.log('Invalid id or token')
-    //   handleRowOptionsClose()
+  //   // if (!id || !token) {
+  //   //   console.log('Invalid id or token')
+  //   //   handleRowOptionsClose()
 
-    //   return
-    // }
+  //   //   return
+  //   // }
 
-    // dispatch(deleteVariations({ id }))
-    //   .then(() => {
-    //     dispatch(fetchVariations(token, url))
-    //     console.log('User deleted id, token, url', id, token, url)
-    //     handleRowOptionsClose()
-    //   })
-    //   .catch(error => {
-    //     console.error('Error deleting user:', error)
+  //   // dispatch(deleteVariations({ id }))
+  //   //   .then(() => {
+  //   //     dispatch(fetchVariations(token, url))
+  //   //     console.log('User deleted id, token, url', id, token, url)
+  //   //     handleRowOptionsClose()
+  //   //   })
+  //   //   .catch(error => {
+  //   //     console.error('Error deleting user:', error)
 
-    //     // Handle the error as needed
-    //     handleRowOptionsClose()
-    //   })
+  //   //     // Handle the error as needed
+  //   //     handleRowOptionsClose()
+  //   //   })
+  // }
+
+  const AlertOpen = () => {
+    setOpenAlert(prev => !prev)
+    handleRowOptionsClose()
+  }
+  const toggle = () => {
+    setOpenAlert(prev => !prev)
   }
 
   return (
@@ -114,11 +128,22 @@ const RowOptions = ({ id }) => {
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem onClick={AlertOpen} sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='bx:trash-alt' fontSize={20} />
           Delete
         </MenuItem>
       </Menu>
+      {openAlert && (
+        <DeleteAlert
+          open={openAlert}
+          close={toggle}
+          idRow={idRow}
+          itemId={itemId}
+          row={row}
+          oldListData={row.oldListData}
+          setOldListData={row.setOldListData}
+        />
+      )}
     </>
   )
 }
@@ -156,26 +181,67 @@ const columns = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }) => <RowOptions id={row.id} />
+    renderCell: ({ row }) => <RowOptions idRow={row.id} itemId={row.itemId} row={row} />
   }
 ]
 
-const VariationsTable = ({ data }) => {
+const VariationsTable = ({ itemId, oldListData, setOldListData }) => {
   // ** State
-
+  // Check if data is defined before mapping
+  const rowsWithId = oldListData ? oldListData.map(item => ({ ...item, itemId, oldListData, setOldListData })) : []
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-  const title = ' Old Variations Items'
+
+  // const [dataOld, setDataOld] = useState([])
+  const title = 'Variations Items'
+
+  //test copy data
+  // const listData = useSelector(state => state?.getEditVariations?.data?.value[0].list)
+
+  // useEffect(() => {
+  //   setDataOld(listData)
+  // }, [listData])
+
+  // if (dataOld) {
+  //   setCookie('oldVariations', listData)
+  // }
+
+  // const cookieDataString = getCookie('oldVariations')
+  // const cookieData = cookieDataString ? JSON.parse(cookieDataString) : []
+
+  // const CookieData = cookieData ?? []
+
+  // console.log(`cookies old Variations: ${typeof CookieData}`)
+
+  // const mainData = CookieData => {
+  //   const arrOfObjects = []
+  //   for (const object of CookieData) {
+  //     arrOfObjects.push(object)
+  //   }
+
+  //   return arrOfObjects
+  // }
+
+  // const MainDataArray = mainData(CookieData)
+
+  // console.log(MainDataArray, 'Main Data Array')
+
+  // const rowsWithId = MainDataArray ? MainDataArray.map(item => ({ ...item, itemId, values, MainDataArray })) : []
+
+  // console.log(rowsWithId, 'rowsWithId')
+
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
   }
+
+  // console.log(values, 'values of update form')
 
   // ** handle search function
   const handleSearch = searchValue => {
     setSearchText(searchValue)
     const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
-    const filteredRows = data.filter(row => {
+    const filteredRows = rowsWithId.filter(row => {
       return Object.keys(row).some(field => {
         return searchRegex.test(row[field].toString())
       })
@@ -208,16 +274,15 @@ const VariationsTable = ({ data }) => {
             </Box>
           </Box> */}
       <Box>
-        {data ? (
+        {rowsWithId ? (
           <DataGrid
             autoHeight
             columns={columns}
             disableRowSelectionOnClick
             pageSizeOptions={[10, 25, 50]}
             paginationModel={paginationModel}
-            // slots={{ toolbar: QuickSearchToolbar }}
             onPaginationModelChange={setPaginationModel}
-            rows={filteredData.length ? filteredData : data}
+            rows={filteredData.length ? filteredData : rowsWithId}
             slotProps={{
               baseButton: {
                 variant: 'outlined'

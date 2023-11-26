@@ -109,7 +109,7 @@ const renderClient = row => {
   }
 }
 
-const RowOptions = ({ id }) => {
+const RowOptions = ({ id, type }) => {
   // ** Hooks
   const dispatch = useDispatch()
 
@@ -181,11 +181,11 @@ const RowOptions = ({ id }) => {
         <MenuItem
           component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href={`/apps/contacts/view/${id}`}
+          href={`/apps/contacts/viewStatement/${id}/?type=${type}`}
           onClick={handleRowOptionsClose}
         >
           <Icon icon='bx:show' fontSize={20} />
-          View
+          View Statement
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -232,7 +232,7 @@ const columns = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }) => <RowOptions id={row.id} />
+    renderCell: ({ row }) => <RowOptions id={row.id} type={row.type} />
   },
   {
     flex: 0.25,
@@ -624,7 +624,7 @@ const Customers = ({ apiData }) => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
   }
 
-  const [data, setData] = useState(null)
+  const [data, setData] = useState([])
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -682,9 +682,12 @@ const Customers = ({ apiData }) => {
     const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
     const filteredRows = data.filter(row => {
       return Object.keys(row).some(field => {
-        return searchRegex.test(row[field].toString())
+        const fieldValue = row[field]
+
+        return fieldValue !== null && fieldValue !== undefined && searchRegex.test(fieldValue.toString())
       })
     })
+
     if (searchValue.length) {
       setFilteredData(filteredRows)
     } else {

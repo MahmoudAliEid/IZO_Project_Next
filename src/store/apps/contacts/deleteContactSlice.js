@@ -24,12 +24,12 @@ const axiosInstance = axios.create({
 })
 
 // Define an async thunk for deleting a user
-export const deleteVariations = createAsyncThunk('dashboard/deleteVariations', async payload => {
+export const postDeleteContact = createAsyncThunk('dashboard/postDeleteContact', async payload => {
   try {
-    const { id } = payload
-    const response = await axiosInstance.post(`https://test.izocloud.net/api/app/react/variations/del/${id}`)
+    const { id, url } = payload
+    const response = await axiosInstance.post(`${url}/app/react/contact/del/${id}`)
     const data = response.data
-    notify('Variation successfully deleted.', 'success')
+    notify('The contact has been deleted successfully', 'success')
 
     return data
   } catch (error) {
@@ -39,22 +39,22 @@ export const deleteVariations = createAsyncThunk('dashboard/deleteVariations', a
 })
 
 // Create a Redux slice
-const deleteVariationsSlice = createSlice({
-  name: 'deleteVariation',
+const deleteContactSlice = createSlice({
+  name: 'deleteContact',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(deleteVariations.pending, state => {
+      .addCase(postDeleteContact.pending, state => {
         state.loading = true
         state.error = null
       })
-      .addCase(deleteVariations.fulfilled, (state, action) => {
+      .addCase(postDeleteContact.fulfilled, (state, action) => {
         console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
       })
-      .addCase(deleteVariations.rejected, (state, action) => {
+      .addCase(postDeleteContact.rejected, (state, action) => {
         console.log('rejected action from delete', action)
         state.loading = false
         state.error = action.error.message
@@ -62,4 +62,4 @@ const deleteVariationsSlice = createSlice({
   }
 })
 
-export default deleteVariationsSlice.reducer
+export default deleteContactSlice.reducer

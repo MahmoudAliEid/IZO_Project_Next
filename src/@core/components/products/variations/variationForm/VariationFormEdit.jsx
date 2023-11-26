@@ -15,6 +15,12 @@ import { Formik } from 'formik'
 import { fetchEditVariations } from 'src/store/apps/products/variations/getEditVariationsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import VariationsTable from './VariationsTable'
+import useSubmitEdit from 'src/hooks/useSubmitEdit'
+
+// import { getCookie } from 'cookies-next'
+
+// import { fetchVariations } from 'src/store/apps/products/variations/getVariationsSlice'
+// import { postEditVariations } from 'src/store/apps/products/variations/postEditVariationsSlice'
 
 const VariationFormEdit = ({ type, open, setOpen, itemId }) => {
   const [listValues, setListValues] = useState([])
@@ -22,18 +28,32 @@ const VariationFormEdit = ({ type, open, setOpen, itemId }) => {
   const [vName, setVName] = useState('')
   const [data, setData] = useState({})
   const dataEdit = useSelector(state => state?.getEditVariations?.data?.value[0])
+  const [oldListData, setOldListData] = useState([])
+
+  // const [testData,setTestData]=useState('')
 
   const formInputData = {
     name: vName,
     items: listValues
   }
 
+  const { handleSubmitEdit } = useSubmitEdit()
+
+  //set old list data just one time
+  // if (dataEdit !== null && dataEdit !== undefined) {
+  //   setOldListData(dataEdit.list)
+  // }
+  console.log(oldListData, 'oldListData')
+
   const dispatch = useDispatch()
   useEffect(() => {
     if (dataEdit !== null && dataEdit !== undefined) {
       setData(dataEdit)
+
+      setOldListData(dataEdit.list)
     }
   }, [dataEdit])
+
   useEffect(() => {
     if (data) {
       setVName(data.name)
@@ -70,9 +90,30 @@ const VariationFormEdit = ({ type, open, setOpen, itemId }) => {
     }
   }
 
-  const handleSubmit = values => {
-    console.log(values)
+  // const cookieDataString = getCookie('oldVariations')
+  // const cookieData = cookieDataString ? JSON.parse(cookieDataString) : []
+
+  // const CookieData = cookieData ?? []
+
+  // console.log(`cookies old Variations: ${typeof CookieData}`)
+
+  // const mainData = CookieData => {
+  //   const arrOfObjects = []
+  //   for (const object of CookieData) {
+  //     arrOfObjects.push(object)
+  //   }
+
+  //   return arrOfObjects
+  // }
+
+  // const MainDataArray = mainData(CookieData)
+
+  const handleSubmit = (values, { resetForm }) => {
+    console.log(values, 'values from Edit variations')
+    console.log(itemId, 'from submit Edit variations')
+    handleSubmitEdit(values, itemId, oldListData)
     setOpen(false)
+    resetForm()
   }
 
   return (
@@ -131,11 +172,11 @@ const VariationFormEdit = ({ type, open, setOpen, itemId }) => {
                     <TextField
                       fullWidth
                       label='Add Variation Values'
+                      helperText='Press space to add'
                       value={currValue}
                       onChange={event => handleChangeTwo(event)}
                       onKeyDown={handleKeyUp}
                       name='items'
-                      required
                       InputProps={{
                         endAdornment: (
                           <Grid container spacing={6}>
@@ -158,12 +199,12 @@ const VariationFormEdit = ({ type, open, setOpen, itemId }) => {
                   </FormControl>
                 </Grid>
                 <Grid item sx={12}>
-                  <VariationsTable data={data?.list} />
+                  <VariationsTable itemId={itemId} oldListData={oldListData} setOldListData={setOldListData} />
                 </Grid>
               </Grid>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
                 <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-                  {type}
+                  Update
                 </Button>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
                   Close

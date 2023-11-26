@@ -31,6 +31,21 @@ import getVariationsSlice from './apps/products/variations/getVariationsSlice'
 import getCreateVariationsSlice from './apps/products/variations/getCreateVariationsSlice'
 import postCreateVariationsSlice from './apps/products/variations/postCreateVariations'
 import deleteVariationsSlice from './apps/products/variations/deleteVariationsSlice'
+import contactCreateSlice from './apps/contacts/contactCreateSlice'
+import contactStoreSlice from './apps/contacts/contactStoreSlice'
+import contactEditSlice from './apps/contacts/contactEditSlice'
+import contactUpdateSlice from './apps/contacts/contactUpdateSlice'
+import getViewContactSlice from './apps/contacts/getViewContactSlice'
+import getEditVariationsSlice from './apps/products/variations/getEditVariationsSlice'
+import deleteVariationRowSlice from './apps/products/variations/deleteVariationRowSlice'
+import deleteContactSlice from './apps/contacts/deleteContactSlice'
+import postEditVariationsSlice from './apps/products/variations/postEditVariationsSlice'
+import getCategoriesSlice from './apps/products/categories/getCategoriesSlice'
+import postCreateCategorySlice from './apps/products/categories/postCreateCategorySlice'
+import deleteCategorySlice from './apps/products/categories/deleteCategorySlice'
+import getCreateCategorySlice from './apps/products/categories/getCreateCategorySlice'
+import getEditCategorySlice from './apps/products/categories/getEditCategorySlice'
+import postEditCategorySlice from './apps/products/categories/postEditCategorySlice'
 
 export const store = configureStore({
   reducer: {
@@ -59,10 +74,25 @@ export const store = configureStore({
     postCreateCustomerGroup: postCreateCGSlice,
     getEditCustomerGroup: getEditCGSlice,
     postEditCustomerGroup: postEditCGSlice,
-    getVariations: getVariationsSlice,
+    getViewContact: getViewContactSlice,
+    contactCreateSlice: contactCreateSlice,
+    contactStoreSlice: contactStoreSlice,
+    contactEditSlice: contactEditSlice,
+    contactUpdateSlice: contactUpdateSlice,
     getCreateVariations: getCreateVariationsSlice,
+    getVariations: getVariationsSlice,
+    deleteVariations: deleteVariationsSlice,
+    getEditVariations: getEditVariationsSlice,
     postCreateVariations: postCreateVariationsSlice,
-    deleteVariations: deleteVariationsSlice
+    postEditVariations: postEditVariationsSlice,
+    deleteVariationValueRow: deleteVariationRowSlice,
+    deleteContact: deleteContactSlice,
+    getCategories: getCategoriesSlice,
+    postCreateCategory: postCreateCategorySlice,
+    deleteCategory: deleteCategorySlice,
+    getCreateCategory: getCreateCategorySlice,
+    getEditCategory: getEditCategorySlice,
+    postEditCategory: postEditCategorySlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
