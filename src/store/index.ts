@@ -46,6 +46,11 @@ import deleteCategorySlice from './apps/products/categories/deleteCategorySlice'
 import getCreateCategorySlice from './apps/products/categories/getCreateCategorySlice'
 import getEditCategorySlice from './apps/products/categories/getEditCategorySlice'
 import postEditCategorySlice from './apps/products/categories/postEditCategorySlice'
+import getallbrandsSlice from './apps/products/brands/getallbrandsSlice'
+import deletebrandsSlice from './apps/products/brands/deletebrandsSlice'
+import storebrandSlice from './apps/products/brands/storebrandSlice'
+import getbrandDetailsSlice from './apps/products/brands/getbrandDetailsSlice'
+import updatebrandSlice from './apps/products/brands/updatebrandSlice'
 
 export const store = configureStore({
   reducer: {
@@ -92,7 +97,12 @@ export const store = configureStore({
     deleteCategory: deleteCategorySlice,
     getCreateCategory: getCreateCategorySlice,
     getEditCategory: getEditCategorySlice,
-    postEditCategory: postEditCategorySlice
+    postEditCategory: postEditCategorySlice,
+    getallbrandsSlice: getallbrandsSlice,
+    deletebrandsSlice: deletebrandsSlice,
+    storebrandSlice: storebrandSlice,
+    getbrandDetailsSlice: getbrandDetailsSlice,
+    updatebrandSlice: updatebrandSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
