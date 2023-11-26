@@ -227,11 +227,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
 
   const handleSubmit = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
-    // Handle form submission logic here
-    // console.log(values);
-
     handleSubmitData(storeUser, fetchIzoUsers, values);
-
     resetForm();
   };
 
