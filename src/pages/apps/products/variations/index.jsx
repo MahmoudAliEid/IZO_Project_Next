@@ -232,7 +232,14 @@ const RowOptions = ({ id }) => {
         </MenuItem>
       </Menu>
       {open && <VariationFormEdit type={'Edit'} open={open} setOpen={setOpen} itemId={id} />}
-      {openAlert && <DeleteGlobalAlert open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />}
+      {openAlert && (
+        <DeleteGlobalAlert
+          name='Variation'
+          open={openAlert}
+          close={handleDeleteAlert}
+          mainHandleDelete={handleDelete}
+        />
+      )}
     </>
   )
 }

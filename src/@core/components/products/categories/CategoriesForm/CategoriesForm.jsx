@@ -18,19 +18,23 @@ import {
 // import { useDispatch } from 'react-redux'
 import useSubmitUser from 'src/hooks/useSubmitUser'
 
+// import MainLoading from 'src/@core/components/mainLoading/MainLoading'
+
 // import { useTheme } from '@mui/material/styles'
 
 import { Formik } from 'formik'
-import UploadImage from './UploadImage'
+import UploadImage from 'src/@core/components/globalUpload/UploadImage'
 import { useEffect, useState } from 'react'
 import { postCreateCategory } from 'src/store/apps/products/categories/postCreateCategorySlice'
 import { fetchCategories } from 'src/store/apps/products/categories/getCategoriesSlice'
 import { fetchCreateCategory } from 'src/store/apps/products/categories/getCreateCategorySlice'
 import { useSelector, useDispatch } from 'react-redux'
 
-const CategoriesForm = ({ type, open, setOpen }) => {
+const CategoriesForm = ({ type, open, setOpen, setData }) => {
   const [image, setImage] = useState('')
   const [checkBox, setCheckBox] = useState(false)
+
+  // const [isLoading, setIsLoading] = useState(false)
   const [categories, setCategories] = useState([])
   const [initialValues, setInitialValues] = useState({
     name: '',
@@ -42,6 +46,9 @@ const CategoriesForm = ({ type, open, setOpen }) => {
     slug: ''
   })
 
+  // const statusOne = useSelector(state => state.getCreateCategory?.data.status)
+  // const statusTwo = useSelector(state => state.postCreateCategory?.data.status)
+
   const categoryData = useSelector(state => state.getCreateCategory?.data?.categories)
 
   // ** Hook
@@ -51,6 +58,12 @@ const CategoriesForm = ({ type, open, setOpen }) => {
   useEffect(() => {
     setCategories(categoryData)
   }, [categoryData])
+
+  // useEffect(() => {
+  //   if (statusOne === 200 && statusTwo === 200) {
+  //     setIsLoading(false)
+  //   }
+  // }, [statusOne, statusTwo])
 
   useEffect(() => {
     dispatch(fetchCreateCategory())
@@ -81,6 +94,19 @@ const CategoriesForm = ({ type, open, setOpen }) => {
     setOpen(false)
     setCheckBox(false)
     resetForm()
+    setData(prev => {
+      return [
+        ...prev,
+        {
+          id: Math.floor(Math.random()),
+          image_url: 'Loading...',
+          created_by: 'Loading...',
+          ...values
+        }
+      ]
+    })
+
+    // setIsLoading(true)
   }
 
   return (
@@ -95,6 +121,7 @@ const CategoriesForm = ({ type, open, setOpen }) => {
       }}
       aria-describedby='customer-group-edit-description'
     >
+      {/* {isLoading ? <MainLoading name={'Add'} open={isLoading} /> : null} */}
       <DialogTitle
         id='customer-group-edit'
         sx={{
@@ -196,7 +223,7 @@ const CategoriesForm = ({ type, open, setOpen }) => {
                 <Grid item lg={6} md={6} sm={12} xs={12}>
                   <FormControl fullWidth>
                     <FormControlLabel
-                      label='Subscriptions'
+                      label='Add as a Sub Category'
                       sx={{
                         '& .MuiFormControlLabel-label': {
                           fontSize: '0.875rem',
@@ -220,7 +247,7 @@ const CategoriesForm = ({ type, open, setOpen }) => {
                         onBlur={handleBlur}
                         label='Select Parent Category'
                       >
-                        <MenuItem value={0}>Default</MenuItem>
+                        <MenuItem value={0}>Null</MenuItem>
                         {Object.keys(categories).length === 0
                           ? null
                           : categories.categories.map(item => (

@@ -21,7 +21,7 @@ import useSubmitUser from 'src/hooks/useSubmitUser'
 // import { useTheme } from '@mui/material/styles'
 
 import { Formik } from 'formik'
-import UploadImage from './UploadImage'
+import UploadImage from 'src/@core/components/globalUpload/UploadImage'
 import { useEffect, useState } from 'react'
 import { fetchCategories } from 'src/store/apps/products/categories/getCategoriesSlice'
 import { postEditCategory } from 'src/store/apps/products/categories/postEditCategorySlice'
@@ -40,7 +40,6 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
     category_type: '',
     description: '',
     slug: '',
-
     image: image
   })
 
@@ -64,6 +63,10 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
       }))
       setCategories(categoryValue)
       setImage(categoryValue.info.image_url)
+
+      if (categoryValue.info.parent_id) {
+        setCheckBox(prev => !prev)
+      }
     }
   }, [categoryValue])
 
@@ -211,7 +214,7 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
                 <Grid item lg={6} md={6} sm={12} xs={12}>
                   <FormControl fullWidth>
                     <FormControlLabel
-                      label='Subscriptions'
+                      label='Add as a Sub Category'
                       sx={{
                         '& .MuiFormControlLabel-label': {
                           fontSize: '0.875rem',

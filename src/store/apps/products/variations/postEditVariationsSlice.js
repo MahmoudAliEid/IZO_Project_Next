@@ -36,8 +36,8 @@ export const postEditVariations = createAsyncThunk('dashboard/postEditVariations
         formData.append(`old_items[${item.id}]`, item.name || '')
         arrOfOldVariations.push({ name: `old_items[${item.id}]`, item: item.name })
       })
-    } else if (!oldList && oldList.length === 0 && oldList === null && oldList === '') {
-      formData.append(`old_items[]`, [])
+    } else {
+      formData.append(`old_items`, [])
     }
 
     console.log(

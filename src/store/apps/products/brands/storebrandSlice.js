@@ -7,11 +7,12 @@ import notify from 'src/utils/notify'
 export const storeBrand = createAsyncThunk('brands/store', async brand => {
   const token = getCookie('token')
   const formData = new FormData()
-
+  console.log(brand, 'brand')
   formData.append('name', brand.name)
   formData.append('description', brand.description)
   formData.append('use_for_repair', brand.use_for_repair)
   formData.append('image', brand.image[0])
+  console.log(brand.image[0], 'image brand')
 
   // print the formData as an object
   console.log(Object.fromEntries(formData))

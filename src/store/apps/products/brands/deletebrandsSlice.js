@@ -22,8 +22,7 @@ export const deleteBrand = createAsyncThunk('brands/delete', async payload => {
 
   const data = await response.json()
 
-  if (data.status === 200) {
-  }
+  // console.log(data, 'this is my response form brand')
 
   return data
 })

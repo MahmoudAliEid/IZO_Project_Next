@@ -20,6 +20,7 @@ import { fetchAllBrands } from 'src/store/apps/products/brands/getallbrandsSlice
 import { fetchBrandDetails } from 'src/store/apps/products/brands/getbrandDetailsSlice'
 import { updateBrand } from 'src/store/apps/products/brands/updatebrandSlice'
 import AddNewBrandImage from './AddNewBrandImage'
+import UploadImage from 'src/@core/components/globalUpload/UploadImage'
 import { FormControlLabel } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 
@@ -28,11 +29,12 @@ const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
   // console.log(itemId, "itemId for edit");
 
   const dispatch = useDispatch()
+  const [image, setImage] = useState('')
   const [initialValues, setInitialValues] = useState<any>({
     name: '',
     description: '',
     use_for_repair: 0,
-    image: '',
+
   })
 
   const validationSchema = Yup.object().shape({
@@ -63,8 +65,10 @@ const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
         name: brandDetailsResponse.value && brandDetailsResponse.value.info.name,
         description: brandDetailsResponse.value && brandDetailsResponse.value.info.description,
         use_for_repair: brandDetailsResponse.value && brandDetailsResponse.value.info.use_for_repair,
-        image: brandDetailsResponse.value && brandDetailsResponse.value.info.image_url,
+
+        // image: brandDetailsResponse.value && brandDetailsResponse.value.info.image_url,
       })
+      setImage(brandDetailsResponse.value && brandDetailsResponse.value.info.image_url)
     }
   }, [brandDetailsResponse, isEdit])
 
@@ -81,11 +85,11 @@ const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     console.log(values, "values for submit");
     if (isEdit && itemId) {
-      dispatch(updateBrand({ updateData: values, id: itemId }))
+      dispatch(updateBrand({ updateData: { ...values, image }, id: itemId }))
     }
     else {
 
-      dispatch(storeBrand(values));
+      dispatch(storeBrand({ ...values, image }));
     }
     resetForm();
 
@@ -105,6 +109,7 @@ const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
 
 
 
+  console.log(image[0], "image form initialVales")
 
   return (
     <Fragment>
@@ -172,9 +177,9 @@ const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
                   />
                 </div>
                 <div style={{ marginBottom: '1rem' }}>
-                  <AddNewBrandImage
-                    image_url={values.image}
-                    setFieldValue={setFieldValue}
+                  <UploadImage
+                    image={image}
+                    setImage={setImage}
                   />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>

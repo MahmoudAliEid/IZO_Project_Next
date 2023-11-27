@@ -144,7 +144,7 @@ import { fetchCategories } from 'src/store/apps/products/categories/getCategorie
 //   }
 // }
 
-const RowOptions = ({ id }) => {
+const RowOptions = ({ id, data, setData }) => {
   // ** Hooks
   const dispatch = useDispatch()
 
@@ -160,7 +160,11 @@ const RowOptions = ({ id }) => {
   // const token = getCookie('token')
 
   // const url = getCookie('apiUrl')
+  function removeObjectById(arr, idToRemove) {
+    const newArray = arr.filter(item => item.id !== idToRemove)
 
+    return newArray
+  }
   const handleRowOptionsClick = event => {
     setAnchorEl(event.currentTarget)
   }
@@ -179,6 +183,10 @@ const RowOptions = ({ id }) => {
 
       return
     }
+
+    //front delete
+    const frontData = removeObjectById(data, id)
+    setData(frontData)
 
     dispatch(deleteCategory({ id }))
       .then(() => {
@@ -243,7 +251,9 @@ const RowOptions = ({ id }) => {
         </MenuItem>
       </Menu>
       {open && <CategoriesEditForm type={'Edit'} open={open} setOpen={setOpen} catId={id} />}
-      {openAlert && <DeleteGlobalAlert open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />}
+      {openAlert && (
+        <DeleteGlobalAlert name='Category' open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />
+      )}
     </>
   )
 }
@@ -255,7 +265,7 @@ const columns = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }) => <RowOptions id={row.id} />
+    renderCell: ({ row }) => <RowOptions id={row.id} data={row.data} setData={row.setData} />
   },
   {
     flex: 0.25,
@@ -263,7 +273,27 @@ const columns = [
     field: 'name',
     headerName: 'Category',
     renderCell: ({ row }) => {
-      return <Typography sx={{ color: 'text.secondary' }}>{row.name ? row.name : 'Not available'}</Typography>
+      return (
+        <>
+          {row.name === 'Loading...' ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '10px 0',
+                width: '25px',
+                paddingY: '5px'
+              }}
+            >
+              <ProgressCustomization />
+            </Box>
+          ) : (
+            <Typography sx={{ color: 'text.secondary' }}>{row.name ? row.name : 'Not available'}</Typography>
+          )}
+        </>
+      )
     }
   },
   {
@@ -273,9 +303,29 @@ const columns = [
     headerName: 'Category Code',
     renderCell: ({ row }) => {
       return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.short_code ? row.short_code : 'Not available'}
-        </Typography>
+        <>
+          {row.short_code === 'Loading...' ? (
+            <Grid>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '16px 0'
+                }}
+              >
+                <Box>
+                  <ProgressCustomization />
+                </Box>
+              </Box>
+            </Grid>
+          ) : (
+            <Typography noWrap sx={{ color: 'text.secondary' }}>
+              {row.short_code ? row.short_code : 'Not available'}
+            </Typography>
+          )}
+        </>
       )
     }
   },
@@ -286,9 +336,37 @@ const columns = [
     headerName: 'Description',
     renderCell: ({ row }) => {
       return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.description ? row.description : 'Not available'}
-        </Typography>
+        <>
+          {row.description === 'Loading...' ? (
+            <Box
+              sx={{
+                padding: '5px 0',
+                color: 'text.secondary',
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '16px 0'
+                }}
+              >
+                <ProgressCustomization />
+              </Box>
+            </Box>
+          ) : (
+            <Typography noWrap sx={{ color: 'text.secondary' }}>
+              {row.description ? row.description : 'Not available'}
+            </Typography>
+          )}
+        </>
       )
     }
   },
@@ -299,48 +377,97 @@ const columns = [
     headerName: 'Created By',
     renderCell: ({ row }) => {
       return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.created_by ? row.created_by : 'Not available'}
-        </Typography>
+        <>
+          {row.created_by === 'Loading...' ? (
+            <Box
+              sx={{
+                padding: '5px 0',
+                color: 'text.secondary',
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Box>
+                <Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '20px 0'
+                    }}
+                  >
+                    <ProgressCustomization />
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+          ) : (
+            <Typography noWrap sx={{ color: 'text.secondary' }}>
+              {row.created_by ? row.created_by : 'Not available'}
+            </Typography>
+          )}
+        </>
       )
     }
   },
   {
     flex: 0.25,
     minWidth: 200,
-    minHeight: 200,
+
+    // minHeight: 200,
     field: 'image_url',
     headerName: 'Image',
     renderCell: ({ row }) => {
       return (
         <Box
           sx={{
-            padding: '3px 0',
+            padding: '5px 0',
             color: 'text.secondary',
-            width: '100%', // Make the box take the full width of its container
-            height: '100%', // Make the box take the full height of its container
+            width: '100%',
+            height: '100%',
             display: 'flex',
-            justifyContent: 'center', // Center the content horizontally
-            alignItems: 'center' // Center the content vertically
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
           {row.image_url ? (
             <div className='file-details'>
               <div className='file-preview'>
                 {/* <img width={38} height={38} alt={'Category Image'} src={row.image_url} /> */}
-                <Image
-                  alt={'Category Image'}
-                  src={row.image_url}
-                  width={48}
-                  height={48}
-                  style={{
-                    margin: '3px 0',
-                    maxWidth: '100%', // Make the image responsive and take the full width of its container
-                    maxHeight: '100%', // Make the image responsive and take the full height of its container
-                    borderRadius: '8px', // Add a border radius for a rounded corner effect
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' // Add a subtle box shadow for a professional look
-                  }}
-                />
+                {row.image_url === 'Loading...' ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '20px 0'
+                    }}
+                  >
+                    <Box>
+                      <ProgressCustomization />
+                    </Box>
+                  </Box>
+                ) : (
+                  <Image
+                    alt={'Category Image'}
+                    src={row.image_url}
+                    width={48}
+                    height={48}
+                    style={{
+                      margin: '3px 0',
+                      maxWidth: '100%', // Make the image responsive and take the full width of its container
+                      maxHeight: '100%', // Make the image responsive and take the full height of its container
+                      borderRadius: '8px', // Add a border radius for a rounded corner effect
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' // Add a subtle box shadow for a professional look
+                    }}
+                  />
+                )}
               </div>
             </div>
           ) : (
@@ -363,6 +490,8 @@ const Categories = () => {
   const [filteredData, setFilteredData] = useState([])
 
   const [data, setData] = useState(null)
+
+  const newData = data ? data.map(item => ({ ...item, data, setData })) : []
 
   // const [dataForm, setDataForm] = useState(null)
   const title = 'Categories List'
@@ -477,7 +606,7 @@ const Categories = () => {
             </Box>
           </Box>
           <Box>
-            {data ? (
+            {newData ? (
               <DataGrid
                 autoHeight
                 columns={columns}
@@ -486,7 +615,7 @@ const Categories = () => {
                 paginationModel={paginationModel}
                 slots={{ toolbar: QuickSearchToolbar }}
                 onPaginationModelChange={setPaginationModel}
-                rows={filteredData.length ? filteredData : data}
+                rows={filteredData.length ? filteredData : newData}
                 slotProps={{
                   baseButton: {
                     variant: 'outlined'
@@ -506,7 +635,7 @@ const Categories = () => {
                     flexWrap: 'wrap',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '20px'
+                    margin: '16px 0'
                   }}
                 >
                   <Box>
@@ -519,7 +648,7 @@ const Categories = () => {
         </Card>
       </Grid>
 
-      <CategoriesForm type={'Add'} open={open} setOpen={setOpen} />
+      <CategoriesForm type={'Add'} open={open} setOpen={setOpen} setData={setData} />
     </Grid>
   )
 }

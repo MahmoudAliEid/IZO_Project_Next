@@ -17,6 +17,8 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CancelIcon from '@mui/icons-material/Cancel'
+import { Box, Typography } from '@mui/material'
+import WarningIcon from '@mui/icons-material/Warning'
 
 // import useSubmitEdit from 'src/hooks/useSubmitEdit'
 
@@ -109,24 +111,6 @@ const DeleteAlert = ({ open, close, idRow, itemId, oldListData, setOldListData }
     } else {
       setOldListData('')
     }
-
-    // console.log(datalist, 'datalist form delete Variations')
-
-    // dispatch(deleteVariationRow({ idRow }))
-    //   .then(() => {
-    //     dispatch(fetchVariations(token, url))
-    //     dispatch(fetchEditVariations({ itemId }))
-    //   })
-    //   .then(() => {
-    //     close()
-    //     handleSubmitEdit(values, itemId)
-    //   })
-    //   .catch(error => {
-    //     console.error('Error deleting user:', error)
-
-    //     // Handle the error as needed
-    //     close()
-    //   })
   }
 
   const handleCloseAlert = () => close()
@@ -142,22 +126,21 @@ const DeleteAlert = ({ open, close, idRow, itemId, oldListData, setOldListData }
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle id='alert-dialog-title'>Delete Variation Value!</DialogTitle>
+        <DialogTitle id='alert-dialog-title' style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant='h6'>Delete Variation Value</Typography>
+          <Box color={'error'}>
+            <WarningIcon sx={{ fontSize: '30px' }} color='error' />
+          </Box>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>Are you sure you want to delete?</DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-          <Button
-            startIcon={<CancelIcon />}
-            size='small'
-            variant='contained'
-            color='success'
-            onClick={handleCloseAlert}
-          >
+        <DialogActions>
+          <Button startIcon={<CancelIcon />} variant='contained' color='success' onClick={handleCloseAlert}>
             Cancel
           </Button>
 
-          <Button size='small' startIcon={<DeleteIcon />} variant='contained' color='error' onClick={handleDelete}>
+          <Button startIcon={<DeleteIcon />} variant='outlined' color='error' onClick={handleDelete}>
             Delete
           </Button>
         </DialogActions>

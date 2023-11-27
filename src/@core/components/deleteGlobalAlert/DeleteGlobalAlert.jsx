@@ -10,8 +10,10 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CancelIcon from '@mui/icons-material/Cancel'
+import { Box, Typography } from '@mui/material'
+import WarningIcon from '@mui/icons-material/Warning'
 
-const DeleteGlobalAlert = ({ open, close, mainHandleDelete }) => {
+const DeleteGlobalAlert = ({ name, open, close, mainHandleDelete }) => {
   const handleDelete = () => {
     mainHandleDelete()
     close()
@@ -30,22 +32,24 @@ const DeleteGlobalAlert = ({ open, close, mainHandleDelete }) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle id='alert-dialog-title'>Delete !</DialogTitle>
+        <DialogTitle id='alert-dialog-title' style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant='h5'>Delete {name}</Typography>
+          <Box color={'error'}>
+            <WarningIcon sx={{ fontSize: '35px' }} color='error' />
+          </Box>
+        </DialogTitle>
+
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>Are you sure you want to delete?</DialogContentText>
+          <DialogContentText id='alert-dialog-description'>
+            Are you sure you want to delete this {name}?
+          </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-          <Button
-            startIcon={<CancelIcon />}
-            size='small'
-            variant='contained'
-            color='success'
-            onClick={handleCloseAlert}
-          >
+        <DialogActions>
+          <Button startIcon={<CancelIcon />} variant='contained' color='success' onClick={handleCloseAlert}>
             Cancel
           </Button>
 
-          <Button size='small' startIcon={<DeleteIcon />} variant='contained' color='error' onClick={handleDelete}>
+          <Button startIcon={<DeleteIcon />} variant='outlined' color='error' onClick={handleDelete}>
             Delete
           </Button>
         </DialogActions>

@@ -31,7 +31,9 @@ import IconButton from '@mui/material/IconButton'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import DialogAddBrands from './DialogAddBrands'
-import DialogDeleteBrand from './DialogDeleteBrand'
+
+// import DialogDeleteBrand from './DialogDeleteBrand'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert';
 import DialogViewBrand from './DialogViewBrand'
 
 const escapeRegExp = (value: string) => {
@@ -42,7 +44,7 @@ const RowOptions = ({ id }) => {
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [openDialogEditBrands, setOpenDialogEditBrands] = useState<boolean>(false)
-  const [openDialogDeleteBrands, setOpenDialogDeleteBrands] = useState<boolean>(false)
+  const [openAlertDeleteBrands, setOpenAlertDeleteBrands] = useState<boolean>(false)
   const [openDialogViewBrands, setOpenDialogViewBrands] = useState<boolean>(false)
   const dispatch = useDispatch()
   const handleRowOptionsClick = (event: any) => {
@@ -64,7 +66,7 @@ const RowOptions = ({ id }) => {
   }
 
   const handleDeleteBrand = () => {
-    setOpenDialogDeleteBrands(!openDialogDeleteBrands)
+    setOpenAlertDeleteBrands(!openAlertDeleteBrands)
   }
 
   const handleViewBrand = () => {
@@ -131,10 +133,11 @@ const RowOptions = ({ id }) => {
       }
 
       {
-        openDialogDeleteBrands && <DialogDeleteBrand
-          open={openDialogDeleteBrands}
-          onClose={handleDeleteBrand}
-          onConfirm={handleDelete}
+        openAlertDeleteBrands && <DeleteGlobalAlert
+          name={'Brand'}
+          open={openAlertDeleteBrands}
+          close={handleDeleteBrand}
+          mainHandleDelete={handleDelete}
         />
       }
 
@@ -160,22 +163,22 @@ const columns: GridColDef[] = [
     renderCell: ({ row }) => <RowOptions id={row.id} />
   },
 
-  {
-    flex: 0.275,
-    minWidth: 100,
-    field: 'id',
-    headerName: 'ID',
-  },
-  {
-    flex: 0.275,
-    minWidth: 100,
-    field: 'business_id',
-    headerName: 'Business ID',
-  },
+  // {
+  //   flex: 0.275,
+  //   minWidth: 100,
+  //   field: 'id',
+  //   headerName: 'ID',
+  // },
+  // {
+  //   flex: 0.275,
+  //   minWidth: 100,
+  //   field: 'business_id',
+  //   headerName: 'Business ID',
+  // },
 
   {
     flex: 0.2,
-    minWidth: 120,
+    minWidth: 180,
     headerName: 'Name',
     field: 'name'
   },
@@ -191,54 +194,56 @@ const columns: GridColDef[] = [
     headerName: 'Created By',
     field: 'created_by'
   },
-  {
-    flex: 0.2,
-    minWidth: 120,
-    headerName: 'Created At',
-    field: 'created_at',
-    valueGetter: (params) => {
-      const date = new Date(params.value);
 
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-    }
-  },
-  {
-    flex: 0.2,
-    minWidth: 120,
-    headerName: 'Updated At',
-    field: 'updated_at',
-    valueGetter: (params) => {
-      const date = new Date(params.value);
+  // {
+  //   flex: 0.2,
+  //   minWidth: 120,
+  //   headerName: 'Created At',
+  //   field: 'created_at',
+  //   valueGetter: (params) => {
+  //     const date = new Date(params.value);
 
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-    }
+  //     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  //   }
+  // },
+  // {
+  //   flex: 0.2,
+  //   minWidth: 120,
+  //   headerName: 'Updated At',
+  //   field: 'updated_at',
+  //   valueGetter: (params) => {
+  //     const date = new Date(params.value);
 
-  },
+  //     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  //   }
+
+  // },
   {
     flex: 0.2,
     minWidth: 120,
     headerName: 'Use For Repair',
     field: 'use_for_repair'
   },
+
+  // {
+  //   flex: 0.2,
+  //   minWidth: 120,
+  //   headerName: 'Image',
+  //   field: 'image',
+  //   renderCell: (params) => {
+  //     return (
+  //       <img src={`https://test.izocloud.net/public/uploads/img/${params.value}`}
+  //         alt="Brand" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+  //     );
+  //   },
+  // },
   {
     flex: 0.2,
     minWidth: 120,
-    headerName: 'Image',
-    field: 'image',
-    renderCell: (params) => {
-      return (
-        <img src={`https://test.izocloud.net/public/uploads/img/${params.value}`}
-          alt="Brand" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
-      );
-    },
-  },
-  {
-    flex: 0.2,
-    minWidth: 120,
-    headerName: 'Image Url',
+    headerName: 'Image ',
     field: 'image_url',
-    renderCell: (params) => (
-      <img src={params.value} alt="Brand" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+    renderCell: ({ row }) => (
+      <img src={row.image} alt="Brand" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
     ),
 
   },
@@ -300,26 +305,27 @@ const AllBrands = () => {
       <DialogAddBrands open={openDialogAddBrands} toggle={handleAddClickOpen} isEdit={false} />
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
         <CardHeader title="All Brands" />
-        <Divider sx={{ m: '0 !important' }} />
-        <Box
-          sx={{
-            p: 6,
-            gap: 4,
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Button startIcon={<AddCircleOutlineIcon />} onClick={handleAddClickOpen} variant='contained'>
-              Add
-            </Button>
-          </Box>
-        </Box>
+
+
 
       </Box>
-
+      <Divider sx={{ m: '0 !important' }} />
+      <Box
+        sx={{
+          p: 6,
+          gap: 4,
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
+        <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+          <Button startIcon={<AddCircleOutlineIcon />} onClick={handleAddClickOpen} variant='contained'>
+            Add
+          </Button>
+        </Box>
+      </Box>
       <DataGrid
         autoHeight
         columns={columns}
