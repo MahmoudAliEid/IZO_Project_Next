@@ -120,8 +120,7 @@ const FormSendEmail = ({ data, open, close }) => {
                       value={values.toEmail}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      name='to'
-                      required
+                      name='toEmail'
                     />
                   </FormControl>
                 </Grid>

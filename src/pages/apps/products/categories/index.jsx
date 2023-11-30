@@ -1,25 +1,15 @@
+// ** React & Components
 import { useState, useEffect } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import CategoriesTree from 'src/@core/components/products/categories/CategoriesTree'
 import CategoriesForm from 'src/@core/components/products/categories/CategoriesForm/CategoriesForm'
 import CategoriesEditForm from 'src/@core/components/products/categories/CategoriesForm/CategoriesEditForm'
-import Image from 'next/image'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
-
-// import useSubmitUser from 'src/hooks/useSubmitUser'
-// import VariationsForm from 'src/@core/components/products/variations/variationForm/VariationsForm'
-// import VariationFormEdit from 'src/@core/components/products/variations/variationForm/VariationFormEdit'
-
-// import DialogEdit from 'src/@core/components/Variatons/dialogEdit'
-
-// import { deleteVariations } from 'src/store/apps/products/variations/deleteVariationsSlice'
-// import { postAddVariations } from 'src/store/apps/products/variations/postCreateVariations'
-
-// import { postDeleteUser } from 'src/store/apps/izoUsers/deleteUserSlice'
 
 // ** Next Imports
 import { getCookie } from 'cookies-next'
+import Image from 'next/image'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -29,39 +19,13 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import Card from '@mui/material/Card'
-
-// import Dialog from '@mui/material/Dialog'
-// import Select from '@mui/material/Select'
-// import { Chip } from '@mui/material'
-
-// import Switch from '@mui/material/Switch'
-// import TextField from '@mui/material/TextField'
-// import InputLabel from '@mui/material/InputLabel'
-// import DialogTitle from '@mui/material/DialogTitle'
-// import FormControl from '@mui/material/FormControl'
-// import DialogContent from '@mui/material/DialogContent'
-
-// import DialogActions from '@mui/material/DialogActions'
-// import InputAdornment from '@mui/material/InputAdornment'
-// import FormControlLabel from '@mui/material/FormControlLabel'
-// import DialogContentText from '@mui/material/DialogContentText'
-// import { Formik } from 'formik'
-
-// import { styled } from '@mui/material/styles'
-// import * as Yup from 'yup'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 
-// import InputLabel from '@mui/material/InputLabel'
-// import FormControl from '@mui/material/FormControl'
-// import CardContent from '@mui/material/CardContent'
-
-//** {name: moud,id:1,{name:child,id:2,{name:child2,id:3}}}   */
+// ** Third Party Components
 import { DataGrid } from '@mui/x-data-grid'
-
-// import Select, { SelectChangeEvent } from '@mui/material/Select'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -70,81 +34,11 @@ import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCategory } from 'src/store/apps/products/categories/deleteCategorySlice'
 import { fetchCategories } from 'src/store/apps/products/categories/getCategoriesSlice'
-
-// import { fetchVariations } from 'src/store/apps/products/variations/getVariationsSlice'
-// import { fetchCreateVariations } from 'src/store/apps/products/variations/getCreateVariationsSlice'
-
-// ** Custom Components Imports
-
-// import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// import CardStatisticsHorizontal from 'src/@core/components/card-statistics/card-stats-horizontal'
-
-// ** Utils Import
-// import { getInitials } from 'src/@core/utils/get-initials'
-
-// ** Actions Imports
-// import { fetchData, deleteUser } from 'src/store/apps/user'
-
-// ** Third Party Components
-// import axios from 'axios'
-
-// ** Types Imports
-// import { RootState, AppDispatch } from 'src/store'
-// import { CardStatsType } from 'src/@fake-db/types'
-// import { ThemeColor } from 'src/@core/layouts/types'
-// import { UsersType } from 'src/types/apps/userTypes'
-// import { CardStatsHorizontalProps } from 'src/@core/components/card-statistics/types'
-
-// ** Custom Table Components Imports
-// import TableHeader from 'src/views/apps/user/list/TableHeader'
-
-// import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
-
-// ** Vars
-// const userRoleObj = {
-//   admin: { icon: 'bx:mobile-alt', color: 'error' },
-//   author: { icon: 'bx:cog', color: 'warning' },
-//   editor: { icon: 'bx:edit', color: 'info' },
-//   maintainer: { icon: 'bx:pie-chart-alt', color: 'success' },
-//   subscriber: { icon: 'bx:user', color: 'primary' }
-// }
-
-// const userStatusObj = {
-//   active: { title: 'active', color: 'success' },
-//   pending: { title: 'pending', color: 'warning' },
-//   inactive: { title: 'inactive', color: 'secondary' }
-// }
-
-// const LinkStyled = styled(Link)(({ theme }) => ({
-//   fontWeight: 600,
-//   fontSize: '1rem',
-//   cursor: 'pointer',
-//   textDecoration: 'none',
-//   color: theme.palette.text.secondary,
-//   '&:hover': {
-//     color: theme.palette.primary.main
-//   }
-// }))
-
-// ** renders client column
-// const renderClient = row => {
-//   if (row.avatar?.length) {
-//     return <CustomAvatar src={row.avatar} sx={{ mr: 3, width: 32, height: 32 }} />
-//   } else {
-//     return (
-//       <CustomAvatar
-//         skin='light'
-//         color={row.avatarColor || 'primary'}
-//         sx={{ mr: 3, width: 32, height: 32, fontSize: '.875rem' }}
-//       >
-//         {getInitials(row.name ? row.name : 'John Doe')}
-//       </CustomAvatar>
-//     )
-//   }
-// }
+import { fetchCategoriesTree } from 'src/store/apps/products/categories/getCategoriesTreeSlice'
 
 const RowOptions = ({ id, data, setData }) => {
+  console.log(data, setData)
+
   // ** Hooks
   const dispatch = useDispatch()
 
@@ -155,16 +49,12 @@ const RowOptions = ({ id, data, setData }) => {
 
   const rowOptionsOpen = anchorEl
 
-  // ** Cookies
+  // ** Functions
+  // function removeObjectById(arr, idToRemove) {
+  //   const newArray = arr.filter(item => item.id !== idToRemove)
 
-  // const token = getCookie('token')
-
-  // const url = getCookie('apiUrl')
-  function removeObjectById(arr, idToRemove) {
-    const newArray = arr.filter(item => item.id !== idToRemove)
-
-    return newArray
-  }
+  //   return newArray
+  // }
   const handleRowOptionsClick = event => {
     setAnchorEl(event.currentTarget)
   }
@@ -185,13 +75,13 @@ const RowOptions = ({ id, data, setData }) => {
     }
 
     //front delete
-    const frontData = removeObjectById(data, id)
-    setData(frontData)
+    // const frontData = removeObjectById(data, id)
+    // setData(frontData)
 
     dispatch(deleteCategory({ id }))
       .then(() => {
         dispatch(fetchCategories())
-
+        dispatch(fetchCategoriesTree())
         handleRowOptionsClose()
       })
       .catch(error => {
@@ -461,10 +351,10 @@ const columns = [
                     height={48}
                     style={{
                       margin: '3px 0',
-                      maxWidth: '100%', // Make the image responsive and take the full width of its container
-                      maxHeight: '100%', // Make the image responsive and take the full height of its container
-                      borderRadius: '8px', // Add a border radius for a rounded corner effect
-                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' // Add a subtle box shadow for a professional look
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      borderRadius: '8px',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
                     }}
                   />
                 )}
@@ -481,58 +371,52 @@ const columns = [
 
 const Categories = () => {
   // ** State
-
   const [open, setOpen] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-
   const [data, setData] = useState(null)
+  const [dataTree, setDataTree] = useState(null)
 
-  const newData = data ? data.map(item => ({ ...item, data, setData })) : []
-
-  // const [dataForm, setDataForm] = useState(null)
+  // ** Constants
+  const newData = data && data.length ? data.map(item => ({ ...item, data, setData })) : []
   const title = 'Categories List'
-
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
   }
 
+  // ** Selectors
+  const store = useSelector(state => state.getCategories?.data?.value)
+  const storeTree = useSelector(state => state.getCategoriesTree?.data?.value)
+
   // ** Hooks
   const dispatch = useDispatch()
-
-  // const { handleSubmitData } = useSubmitUser()
-
-  const store = useSelector(state => state.getCategories?.data?.value)
-
-  // const storeAddFormData = useSelector(state => state.getCreateVariations?.data?.value)
-
   useEffect(() => {
     setData(store)
-
-    // setDataForm(storeAddFormData)
   }, [store])
 
-  // ** Cookies
   useEffect(() => {
+    setDataTree(storeTree)
+  }, [storeTree])
+
+  useEffect(() => {
+    // ** Cookies
     const token = getCookie('token')
     const url = getCookie('apiUrl')
-
     setToken(token)
-
     setUrl(url)
   }, [token, url])
 
   useEffect(() => {
     if (token && url) {
       dispatch(fetchCategories())
-
-      // dispatch(fetchCreateVariations(token, url))
+      dispatch(fetchCategoriesTree())
     }
   }, [dispatch, token, url])
 
+  // ** Functions
   const handleAddClickOpen = () => setOpen(true)
 
   // ** handle search function
@@ -553,10 +437,6 @@ const Categories = () => {
       setFilteredData([])
     }
   }
-
-  // const onchangeHandle = event => {
-  //   setValueToShow(event.target.value)
-  // }
 
   return (
     <Grid container spacing={6}>
@@ -581,7 +461,7 @@ const Categories = () => {
             </Box>
           </Box>
           <Box>
-            <CategoriesTree data={data} />
+            <CategoriesTree data={dataTree} />
           </Box>
         </Card>
       </Grid>

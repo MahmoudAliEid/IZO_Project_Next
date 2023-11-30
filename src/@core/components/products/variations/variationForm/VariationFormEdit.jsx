@@ -22,7 +22,7 @@ import useSubmitEdit from 'src/hooks/useSubmitEdit'
 // import { fetchVariations } from 'src/store/apps/products/variations/getVariationsSlice'
 // import { postEditVariations } from 'src/store/apps/products/variations/postEditVariationsSlice'
 
-const VariationFormEdit = ({ type, open, setOpen, itemId }) => {
+const VariationFormEdit = ({ type, open, setOpen, itemId, mainData, setMainData }) => {
   const [listValues, setListValues] = useState([])
   const [currValue, setCurrValue] = useState('')
   const [vName, setVName] = useState('')
@@ -114,6 +114,30 @@ const VariationFormEdit = ({ type, open, setOpen, itemId }) => {
     handleSubmitEdit(values, itemId, oldListData)
     setOpen(false)
     resetForm()
+
+    // Function to find and update an object by id
+    function updateObjectById(arr, id, updatedData) {
+      const targetObject = arr.find(obj => obj.id === id)
+
+      if (targetObject) {
+        // Object found, update it
+        Object.assign(targetObject, updatedData)
+      } else {
+        // Object with the given id not found
+        console.log(`Object with id ${id} not found`)
+      }
+    }
+
+    // Example: Update the object with id 27
+    const updateDate = updateObjectById(mainData, itemId, {
+      // id: Math.floor(Math.random()),
+      list: values.items.map(item => ({
+        name: item
+      })),
+      ...values
+    })
+
+    setMainData(updateDate)
   }
 
   return (

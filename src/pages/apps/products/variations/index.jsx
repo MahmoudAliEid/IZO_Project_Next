@@ -135,7 +135,7 @@ import axios from 'axios'
 //   }
 // }
 
-const RowOptions = ({ id }) => {
+const RowOptions = ({ id, data, setData }) => {
   // ** Hooks
   const dispatch = useDispatch()
 
@@ -160,6 +160,11 @@ const RowOptions = ({ id }) => {
     setAnchorEl(null)
   }
 
+  function removeObjectById(arr, idToRemove) {
+    const newArray = arr.filter(item => item.id !== idToRemove)
+
+    return newArray
+  }
   const handleDelete = () => {
     if (!id || !token) {
       console.log('Invalid id or token')
@@ -167,6 +172,8 @@ const RowOptions = ({ id }) => {
 
       return
     }
+    const frontData = removeObjectById(data, id)
+    setData(frontData)
 
     dispatch(deleteVariations({ id }))
       .then(() => {
@@ -231,7 +238,16 @@ const RowOptions = ({ id }) => {
           Delete
         </MenuItem>
       </Menu>
-      {open && <VariationFormEdit type={'Edit'} open={open} setOpen={setOpen} itemId={id} />}
+      {open && (
+        <VariationFormEdit
+          type={'Edit'}
+          open={open}
+          setOpen={setOpen}
+          itemId={id}
+          mainData={data}
+          setMainData={setData}
+        />
+      )}
       {openAlert && (
         <DeleteGlobalAlert
           name='Variation'
@@ -251,7 +267,7 @@ const columns = [
     sortable: false,
     field: 'actions',
     headerName: 'Actions',
-    renderCell: ({ row }) => <RowOptions id={row.id} />
+    renderCell: ({ row }) => <RowOptions id={row.id} data={row.data} setData={row.setData} />
   },
   {
     flex: 0.25,
@@ -273,7 +289,7 @@ const columns = [
     headerName: 'Values',
     renderCell: ({ row }) => {
       return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
+        <Typography noWrap={false} sx={{ color: 'text.secondary' }}>
           {row.list ? row.list.map(item => item.name + ', ') : 'Not available'}
         </Typography>
       )
@@ -294,6 +310,7 @@ const Variations = () => {
   const [data, setData] = useState(null)
   const [dataForm, setDataForm] = useState(null)
   const title = 'Variations List'
+  const newData = data && data.length ? data.map(item => ({ ...item, data, setData })) : []
 
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -353,7 +370,21 @@ const Variations = () => {
     handleSubmitData(postAddVariations, fetchVariations, values)
     setOpen(false)
     resetForm()
+
+    setData(prev => {
+      return [
+        ...prev,
+        {
+          id: Math.floor(Math.random()),
+          list: values.items.map(item => ({
+            name: item
+          })),
+          ...values
+        }
+      ]
+    })
   }
+  console.log(data, 'data form add')
 
   // const onchangeHandle = event => {
   //   setValueToShow(event.target.value)
@@ -382,7 +413,7 @@ const Variations = () => {
             </Box>
           </Box>
           <Box>
-            {data ? (
+            {newData ? (
               <DataGrid
                 autoHeight
                 columns={columns}
@@ -391,7 +422,7 @@ const Variations = () => {
                 paginationModel={paginationModel}
                 slots={{ toolbar: QuickSearchToolbar }}
                 onPaginationModelChange={setPaginationModel}
-                rows={filteredData.length ? filteredData : data}
+                rows={filteredData.length ? filteredData : newData}
                 slotProps={{
                   baseButton: {
                     variant: 'outlined'

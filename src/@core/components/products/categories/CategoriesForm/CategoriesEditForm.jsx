@@ -26,6 +26,8 @@ import { useEffect, useState } from 'react'
 import { fetchCategories } from 'src/store/apps/products/categories/getCategoriesSlice'
 import { postEditCategory } from 'src/store/apps/products/categories/postEditCategorySlice'
 import { fetchEditCategory } from 'src/store/apps/products/categories/getEditCategorySlice'
+import { fetchCategoriesTree } from 'src/store/apps/products/categories/getCategoriesTreeSlice'
+
 import { useSelector, useDispatch } from 'react-redux'
 
 const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
@@ -88,13 +90,14 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
     setInitialValues({})
   }
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     // Handle form submission logic here
     console.log({ ...values, image }, 'Values form  edit Category')
 
     console.log('Add btn clicked')
 
-    handleSubmitData(postEditCategory, fetchCategories, { ...values, image }, catId)
+    await handleSubmitData(postEditCategory, fetchCategories, { ...values, image }, catId)
+    dispatch(fetchCategoriesTree())
     setImage('')
     setOpen(false)
     setCheckBox(false)

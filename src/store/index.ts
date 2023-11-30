@@ -51,6 +51,18 @@ import deletebrandsSlice from './apps/products/brands/deletebrandsSlice'
 import storebrandSlice from './apps/products/brands/storebrandSlice'
 import getbrandDetailsSlice from './apps/products/brands/getbrandDetailsSlice'
 import updatebrandSlice from './apps/products/brands/updatebrandSlice'
+import getUnitsSlice from './apps/products/units/getUnitsSlice'
+import getCreateUnitSlice from './apps/products/units/getCreateUnitSlice'
+import getEditUnitSlice from './apps/products/units/getEditUnitSlice'
+import postCreateUnitSlice from './apps/products/units/postCreateUnitSlice'
+import postEditUnitSlice from './apps/products/units/postEditUnitSlice'
+import postDeleteUnitSlice from './apps/products/units/postDeleteUnitSlice'
+import getCategoriesTreeSlice from './apps/products/categories/getCategoriesTreeSlice'
+import getallWarrantiesSlice from './apps/products/warranties/getallWarrantiesSlice'
+import storeWarrantiesSlice from './apps/products/warranties/storeWarrantiesSlice'
+import getAllWarrantiesDetailsSlice from './apps/products/warranties/getAllWarrantiesDetailsSlice'
+import updateWarrantiesSlice from './apps/products/warranties/updateWarrantiesSlice'
+import deleteWarrantiesSlice from './apps/products/warranties/deleteWarrantiesSlice'
 
 export const store = configureStore({
   reducer: {
@@ -102,7 +114,19 @@ export const store = configureStore({
     deletebrandsSlice: deletebrandsSlice,
     storebrandSlice: storebrandSlice,
     getbrandDetailsSlice: getbrandDetailsSlice,
-    updatebrandSlice: updatebrandSlice
+    updatebrandSlice: updatebrandSlice,
+    getUnits: getUnitsSlice,
+    getCreateUnit: getCreateUnitSlice,
+    getEditUnit: getEditUnitSlice,
+    postCreateUnit: postCreateUnitSlice,
+    postEditUnit: postEditUnitSlice,
+    postDeleteUnit: postDeleteUnitSlice,
+    getCategoriesTree: getCategoriesTreeSlice,
+    getallWarrantiesSlice: getallWarrantiesSlice,
+    storeWarrantiesSlice: storeWarrantiesSlice,
+    getAllWarrantiesDetailsSlice: getAllWarrantiesDetailsSlice,
+    updateWarrantiesSlice: updateWarrantiesSlice,
+    deleteWarrantiesSlice: deleteWarrantiesSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
