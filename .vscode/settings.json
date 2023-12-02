@@ -33,7 +33,8 @@
   "npm.packageManager": "yarn",
   // Extension: cSpell
   "cSpell.words": [
-    "Customizer"
+    "Customizer",
+    "Formik"
   ],
   "search-node-modules.path": "node_modules",
   "markdown.extension.toc.updateOnSave": false,

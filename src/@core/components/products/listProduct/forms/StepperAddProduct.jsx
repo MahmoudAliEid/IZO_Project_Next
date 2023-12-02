@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { ChangeEvent, Fragment, useState, useEffect } from 'react'
+import { EditorState } from 'draft-js'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -26,6 +27,8 @@ import PublicIcon from '@mui/icons-material/Public'
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
 import { fetchViewContact } from 'src/store/apps/contacts/getViewContactSlice'
 
+// import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
+
 // ** Third Party Imports
 import toast from 'react-hot-toast'
 
@@ -34,6 +37,8 @@ import Icon from 'src/@core/components/icon'
 
 // ** Custom Components Imports
 import CustomAvatar from 'src/@core/components/mui/avatar'
+import StepperCustomDot from './StepperCustomDot'
+import ProductInfo from '../productInfo/ProductInfo'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
@@ -117,10 +122,29 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
   const [activeStep, setActiveStep] = useState(0)
-  const [initialValues, setInitialValues] = useState({})
+  const [initialValues, setInitialValues] = useState({
+    productInfo: {
+      name: '',
+      code: '',
+      code2: '',
+      barcode_type: '',
+      unit_id: '',
+      brand_id: '',
+      category_id: '',
+      sub_category_id: '',
+      enable_stock: false,
+      alert_quantity: '',
+      warranty_id: '',
+      long_description: EditorState.createEmpty(),
+      short_description: EditorState.createEmpty(),
+      location: ''
+    }
+  })
 
   // ** Test
   console.log('from stepper product isEdit & itemId 🎶', isEdit, itemId)
+
+  console.log('Hello Word ✨✨✨✨✨')
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -131,6 +155,10 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     setToken(token)
     setUrl(url)
   }, [token, url])
+
+  // useEffect(() => {
+  //   dispatch(fetchCreateProduct())
+  // }, [dispatch])
 
   // ** Functions
   const handleBack = () => {
@@ -150,7 +178,19 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const getStepContent = ({ values, errors, touched, handleBlur, handleChange, setFieldValue, step }) => {
     switch (step) {
       case 0:
-        return <Fragment key={step}>{/* // **TODO: Create Product Information Section here  */}</Fragment>
+        return (
+          <Fragment key={step}>
+            {/* // **Done: Create Product Information Section here  */}
+            {/* // initialValues={values}
+            // handleChange={handleChange}
+            // handleBlur={handleBlur}
+            // setFieldValue={setFieldValue} */}
+
+            <ProductInfo initialValues={values} handleChange={handleChange} setFieldValue={setFieldValue} />
+
+            {/* <h1> test {console.log(' hi my name Mahmoud')}</h1> */}
+          </Fragment>
+        )
       case 1:
         return <Fragment key={step}>{/* //TODO: Create Product Media */}</Fragment>
       case 2:
@@ -228,12 +268,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       )
     } else {
       return (
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmitForm}
-          enableReinitialize={true}
-        >
+        <Formik initialValues={initialValues.productInfo} onSubmit={handleSubmitForm} enableReinitialize={true}>
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
             <form>
               <Grid container spacing={5} mt={5}>

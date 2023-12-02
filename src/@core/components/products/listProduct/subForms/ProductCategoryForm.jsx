@@ -8,19 +8,12 @@ import {
   Button,
   Box,
   Grid,
-  Checkbox,
-  FormControlLabel,
   MenuItem,
   Select,
   InputLabel
 } from '@mui/material'
 
-// import { useDispatch } from 'react-redux'
 import useSubmitUser from 'src/hooks/useSubmitUser'
-
-// import MainLoading from 'src/@core/components/mainLoading/MainLoading'
-
-// import { useTheme } from '@mui/material/styles'
 
 import { Formik } from 'formik'
 import UploadImage from 'src/@core/components/globalUpload/UploadImage'
@@ -31,11 +24,8 @@ import { fetchCreateCategory } from 'src/store/apps/products/categories/getCreat
 import { fetchCategoriesTree } from 'src/store/apps/products/categories/getCategoriesTreeSlice'
 import { useSelector, useDispatch } from 'react-redux'
 
-const CategoriesForm = ({ type, open, setOpen, setData }) => {
+const ProductCategoryForm = ({ subCat, open, setOpen }) => {
   const [image, setImage] = useState('')
-  const [checkBox, setCheckBox] = useState(false)
-
-  // const [isLoading, setIsLoading] = useState(false)
   const [categories, setCategories] = useState([])
   const [initialValues, setInitialValues] = useState({
     name: '',
@@ -73,15 +63,11 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
   // const dispatch = useDispatch()
   const { handleSubmitData } = useSubmitUser()
 
-  const handleCheckBoxChange = () => {
-    setCheckBox(prev => !prev)
-  }
-
+  // ** Functions
   const handleClose = () => {
     setOpen(false)
     setImage('')
     setInitialValues({})
-    setCheckBox(false)
   }
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -95,33 +81,20 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
 
     setImage('')
     setOpen(false)
-    setCheckBox(false)
-    resetForm()
-    setData(prev => {
-      return [
-        ...prev,
-        {
-          id: Math.floor(Math.random()),
-          image_url: 'Loading...',
-          created_by: 'Loading...',
-          ...values
-        }
-      ]
-    })
 
-    // setIsLoading(true)
+    resetForm()
   }
 
   return (
     <Dialog
       scroll='body'
       fullWidth={true}
-      maxWidth='lg'
+      maxWidth='md'
       open={open}
       onClose={handleClose}
       aria-labelledby='customer-group-edit'
       sx={{
-        '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] },
+        '& .MuiPaper-root': { width: '100%', maxWidth: 750, p: [2, 10] },
         '& .MuiDialogTitle-root + .MuiDialogContent-root': { pt: theme => `${theme.spacing(2)} !important` }
       }}
       aria-describedby='customer-group-edit-description'
@@ -136,7 +109,7 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
           pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
         }}
       >
-        {type} Categories Information
+        Add CategoryInformation
       </DialogTitle>
       <DialogContent
         sx={{
@@ -225,22 +198,8 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
                     />
                   </FormControl>
                 </Grid> */}
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <FormControl fullWidth>
-                    <FormControlLabel
-                      label='Add as a Sub Category'
-                      sx={{
-                        '& .MuiFormControlLabel-label': {
-                          fontSize: '0.875rem',
-                          color: 'text.secondary'
-                        }
-                      }}
-                      control={<Checkbox checked={checkBox} color='primary' onChange={handleCheckBoxChange} />}
-                    />
-                  </FormControl>
-                </Grid>
                 <Grid item xs={12}>
-                  {checkBox ? (
+                  {subCat ? (
                     <FormControl fullWidth>
                       <InputLabel id='demo-simple-select-standard-label'>Select Parent Category </InputLabel>
                       <Select
@@ -302,4 +261,4 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
   )
 }
 
-export default CategoriesForm
+export default ProductCategoryForm

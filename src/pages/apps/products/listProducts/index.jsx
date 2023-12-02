@@ -47,8 +47,8 @@ import { fetchCategories } from 'src/store/apps/products/categories/getCategorie
 import { fetchCategoriesTree } from 'src/store/apps/products/categories/getCategoriesTreeSlice'
 import { FormControl, Select, InputLabel } from '@mui/material'
 
-const RowOptions = ({ id, data, setData }) => {
-  console.log(data, setData)
+const RowOptions = ({ id }) => {
+  // console.log(data, setData)
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -66,6 +66,10 @@ const RowOptions = ({ id, data, setData }) => {
 
   //   return newArray
   // }
+
+  const toggle = () => {
+    setOpen(prev => !prev)
+  }
   const handleRowOptionsClick = event => {
     setAnchorEl(event.currentTarget)
   }
@@ -178,16 +182,7 @@ const RowOptions = ({ id, data, setData }) => {
         </MenuItem>
       </Menu>
 
-      {open && (
-        <FormProduct
-          isEdit={true}
-          open={open}
-          toggle={() => {
-            setOpen((prev = !prev))
-          }}
-          itemId={id}
-        />
-      )}
+      {open && <FormProduct isEdit={true} open={open} toggle={toggle} itemId={id} />}
       {openAlert && (
         <DeleteGlobalAlert name='Category' open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />
       )}
@@ -208,7 +203,7 @@ const columns = [
     flex: 0.25,
     minWidth: 310,
 
-    // minHeight: 200,
+    minHeight: 310,
     field: 'image_url',
     headerName: 'Image',
     renderCell: ({ row }) => {
@@ -339,11 +334,12 @@ const columns = [
   {
     flex: 0.25,
     minWidth: 190,
+    minHeight: 150,
     field: 'current_stock',
     headerName: 'Current Stock',
     renderCell: ({ row }) => {
       return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ margin: '5px 0' }}>
           <Grid item xs={12}>
             <Typography sx={{ color: 'text.secondary' }}>{row.stock ? row.stock : 'Not available'}</Typography>
           </Grid>
@@ -409,7 +405,7 @@ const columns = [
 
 const ListProducts = () => {
   // ** State
-  const [open, setOpen] = useState(false)
+  const [openForm, setOpenForm] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
@@ -453,7 +449,10 @@ const ListProducts = () => {
   }, [dispatch, token, url])
 
   // ** Functions
-  const handleAddClickOpen = () => setOpen(true)
+  const handleAddClickOpen = () => setOpenForm(true)
+  const toggle = () => {
+    setOpenForm(prev => !prev)
+  }
 
   const handleChangeTabValue = (event, newValue) => {
     setTabValue(newValue)
@@ -461,21 +460,22 @@ const ListProducts = () => {
 
   const handleOnChangeWithImage = event => {
     setWithImage(event.target.value)
-    if (event.target.value === 0) {
-      const filteredRows = data.filter(row => {
+
+    if (event.target.value === '0') {
+      const filteredRows = newData.filter(row => {
         return Object.keys(row).some(field => {
           const fieldValue = row[field]
 
-          return fieldValue !== null && fieldValue !== undefined && fieldValue.toString() !== 'Not available'
+          return fieldValue === 'No Image'
         })
       })
       setFilteredData(filteredRows)
     } else {
-      const filteredRows = data.filter(row => {
+      const filteredRows = newData.filter(row => {
         return Object.keys(row).some(field => {
           const fieldValue = row[field]
 
-          return fieldValue !== null && fieldValue !== undefined && fieldValue.toString() === 'Not available'
+          return fieldValue !== null && fieldValue !== undefined && fieldValue.toString() !== 'No Image'
         })
       })
       setFilteredData(filteredRows)
@@ -505,9 +505,17 @@ const ListProducts = () => {
     <Grid container spacing={6}>
       <Grid item lg={12} xs={12}>
         <Card>
-          <CardHeader title='Filters' />
+          <Box sx={{ display: 'flex', color: theme => theme.palette.primary.main, margin: '15px ' }}>
+            <Box>
+              <Icon icon='bx:filter' width={40} height={40} />
+            </Box>
+            <Box>
+              <Typography variant='h6'>Filters</Typography>
+            </Box>
+            {/* <CardHeader title='Filters' /> */}
+          </Box>
           <Divider sx={{ m: '0 !important' }} />
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{ margin: '15px ' }}>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
                 <InputLabel id='demo-simple-select-label'>Image</InputLabel>
@@ -518,8 +526,8 @@ const ListProducts = () => {
                   label='Image'
                   fullWidth
                 >
-                  <MenuItem value={0}>With Image</MenuItem>
-                  <MenuItem value={1}>Without Image</MenuItem>
+                  <MenuItem value={'0'}>With Image</MenuItem>
+                  <MenuItem value={'1'}>Without Image</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -552,7 +560,7 @@ const ListProducts = () => {
               <TabContext value={TabValue}>
                 <TabList centered onChange={handleChangeTabValue} aria-label='icon tabs example'>
                   <Tab value='1' label='All Products' icon={<Icon icon='system-uicons:cubes' />} />
-                  <Tab value='2' label='Inventory Report' icon={<Icon icon='material-symbols:inventory:heart' />} />
+                  <Tab value='2' label='Inventory Report' icon={<Icon icon='material-symbols:inventory-sharp' />} />
                 </TabList>
                 <TabPanel value='1'>
                   {newData ? (
@@ -565,6 +573,7 @@ const ListProducts = () => {
                       slots={{ toolbar: QuickSearchToolbar }}
                       onPaginationModelChange={setPaginationModel}
                       rows={filteredData.length ? filteredData : newData}
+                      getRowHeight={() => 'auto'}
                       slotProps={{
                         baseButton: {
                           variant: 'outlined'
@@ -605,14 +614,7 @@ const ListProducts = () => {
           </Box>
         </Card>
       </Grid>
-
-      <FormProduct
-        isEdit={false}
-        open={open}
-        toggle={() => {
-          setOpen(prev => !prev)
-        }}
-      />
+      {openForm && <FormProduct isEdit={false} open={openForm} toggle={toggle} />}
     </Grid>
   )
 }

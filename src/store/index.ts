@@ -63,6 +63,7 @@ import storeWarrantiesSlice from './apps/products/warranties/storeWarrantiesSlic
 import getAllWarrantiesDetailsSlice from './apps/products/warranties/getAllWarrantiesDetailsSlice'
 import updateWarrantiesSlice from './apps/products/warranties/updateWarrantiesSlice'
 import deleteWarrantiesSlice from './apps/products/warranties/deleteWarrantiesSlice'
+import getCreateProductSlice from './apps/products/listProducts/getCreateProductSlice'
 
 export const store = configureStore({
   reducer: {
@@ -126,7 +127,8 @@ export const store = configureStore({
     storeWarrantiesSlice: storeWarrantiesSlice,
     getAllWarrantiesDetailsSlice: getAllWarrantiesDetailsSlice,
     updateWarrantiesSlice: updateWarrantiesSlice,
-    deleteWarrantiesSlice: deleteWarrantiesSlice
+    deleteWarrantiesSlice: deleteWarrantiesSlice,
+    getCreateProduct: getCreateProductSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

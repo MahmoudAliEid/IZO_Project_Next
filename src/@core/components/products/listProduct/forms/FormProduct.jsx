@@ -37,9 +37,12 @@ const CustomCloseButton = styled(IconButton)(({ theme }) => ({
   zIndex: 1000
 }))
 
-const FormProduct = ({ open, toggle, isEdit, itemId }) => {
+const FormProduct = ({ isEdit, open, toggle, itemId }) => {
   //** Test */
-  console.log('FormProduct open itemId toggle isEdit 🐱‍👤', open, itemId, toggle, isEdit)
+  console.log('open 🐱‍👤', open)
+  console.log('toggle 🐱‍👤', toggle)
+  console.log('itemId 🐱‍👤', itemId)
+  console.log('isEdit 🐱‍👤', isEdit)
   const handleClose = () => {
     toggle()
   }
@@ -73,6 +76,7 @@ const FormProduct = ({ open, toggle, isEdit, itemId }) => {
             padding: '0 !important'
           }}
         >
+          {/* <h1>Hi, I'm Mahmoud</h1> */}
           {<StepperAddProduct isEdit={isEdit} itemId={itemId} />}
         </DialogContent>
       </Dialog>

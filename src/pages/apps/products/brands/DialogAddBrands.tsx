@@ -26,6 +26,12 @@ import Checkbox from '@mui/material/Checkbox';
 
 const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
 
+
+  console.log(isEdit, "isEdit for edit");
+
+  console.log(open, "open for edit");
+  console.log(toggle, "toggle for edit");
+
   // console.log(itemId, "itemId for edit");
 
   const dispatch = useDispatch()
