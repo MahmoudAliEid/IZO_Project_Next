@@ -20,7 +20,7 @@ import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 // ** redux imports
 import { useDispatch, useSelector } from 'react-redux'
 
-ort { getAllWarranties } from 'src/store/apps/products/warranties/getallWarrantiesSlice'
+import { getAllWarranties } from 'src/store/apps/products/warranties/getallWarrantiesSlice'
 import { deleteWarranty } from 'src/store/apps/products/warranties/deleteWarrantiesSlice'
 
 // **icons
@@ -31,6 +31,8 @@ import IconButton from '@mui/material/IconButton'
 import Icon from 'src/@core/components/icon'
 import DialogAddBrands from './DialogAddWarranties'
 import DialogDeleteWarranties from './DialogDeleteWarranties'
+import MainDone from 'src/@core/components/mainLoading/MainDone'
+import LottieAnimation from 'src/@core/components/utilities/loadingComp';
 
 const escapeRegExp = (value: string) => {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')

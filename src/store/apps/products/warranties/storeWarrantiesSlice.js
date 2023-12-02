@@ -22,22 +22,27 @@ export const storeWarranty = createAsyncThunk('warranties/storeWarranty', async 
 // Slice for warranties
 export const warrantySlice = createSlice({
   name: 'warranties',
-  initialState: { entities: [], loading: 'idle', error: null, status: 'idle' },
+  initialState: { entities: [], loading: true, error: false, success: false, status: '' },
   reducers: {},
   extraReducers: builder => {
     builder
       .addCase(storeWarranty.pending, state => {
-        state.loading = 'loading'
+        state.loading = true
+        state.error = false
+        state.success = false
       })
       .addCase(storeWarranty.fulfilled, (state, action) => {
-        state.loading = 'idle'
+        state.loading = true
+        state.success = false
+        state.error = false
         state.entities = action.payload
         state.status = action.payload.status
         notify('Warranty successfully stored.', 'success')
       })
       .addCase(storeWarranty.rejected, (state, action) => {
-        state.loading = 'idle'
-        state.error = action.payload
+        state.loading = true
+        state.error = false
+        state.success = false
         state.status = action.payload.status
 
         // console.log(action.payload.status, '===> action.payload.status')

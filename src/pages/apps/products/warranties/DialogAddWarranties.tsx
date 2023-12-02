@@ -24,11 +24,13 @@ import { InputLabel } from '@mui/material';
 import { Select } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { FormHelperText } from '@mui/material';
+import LottieAnimation from 'src/@core/components/utilities/loadingComp'
+import MainDone from 'src/@core/components/mainLoading/MainDone'
 
 const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
 
   // console.log(itemId, "itemId for edit 🔥🔥");
-
+  const [openLottie, setOpenLottie] = useState<boolean>(false)
   const dispatch = useDispatch()
   const [durationType, setDurationType] = useState<any>([
     "days", "months", "years"
@@ -72,6 +74,11 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
 
 
   const storeWarrantiesResponse = useSelector((state: { storeWarrantiesSlice: { data: any } }) => state.storeWarrantiesSlice.entities);
+  const storeWarrantiesResponseStatuse = useSelector((state: { storeWarrantiesSlice: { data: any } }) => state.storeWarrantiesSlice);
+
+  if (storeWarrantiesResponseStatuse) {
+    console.log(storeWarrantiesResponseStatuse, "storeWarrantiesResponseStatuse for edit 🔥🔥");
+  }
 
   useEffect(() => {
     if (storeWarrantiesResponse.status === 200) {
@@ -88,7 +95,10 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
     else {
 
       dispatch(storeWarranty(values));
+
     }
+
+    setOpenLottie(true)
     resetForm();
 
   }
@@ -120,6 +130,9 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
 
   return (
     <Fragment>
+      <LottieAnimation open={openLottie}
+        onClose={() => setOpenLottie(!openLottie)}
+        storeWarrantiesResponseStatuse={storeWarrantiesResponseStatuse} />
       <Dialog
         open={open}
         onClose={toggle}
