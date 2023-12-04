@@ -151,11 +151,11 @@ const ProductUnitForm = ({ open, setOpen }) => {
                 </Grid>
               </Grid>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 5, justifyContent: 'flex-end' }}>
+                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
+                  Cancel
+                </Button>
                 <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
                   Add
-                </Button>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
-                  Close
                 </Button>
               </Box>
             </form>

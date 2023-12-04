@@ -275,11 +275,11 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
                 </Grid>
               </Grid>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
+                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
+                  Cancel
+                </Button>
                 <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
                   Update
-                </Button>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
-                  Close
                 </Button>
               </Box>
             </form>

@@ -89,7 +89,7 @@ const UploadVideo = ({ initialValues, errors, touched, handleBlur, handleChange,
   const renderFilePreview = (file: FileProp) => {
     if (file.type.startsWith('video')) {
       return (
-        <video width="500" height="500" controls>
+        <video width="200" height="200" controls>
           <source src={URL.createObjectURL(file as any)} type={file.type} />
           Your browser does not support the video tag.
         </video>

@@ -15,6 +15,9 @@ import { FormikErrors, FormikTouched } from 'formik'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+// ** Link Next
+import Link from 'next/link'
+
 // ** Third Party Components
 import toast from 'react-hot-toast'
 import { useDropzone } from 'react-dropzone'
@@ -134,6 +137,13 @@ const Productmultipleimages: React.FC<Props> = ({
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
             <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
             <Typography color='textSecondary'>Allowed *.jpeg, *.jpg, *.png, *.gif</Typography>
+            <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
+              Drop files here or click{' '}
+              <Link href='/' onClick={e => e.preventDefault()}>
+                browse
+              </Link>{' '}
+              thorough your machine
+            </Typography>
           </Box>
         </Box>
       </div>

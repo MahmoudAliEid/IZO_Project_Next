@@ -1,21 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
-import { useState, Fragment } from 'react'
-
-// ** Next Import
-import Link from 'next/link'
+import { Fragment, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
+import List from '@mui/material/List'
 import Button from '@mui/material/Button'
+import ListItem from '@mui/material/ListItem'
+import IconButton from '@mui/material/IconButton'
 import { styled, useTheme } from '@mui/material/styles'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import toast from 'react-hot-toast'
-
-// ** Third Party Imports
-import { useDropzone } from 'react-dropzone'
-import Icon from 'src/@core/components/icon'
 import { FormikErrors, FormikTouched } from 'formik'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
+// ** Link Next
+import Link from 'next/link'
+
+// ** Third Party Components
+import toast from 'react-hot-toast'
+import { useDropzone } from 'react-dropzone'
 
 interface FileProp {
   name: string
@@ -55,19 +60,18 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const renderFilePreview = (file: FileProp) => {
-  if (file.type.startsWith('image')) {
-    return <img width={38} height={38} alt={file.name} src={URL.createObjectURL(file as any)} />
-  } else {
-    return <Icon icon='bx:file' />
-  }
-}
-
-const Productbrochure = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }: Props) => {
+const Productbarochure: React.FC<Props> = ({
+  initialValues,
+  errors,
+  touched,
+  handleBlur,
+  handleChange,
+  setFieldValue
+}) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
-  // ** Hook
+  // ** Hooks
   const theme = useTheme()
   const { getRootProps, getInputProps } = useDropzone({
     maxSize: 20000000, // 20MB in bytes
@@ -95,78 +99,75 @@ const Productbrochure = ({ initialValues, errors, touched, handleBlur, handleCha
     }
   })
 
+  const renderFilePreview = (file: FileProp) => {
+    if (file.type.startsWith('image')) {
+      return <img width={38} height={38} alt={file.name} src={URL.createObjectURL(file as any)} />
+    } else {
+      return <Icon icon='bx:file' />
+    }
+  }
+
+  const handleRemoveFile = (file: FileProp) => {
+    const uploadedFiles = files
+    const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
+    setFiles([...filtered])
+  }
+
+  const fileList = files.map((file: FileProp) => (
+    <ListItem key={file.name}>
+      <div className='file-details'>
+        <div className='file-preview'>{renderFilePreview(file)}</div>
+        <div>
+          <Typography className='file-name'>{file.name}</Typography>
+          <Typography className='file-size' variant='body2'>
+            {Math.round(file.size / 100) / 10 > 1000
+              ? `${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
+              : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
+          </Typography>
+        </div>
+      </div>
+      <IconButton onClick={() => handleRemoveFile(file)}>
+        <Icon icon='bx:x' fontSize={20} />
+      </IconButton>
+    </ListItem>
+  ))
+
+  const handleRemoveAllFiles = () => {
+    setFiles([])
+  }
+
   return (
-    <form>
-      <Fragment>
-        <Box
-          {...getRootProps({ className: 'dropzone' })}
-          sx={
-            files.length
-              ? { height: 150, display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }
-              : {}
-          }
-        >
-          <input {...getInputProps()} />
-          {files.length ? (
-            files.map((file: FileProp) => (
-              <Box
-                key={file.name}
-                sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}
-              >
-                <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-                  <div className='file-preview'
+    <Fragment>
+      <div {...getRootProps({ className: 'dropzone' })}>
+        <input {...getInputProps()} />
+        <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
+          <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
+          <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
+            <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
+            <Typography color='textSecondary'> Allowed File: .pdf, .csv, .zip, .doc, .docx, .jpeg, .jpg, .png</Typography>
+            <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
+              Drop files here or click{' '}
+              <Link href='/' onClick={e => e.preventDefault()}>
+                browse
+              </Link>{' '}
+              thorough your machine
+            </Typography>
 
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      width: '100%',
-                      height: '100%',
-                      border: '1px dashed #ccc',
-                      borderRadius: '5px',
-                      padding: '10px',
-                      boxSizing: 'border-box',
-                      cursor: 'pointer'
-                    }}
-                  >{renderFilePreview(file)}</div>
-                  <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
-                    {file.name}
-                  </Typography>
-                </Box>
-
-              </Box>
-            ))
-          ) : (
-            <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
-              <Img alt='Upload img' src={`/images/misc/uploadingFile.svg`} />
-              <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-                <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
-                <Typography color='textSecondary'>
-                  Allowed File: .pdf, .csv, .zip, .doc, .docx, .jpeg, .jpg, .png{' '}
-                </Typography>
-
-                <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
-                  Drop files here or click{' '}
-                  <Link href='/' onClick={e => e.preventDefault()}>
-                    browse
-                  </Link>{' '}
-                  through your machine
-                </Typography>
-              </Box>
-            </Box>
-          )}
-
-
-
+          </Box>
         </Box>
-        {files.length > 0 && (
-          <Button onClick={() => setFiles([])} size='large' color='error' variant='outlined' sx={{ mr: 3, mt: 3 }}>
-            Remove All
-          </Button>
-        )}
-      </Fragment>
-    </form>
+      </div>
+      {files.length ? (
+        <Fragment>
+          <List>{fileList}</List>
+          <div className='buttons'>
+            <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
+              Remove All
+            </Button>
+          </div>
+        </Fragment>
+      ) : null}
+    </Fragment>
   )
 }
 
-export default Productbrochure
+export default Productbarochure
