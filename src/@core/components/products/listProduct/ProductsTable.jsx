@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React & Components
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
@@ -129,7 +129,7 @@ const RowOptions = ({ id }) => {
   }
 
   return (
-    <>
+    <Fragment>
       <IconButton size='small' onClick={handleRowOptionsClick}>
         <Icon icon='bx:dots-vertical-rounded' />
       </IconButton>
@@ -200,7 +200,7 @@ const RowOptions = ({ id }) => {
       {openAlert && (
         <DeleteGlobalAlert name='Category' open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />
       )}
-    </>
+    </Fragment>
   )
 }
 

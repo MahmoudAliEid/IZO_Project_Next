@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { Fragment, useState } from 'react'
 
@@ -12,6 +13,7 @@ import ListItem from '@mui/material/ListItem'
 import IconButton from '@mui/material/IconButton'
 import { styled, useTheme } from '@mui/material/styles'
 import Typography, { TypographyProps } from '@mui/material/Typography'
+import { FormikErrors, FormikTouched } from 'formik';
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -25,6 +27,17 @@ interface FileProp {
   type: string
   size: number
 }
+
+interface Props {
+  initialValues: any; // replace 'any' with the actual type of your initialValues
+  errors: FormikErrors<any>; // replace 'any' with the actual type of your form values
+  touched: FormikTouched<any>; // replace 'any' with the actual type of your form values
+  handleBlur: (field: string) => void;
+  handleChange: (e: React.ChangeEvent<any>) => void; // replace 'any' with the actual type of your event
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
+}
+
+
 
 // Styled component for the upload image inside the dropzone area
 const Img = styled('img')(({ theme }) => ({
@@ -49,7 +62,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const UploadVideo = () => {
+const UploadVideo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }: Props) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
@@ -62,6 +75,7 @@ const UploadVideo = () => {
     },
     onDrop: (acceptedFiles: File[]) => {
       setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+      setFieldValue('productvideo', acceptedFiles.map((file: File) => Object.assign(file)))
     },
     onDropRejected: () => {
       toast.error('You can only upload 1 video at a time.', {
@@ -70,10 +84,7 @@ const UploadVideo = () => {
     }
   })
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault()
-    console.log(files, "files from upload video")
-  }
+
 
   const renderFilePreview = (file: FileProp) => {
     if (file.type.startsWith('video')) {
@@ -143,9 +154,6 @@ const UploadVideo = () => {
             <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
               Remove All
             </Button>
-            <Button variant='contained'
-              onClick={handleSubmit}
-            >Upload Files</Button>
           </div>
         </Fragment>
       ) : null}

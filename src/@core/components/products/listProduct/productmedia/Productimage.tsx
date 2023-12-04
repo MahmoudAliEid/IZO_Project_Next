@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { Fragment, useState } from 'react'
+
+// ** Next Import
+import Link from 'next/link'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -9,18 +13,28 @@ import ListItem from '@mui/material/ListItem'
 import IconButton from '@mui/material/IconButton'
 import { styled, useTheme } from '@mui/material/styles'
 import Typography, { TypographyProps } from '@mui/material/Typography'
+import { FormikErrors, FormikTouched } from 'formik'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
-// ** Third Party Components
 import toast from 'react-hot-toast'
+
+// ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
 
 interface FileProp {
   name: string
   type: string
   size: number
+}
+
+interface Props {
+  initialValues: any // replace 'any' with the actual type of your initialValues
+  errors: FormikErrors<any> // replace 'any' with the actual type of your form values
+  touched: FormikTouched<any> // replace 'any' with the actual type of your form values
+  handleBlur: (field: string) => void
+  handleChange: (e: React.ChangeEvent<any>) => void // replace 'any' with the actual type of your event
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
 }
 
 // Styled component for the upload image inside the dropzone area
@@ -46,30 +60,30 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const Productmultipleimages = () => {
+const Productimage = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }: Props) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
   // ** Hooks
   const theme = useTheme()
   const { getRootProps, getInputProps } = useDropzone({
+    maxFiles: 1,
     accept: {
       'image/*': ['.png', '.jpg', '.jpeg', '.gif']
     },
     onDrop: (acceptedFiles: File[]) => {
       setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+      setFieldValue(
+        'productImage',
+        acceptedFiles.map((file: File) => Object.assign(file))
+      )
     },
     onDropRejected: () => {
-      toast.error('You can only upload files with a maximum size of 2 MB.', {
+      toast.error('You can only upload image with a maximum size of 2 MB.', {
         duration: 2000
       })
     }
   })
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault()
-    console.log(files, "files from product multiple images")
-  }
 
   const renderFilePreview = (file: FileProp) => {
     if (file.type.startsWith('image')) {
@@ -116,7 +130,15 @@ const Productmultipleimages = () => {
           <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
             <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
-            <Typography color='textSecondary'>Allowed *.jpeg, *.jpg, *.png, *.gif</Typography>
+            <Typography color='textSecondary'>Allowed only 1 image</Typography>
+
+            <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
+              Drop files here or click{' '}
+              <Link href='/' onClick={e => e.preventDefault()}>
+                browse
+              </Link>{' '}
+              thorough your machine
+            </Typography>
           </Box>
         </Box>
       </div>
@@ -127,9 +149,6 @@ const Productmultipleimages = () => {
             <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
               Remove All
             </Button>
-            <Button variant='contained'
-              onClick={handleSubmit}
-            >Upload Files</Button>
           </div>
         </Fragment>
       ) : null}
@@ -137,4 +156,4 @@ const Productmultipleimages = () => {
   )
 }
 
-export default Productmultipleimages
+export default Productimage

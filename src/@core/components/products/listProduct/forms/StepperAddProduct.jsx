@@ -39,6 +39,7 @@ import Icon from 'src/@core/components/icon'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import StepperCustomDot from './StepperCustomDot'
 import ProductInfo from '../productInfo/ProductInfo'
+import ProductMedia from '../productmedia'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
@@ -136,7 +137,11 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     warranty_id: '',
     long_description: EditorState.createEmpty(),
     short_description: EditorState.createEmpty(),
-    location: ''
+    location: '',
+    productimage: [],
+    productmultipleimages: [],
+    productbrochure: [],
+    productvideo: []
   })
 
   // ** Test
@@ -197,7 +202,18 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
           </Fragment>
         )
       case 1:
-        return <Fragment key={step}>{/* //TODO: Create Product Media */}</Fragment>
+        return (
+          <Fragment key={step}>
+            <ProductMedia
+              initialValues={values}
+              errors={errors}
+              touched={touched}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+            />
+          </Fragment>
+        )
       case 2:
         return <Fragment key={step}>{/* //TODO: Create Product Additional Info*/}</Fragment>
       case 3:
