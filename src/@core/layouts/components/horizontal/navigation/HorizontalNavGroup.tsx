@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { SyntheticEvent, useState, useEffect, Fragment } from 'react'
 
@@ -180,7 +181,7 @@ const HorizontalNavGroup = (props: Props) => {
   }
 
   return (
-    <CanViewNavGroup navGroup={item}>
+    <Fragment>
       {/* @ts-ignore */}
       <MainWrapper {...(WrapperCondition ? { onClickAway: handleGroupClose } : { onMouseLeave: handleGroupClose })}>
         <ChildWrapper>
@@ -194,12 +195,12 @@ const HorizontalNavGroup = (props: Props) => {
                 ...(menuOpen ? { backgroundColor: 'action.hover' } : {}),
                 ...(!hasParent
                   ? {
-                      borderRadius: 1,
-                      '&.Mui-selected': {
-                        backgroundColor: mode === 'light' ? bgColors.primaryLight.backgroundColor : 'primary.main',
-                        '& .MuiTypography-root, & svg': { color: mode === 'light' ? 'primary.main' : 'common.white' }
-                      }
+                    borderRadius: 1,
+                    '&.Mui-selected': {
+                      backgroundColor: mode === 'light' ? bgColors.primaryLight.backgroundColor : 'primary.main',
+                      '& .MuiTypography-root, & svg': { color: mode === 'light' ? 'primary.main' : 'common.white' }
                     }
+                  }
                   : { py: 2.5 })
               }}
             >
@@ -285,7 +286,9 @@ const HorizontalNavGroup = (props: Props) => {
           </List>
         </ChildWrapper>
       </MainWrapper>
-    </CanViewNavGroup>
+    </Fragment>
+
+
   )
 }
 

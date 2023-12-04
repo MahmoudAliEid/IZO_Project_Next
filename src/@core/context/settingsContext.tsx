@@ -53,6 +53,7 @@ interface SettingsProviderProps {
   pageSettings?: PageSpecificSettings | void
 }
 
+
 const initialSettings: Settings = {
   themeColor: 'warning',
   mode: themeConfig.mode,
@@ -73,7 +74,8 @@ const initialSettings: Settings = {
 const staticSettings = {
   appBar: initialSettings.appBar,
   footer: initialSettings.footer,
-  layout: initialSettings.layout,
+
+  // layout: initialSettings.layout,
   navHidden: initialSettings.navHidden,
   lastLayout: initialSettings.lastLayout,
   toastPosition: initialSettings.toastPosition
@@ -103,9 +105,11 @@ const storeSettings = (settings: Settings) => {
 
   delete initSettings.appBar
   delete initSettings.footer
-  delete initSettings.layout
+
+  // delete initSettings.layout
   delete initSettings.navHidden
-  delete initSettings.lastLayout
+
+  // delete initSettings.lastLayout
   delete initSettings.toastPosition
   window.localStorage.setItem('settings', JSON.stringify(initSettings))
 }
