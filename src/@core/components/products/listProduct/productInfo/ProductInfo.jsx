@@ -15,7 +15,8 @@ import {
   Icon,
   Checkbox,
   FormControlLabel,
-  Typography
+  Typography,
+  FormHelperText
 } from '@mui/material'
 
 // ** Components
@@ -32,7 +33,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
 
-const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
+const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
   // ** State
   const [openUnit, setOpenUnit] = useState(false)
   const [openBrand, setOpenBrand] = useState(false)
@@ -45,7 +46,8 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
   const [subCategoriesData, setSubCategoriesData] = useState([])
   const [businessLocationsData, setBusinessLocationsData] = useState([])
   const [barcodeTypeData, setBarcodeTypeData] = useState([])
-  const [checkBox, setCheckBox] = useState(false)
+
+  // const [checkBox, setCheckBox] = useState(false)
   const [filteredSubCategoriesData, setFilteredSubCategoriesData] = useState([])
 
   // ** Selectors
@@ -89,10 +91,10 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
   }, [warranties, units, brands, categories, sub_categories, business_locations, barcode_type])
 
   // ** Functions
-  const handleOnChangeCheck = () => {
-    setCheckBox(prev => !prev)
-    setFieldValue('enable_stock', !checkBox)
-  }
+  // const handleOnChangeCheck = () => {
+  //   setCheckBox(prev => !prev)
+  //   setFieldValue('enable_stock', checkBox)
+  // }
   const handleUnitOnClick = () => {
     setOpenUnit(true)
   }
@@ -118,6 +120,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
             label='Product Name'
             value={initialValues.name}
             onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.name && !!errors.name}
+            helperText={touched.name && errors.name ? String(errors.name) : ''}
             name='name'
             required
           />
@@ -132,6 +137,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
             value={initialValues.code}
             onChange={handleChange}
             name='code'
+            onBlur={handleBlur}
+            error={touched.code && !!errors.code}
+            helperText={touched.code && errors.code ? String(errors.code) : ''}
             required
           />
         </FormControl>
@@ -139,7 +147,16 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <FormControl fullWidth>
-          <TextField fullWidth label='Sub Code' value={initialValues.code2} onChange={handleChange} name='code2' />
+          <TextField
+            fullWidth
+            label='Sub Code'
+            value={initialValues.code2}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.code2 && !!errors.code2}
+            helperText={touched.code2 && errors.code2 ? String(errors.code2) : ''}
+            name='code2'
+          />
         </FormControl>
       </Grid>
 
@@ -153,6 +170,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
             id='demo-simple-select'
             label='Barcode Type'
             fullWidth
+            onBlur={handleBlur}
+            error={touched.barcode_type && !!errors.barcode_type}
+            helperText={touched.barcode_type && errors.barcode_type ? String(errors.barcode_type) : ''}
           >
             <MenuItem value=''>
               <em>Select a brand</em>
@@ -178,6 +198,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
                 id='demo-simple-select'
                 label='Unit'
                 fullWidth
+                onBlur={handleBlur}
+                error={touched.unit_id && !!errors.unit_id}
+                helperText={touched.unit_id && errors.unit_id ? String(errors.unit_id) : ''}
               >
                 <MenuItem value=''>
                   <em>Select a unit</em>
@@ -215,6 +238,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
                 id='demo-simple-select'
                 label='Brand'
                 fullWidth
+                onBlur={handleBlur}
+                error={touched.brand_id && !!errors.brand_id}
+                helperText={touched.brand_id && errors.brand_id ? String(errors.brand_id) : ''}
               >
                 <MenuItem value=''>
                   <em>Select a brand</em>
@@ -252,6 +278,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
                 id='demo-simple-select'
                 label='Category'
                 fullWidth
+                onBlur={handleBlur}
+                error={touched.category_id && !!errors.category_id}
+                helperText={touched.category_id && errors.category_id ? String(errors.category_id) : ''}
               >
                 <MenuItem value=''>
                   <em>Select a category</em>
@@ -289,6 +318,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
                 id='demo-simple-select'
                 label='Sub Category'
                 fullWidth
+                onBlur={handleBlur}
+                error={touched.sub_category_id && !!errors.sub_category_id}
+                helperText={touched.sub_category_id && errors.sub_category_id ? String(errors.sub_category_id) : ''}
               >
                 <MenuItem value=''>
                   <em>Select a Sub Category</em>
@@ -324,6 +356,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
             id='demo-simple-select'
             label='Business Locations'
             fullWidth
+            onBlur={handleBlur}
+            error={touched.location && !!errors.location}
+            helperText={touched.location && errors.location ? String(errors.location) : ''}
           >
             <MenuItem value=''>
               <em>Select a location</em>
@@ -347,6 +382,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
             id='demo-simple-select'
             label='Warranty'
             fullWidth
+            onBlur={handleBlur}
+            error={touched.warranty_id && !!errors.warranty_id}
+            helperText={touched.warranty_id && errors.warranty_id ? String(errors.warranty_id) : ''}
           >
             <MenuItem value=''>
               <em>Select a warranty</em>
@@ -362,30 +400,32 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <FormControl fullWidth>
-          {/* <InputLabel label='Manage Stock?' id='checkbox-mange-stock'>
-            Manage Stock?
-          </InputLabel>
-          <Checkbox
-            label='Manage Stock?'
-            id='checkbox-mange-stock'
-            color='primary'
-            onChange={handleOnChangeCheck}
-            checked={checkBox}
-          /> */}
           <FormControlLabel
-            label='Add as a Sub Category'
+            label='Manage Stock?'
             sx={{
               '& .MuiFormControlLabel-label': {
                 fontSize: '0.875rem',
                 color: 'text.secondary'
               }
             }}
-            control={<Checkbox checked={checkBox} color='primary' onChange={handleOnChangeCheck} />}
+            control={
+              <Checkbox
+                name='enable_stock'
+                checked={initialValues.enable_stock}
+                color='primary'
+                onChange={e => {
+                  setFieldValue('enable_stock', e.target.checked === true ? true : false)
+                }}
+                onBlur={handleBlur}
+                error={touched.enable_stock && !!errors.enable_stock}
+              />
+            }
           />
+          <FormHelperText>Enable stock management at product level</FormHelperText>
         </FormControl>
       </Grid>
 
-      {checkBox ? (
+      {initialValues.enable_stock === true ? (
         <Grid item xs={12} lg={6} md={6} sm={12}>
           <FormControl fullWidth>
             <TextField
@@ -394,6 +434,9 @@ const ProductInfo = ({ initialValues, handleChange, setFieldValue }) => {
               value={initialValues.alert_quantity}
               onChange={handleChange}
               name='alert_quantity'
+              onBlur={handleBlur}
+              error={touched.alert_quantity && !!errors.alert_quantity}
+              helperText={touched.alert_quantity && errors.alert_quantity ? String(errors.alert_quantity) : ''}
             />
           </FormControl>
         </Grid>

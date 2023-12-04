@@ -123,22 +123,20 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const [url, setUrl] = useState('')
   const [activeStep, setActiveStep] = useState(0)
   const [initialValues, setInitialValues] = useState({
-    productInfo: {
-      name: '',
-      code: '',
-      code2: '',
-      barcode_type: '',
-      unit_id: '',
-      brand_id: '',
-      category_id: '',
-      sub_category_id: '',
-      enable_stock: false,
-      alert_quantity: '',
-      warranty_id: '',
-      long_description: EditorState.createEmpty(),
-      short_description: EditorState.createEmpty(),
-      location: ''
-    }
+    name: '',
+    code: '',
+    code2: '',
+    barcode_type: '',
+    unit_id: '',
+    brand_id: '',
+    category_id: '',
+    sub_category_id: '',
+    enable_stock: false,
+    alert_quantity: null,
+    warranty_id: '',
+    long_description: EditorState.createEmpty(),
+    short_description: EditorState.createEmpty(),
+    location: ''
   })
 
   // ** Test
@@ -186,7 +184,14 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
             // handleBlur={handleBlur}
             // setFieldValue={setFieldValue} */}
 
-            <ProductInfo initialValues={values} handleChange={handleChange} setFieldValue={setFieldValue} />
+            <ProductInfo
+              initialValues={values}
+              errors={errors}
+              touched={touched}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+            />
 
             {/* <h1> test {console.log(' hi my name Mahmoud')}</h1> */}
           </Fragment>
@@ -213,7 +218,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   //   first_name: Yup.string().required('First name is required'),
   //   middle_name: Yup.string(),
   //   last_name: Yup.string().required('Last name is required'),
-  //   tax_number: Yup.string().required('Tax number is required'),
+  //   tax_string: Yup.string().required('Tax number is required'),
   //   pay_term_number: Yup.string(),
   //   pay_term_type: Yup.string(),
   //   mobile: Yup.string().required('Mobile number is required'),
@@ -246,6 +251,23 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   // });
 
   // ** Submit
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+
+    code: Yup.string().required('Code is required'),
+    code2: Yup.string(),
+    barcode_type: Yup.string(),
+    unit_id: Yup.string(),
+    brand_id: Yup.string(),
+    category_id: Yup.string(),
+    sub_category_id: Yup.string(),
+    enable_stock: Yup.boolean(),
+    alert_quantity: Yup.string().required('Alert quantity is required when stock is enabled'),
+    warranty_id: Yup.string(),
+    location: Yup.string()
+  })
+
   const handleSubmitForm = (values, { resetForm }) => {
     // ** Test
     console.log(values, 'from submit Product 🐱‍🏍')
@@ -268,7 +290,12 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       )
     } else {
       return (
-        <Formik initialValues={initialValues.productInfo} onSubmit={handleSubmitForm} enableReinitialize={true}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmitForm}
+          enableReinitialize={true}
+        >
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
             <form>
               <Grid container spacing={5} mt={5}>

@@ -37,7 +37,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import { Formik } from 'formik'
 
 // import { styled } from '@mui/material/styles'
-// import * as Yup from 'yup'
+import * as Yup from 'yup'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
@@ -282,12 +282,12 @@ const columns = [
   }
 ]
 
-// const validationSchema = Yup.object().shape({
-//   prefix: Yup.string(),
-//   firstName: Yup.string().required('First name is required'),
-//   lastName: Yup.string().required('Last name is required'),
-//   email: Yup.string().email('Invalid email address').required('Email is required')
-// })
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+  amount: Yup.string().required('amount is required'),
+  rice_calculation_type: Yup.string().required('Price Calculation Type is required'),
+  selling_price_group_id: Yup.string().required('Sale Price Group is required')
+})
 
 const CustomerGroups = () => {
   // ** State
@@ -472,7 +472,12 @@ const CustomerGroups = () => {
             <DialogContentText variant='body2' id='customer-group-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
               Add Customer Group details will receive a privacy audit.
             </DialogContentText>
-            <Formik initialValues={formInputData} onSubmit={handleSubmit} enableReinitialize={true}>
+            <Formik
+              initialValues={formInputData}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+              enableReinitialize={true}
+            >
               {({ values, handleBlur, handleChange, handleSubmit }) => (
                 <form onSubmit={handleSubmit}>
                   <Grid container spacing={6}>
