@@ -38,7 +38,8 @@ const MenuHeaderWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   overflow: 'hidden',
   alignItems: 'center',
   marginTop: theme.spacing(3),
-  paddingRight: theme.spacing(5),
+
+  // paddingRight: theme.spacing(5),
   justifyContent: 'space-between',
   transition: 'padding .25s ease-in-out',
   minHeight: theme.mixins.toolbar.minHeight
@@ -47,7 +48,9 @@ const MenuHeaderWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 const LinkStyled = styled(Link)({
   display: 'flex',
   alignItems: 'center',
-  textDecoration: 'none'
+  textDecoration: 'none',
+  justifyContent: 'center',
+  alignContent: 'center',
 })
 
 const VerticalNavHeader = (props: Props) => {
@@ -116,7 +119,7 @@ const VerticalNavHeader = (props: Props) => {
   }
 
   return (
-    <MenuHeaderWrapper className='nav-header' sx={{ pl: menuHeaderPaddingLeft() }}>
+    <MenuHeaderWrapper className='nav-header' sx={{ margin: 'auto ' }}>
       {userNavMenuBranding ? (
         userNavMenuBranding(props)
       ) : (
