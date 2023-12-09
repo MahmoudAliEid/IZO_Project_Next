@@ -66,6 +66,15 @@ import deleteWarrantiesSlice from './apps/products/warranties/deleteWarrantiesSl
 import getCreateProductSlice from './apps/products/listProducts/getCreateProductSlice'
 import getProductsSlice from './apps/products/listProducts/getProductsSlice'
 import postDeleteProductSlice from './apps/products/listProducts/postDeleteProductSlice'
+import getSPGroupSlice from './apps/products/salePriceGroup/getSPGroupSlice'
+import postDeleteSPGroupSlice from './apps/products/salePriceGroup/postDeleteSPGroupSlice'
+import postEditPGroupSSlice from './apps/products/salePriceGroup/postEditSPGroupSlice'
+import getEditSPGroupSlice from './apps/products/salePriceGroup/getEditSPGroupSlice'
+import getCreateSPGroupSlice from './apps/products/salePriceGroup/getCreateSPGroupSlice'
+import postCreateSPGroupSlice from './apps/products/salePriceGroup/postCreateSPGroupSlice'
+import postChangeStatusSlice from './apps/products/salePriceGroup/postChangeStatusSlice'
+import postCreateProductUnitSlice from './apps/products/listProducts/actions/postCreateProductUnitSlice'
+import getCreateProductUnitSlice from './apps/products/listProducts/actions/getCreateProductUnitSlice'
 
 export const store = configureStore({
   reducer: {
@@ -132,7 +141,16 @@ export const store = configureStore({
     deleteWarrantiesSlice: deleteWarrantiesSlice,
     getCreateProduct: getCreateProductSlice,
     getProducts: getProductsSlice,
-    postDeleteProduct: postDeleteProductSlice
+    postDeleteProduct: postDeleteProductSlice,
+    postCreateProductUnit: postCreateProductUnitSlice,
+    getCreateProductUnit: getCreateProductUnitSlice,
+    postDeleteSPGroup: postDeleteSPGroupSlice,
+    postCreateSPGroup: postCreateSPGroupSlice,
+    postEditSPGroup: postEditPGroupSSlice,
+    postChangeStatus: postChangeStatusSlice,
+    getSPGroup: getSPGroupSlice,
+    getEditSPGroup: getEditSPGroupSlice,
+    getCreateSPGroup: getCreateSPGroupSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

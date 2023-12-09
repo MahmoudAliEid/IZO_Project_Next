@@ -5,8 +5,10 @@ import React, { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
+
 import Typography from '@mui/material/Typography'
+import { Card, CardContent, CardHeader, CardTitle } from '@mui/material'
 
 // ** Custom Components Imports
 import PageHeader from 'src/@core/components/page-header'
@@ -30,58 +32,73 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+  const theme = useTheme()
+
   return (
     <DropzoneWrapper>
       <Grid container spacing={6} className='match-height'>
         <Grid item xs={12}>
-          <card>
-            <Productimage
-              initialValues={initialValues}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              setFieldValue={setFieldValue}
-            />
-          </card>
+          <Card>
+            <CardHeader title='Product Image' sx={{ color: `${theme.palette.primary.main} !important` }} />
+            <CardContent>
+              <Productimage
+                initialValues={initialValues}
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+              />
+            </CardContent>
+          </Card>
         </Grid>
 
         <Grid item xs={12}>
-          <card title='Product multiple images'>
-            <Productmultipleimages
-              initialValues={initialValues}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              setFieldValue={setFieldValue}
-            />
-          </card>
+          <Card>
+            <CardHeader title='Product Multiple Images' />
+
+            <CardContent>
+              <Productmultipleimages
+                initialValues={initialValues}
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+              />
+            </CardContent>
+          </Card>
         </Grid>
 
         <Grid item xs={12}>
-          <card title='Product brochure'>
-            <Productbrochure
-              initialValues={initialValues}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              setFieldValue={setFieldValue}
-            />
-          </card>
+          <Card>
+            <CardHeader title='Product Brochure' />
+            <CardContent>
+              <Productbrochure
+                initialValues={initialValues}
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+              />
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12}>
-          <card title='Product video'>
-            <UploadVideo
-              initialValues={initialValues}
-              errors={errors}
-              touched={touched}
-              handleBlur={handleBlur}
-              handleChange={handleChange}
-              setFieldValue={setFieldValue}
-            />
-          </card>
+          <Card>
+            <CardHeader title='Product Video' />
+            <CardContent>
+              <UploadVideo
+                initialValues={initialValues}
+                errors={errors}
+                touched={touched}
+                handleBlur={handleBlur}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+              />
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
     </DropzoneWrapper>

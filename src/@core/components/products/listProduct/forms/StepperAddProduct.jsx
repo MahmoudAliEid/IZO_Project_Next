@@ -58,6 +58,7 @@ import DatePicker from 'react-datepicker'
 
 // import CustomInput from './PickersCustomInput'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import ProductAdditionalInfo from '../productAdditionalInfo/ProductAdditionalInfo'
 
 const steps = [
   {
@@ -129,6 +130,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     code2: '',
     barcode_type: '',
     unit_id: '',
+    sub_unit_id: [],
     brand_id: '',
     category_id: '',
     sub_category_id: '',
@@ -141,7 +143,15 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     productimage: [],
     productmultipleimages: [],
     productbrochure: [],
-    productvideo: []
+    productvideo: [],
+    expiry_period_type: 'no Applicable',
+    not_for_sale: false,
+    expiry_period: '',
+    weight: '',
+    custom_field_1: '',
+    custom_field_2: '',
+    custom_field_3: '',
+    custom_field_4: ''
   })
 
   // ** Test
@@ -184,11 +194,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
         return (
           <Fragment key={step}>
             {/* // **Done: Create Product Information Section here  */}
-            {/* // initialValues={values}
-            // handleChange={handleChange}
-            // handleBlur={handleBlur}
-            // setFieldValue={setFieldValue} */}
-
             <ProductInfo
               initialValues={values}
               errors={errors}
@@ -197,8 +202,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
               handleChange={handleChange}
               setFieldValue={setFieldValue}
             />
-
-            {/* <h1> test {console.log(' hi my name Mahmoud')}</h1> */}
           </Fragment>
         )
       case 1:
@@ -215,7 +218,18 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
           </Fragment>
         )
       case 2:
-        return <Fragment key={step}>{/* //TODO: Create Product Additional Info*/}</Fragment>
+        return (
+          <Fragment key={step}>
+            <ProductAdditionalInfo
+              initialValues={values}
+              errors={errors}
+              touched={touched}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+            />
+          </Fragment>
+        )
       case 3:
         return <Fragment key={step}>{/* //TODO: Create Product Prices*/}</Fragment>
       case 4:
@@ -226,51 +240,8 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   }
 
   //** Validation
-
-  // const validationSchema = Yup.object().shape({
-  //   type: Yup.string().required('Type is required'),
-  //   supplier_business_name: Yup.string().required('Supplier business name is required'),
-  //   prefix: Yup.string().required('Prefix is required'),
-  //   first_name: Yup.string().required('First name is required'),
-  //   middle_name: Yup.string(),
-  //   last_name: Yup.string().required('Last name is required'),
-  //   tax_string: Yup.string().required('Tax number is required'),
-  //   pay_term_number: Yup.string(),
-  //   pay_term_type: Yup.string(),
-  //   mobile: Yup.string().required('Mobile number is required'),
-  //   landline: Yup.string().required('Landline is required'),
-  //   alternate_number: Yup.string(),
-  //   city: Yup.string().required('City is required'),
-  //   state: Yup.string().required('State is required'),
-  //   country: Yup.string().required('Country is required'),
-  //   address_line_1: Yup.string(),
-  //   address_line_2: Yup.string(),
-  //   customer_group_id: Yup.string().required('Customer group ID is required'),
-  //   zip_code: Yup.string().required('Zip code is required'),
-  //   contact_id: Yup.string(),
-  //   custom_field1: Yup.string(),
-  //   custom_field2: Yup.string(),
-  //   custom_field3: Yup.string(),
-  //   custom_field4: Yup.string(),
-  //   custom_field5: Yup.string(),
-  //   custom_field6: Yup.string(),
-  //   custom_field7: Yup.string(),
-  //   custom_field8: Yup.string(),
-  //   custom_field9: Yup.string(),
-  //   custom_field10: Yup.string(),
-  //   email: Yup.string().email('Invalid email address').required('Email is required'),
-  //   shipping_address: Yup.string().required('Shipping address is required'),
-  //   position: Yup.string().required('Position is required'),
-  //   dob: Yup.date().required('Date of birth is required'),
-  //   credit_limit: Yup.string().required('Credit limit is required'),
-  //   opening_balance: Yup.string().required('Opening balance is required'),
-  // });
-
-  // ** Submit
-
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-
     code: Yup.string().required('Code is required'),
     code2: Yup.string(),
     barcode_type: Yup.string(),
@@ -284,6 +255,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     location: Yup.string()
   })
 
+  // ** Submit
   const handleSubmitForm = (values, { resetForm }) => {
     // ** Test
     console.log(values, 'from submit Product 🐱‍🏍')

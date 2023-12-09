@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   TextField,
   FormControl,
@@ -14,58 +15,128 @@ import {
 } from '@mui/material'
 
 // import { useDispatch } from 'react-redux'
-// import useSubmitUser from 'src/hooks/useSubmitUser'
+import useSubmitUser from 'src/hooks/useSubmitUser'
 
-// import MainLoading from 'src/@core/components/mainLoading/MainLoading'
-
-// import { useTheme } from '@mui/material/styles'
 // ** Next Imports
-// import { getCookie } from 'cookies-next'
+import { getCookie } from 'cookies-next'
 
 import { Formik } from 'formik'
+import * as Yup from 'yup'
 
-import { useState } from 'react'
+import { postEditUnit } from 'src/store/apps/products/units/postEditUnitSlice'
+import { fetchEditUnit } from 'src/store/apps/products/units/getEditUnitSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
+import { postCreateProductUnit } from 'src/store/apps/products/listProducts/actions/postCreateProductUnitSlice'
+import { fetchCreateProductUnit } from 'src/store/apps/products/listProducts/actions/getCreateProductUnitSlice'
 
-// import { useSelector, useDispatch } from 'react-redux'
-
-const ProductUnitForm = ({ open, setOpen }) => {
+const ProductUnitForm = ({ type, open, setOpen, itemId, setNewUnit, subUnit }) => {
   // ** State
 
+  const [units, setUnits] = useState([])
+  const [unitsEdit, setUnitsEdit] = useState({})
   const [initialValues, setInitialValues] = useState({
     name: '',
     short_name: '',
-    allow_decimal: 0
+    allow_decimal: 0,
+    multiple_unit: false,
+    sub_qty: '',
+    parent_unit: null
   })
 
   // ** Cookies
-  // const token = getCookie('token')
+  const token = getCookie('token')
+
+  // const url = getCookie('apiUrl')
+  const unitData = useSelector(state => state.getCreateProductUnit?.data?.value.units)
+  const dataEditInfo = useSelector(state => state.getEditUnit?.data?.value.info[0])
+  const dataEditUnits = useSelector(state => state.getEditUnit?.data?.value.units)
+
+  console.log(dataEditInfo, 'info of unit to product')
 
   // ** Hook
-  // const dispatch = useDispatch()
-  // const { handleSubmitData } = useSubmitUser()
+  const dispatch = useDispatch()
 
-  // ** Functions
+  useEffect(() => {
+    setUnits(unitData)
+
+    setUnitsEdit(dataEditInfo)
+  }, [unitData, dataEditInfo])
+
+  useEffect(() => {
+    if (subUnit) {
+      setInitialValues(prev => ({
+        ...prev,
+        multiple_unit: subUnit ? true : false
+      }))
+    }
+  }, [subUnit])
+
+  useEffect(() => {
+    if (dataEditUnits && type === 'Edit') {
+      setUnits(dataEditUnits)
+    }
+  }, [dataEditUnits, type])
+
+  useEffect(() => {
+    if (unitsEdit && type === 'Edit') {
+      setInitialValues(prev => ({
+        ...prev,
+        name: unitsEdit.name || '',
+        allow_decimal: unitsEdit.allow_decimal || 0,
+        short_name: unitsEdit.short_name || '',
+        sub_qty: unitsEdit.base_unit_multiplier || '',
+        parent_unit: unitsEdit.base_unit_id || '',
+        multiple_unit: unitsEdit.base_unit_id ? true : false
+      }))
+    }
+  }, [unitsEdit, type])
+
+  useEffect(() => {
+    dispatch(fetchCreateProductUnit())
+  }, [dispatch])
+
+  useEffect(() => {
+    if (type === 'Edit' && itemId) {
+      dispatch(fetchEditUnit({ itemId }))
+    }
+  }, [dispatch, token, type, itemId])
+
+  const { handleSubmitData } = useSubmitUser()
+
+  // ** Validation schema
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required(' Name is required'),
+    short_name: Yup.string().required('Short name is required')
+  })
+
   const handleClose = () => {
     setOpen(false)
 
     setInitialValues({})
   }
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     // Handle form submission logic here
-    console.log(values, 'Values form  add Category')
+    console.log(values, 'Values form  add product units')
 
     console.log('Add btn clicked')
-
-    // if (type === 'Add') {
-    //   handleSubmitData(postAddUnit, fetchUnits, values)
-    // } else if (type === 'Edit' && itemId) {
-    //   handleSubmitData(postEditUnit, fetchUnits, values, itemId)
-    // }
+    if (type === 'Add') {
+      await handleSubmitData(postCreateProductUnit, fetchCreateProduct, values)
+      if (!subUnit) {
+        setTimeout(() => {
+          setNewUnit(true)
+        }, 4000)
+      }
+    } else if (type === 'Edit' && itemId) {
+      handleSubmitData(postEditUnit, fetchCreateProduct, values, itemId)
+    }
 
     setOpen(false)
     resetForm()
   }
+
+  console.log(units, 'units')
 
   return (
     <Dialog
@@ -91,7 +162,7 @@ const ProductUnitForm = ({ open, setOpen }) => {
           pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
         }}
       >
-        Add Unit Information
+        {type} Product Unit Information
       </DialogTitle>
       <DialogContent
         sx={{
@@ -102,8 +173,13 @@ const ProductUnitForm = ({ open, setOpen }) => {
         <DialogContentText variant='body2' id='unit-edit-add-description' sx={{ textAlign: 'center', mb: 7 }}>
           Unit details will receive a privacy audit.
         </DialogContentText>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize={true}>
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          enableReinitialize={true}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
             <form onSubmit={handleSubmit}>
               <Grid container spacing={6}>
                 <Grid item xs={12}>
@@ -114,6 +190,8 @@ const ProductUnitForm = ({ open, setOpen }) => {
                       value={values.name}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      error={Boolean(touched.name && !!errors.name)}
+                      helperText={touched.name && !!errors.name ? String(errors.name) : null}
                       name='name'
                       required
                     />
@@ -128,6 +206,8 @@ const ProductUnitForm = ({ open, setOpen }) => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       name='short_name'
+                      error={touched.short_name && !!errors.short_name}
+                      helperText={touched.short_name && errors.short_name ? String(errors.short_name) : ''}
                       required
                     />
                   </FormControl>
@@ -149,13 +229,90 @@ const ProductUnitForm = ({ open, setOpen }) => {
                     </Select>
                   </FormControl>
                 </Grid>
+
+                {/* {values.multiple_unit ? (
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <FormControlLabel
+                        label='Add as Multiple of other Unit'
+                        sx={{
+                          '& .MuiFormControlLabel-label': {
+                            fontSize: '0.875rem',
+                            color: 'text.secondary'
+                          }
+                        }}
+                        control={
+                          <Checkbox
+                            checked={values.multiple_unit}
+                            color='primary'
+                            onChange={() => {
+                              setFieldValue('multiple_unit', !values.multiple_unit)
+                            }}
+                          />
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                ) : null} */}
+
+                {values.multiple_unit ? (
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={4} sx={{ textAlign: 'center', justifyContent: 'center', alignContent: 'center' }}>
+                        <TextField
+                          fullWidth
+                          multiline
+                          color='primary'
+                          value={`1 ${values.name ? values.name : 'Unit'} =`}
+                          disabled={true}
+                        />
+                      </Grid>
+                      <Grid item xs={4}>
+                        <FormControl fullWidth>
+                          <TextField
+                            fullWidth
+                            multiline
+                            label='Times Base Unit'
+                            name='sub_qty'
+                            value={values.sub_qty}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <FormControl fullWidth>
+                          <InputLabel id='demo-simple-select-standard-label'>Base Unit</InputLabel>
+                          <Select
+                            fullWidth
+                            labelId='demo-simple-select-standard-label'
+                            name='parent_unit'
+                            value={values.parent_unit}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            label='Base Unit'
+                          >
+                            <MenuItem value={null}>Null</MenuItem>
+                            {!units || units.length === 0
+                              ? null
+                              : units.map(item => (
+                                  <MenuItem value={item.id} key={item.id}>
+                                    {item.name}
+                                  </MenuItem>
+                                ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ) : null}
               </Grid>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 5, justifyContent: 'flex-end' }}>
-                <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-                  Add
+                <Button size='large' variant='outlined' sx={{ mr: 3 }} color='secondary' onClick={handleClose}>
+                  Cancel
                 </Button>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
-                  Close
+                <Button size='large' type='submit' variant='contained'>
+                  Add
                 </Button>
               </Box>
             </form>

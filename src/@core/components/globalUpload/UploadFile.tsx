@@ -60,12 +60,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const Productmultipleimages: React.FC<Props> = ({
-  initialValues,
-  errors,
-  touched,
-  handleBlur,
-  handleChange,
+const UploadFile: React.FC<Props> = ({
   setFieldValue
 }) => {
   // ** State
@@ -74,18 +69,22 @@ const Productmultipleimages: React.FC<Props> = ({
   // ** Hooks
   const theme = useTheme()
   const { getRootProps, getInputProps } = useDropzone({
+    maxSize: 10000000,
+    multiple: false,
     accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif']
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'application/vnd.ms-excel': ['.xls']
     },
+
     onDrop: (acceptedFiles: File[]) => {
       setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
       setFieldValue(
-        'productmultipleimages',
+        'file',
         acceptedFiles.map((file: File) => Object.assign(file))
       )
     },
     onDropRejected: () => {
-      toast.error('You can only upload files with a maximum size of 2 MB.', {
+      toast.error('You can only upload files with a maximum size of 10 MB.', {
         duration: 2000
       })
     }
@@ -103,6 +102,7 @@ const Productmultipleimages: React.FC<Props> = ({
     const uploadedFiles = files
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
     setFiles([...filtered])
+    setFieldValue('file', [...filtered])
   }
 
   const fileList = files.map((file: FileProp) => (
@@ -126,39 +126,44 @@ const Productmultipleimages: React.FC<Props> = ({
 
   const handleRemoveAllFiles = () => {
     setFiles([])
+    setFieldValue('file', [])
   }
 
   return (
-    <Fragment>
-      <div {...getRootProps({ className: 'dropzone' })}>
-        <input {...getInputProps()} />
-        <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
-          <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
-          <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-            <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
-            <Typography color='textSecondary'>Allowed *.jpeg, *.jpg, *.png, *.gif</Typography>
-            <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
-              Drop files here or click{' '}
-              <Link href='/' onClick={e => e.preventDefault()}>
-                browse
-              </Link>{' '}
-              thorough your machine
-            </Typography>
+    <Fragment >
+      <Box sx={{ border: '1px dashed  ', borderColor: `${theme.palette.primary.main}`, p: 5 }}>
+
+        <div {...getRootProps({ className: 'dropzone' })}>
+          <input {...getInputProps()} />
+          <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
+            <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
+              <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
+              <Typography color='textSecondary'> Allowed File: .xls, .xlsx</Typography>
+              <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
+                Drop files here or click{' '}
+                <Link href='/' onClick={e => e.preventDefault()}>
+                  browse
+                </Link>{' '}
+                thorough your machine
+              </Typography>
+
+            </Box>
           </Box>
-        </Box>
-      </div>
-      {files.length ? (
-        <Fragment>
-          <List>{fileList}</List>
-          <div className='buttons'>
-            <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
-              Remove All
-            </Button>
-          </div>
-        </Fragment>
-      ) : null}
+        </div>
+        {files.length ? (
+          <Fragment>
+            <List>{fileList}</List>
+            <div className='buttons'>
+              <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
+                Remove All
+              </Button>
+            </div>
+          </Fragment>
+        ) : null}
+      </Box>
     </Fragment>
   )
 }
 
-export default Productmultipleimages
+export default UploadFile

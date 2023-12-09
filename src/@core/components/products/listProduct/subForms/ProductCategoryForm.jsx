@@ -13,15 +13,15 @@ import {
   InputLabel
 } from '@mui/material'
 
-import useSubmitUser from 'src/hooks/useSubmitUser'
+import * as Yup from 'yup'
 
+import useSubmitUser from 'src/hooks/useSubmitUser'
 import { Formik } from 'formik'
 import UploadImage from 'src/@core/components/globalUpload/UploadImage'
 import { useEffect, useState } from 'react'
 import { postCreateCategory } from 'src/store/apps/products/categories/postCreateCategorySlice'
-import { fetchCategories } from 'src/store/apps/products/categories/getCategoriesSlice'
 import { fetchCreateCategory } from 'src/store/apps/products/categories/getCreateCategorySlice'
-import { fetchCategoriesTree } from 'src/store/apps/products/categories/getCategoriesTreeSlice'
+import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
 import { useSelector, useDispatch } from 'react-redux'
 
 const ProductCategoryForm = ({ subCat, open, setOpen }) => {
@@ -37,31 +37,25 @@ const ProductCategoryForm = ({ subCat, open, setOpen }) => {
     slug: ''
   })
 
-  // const statusOne = useSelector(state => state.getCreateCategory?.data.status)
-  // const statusTwo = useSelector(state => state.postCreateCategory?.data.status)
-
-  const categoryData = useSelector(state => state.getCreateCategory?.data?.categories)
+  const categoryData = useSelector(state => state.getCreateCategory?.data?.categories.categories)
 
   // ** Hook
-  // const theme = useTheme()
   const dispatch = useDispatch()
 
   useEffect(() => {
     setCategories(categoryData)
   }, [categoryData])
 
-  // useEffect(() => {
-  //   if (statusOne === 200 && statusTwo === 200) {
-  //     setIsLoading(false)
-  //   }
-  // }, [statusOne, statusTwo])
-
   useEffect(() => {
     dispatch(fetchCreateCategory())
   }, [dispatch])
 
-  // const dispatch = useDispatch()
   const { handleSubmitData } = useSubmitUser()
+
+  // ** Validation schema
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required')
+  })
 
   // ** Functions
   const handleClose = () => {
@@ -76,14 +70,16 @@ const ProductCategoryForm = ({ subCat, open, setOpen }) => {
 
     console.log('Add btn clicked')
 
-    await handleSubmitData(postCreateCategory, fetchCategories, { ...values, image })
-    dispatch(fetchCategoriesTree())
+    await handleSubmitData(postCreateCategory, fetchCreateProduct, { ...values, image })
+    dispatch(fetchCreateProduct())
 
     setImage('')
     setOpen(false)
 
     resetForm()
   }
+
+  console.log('Categories', categories)
 
   return (
     <Dialog
@@ -109,7 +105,7 @@ const ProductCategoryForm = ({ subCat, open, setOpen }) => {
           pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
         }}
       >
-        Add CategoryInformation
+        Add Category Information
       </DialogTitle>
       <DialogContent
         sx={{
@@ -120,8 +116,13 @@ const ProductCategoryForm = ({ subCat, open, setOpen }) => {
         <DialogContentText variant='body2' id='customer-group-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
           Categories details will receive a privacy audit.
         </DialogContentText>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize={true}>
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          enableReinitialize={true}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
             <form onSubmit={handleSubmit}>
               <Grid container spacing={6}>
                 <Grid item xs={12}>
@@ -133,6 +134,8 @@ const ProductCategoryForm = ({ subCat, open, setOpen }) => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       name='name'
+                      error={Boolean(touched.name && !!errors.name)}
+                      helperText={touched.name && !!errors.name ? String(errors.name) : ''}
                       required
                     />
                   </FormControl>
@@ -212,9 +215,9 @@ const ProductCategoryForm = ({ subCat, open, setOpen }) => {
                         label='Select Parent Category'
                       >
                         <MenuItem value={0}>Null</MenuItem>
-                        {Object.keys(categories).length === 0
+                        {categories?.length === 0
                           ? null
-                          : categories.categories.map(item => (
+                          : categories?.map(item => (
                               <MenuItem value={item.id} key={item.id}>
                                 {item.value}
                               </MenuItem>
@@ -245,12 +248,12 @@ const ProductCategoryForm = ({ subCat, open, setOpen }) => {
                   </FormControl>
                 </Grid>
               </Grid>
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
-                <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-                  Add
+              <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, justifyContent: 'flex-end' }}>
+                <Button size='large' variant='outlined' sx={{ mr: 3 }} color='secondary' onClick={handleClose}>
+                  Cancel
                 </Button>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
-                  Close
+                <Button size='large' type='submit' variant='contained'>
+                  Add
                 </Button>
               </Box>
             </form>
