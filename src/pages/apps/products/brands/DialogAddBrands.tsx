@@ -23,8 +23,10 @@ import AddNewBrandImage from './AddNewBrandImage'
 import UploadImage from 'src/@core/components/globalUpload/UploadImage'
 import { FormControlLabel } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
+import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
 
-const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
+
+const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }: any) => {
 
 
   console.log(isEdit, "isEdit for edit");
@@ -92,10 +94,23 @@ const DialogAddBrands = ({ open, toggle, isEdit, itemId }: any) => {
     console.log(values, "values for submit");
     if (isEdit && itemId) {
       dispatch(updateBrand({ updateData: { ...values, image }, id: itemId }))
+
     }
     else {
 
-      dispatch(storeBrand({ ...values, image }));
+
+      if (isCustom) {
+        dispatch(storeBrand({ ...values, image })).then(() => {
+          dispatch(fetchCreateProduct()).then(() => {
+            setNewBrand(true)
+          })
+        })
+
+
+      } else {
+        dispatch(storeBrand({ ...values, image }));
+      }
+
     }
     resetForm();
 

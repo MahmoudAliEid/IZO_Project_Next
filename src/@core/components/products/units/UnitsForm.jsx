@@ -18,9 +18,8 @@ import {
 // import { useDispatch } from 'react-redux'
 import useSubmitUser from 'src/hooks/useSubmitUser'
 
-// import MainLoading from 'src/@core/components/mainLoading/MainLoading'
+import * as Yup from 'yup'
 
-// import { useTheme } from '@mui/material/styles'
 // ** Next Imports
 import { getCookie } from 'cookies-next'
 
@@ -52,7 +51,7 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
   const token = getCookie('token')
 
   // const url = getCookie('apiUrl')
-  const unitData = useSelector(state => state.getCreateUnit?.data?.value)
+  const unitData = useSelector(state => state.getCreateUnit?.data?.value.units)
   const dataEditInfo = useSelector(state => state.getEditUnit?.data?.value.info[0])
   const dataEditUnits = useSelector(state => state.getEditUnit?.data?.value.units)
 
@@ -112,6 +111,11 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
     setInitialValues({})
   }
 
+  // ** Validation schema
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required(' Name is required'),
+    short_name: Yup.string().required('Short name is required')
+  })
   const handleSubmit = (values, { resetForm }) => {
     // Handle form submission logic here
     console.log(values, 'Values form  add Category')
@@ -164,8 +168,13 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
         <DialogContentText variant='body2' id='unit-edit-add-description' sx={{ textAlign: 'center', mb: 7 }}>
           Unit details will receive a privacy audit.
         </DialogContentText>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize={true}>
-          {({ handleChange, handleBlur, setFieldValue, handleSubmit, values }) => (
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          enableReinitialize={true}
+        >
+          {({ handleChange, handleBlur, setFieldValue, handleSubmit, values, touched, errors }) => (
             <form onSubmit={handleSubmit}>
               <Grid container spacing={6}>
                 <Grid item xs={12}>
@@ -177,6 +186,8 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       name='name'
+                      error={touched.name && !!errors.name}
+                      helperText={touched.name && errors.name ? String(errors.name) : ''}
                       required
                     />
                   </FormControl>
@@ -190,6 +201,8 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       name='short_name'
+                      error={touched.short_name && !!errors.short_name}
+                      helperText={touched.short_name && errors.short_name ? String(errors.short_name) : ''}
                       required
                     />
                   </FormControl>
@@ -289,10 +302,10 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
                 ) : null}
               </Grid>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 5, justifyContent: 'flex-end' }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
+                <Button size='large' variant='outlined' sx={{ mr: 3 }} color='secondary' onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                <Button size='large' type='submit' variant='contained'>
                   {type}
                 </Button>
               </Box>

@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
-import MainLoading from 'src/@core/components/mainLoading/MainLoading'
-import MainDone from 'src/@core/components/mainLoading/MainDone'
 
 // Async Thunk Action for storing user
 export const postCreateCategory = createAsyncThunk('dashboard/postCreateCategory', async userData => {
@@ -34,12 +32,6 @@ export const postCreateCategory = createAsyncThunk('dashboard/postCreateCategory
     const response = await axios.post(`${url}/app/react/category/save`, formData, {
       headers // Pass the headers to the Axios request
     })
-
-    if (response?.data?.status === 200) {
-      return <MainDone isDone={response?.data?.status === 200 ? true : false} />
-    } else {
-      return <MainLoading isDone={response?.data?.status !== 200 ? true : false} />
-    }
 
     return response.data
   }
@@ -72,7 +64,7 @@ const postCreateCategorySlice = createSlice({
         state.loading = false
         state.error = action.payload
         console.log(action.payload)
-        notify(action.error.message, 'error')
+        notify('Their is an Error try again later', 'error')
       })
   }
 })

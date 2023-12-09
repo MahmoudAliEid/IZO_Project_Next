@@ -1,27 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** MUI Imports
-import Grid from '@mui/material/Grid'
-import { Box } from '@mui/material'
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import { styled } from '@mui/material/styles'
+import { Grid, Card, Box, CardContent, Button, CardActions, CardHeader, Typography, Alert } from '@mui/material'
+
+// ** Custom Components
+import UploadFile from 'src/@core/components/globalUpload/UploadFile'
 import TableBasic from 'src/views/table/mui/TableBasic'
-import Alert from '@mui/material/Alert'
 
-// ** Custom Components Imports
-import PageHeader from 'src/@core/components/page-header'
+// ** Formik
+import { Formik } from 'formik'
 
-// ** Styled Component
-import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
-
-// ** Demo Components Imports
-import FileUploaderSingle from 'src/views/forms/form-elements/file-uploader/FileUploaderSingle'
-
-const TypographyStyled = styled(Typography)(({ theme }) => ({
-  color: theme.palette.primary.main
-}))
-
+// ** Data for Table
 const tableData = [
   {
     columnNumber: 1,
@@ -61,50 +49,73 @@ const tableData = [
 ]
 
 const ImportContacts = () => {
+  const initialValues = {
+    file: []
+  }
+
+  const handleSubmitForm = (values, { resetForm }) => {
+    console.log('values 🐱‍👤', values)
+  }
+
+  console.log('initialValues 🐱‍👤', initialValues)
+
   return (
-    <DropzoneWrapper>
-      <Grid container spacing={6} className='match-height'>
-        <PageHeader title={<TypographyStyled variant='h5'>Import Contacts </TypographyStyled>} />
-        <Grid item xs={12}>
-          <Alert severity='warning'>Please install/enable PHP Zip archive for import — check it out!</Alert>
-        </Grid>
-        <Grid item xs={12}>
-          <Card>
-            <CardHeader
-              title={
-                <Typography noWrap variant='h5' sx={{ color: 'text.secondary' }}>
-                  File To Import:
-                </Typography>
-              }
-            />
-            <CardContent>
-              <Grid container spacing={6}>
-                <Grid item xs={12}>
-                  <FileUploaderSingle />
-                </Grid>
-                <Grid item xs={12}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                      <TypographyStyled>
-                        Follow the instructions carefully before importing the file. The columns of the file should be
-                        in the following order.
-                      </TypographyStyled>
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12}>
-          <Card>
-            <CardHeader title='Instructions' />
-            <TableBasic tableData={tableData} />
-          </Card>
-        </Grid>
+    <Grid container spacing={12}>
+      <Grid item xs={12} lg={12} md={12} sm={12}>
+        <Card>
+          <CardHeader title='Import Contacts' />
+          <CardContent>
+            <Formik initialValues={initialValues} onSubmit={handleSubmitForm}>
+              {({ values, handleSubmit, setFieldValue }) => (
+                <form onSubmit={handleSubmit}>
+                  <Grid container spacing={12}>
+                    <Grid item xs={12} lg={12} md={12} sm={12}>
+                      <UploadFile setFieldValue={setFieldValue} />
+                    </Grid>
+                  </Grid>
+                  <CardActions>
+                    <Button
+                      color='primary'
+                      variant='contained'
+                      disabled={values.file.length ? false : true}
+                      type='submit'
+                    >
+                      Submit
+                    </Button>
+                    <Button color='primary' variant='outlined' disabled>
+                      Download Template File
+                    </Button>
+                  </CardActions>
+                </form>
+              )}
+            </Formik>
+          </CardContent>
+        </Card>
       </Grid>
-    </DropzoneWrapper>
+      <Grid item xs={12} lg={12} md={12} sm={12}>
+        <Card>
+          <CardHeader title='Instructions' />
+          <Alert
+            severity='warning'
+            sx={{
+              '& .border-radius-4': {
+                borderRadius: 'none !important'
+              },
+              '& .border-radius': {
+                borderRadius: 'none !important'
+              },
+              m: 5
+            }}
+          >
+            <Typography variant='h6'>
+              Follow the instructions carefully before importing the file. The columns of the file should be in the
+              following order.
+            </Typography>
+          </Alert>
+          <TableBasic tableData={tableData} />
+        </Card>
+      </Grid>
+    </Grid>
   )
 }
-
 export default ImportContacts

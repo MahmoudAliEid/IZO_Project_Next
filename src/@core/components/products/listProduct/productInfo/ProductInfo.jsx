@@ -16,7 +16,9 @@ import {
   Checkbox,
   FormControlLabel,
   Typography,
-  FormHelperText
+  FormHelperText,
+  Chip,
+  Box
 } from '@mui/material'
 
 // ** Components
@@ -36,23 +38,29 @@ import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCrea
 const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
   // ** State
   const [openUnit, setOpenUnit] = useState(false)
+  const [openSubUnit, setOpenSubUnit] = useState(false)
   const [openBrand, setOpenBrand] = useState(false)
   const [openCategory, setOpenCategory] = useState(false)
   const [openSubcategory, setOpenSubCategory] = useState(false)
   const [warrantiesData, setWarrantiesData] = useState([])
   const [unitsData, setUnitsData] = useState([])
+  const [subUnitsData, setSubUnitsData] = useState([])
   const [brandsData, setBrandsData] = useState([])
   const [categoriesData, setCategoriesData] = useState([])
   const [subCategoriesData, setSubCategoriesData] = useState([])
   const [businessLocationsData, setBusinessLocationsData] = useState([])
   const [barcodeTypeData, setBarcodeTypeData] = useState([])
-
-  // const [checkBox, setCheckBox] = useState(false)
+  const [selectedUnit, setSelectedUnit] = useState('')
+  const [selectedBrand, setSelectedBrand] = useState('')
+  const [newBrand, setNewBrand] = useState(false)
+  const [newUnit, setNewUnit] = useState(false)
   const [filteredSubCategoriesData, setFilteredSubCategoriesData] = useState([])
+  const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
 
   // ** Selectors
   const productData = useSelector(state => state.getCreateProduct?.data?.value)
-  const { warranties, units, brands, categories, sub_categories, business_locations, barcode_type } = productData
+  const { warranties, units, sub_units, brands, categories, sub_categories, business_locations, barcode_type } =
+    productData
 
   // ** Hook
   const dispatch = useDispatch()
@@ -63,6 +71,13 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
     )
     setFilteredSubCategoriesData(filteredSubCategories.length ? filteredSubCategories : [])
   }, [subCategoriesData, initialValues.category_id])
+
+  // ** filter sub units
+  useEffect(() => {
+    const filteredSubUnits = subUnitsData.filter(subUnit => subUnit.parent_id === initialValues.unit_id)
+    setFilteredSubUnitsData(filteredSubUnits.length ? filteredSubUnits : [])
+  }, [subUnitsData, initialValues.unit_id])
+
   useEffect(() => {
     dispatch(fetchCreateProduct())
   }, [dispatch])
@@ -72,9 +87,18 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
     }
     if (units) {
       setUnitsData(units)
+      if (newUnit) {
+        setSelectedUnit(units.length > 0 ? units[units.length - 1].id : '')
+      }
+    }
+    if (sub_units) {
+      setSubUnitsData(sub_units)
     }
     if (brands) {
       setBrandsData(brands)
+      if (newBrand) {
+        setSelectedBrand(brands.length > 0 ? brands[brands.length - 1].id : '')
+      }
     }
     if (categories) {
       setCategoriesData(categories)
@@ -88,7 +112,18 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
     if (barcode_type) {
       setBarcodeTypeData(barcode_type)
     }
-  }, [warranties, units, brands, categories, sub_categories, business_locations, barcode_type])
+  }, [
+    warranties,
+    units,
+    sub_units,
+    brands,
+    categories,
+    sub_categories,
+    business_locations,
+    barcode_type,
+    newUnit,
+    newBrand
+  ])
 
   // ** Functions
   // const handleOnChangeCheck = () => {
@@ -97,6 +132,9 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   // }
   const handleUnitOnClick = () => {
     setOpenUnit(true)
+  }
+  const handleSubUnitOnClick = () => {
+    setOpenSubUnit(true)
   }
   const handleBrandOnClick = () => {
     setOpenBrand(true)
@@ -175,7 +213,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
             helperText={touched.barcode_type && errors.barcode_type ? String(errors.barcode_type) : ''}
           >
             <MenuItem value=''>
-              <em>Select a brand</em>
+              <em>Select a barcode type</em>
             </MenuItem>
             {barcodeTypeData.map(code => (
               <MenuItem key={code.id} value={code.id}>
@@ -187,12 +225,12 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
       </Grid>
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
               <Select
-                value={initialValues.unit_id}
+                value={initialValues.unit_id || selectedUnit}
                 onChange={handleChange}
                 name='unit_id'
                 id='demo-simple-select'
@@ -207,7 +245,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 </MenuItem>
                 {unitsData.map(unit => (
                   <MenuItem key={unit.id} value={unit.id}>
-                    {unit.value}
+                    {unit.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -227,12 +265,69 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
       </Grid>
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
-        <Grid container>
+        <Grid container spacing={2}>
+          <Grid item xs={10}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
+              <Select
+                value={initialValues.sub_unit_id}
+                onChange={handleChange}
+                multiple
+                name='sub_unit_id'
+                id='demo-simple-select'
+                label='Sub Unit'
+                fullWidth
+                renderValue={selected => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map(value => (
+                      <Chip
+                        key={value}
+                        label={filteredSubUnitsData.find(subUnit => subUnit.id === value).name}
+                        onDelete={() => {
+                          setFieldValue(
+                            'sub_unit_id',
+                            initialValues.sub_unit_id.filter(item => item !== value)
+                          )
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
+                onBlur={handleBlur}
+                error={touched.sub_unit_id && !!errors.sub_unit_id}
+                helperText={touched.sub_unit_id && errors.sub_unit_id ? String(errors.sub_unit_id) : ''}
+              >
+                <MenuItem value=''>
+                  <em>Select a sub unit</em>
+                </MenuItem>
+                {filteredSubUnitsData.map(subUnit => (
+                  <MenuItem key={subUnit.id} value={subUnit.id}>
+                    {subUnit.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              onClick={handleSubUnitOnClick}
+              sx={{ textAlign: 'center', height: '100%' }}
+              color='primary'
+              variant='contained'
+            >
+              +
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
           <Grid item xs={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Brand</InputLabel>
               <Select
-                value={initialValues.brand_id}
+                value={initialValues.brand_id || selectedBrand}
                 onChange={handleChange}
                 name='brand_id'
                 id='demo-simple-select'
@@ -256,7 +351,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
           <Grid item xs={2} justifyContent={'center'}>
             <Button
               onClick={handleBrandOnClick}
-              sx={{ textAlign: 'center', height: '100%' }}
+              sx={{ textAlign: 'center', height: '100%', width: '100%' }}
               color='primary'
               variant='contained'
             >
@@ -267,7 +362,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
       </Grid>
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Category</InputLabel>
@@ -307,7 +402,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
       </Grid>
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Sub Category</InputLabel>
@@ -463,8 +558,17 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
       </Grid>
 
       {/* Forms */}
-      {openBrand && <DialogAddBrands open={openBrand} toggle={toggleBrand} isEdit={false} />}
-      {openUnit && <ProductUnitForm open={openUnit} setOpen={setOpenUnit} />}
+      {openBrand && (
+        <DialogAddBrands
+          isCustom={true}
+          open={openBrand}
+          toggle={toggleBrand}
+          isEdit={false}
+          setNewBrand={setNewBrand}
+        />
+      )}
+      {openUnit && <ProductUnitForm type={'Add'} open={openUnit} setOpen={setOpenUnit} setNewUnit={setNewUnit} />}
+      {openSubUnit && <ProductUnitForm type={'Add'} open={openSubUnit} setOpen={setOpenSubUnit} subUnit={true} />}
       {openCategory && <ProductCategoryForm subCat={false} open={openCategory} setOpen={setOpenCategory} />}
       {openSubcategory && <ProductCategoryForm subCat={true} open={openSubcategory} setOpen={setOpenSubCategory} />}
     </Grid>
