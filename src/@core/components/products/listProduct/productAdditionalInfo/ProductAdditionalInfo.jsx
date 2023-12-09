@@ -22,7 +22,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   return (
     <Grid container spacing={12}>
       <Grid item xs={12}>
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={8}>
             <FormControl fullWidth>
               <TextField
@@ -72,7 +72,13 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
           control={
             <Checkbox
               checked={initialValues.not_for_sale}
-              onChange={setFieldValue('not_for_same', !initialValues.not_for_sale)}
+              onChange={e => {
+                if (e.target.checked) {
+                  setFieldValue('not_for_sale', true)
+                } else {
+                  setFieldValue('not_for_sale', false)
+                }
+              }}
               name='not_for_sale'
               onBlur={handleBlur}
               error={touched.not_for_sale && !!errors.not_for_sale}

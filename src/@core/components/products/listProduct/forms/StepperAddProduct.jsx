@@ -26,7 +26,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PublicIcon from '@mui/icons-material/Public'
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
 import { fetchViewContact } from 'src/store/apps/contacts/getViewContactSlice'
-import Productprices from '../productPrices/index'
+import ProductPrices from '../productprices/ProductPrices'
 
 // import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
 
@@ -234,7 +234,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       case 3:
         return (
           <Fragment key={step}>
-            <Productprices
+            <ProductPrices
               initialValues={values}
               errors={errors}
               touched={touched}
@@ -261,7 +261,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     brand_id: Yup.string(),
     category_id: Yup.string(),
     sub_category_id: Yup.string(),
-    enable_stock: Yup.boolean(),
+    enable_stock: Yup.string(),
     alert_quantity: Yup.string().required('Alert quantity is required when stock is enabled'),
     warranty_id: Yup.string(),
     location: Yup.string()
