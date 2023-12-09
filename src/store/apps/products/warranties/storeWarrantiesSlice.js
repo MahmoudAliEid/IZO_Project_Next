@@ -32,16 +32,16 @@ export const warrantySlice = createSlice({
         state.success = false
       })
       .addCase(storeWarranty.fulfilled, (state, action) => {
-        state.loading = true
-        state.success = false
+        state.loading = false
+        state.success = true
         state.error = false
         state.entities = action.payload
         state.status = action.payload.status
         notify('Warranty successfully stored.', 'success')
       })
       .addCase(storeWarranty.rejected, (state, action) => {
-        state.loading = true
-        state.error = false
+        state.loading = false
+        state.error = true
         state.success = false
         state.status = action.payload.status
 

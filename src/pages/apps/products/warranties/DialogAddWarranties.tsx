@@ -131,7 +131,7 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
   return (
     <Fragment>
       <LottieAnimation open={openLottie}
-        onClose={() => setOpenLottie(!openLottie)}
+        onClose={() => setOpenLottie(false)}
         storeWarrantiesResponseStatuse={storeWarrantiesResponseStatuse} />
       <Dialog
         open={open}
