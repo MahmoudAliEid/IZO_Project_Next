@@ -58,9 +58,19 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
 
   // ** Selectors
-  const productData = useSelector(state => state.getCreateProduct?.data?.value)
-  const { warranties, units, sub_units, brands, categories, sub_categories, business_locations, barcode_type } =
-    productData
+
+  // const productData = useSelector(state => state.getCreateProduct?.data?.value)
+  const units = useSelector(state => state.getCreateProduct?.data?.value?.units)
+  const sub_units = useSelector(state => state.getCreateProduct?.data?.value?.sub_units)
+  const warranties = useSelector(state => state.getCreateProduct?.data?.value?.warranties)
+  const brands = useSelector(state => state.getCreateProduct?.data?.value?.brands)
+  const categories = useSelector(state => state.getCreateProduct?.data?.value?.categories)
+  const sub_categories = useSelector(state => state.getCreateProduct?.data?.value?.sub_categories)
+  const business_locations = useSelector(state => state.getCreateProduct?.data?.value?.business_locations)
+  const barcode_type = useSelector(state => state.getCreateProduct?.data?.value?.barcode_type)
+
+  // const { warranties, units, sub_units, brands, categories, sub_categories, business_locations, barcode_type } =
+  //   productData
 
   // ** Hook
   const dispatch = useDispatch()
@@ -126,10 +136,6 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   ])
 
   // ** Functions
-  // const handleOnChangeCheck = () => {
-  //   setCheckBox(prev => !prev)
-  //   setFieldValue('enable_stock', checkBox)
-  // }
   const handleUnitOnClick = () => {
     setOpenUnit(true)
   }
@@ -224,13 +230,20 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
         </FormControl>
       </Grid>
 
-      <Grid item xs={12} lg={6} md={6} sm={12}>
+      <Grid
+        item
+        xs={12}
+        lg={initialValues.product_type === 'single' ? 6 : 12}
+        md={initialValues.product_type === 'single' ? 6 : 12}
+        sm={12}
+      >
         <Grid container spacing={2}>
           <Grid item xs={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
               <Select
                 value={initialValues.unit_id || selectedUnit}
+                disabled={initialValues.sub_unit_id && initialValues.sub_unit_id.length > 0 ? true : false}
                 onChange={handleChange}
                 name='unit_id'
                 id='demo-simple-select'
@@ -251,75 +264,101 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={2} justifyContent={'center'}>
             <Button
               onClick={handleUnitOnClick}
-              sx={{ textAlign: 'center', height: '100%' }}
+              sx={{ textAlign: 'center', height: '100%', width: '100%' }}
               color='primary'
               variant='contained'
             >
               +
             </Button>
           </Grid>
+          <FormControl>
+            <FormHelperText>
+              {initialValues.sub_unit_id && initialValues.sub_unit_id.length > 0
+                ? 'Disabled when select sub Units'
+                : null}
+            </FormHelperText>
+          </FormControl>
         </Grid>
       </Grid>
-
-      <Grid item xs={12} lg={6} md={6} sm={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={10}>
-            <FormControl fullWidth>
-              <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
-              <Select
-                value={initialValues.sub_unit_id}
-                onChange={handleChange}
-                multiple
-                name='sub_unit_id'
-                id='demo-simple-select'
-                label='Sub Unit'
-                fullWidth
-                renderValue={selected => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map(value => (
-                      <Chip
-                        key={value}
-                        label={filteredSubUnitsData.find(subUnit => subUnit.id === value).name}
-                        onDelete={() => {
-                          setFieldValue(
-                            'sub_unit_id',
-                            initialValues.sub_unit_id.filter(item => item !== value)
-                          )
-                        }}
-                      />
-                    ))}
-                  </Box>
-                )}
-                onBlur={handleBlur}
-                error={touched.sub_unit_id && !!errors.sub_unit_id}
-                helperText={touched.sub_unit_id && errors.sub_unit_id ? String(errors.sub_unit_id) : ''}
+      {initialValues.product_type === 'single' ? (
+        <Grid item xs={12} lg={6} md={6} sm={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={10}>
+              <FormControl fullWidth>
+                <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
+                <Select
+                  value={initialValues.sub_unit_id}
+                  onChange={handleChange}
+                  multiple
+                  name='sub_unit_id'
+                  id='demo-simple-select'
+                  label='Sub Unit'
+                  fullWidth
+                  renderValue={selected =>
+                    filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map(value => (
+                          <Chip
+                            key={value}
+                            label={filteredSubUnitsData.find(subUnit => subUnit.id === value)?.name || null}
+                            onDelete={() => {
+                              const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== value)
+                              setFieldValue('sub_unit_id', updatedSubUnitIds)
+                              setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== value))
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    ) : null
+                  }
+                  onBlur={handleBlur}
+                  disabled={filteredSubUnitsData && filteredSubUnitsData.length ? false : true}
+                  error={touched.sub_unit_id && !!errors.sub_unit_id}
+                  helperText={touched.sub_unit_id && errors.sub_unit_id ? String(errors.sub_unit_id) : ''}
+                >
+                  {initialValues.sub_unit_id.length >= 2 && (
+                    <MenuItem value='' disabled>
+                      <em>You can select only up to two sub units</em>
+                    </MenuItem>
+                  )}
+                  {filteredSubUnitsData.map(subUnit => (
+                    <MenuItem
+                      key={subUnit.id}
+                      value={subUnit.id}
+                      disabled={
+                        initialValues.sub_unit_id.length >= 2 && !initialValues.sub_unit_id.includes(subUnit.id)
+                      }
+                    >
+                      {subUnit.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={2} justifyContent={'center'}>
+              <Button
+                onClick={handleSubUnitOnClick}
+                sx={{ textAlign: 'center', height: '100%', width: '100%' }}
+                color='primary'
+                variant='contained'
+                disabled={initialValues.sub_unit_id.length >= 2}
               >
-                <MenuItem value=''>
-                  <em>Select a sub unit</em>
-                </MenuItem>
-                {filteredSubUnitsData.map(subUnit => (
-                  <MenuItem key={subUnit.id} value={subUnit.id}>
-                    {subUnit.name}
-                  </MenuItem>
-                ))}
-              </Select>
+                +
+              </Button>
+            </Grid>
+            <FormControl>
+              <FormHelperText>
+                {filteredSubUnitsData && filteredSubUnitsData.length
+                  ? 'Sub Unit is limited to two units'
+                  : 'No sub Units'}
+              </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item xs={2}>
-            <Button
-              onClick={handleSubUnitOnClick}
-              sx={{ textAlign: 'center', height: '100%' }}
-              color='primary'
-              variant='contained'
-            >
-              +
-            </Button>
-          </Grid>
         </Grid>
-      </Grid>
+      ) : null}
 
       <Grid item xs={12}>
         <Grid container spacing={2}>

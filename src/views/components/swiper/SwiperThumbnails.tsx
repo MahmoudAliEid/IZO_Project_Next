@@ -42,7 +42,7 @@ const ThumbnailPlugin = (mainRef: MutableRefObject<KeenSliderInstance | null>): 
   }
 }
 
-const SwiperThumbnails = ({ direction }: { direction: Direction }) => {
+const SwiperThumbnails = ({ images, direction }: { images: [], direction: Direction }) => {
   // ** Hooks
   const theme = useTheme()
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -69,8 +69,18 @@ const SwiperThumbnails = ({ direction }: { direction: Direction }) => {
 
   return (
     <>
-      <Box ref={sliderRef} className='keen-slider'>
-        <Box sx={{ display: 'flex' }} className='keen-slider__slide'>
+      <Box ref={sliderRef} className='keen-slider' >
+        {images.map((img, index) => (
+          <Box sx={{ display: 'flex', height: 340 }} key={index} className='keen-slider__slide'>
+            <img style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover"
+            }} src={img} alt={`swiper ${index + 1}`} />
+          </Box>
+        ))
+        }
+        {/* <Box sx={{ display: 'flex' }} className='keen-slider__slide'>
           <img src='/images/banners/banner-1.jpg' alt='swiper 1' />
         </Box>
         <Box sx={{ display: 'flex' }} className='keen-slider__slide'>
@@ -84,11 +94,22 @@ const SwiperThumbnails = ({ direction }: { direction: Direction }) => {
         </Box>
         <Box sx={{ display: 'flex' }} className='keen-slider__slide'>
           <img src='/images/banners/banner-5.jpg' alt='swiper 5' />
-        </Box>
+        </Box> */}
       </Box>
 
       <Box sx={{ mt: 4 }} ref={thumbnailRef} className='keen-slider thumbnail'>
-        <Box className='keen-slider__slide' sx={{ display: 'flex', cursor: 'pointer' }}>
+        {images.map((img, index) => (
+          <Box key={index} sx={{ width: " 150px", height: "100px", display: 'flex', cursor: 'pointer' }} className='keen-slider__slide'>
+            <img style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover"
+            }}
+
+              src={img} alt={`swiper ${index + 1}`} />
+          </Box>
+        ))}
+        {/* <Box className='keen-slider__slide' sx={{ display: 'flex', cursor: 'pointer' }}>
           <img src='/images/banners/banner-1.jpg' alt='swiper 1' />
         </Box>
         <Box className='keen-slider__slide' sx={{ display: 'flex', cursor: 'pointer' }}>
@@ -102,7 +123,7 @@ const SwiperThumbnails = ({ direction }: { direction: Direction }) => {
         </Box>
         <Box className='keen-slider__slide' sx={{ display: 'flex', cursor: 'pointer' }}>
           <img src='/images/banners/banner-5.jpg' alt='swiper 5' />
-        </Box>
+        </Box> */}
       </Box>
     </>
   )

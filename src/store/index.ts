@@ -75,6 +75,7 @@ import postCreateSPGroupSlice from './apps/products/salePriceGroup/postCreateSPG
 import postChangeStatusSlice from './apps/products/salePriceGroup/postChangeStatusSlice'
 import postCreateProductUnitSlice from './apps/products/listProducts/actions/postCreateProductUnitSlice'
 import getCreateProductUnitSlice from './apps/products/listProducts/actions/getCreateProductUnitSlice'
+import getViewStockSlice from './apps/products/listProducts/actions/getViewStockSlice'
 
 export const store = configureStore({
   reducer: {
@@ -150,7 +151,8 @@ export const store = configureStore({
     postChangeStatus: postChangeStatusSlice,
     getSPGroup: getSPGroupSlice,
     getEditSPGroup: getEditSPGroupSlice,
-    getCreateSPGroup: getCreateSPGroupSlice
+    getCreateSPGroup: getCreateSPGroupSlice,
+    getViewStockProduct: getViewStockSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

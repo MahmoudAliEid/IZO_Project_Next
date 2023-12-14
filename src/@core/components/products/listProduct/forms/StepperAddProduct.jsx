@@ -152,7 +152,8 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     custom_field_1: '',
     custom_field_2: '',
     custom_field_3: '',
-    custom_field_4: ''
+    custom_field_4: '',
+    product_type: 'single'
   })
 
   // ** Test

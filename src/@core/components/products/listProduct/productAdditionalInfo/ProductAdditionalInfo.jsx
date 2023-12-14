@@ -15,12 +15,110 @@ import {
   Checkbox,
   FormControlLabel,
   Typography,
-  FormHelperText
+  FormHelperText,
+  CardHeader,
+  Chip,
+  Divider
 } from '@mui/material'
 
+// ** Store & Actions
+import { useSelector } from 'react-redux'
+
 const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+  // ** State
+  const [positionDetails, setPositionDetails] = useState(null)
+  const [positionDetailsValue, setPositionDetailsValue] = useState([])
+
+  // ** Store Vars
+  const store = useSelector(state => state.getCreateProduct.data.value.product_racks)
+
+  // ** Get data on mount
+  useEffect(() => {
+    setPositionDetails(store)
+  }, [store])
+
+  // ** Functions
+
+  // useEffect(() => {
+  //   if (positionDetailsValue.length > 0) {
+  //     setFieldValue('product_racks', positionDetailsValue)
+  //   }
+  //  }, [positionDetailsValue])
+
+  useEffect(() => {
+    if (store && positionDetails) {
+      const handleAddPosition = () => {
+        const positionDetailsValue = positionDetails.map(item => {
+          return {
+            id: item.id,
+            name: item.value.name,
+            value: item.value.value.map(item => {
+              return { [item]: '' }
+            })
+          }
+        })
+        setPositionDetailsValue(positionDetailsValue)
+      }
+
+      handleAddPosition()
+    }
+  }, [positionDetails, store])
+
+  // const positionHandleChange = (e, item) => {
+  //   const { name, value } = e.target
+
+  //   setPositionDetailsValue(prev => [{ ...prev, [name]: value }])
+  // }
+
+  const PositionComponent = () => {
+    return (
+      <>
+        {positionDetails && positionDetailsValue && positionDetails.length > 0 ? (
+          <Grid item xs={12}>
+            <Divider>
+              <Chip label='Position Details' variant='outlined' color='primary' />
+            </Divider>
+            <Grid container spacing={3}>
+              {positionDetails.map((position, index) => (
+                <Grid item xs={12} lg={6} md={6} sm={12} key={index}>
+                  <CardHeader title={position.value.name} />
+                  {position.value.value.map((item, innerIndex) => (
+                    <Grid container spacing={4} sx={{ py: 3 }} key={innerIndex}>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <TextField
+                            fullWidth
+                            label={item}
+                            value={positionDetailsValue[index]?.value[innerIndex][item]}
+                            onChange={e => {
+                              const { name, value } = e.target
+
+                              setPositionDetailsValue(prev => {
+                                const prevValue = [...prev]
+                                prevValue[index].value[innerIndex][name] = value
+
+                                return prevValue
+                              })
+                            }}
+                            name={item}
+                          />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        ) : null}
+      </>
+    )
+  }
+
+  console.log(positionDetailsValue, 'positionDetailsValue 🥎🥎⚽⚽')
+
   return (
-    <Grid container spacing={12}>
+    <Grid container spacing={6}>
       <Grid item xs={12}>
         <Grid container spacing={2}>
           <Grid item xs={8}>
@@ -67,6 +165,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
           />
         </FormControl>
       </Grid>
+
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <FormControlLabel
           control={
@@ -88,6 +187,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
           label='Not for sale'
         />
       </Grid>
+
       <Grid item xs={12} lg={3} md={3} sm={12}>
         <FormControl fullWidth>
           <TextField
@@ -102,6 +202,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
           />
         </FormControl>
       </Grid>
+
       <Grid item xs={12} lg={3} md={3} sm={12}>
         <FormControl fullWidth>
           <TextField
@@ -116,6 +217,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
           />
         </FormControl>
       </Grid>
+
       <Grid item xs={12} lg={3} md={3} sm={12}>
         <FormControl fullWidth>
           <TextField
@@ -130,6 +232,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
           />
         </FormControl>
       </Grid>
+
       <Grid item xs={12} lg={3} md={3} sm={12}>
         <FormControl fullWidth>
           <TextField
@@ -144,6 +247,8 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
           />
         </FormControl>
       </Grid>
+
+      {PositionComponent()}
     </Grid>
   )
 }

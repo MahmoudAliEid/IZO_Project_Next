@@ -12,16 +12,25 @@ export const postAddUnit = createAsyncThunk('dashboard/postAddUnit', async userD
   if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
     const formData = new FormData()
 
-    for (const key in userData) {
-      if (userData.hasOwnProperty(key)) {
-        formData.append(key, userData[key] || false)
-      }
-    }
+    // for (const key in userData) {
+    //   if (userData.hasOwnProperty(key)) {
+    //     formData.append(key, userData[key] || false)
+    //   }
+    // }
 
-    if (userData.allow_decimal === 0) {
-      formData.append('allow_decimal', 0)
-    } else {
-      formData.append('allow_decimal', 1)
+    // if (userData.allow_decimal === 0) {
+    //   formData.append('allow_decimal', 0)
+    // } else {
+    //   formData.append('allow_decimal', 1)
+    // }
+
+    formData.append('name', userData['name'] || '')
+    formData.append('short_name', userData['short_name'] || '')
+    formData.append('allow_decimal', userData['allow_decimal'] || 0)
+    formData.append('parent_unit', userData['parent_unit'] || null)
+    formData.append('sub_qty', userData['sub_qty'] || null)
+    if (userData['multiple_unit'] === true) {
+      formData.append('multiple_unit', userData['multiple_unit'])
     }
     console.log(formData, userData, '===> formData, userData Unit add slice')
 

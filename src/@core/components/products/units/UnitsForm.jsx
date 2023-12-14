@@ -116,17 +116,18 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
     name: Yup.string().required(' Name is required'),
     short_name: Yup.string().required('Short name is required')
   })
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     // Handle form submission logic here
     console.log(values, 'Values form  add Category')
 
     console.log('Add btn clicked')
     if (type === 'Add') {
-      handleSubmitData(postAddUnit, fetchUnits, values)
+      await handleSubmitData(postAddUnit, fetchUnits, values)
     } else if (type === 'Edit' && itemId) {
-      handleSubmitData(postEditUnit, fetchUnits, values, itemId)
+      await handleSubmitData(postEditUnit, fetchUnits, values, itemId)
     }
 
+    dispatch(fetchCreateUnit(token))
     setOpen(false)
     resetForm()
   }

@@ -5,6 +5,7 @@ import ProgressCustomization from 'src/views/components/progress/ProgressCircula
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 import FormProduct from 'src/@core/components/products/listProduct/forms/FormProduct'
+import ProductView from 'src/@core/components/products/listProduct/productView/ProductView'
 
 // ** Next Imports
 import { getCookie } from 'cookies-next'
@@ -51,7 +52,30 @@ const StyledButton = styled(Button)(({ theme }) => ({
   backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.2)} !important`
 }))
 
-const RowOptions = ({ id }) => {
+const ViewInventory = ({ row }) => {
+  // ** state
+  const [openViewMain, setOpenViewMain] = useState(false)
+
+  const handleView = () => {
+    setOpenViewMain(prev => !prev)
+  }
+
+  return (
+    <Grid container spacing={2} sx={{ margin: '5px 0', mb: 5 }}>
+      <Grid item xs={12}>
+        <Typography sx={{ color: 'text.secondary' }}>{row.stock ? row.stock : 'Not available'}</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <StyledButton variant='outlined' onClick={handleView} size='small'>
+          View Stock
+        </StyledButton>
+      </Grid>
+      {openViewMain && <ProductView open={openViewMain} setOpen={setOpenViewMain} id={row.id} />}
+    </Grid>
+  )
+}
+
+const RowOptions = ({ id, setOpenViewMain }) => {
   // console.log(data, setData)
 
   // ** Hooks
@@ -59,6 +83,7 @@ const RowOptions = ({ id }) => {
 
   // ** State
   const [open, setOpen] = useState(false)
+  const [openView, setOpenView] = useState(false)
   const [openAlert, setOpenAlert] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const [token, setToken] = useState('')
@@ -128,6 +153,11 @@ const RowOptions = ({ id }) => {
     console.log(id)
   }
 
+  //handle view
+  const handleView = () => {
+    setOpenView(prev => !prev)
+  }
+
   return (
     <Fragment>
       <IconButton size='small' onClick={handleRowOptionsClick}>
@@ -160,10 +190,11 @@ const RowOptions = ({ id }) => {
         </MenuItem>
 
         <MenuItem
-          component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href={`/apps/contacts/view/${id}`}
-          onClick={handleRowOptionsClose}
+          onClick={() => {
+            handleView()
+            handleRowOptionsClose()
+          }}
         >
           <Icon icon='bx:show' fontSize={20} />
           View
@@ -200,6 +231,7 @@ const RowOptions = ({ id }) => {
       {openAlert && (
         <DeleteGlobalAlert name='Category' open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />
       )}
+      {openView && <ProductView open={openView} setOpen={setOpenView} id={id} />}
     </Fragment>
   )
 }
@@ -333,18 +365,7 @@ const columns = [
     field: 'current_stock',
     headerName: 'Current Stock',
     renderCell: ({ row }) => {
-      return (
-        <Grid container spacing={2} sx={{ margin: '5px 0', mb: 5 }}>
-          <Grid item xs={12}>
-            <Typography sx={{ color: 'text.secondary' }}>{row.stock ? row.stock : 'Not available'}</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <StyledButton variant='outlined' size='small'>
-              View Stock
-            </StyledButton>
-          </Grid>
-        </Grid>
-      )
+      return <ViewInventory row={row} />
     }
   },
   {
@@ -624,7 +645,7 @@ const ProductsTable = () => {
   // const [dataTree, setDataTree] = useState(null)
 
   // ** Constants
-  const newData = data && data.length ? data.map(item => ({ ...item, data, setData })) : []
+  const newData = data && data.length ? data.map(item => ({ ...item })) : []
   const title = 'Products List'
 
   const escapeRegExp = value => {
