@@ -2,6 +2,12 @@
 // ** React Imports
 import { useState } from 'react'
 
+// ** cookies
+import { getCookie } from 'cookies-next'
+
+// Axios
+import axios from 'axios'
+
 // ** MUI Imports
 import { Grid, Card, Box, CardContent, Button, CardActions, CardHeader, Typography } from '@mui/material'
 
@@ -11,13 +17,51 @@ import UploadFile from 'src/@core/components/globalUpload/UploadFile'
 // ** Formik
 import { Formik } from 'formik'
 
+// ** Store & Actions
+import { fetchExportSPGroup } from 'src/store/apps/products/salePriceGroup/actions/getExportSPGSlice'
+import { postImportSPGroup } from 'src/store/apps/products/salePriceGroup/actions/postImportSPGSlice'
+import { useDispatch } from 'react-redux'
+
 const SPGImport = () => {
+  // ** State
   const initialValues = {
     file: []
   }
 
+  // ** Cookies
+  const token = getCookie('token')
+
+  // ** Hooks
+  const dispatch = useDispatch()
+
+  // ** Function
+  const handleExport = () => {
+    // handle export to download file
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    axios({
+      url: `${url}/app/react/sales-price-group/export`,
+      method: 'GET',
+      headers: headers,
+      responseType: 'blob' // important
+    }).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'sale_price_group_export.xlsx') //or any other extension
+      document.body.appendChild(link)
+      link.click()
+    })
+  }
+
   const handleSubmitForm = (values, { resetForm }) => {
     console.log('values 🐱‍👤', values)
+    dispatch(postImportSPGroup(values, token))
+
+    // resetForm()
   }
 
   console.log('initialValues 🐱‍👤', initialValues)
@@ -52,7 +96,7 @@ const SPGImport = () => {
                 <Button color='primary' variant='contained' disabled={values.file.length ? false : true} type='submit'>
                   Submit
                 </Button>
-                <Button color='primary' variant='outlined' disabled>
+                <Button color='primary' variant='outlined' onClick={handleExport}>
                   Export Sale Price Group
                 </Button>
               </CardActions>

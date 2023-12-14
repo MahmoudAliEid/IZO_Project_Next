@@ -67,6 +67,8 @@ import getCreateProductSlice from './apps/products/listProducts/getCreateProduct
 import getProductsSlice from './apps/products/listProducts/getProductsSlice'
 import postDeleteProductSlice from './apps/products/listProducts/postDeleteProductSlice'
 import getSPGroupSlice from './apps/products/salePriceGroup/getSPGroupSlice'
+import getExportSPGSlice from './apps/products/salePriceGroup/actions/getExportSPGSlice'
+import postImportSPGSlice from './apps/products/salePriceGroup/actions/postImportSPGSlice'
 import postDeleteSPGroupSlice from './apps/products/salePriceGroup/postDeleteSPGroupSlice'
 import postEditPGroupSSlice from './apps/products/salePriceGroup/postEditSPGroupSlice'
 import getEditSPGroupSlice from './apps/products/salePriceGroup/getEditSPGroupSlice'
@@ -152,6 +154,8 @@ export const store = configureStore({
     getSPGroup: getSPGroupSlice,
     getEditSPGroup: getEditSPGroupSlice,
     getCreateSPGroup: getCreateSPGroupSlice,
+    getExportSPGroup: getExportSPGSlice,
+    postImportSPGroup: postImportSPGSlice,
     getViewStockProduct: getViewStockSlice
   },
   middleware: getDefaultMiddleware =>

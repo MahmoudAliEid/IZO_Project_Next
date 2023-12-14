@@ -6,6 +6,12 @@ import { Grid, Card, Box, CardContent, Button, CardActions, CardHeader, Typograp
 import UploadFile from 'src/@core/components/globalUpload/UploadFile'
 import TableBasic from 'src/views/table/mui/TableBasic'
 
+// ** cookies
+import { getCookie } from 'cookies-next'
+
+// Axios
+import axios from 'axios'
+
 // ** Formik
 import { Formik } from 'formik'
 
@@ -45,6 +51,29 @@ const ImportOpeningStock = () => {
 
   console.log('initialValues 🐱‍👤', initialValues)
 
+  // ** Function
+  const handleExport = () => {
+    // handle export to download file
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    axios({
+      url: `${url}/app/react/opening-quantity/export-file`,
+      method: 'GET',
+      headers: headers,
+      responseType: 'blob' // important
+    }).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data.info]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'import_opening_stock_csv_template.xls') //or any other extension
+      document.body.appendChild(link)
+      link.click()
+    })
+  }
+
   return (
     <Grid container spacing={12}>
       <Grid item xs={12} lg={12} md={12} sm={12}>
@@ -68,7 +97,7 @@ const ImportOpeningStock = () => {
                     >
                       Submit
                     </Button>
-                    <Button color='primary' variant='outlined' disabled>
+                    <Button color='primary' variant='outlined' onClick={handleExport}>
                       Download Template File
                     </Button>
                   </CardActions>
