@@ -36,3 +36,6 @@ yarn-error.log*
 # notes
 not.txt
 USER MANAGMANT (1)
+
+# ignore .vscode folder in the root directory and all of its subdirectories
+.vscode/**
