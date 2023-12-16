@@ -14,7 +14,7 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import TextField from '@mui/material/TextField'
-import { Box, FormControl, InputLabel, Select, MenuItem ,Chip,Button, Divider, Grid } from '@mui/material'
+import { Box, FormControl, InputLabel, Select, MenuItem ,Chip,Button, Divider, Grid, Typography } from '@mui/material'
 import { SelectChangeEvent } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
@@ -582,7 +582,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
 
   // ** Functions
 
-   const handleChangeTax = (event: SelectChangeEvent) => {
+  const handleChangeTax = (event: SelectChangeEvent) => {
     setTax(event.target.value)
   }
 
@@ -590,165 +590,174 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     setProductType(event.target.value)
   }
 
+  if (initialValues.product_type === 'single') {
 
-  return (
-    <Card style={{ height: '100%', width: '100%' }} ref={cardRef}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
-        <CardHeader title='Product Prices' />
-        <Divider sx={{ m: '0 !important' }} />
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginBottom: '1rem',
-          width: '100%',
-          padding: '0px 1rem'
-        }}
-      >
-        <FormControl fullWidth>
-          <InputLabel>Applicable Tax:</InputLabel>
-          <Select value={tax} onChange={handleChangeTax} label='Applicable Tax'>
-            <MenuItem value=''>
-              <em>Please Select</em>
-            </MenuItem>
-            <MenuItem value={0}>Vat 0 %</MenuItem>
-            <MenuItem value={0.05}>Vat 0.05 %</MenuItem>
-            <MenuItem value={0.1}>Vat 10 %</MenuItem>
-            <MenuItem value={1}>Vat 1</MenuItem>
-            <MenuItem value={2}>Vat 2</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth>
-          <InputLabel>Product Type:</InputLabel>
-          <Select value={productType} onChange={handleChangeProductType} label='Product Type'>
-            <MenuItem value=''>
-              <em>Please Select</em>
-            </MenuItem>
-            <MenuItem value={'Single'}>Single</MenuItem>
-            <MenuItem value={'Variable'}>Variable</MenuItem>
-            <MenuItem value={'Combo'}>Combo</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth>
-          <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
-          <Select
-            value={initialValues.unit_id}
-            onChange={handleChange}
-            name='unit_id'
-            id='demo-simple-select'
-            label='Unit'
-            fullWidth
-            onBlur={handleBlur}
-            disabled={true}
-            error={touched.unit_id && !!errors.unit_id}
-          >
-            {unitsData.map(unit => (
-              <MenuItem key={unit.id} value={unit.id} disabled={initialValues.unit_id === unit.id ? false : true}>
-                {unit.name}
+    return (
+      <Card style={{ height: '100%', width: '100%' }} ref={cardRef}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
+          <CardHeader title='Product Prices' />
+          <Divider sx={{ m: '0 !important' }} />
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1rem',
+            marginBottom: '1rem',
+            width: '100%',
+            padding: '0px 1rem'
+          }}
+        >
+          <FormControl fullWidth>
+            <InputLabel>Applicable Tax:</InputLabel>
+            <Select value={tax} onChange={handleChangeTax} label='Applicable Tax'>
+              <MenuItem value=''>
+                <em>Please Select</em>
               </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box padding={2}>
-        <DataGrid autoHeight columns={columns} rowHeight={120} rows={tableData} />
-       {
-          subUnitsIds.length > 0 && (
-            <Button
-            variant='contained'
-            color='primary'
-            onClick={() => {
-              setShowMore(!showMore)
-            }}
-          >
-            {showMore ? 'Show Less' : 'Show More'}
-          </Button>
-          )
-       }
-      </Box>
+              <MenuItem value={0}>Vat 0 %</MenuItem>
+              <MenuItem value={0.05}>Vat 0.05 %</MenuItem>
+              <MenuItem value={0.1}>Vat 10 %</MenuItem>
+              <MenuItem value={1}>Vat 1</MenuItem>
+              <MenuItem value={2}>Vat 2</MenuItem>
+            </Select>
+          </FormControl>
 
-      {showMore &&
-        subUnitsIds.length > 0 &&
-        subUnitsIds.map(
-          (subUnit, index) => (
+          <FormControl fullWidth>
+            <InputLabel>Product Type:</InputLabel>
+            <Select value={initialValues.product_type} onChange={handleChange} label='Product Type'>
+              <MenuItem value={'single'}>Single</MenuItem>
+              <MenuItem value={'variable'}>Variable</MenuItem>
+              <MenuItem value={'combo'}>Combo</MenuItem>
+            </Select>
+          </FormControl>
 
-            (
-              <Box
-                key={index}
-                sx={{
-                  marginTop: '1rem',
-                  padding: '1rem',
-                  border: '1px solid ',
-                  borderRadius: '10px',
-                  borderColor:theme => theme.palette.divider,
-                }}
-              >
-
-                <Grid item xs={6} sx={{my:5}}>
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
-                <Select
-                  value={initialValues.sub_unit_id}
-                  onChange={handleChange}
-                  multiple
-                  name='sub_unit_id'
-                  id='demo-simple-select'
-                  label='Sub Unit'
-                  fullWidth
-                  renderValue={selected =>
-                    filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          <Chip
-                            label={filteredSubUnitsData.find(subUnit => subUnit.id === selected[index])?.name || null}
-                            onDelete={() => {
-                              const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== selected[index])
-                              setFieldValue('sub_unit_id', updatedSubUnitIds)
-                              setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== selected[index]))
-                            }}
-                          />
-                      </Box>
-                    ) : null
-                  }
-                  onBlur={handleBlur}
-                  disabled={ true}
-                >
-                  {initialValues.sub_unit_id.length >= 2 && (
-                    <MenuItem value='' disabled>
-                      <em>You can select only up to two sub units</em>
-                    </MenuItem>
-                  )}
-                  {filteredSubUnitsData.map(subUnit => (
-                    <MenuItem
-                      key={subUnit.id}
-                      value={subUnit.id}
-                      disabled={
-                          !initialValues.sub_unit_id.includes(subUnit.id)
-                      }
-                    >
-                      {subUnit.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-                <DataGrid
-                  autoHeight
-                  columns={columns}
-                  rowHeight={120}
-                  rows={index === 0 ? tableDataChild1 : tableDataChild2}
-                />
-              </Box>
+          <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
+            <Select
+              value={initialValues.unit_id}
+              onChange={handleChange}
+              name='unit_id'
+              id='demo-simple-select'
+              label='Unit'
+              fullWidth
+              onBlur={handleBlur}
+              disabled={true}
+              error={touched.unit_id && !!errors.unit_id}
+            >
+              {unitsData.map(unit => (
+                <MenuItem key={unit.id} value={unit.id} disabled={initialValues.unit_id === unit.id ? false : true}>
+                  {unit.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box padding={2}>
+          <DataGrid autoHeight columns={columns} rowHeight={120} rows={tableData} />
+         {
+            subUnitsIds.length > 0 && (
+              <Button
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                setShowMore(!showMore)
+              }}
+            >
+              {showMore ? 'Show Less' : 'Show More'}
+            </Button>
             )
-          )
-        )}
-    </Card>
-  )
+         }
+        </Box>
+
+        {showMore &&
+          subUnitsIds.length > 0 &&
+          subUnitsIds.map(
+            (subUnit, index) => (
+
+              (
+                <Box
+                  key={index}
+                  sx={{
+                    marginTop: '1rem',
+                    padding: '1rem',
+                    border: '1px solid ',
+                    borderRadius: '10px',
+                    borderColor:theme => theme.palette.divider,
+                  }}
+                >
+
+                  <Grid item xs={6} sx={{my:5}}>
+                <FormControl fullWidth>
+                  <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
+                  <Select
+                    value={initialValues.sub_unit_id}
+                    onChange={handleChange}
+                    multiple
+                    name='sub_unit_id'
+                    id='demo-simple-select'
+                    label='Sub Unit'
+                    fullWidth
+                    renderValue={selected =>
+                      filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            <Chip
+                              label={filteredSubUnitsData.find(subUnit => subUnit.id === selected[index])?.name || null}
+                              onDelete={() => {
+                                const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== selected[index])
+                                setFieldValue('sub_unit_id', updatedSubUnitIds)
+                                setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== selected[index]))
+                              }}
+                            />
+                        </Box>
+                      ) : null
+                    }
+                    onBlur={handleBlur}
+                    disabled={ true}
+                  >
+                    {initialValues.sub_unit_id.length >= 2 && (
+                      <MenuItem value='' disabled>
+                        <em>You can select only up to two sub units</em>
+                      </MenuItem>
+                    )}
+                    {filteredSubUnitsData.map(subUnit => (
+                      <MenuItem
+                        key={subUnit.id}
+                        value={subUnit.id}
+                        disabled={
+                            !initialValues.sub_unit_id.includes(subUnit.id)
+                        }
+                      >
+                        {subUnit.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+                  <DataGrid
+                    autoHeight
+                    columns={columns}
+                    rowHeight={120}
+                    rows={index === 0 ? tableDataChild1 : tableDataChild2}
+                  />
+                </Box>
+              )
+            )
+          )}
+      </Card>
+    )
+    }
+
+  if (initialValues.product_type === "variable") {
+    return (
+      <Typography>
+        Under Developments
+      </Typography>
+
+    )
+    }
+
 }
 
 export default ProductPrices

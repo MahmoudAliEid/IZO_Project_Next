@@ -4,19 +4,19 @@ import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
 
 // Async Thunk Action for storing user
-export const postImportSPGroup = createAsyncThunk('dashboard/postImportSPGroup', async payload => {
+export const postImportOQ = createAsyncThunk('dashboard/postImportOQ', async payload => {
   const token = getCookie('token') // Get the token inside the async function
   const url = getCookie('apiUrl')
   const { data } = payload
 
-  console.log(token, '===> token Post import Sale Price Group slice')
-  console.log(data, '===> data Post import Sale Price Group slice')
-  console.log(url, '===> url Post import Sale Price Group slice')
-  console.log(data.file[0], '===> the file form Post import Sale Price Group slice')
+  console.log(token, '===> token Post import opening quantity slice')
+  console.log(data, '===> data Post import opening quantity slice')
+  console.log(url, '===> url Post import opening quantity slice')
+  console.log(data.file[0], '===> data.file[0] Post import opening quantity slice')
   if (token !== undefined && token !== null && data !== undefined && data !== null) {
     const formData = new FormData()
 
-    formData.append('product_group_prices', data.file[0])
+    formData.append('products_csv', data.file[0])
 
     console.log(formData, data, '===> formData, data add sale Price group slice')
 
@@ -25,19 +25,23 @@ export const postImportSPGroup = createAsyncThunk('dashboard/postImportSPGroup',
       'Content-Type': 'multipart/form-data'
     }
 
-    const response = await axios.post('https://test.izocloud.net/api/app/react/sales-price-group/import', formData, {
-      headers // Pass the headers to the Axios request
-    })
+    const response = await axios.post(
+      'https://test.izocloud.net/api/app/react/opening-quantity/import-file',
+      formData,
+      {
+        headers // Pass the headers to the Axios request
+      }
+    )
 
-    console.log(response, '===> from import Sale Price group slice ')
+    console.log(response, '===> from import opening quantity slice ')
 
     return response.data
   }
 })
 
 // Define the user slice
-const postImportSPGSlice = createSlice({
-  name: 'postImportSPGroup',
+const postImportOQSlice = createSlice({
+  name: 'postImportOQ',
   initialState: {
     loading: false,
     error: null,
@@ -46,19 +50,19 @@ const postImportSPGSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(postImportSPGroup.pending, state => {
+      .addCase(postImportOQ.pending, state => {
         state.loading = true
         state.error = null
         state.data = []
       })
-      .addCase(postImportSPGroup.fulfilled, (state, action) => {
+      .addCase(postImportOQ.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
         state.error = null
-        console.log(action.payload.message, 'form import Sale Price group ')
+        console.log(action.payload.message, 'form import opening quantity')
         notify('Done Successfully', 'success')
       })
-      .addCase(postImportSPGroup.rejected, (state, action) => {
+      .addCase(postImportOQ.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
         console.log('Unknown error occurred  :', action.payload)
@@ -67,4 +71,4 @@ const postImportSPGSlice = createSlice({
   }
 })
 
-export default postImportSPGSlice.reducer
+export default postImportOQSlice.reducer

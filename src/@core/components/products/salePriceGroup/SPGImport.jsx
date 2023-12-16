@@ -59,7 +59,7 @@ const SPGImport = () => {
 
   const handleSubmitForm = (values, { resetForm }) => {
     console.log('values 🐱‍👤', values)
-    dispatch(postImportSPGroup(values, token))
+    dispatch(postImportSPGroup({ data: values }))
 
     // resetForm()
   }
