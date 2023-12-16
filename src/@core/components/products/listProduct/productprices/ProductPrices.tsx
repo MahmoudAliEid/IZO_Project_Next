@@ -3,68 +3,32 @@
 
 // ** React Imports
 import { ChangeEvent, useState, useEffect, useRef, Fragment } from 'react'
-import { Button, Divider, Grid } from '@mui/material'
+
 
 //** Redux Imports
 import { useDispatch, useSelector } from 'react-redux'
+
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import TextField from '@mui/material/TextField'
-import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { Box, FormControl, InputLabel, Select, MenuItem ,Chip,Button, Divider, Grid } from '@mui/material'
 import { SelectChangeEvent } from '@mui/material'
-import { Chip } from '@mui/material'
-import Typography from '@mui/material/Typography'
-const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
-  const [tax, setTax] = useState('')
-  console.log('initialValues.unit_id :>> ', initialValues.unit_id)
-  const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
+import { useTheme } from '@mui/material/styles'
 
+
+const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+ // ** States
+  const [tax, setTax] = useState('')
+  const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
   const [productType, setProductType] = useState('')
   const [unitsData, setUnitsData] = useState([])
   const [subUnitsIds, setSubUnitsIds] = useState([])
   const [unitId, setUnitId] = useState('')
   const [subUnitsData, setSubUnitsData] = useState([])
   const [showMore, setShowMore] = useState(false)
-  const handleChangeTax = (event: SelectChangeEvent) => {
-    setTax(event.target.value)
-  }
-
-  const handleChangeProductType = (event: SelectChangeEvent) => {
-    setProductType(event.target.value)
-  }
-
-  // const x = {
-  //   unit_id: 1,
-  //   "default_price": {
-  //     nameofobject: '',
-  //     single_dpp: '',
-  //     single_dpp_inc_tax: '',
-  //     profit_percent: '',
-  //     single_dsp: '',
-  //     single_dsp_inc_tax: ''
-  //   }
-  //   ,
-  //   "whole_price": {
-  //     nameofobject: '',
-  //     single_dpp: '',
-  //     single_dpp_inc_tax: '',
-  //     profit_percent: '',
-  //     single_dsp: '',
-  //     single_dsp_inc_tax: ''
-  //   },
-  //   "retail_price": {
-  //     nameofobject: '',
-  //     single_dpp: '',
-  //     single_dpp_inc_tax: '',
-  //     profit_percent: '',
-  //     single_dsp: '',
-  //     single_dsp_inc_tax: ''
-  //   },
-  // }
-
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -159,7 +123,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     {
       id: 10,
       unit_id: unitId,
-      value: 'custom_price_',
+      value: 'custom_price_3',
       single_dpp: '',
       single_dpp_in_tax: '',
       profit_percent: '',
@@ -271,7 +235,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     {
       id: 10,
       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-      value: 'custom_price_',
+      value: 'custom_price_3',
       single_dpp: '',
       single_dpp_in_tax: '',
       profit_percent: '',
@@ -383,7 +347,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     {
       id: 10,
       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-      value: 'custom_price_',
+      value: 'custom_price_3',
       single_dpp: '',
       single_dpp_in_tax: '',
       profit_percent: '',
@@ -402,119 +366,13 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     }
   ])
 
-  // ** States
-  const [data, setData] = useState([
-    {
-      id: 1,
-      typeOfPrice: 'Default Price',
-      defaultPurchasePrice: {
-        excTax: '', //single_dpp1[]
-        incTax: '' //single_dpp_inc_tax1[]
-      },
-      margin: '25', //profit_percent1[]
-      defaultSalesPrice: {
-        excTax: '', //single_dsp1[]
-        incTax: '' //single_dsp_inc_tax1[]
-      }
-    },
-    {
-      id: 2,
-      typeOfPrice: 'Whole Price',
-      defaultPurchasePrice: {
-        excTax: '', //single_dpp1[]
-        incTax: '' //single_dpp_inc_tax1[]
-      },
-      margin: '25', //profit_percent1[]
-      defaultSalesPrice: {
-        excTax: '', //single_dsp1[]
-        incTax: '' //single_dsp_inc_tax1[]
-      }
-    },
-    {
-      id: 3,
-      typeOfPrice: 'Retail Price',
-      defaultPurchasePrice: {
-        excTax: '',
-        incTax: ''
-      },
-      margin: '25',
-      defaultSalesPrice: {
-        excTax: '',
-        incTax: ''
-      }
-    },
-    {
-      id: 4,
-      typeOfPrice: 'Minimum Price',
-      defaultPurchasePrice: {
-        excTax: '',
-        incTax: ''
-      },
-      margin: '25',
-      defaultSalesPrice: {
-        excTax: '',
-        incTax: ''
-      }
-    },
-    {
-      id: 5,
-      typeOfPrice: 'Last Price',
-      defaultPurchasePrice: {
-        excTax: '',
-        incTax: ''
-      },
-      margin: '25',
-      defaultSalesPrice: {
-        excTax: '',
-        incTax: ''
-      }
-    },
-    {
-      id: 6,
-      typeOfPrice: 'ECM Before',
-      defaultPurchasePrice: {
-        excTax: '',
-        incTax: ''
-      },
-      margin: '25',
-      defaultSalesPrice: {
-        excTax: '',
-        incTax: ''
-      }
-    },
-    {
-      id: 7,
-      typeOfPrice: 'ECM After',
-      defaultPurchasePrice: {
-        excTax: '',
-        incTax: ''
-      },
-      margin: '25',
-      defaultSalesPrice: {
-        excTax: '',
-        incTax: ''
-      }
-    },
-    {
-      id: 8,
-      typeOfPrice: 'Custom Price',
-      defaultPurchasePrice: {
-        excTax: '',
-        incTax: ''
-      },
-      margin: '25',
-      defaultSalesPrice: {
-        excTax: '',
-        incTax: ''
-      }
-    }
-  ])
 
+  // ** Grid columns
   const columns: GridColDef[] = [
     {
       field: 'value',
       headerName: 'Header',
-      width: 120,
+      width: 140,
       renderCell: params => (
         <div
           style={{
@@ -684,11 +542,17 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     }
   ]
 
+
+  // ** Hooks
   const cardRef = useRef(null)
+  const theme = useTheme()
+
 
   // ** Selectors
   const productData = useSelector(state => state.getCreateProduct?.data?.value)
   const { units, sub_units } = productData
+
+  // ** useEffect
   useEffect(() => {
     setUnitsData(units)
     if (sub_units) {
@@ -711,10 +575,21 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
   }, [initialValues.unit_id])
 
     // ** filter sub units
-    useEffect(() => {
+  useEffect(() => {
       const filteredSubUnits = subUnitsData.filter(subUnit => subUnit.parent_id === initialValues.unit_id)
       setFilteredSubUnitsData(filteredSubUnits.length ? filteredSubUnits : [])
     }, [subUnitsData, initialValues.unit_id])
+
+  // ** Functions
+
+   const handleChangeTax = (event: SelectChangeEvent) => {
+    setTax(event.target.value)
+  }
+
+  const handleChangeProductType = (event: SelectChangeEvent) => {
+    setProductType(event.target.value)
+  }
+
 
   return (
     <Card style={{ height: '100%', width: '100%' }} ref={cardRef}>
@@ -769,6 +644,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             label='Unit'
             fullWidth
             onBlur={handleBlur}
+            disabled={true}
             error={touched.unit_id && !!errors.unit_id}
           >
             {unitsData.map(unit => (
@@ -795,24 +671,25 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           )
        }
       </Box>
+
       {showMore &&
         subUnitsIds.length > 0 &&
         subUnitsIds.map(
           (subUnit, index) => (
-            console.log('subUnit :>> ', subUnit),
+
             (
               <Box
                 key={index}
                 sx={{
                   marginTop: '1rem',
                   padding: '1rem',
-                  border: '1px solid #ccc'
+                  border: '1px solid ',
+                  borderRadius: '10px',
+                  borderColor:theme => theme.palette.divider,
                 }}
               >
-                <Typography variant='h6' gutterBottom>
-                  {subUnit}
-                </Typography>
-                <Grid item xs={10}>
+
+                <Grid item xs={6} sx={{my:5}}>
               <FormControl fullWidth>
                 <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
                 <Select
@@ -826,22 +703,19 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                   renderValue={selected =>
                     filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map(value => (
                           <Chip
-                            key={value}
-                            label={filteredSubUnitsData.find(subUnit => subUnit.id === value)?.name || null}
+                            label={filteredSubUnitsData.find(subUnit => subUnit.id === selected[index])?.name || null}
                             onDelete={() => {
-                              const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== value)
+                              const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== selected[index])
                               setFieldValue('sub_unit_id', updatedSubUnitIds)
-                              setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== value))
+                              setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== selected[index]))
                             }}
                           />
-                        ))}
                       </Box>
                     ) : null
                   }
                   onBlur={handleBlur}
-                  disabled={filteredSubUnitsData && filteredSubUnitsData.length ? false : true}
+                  disabled={ true}
                 >
                   {initialValues.sub_unit_id.length >= 2 && (
                     <MenuItem value='' disabled>
@@ -853,7 +727,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                       key={subUnit.id}
                       value={subUnit.id}
                       disabled={
-                        initialValues.sub_unit_id.length >= 2 && !initialValues.sub_unit_id.includes(subUnit.id)
+                          !initialValues.sub_unit_id.includes(subUnit.id)
                       }
                     >
                       {subUnit.name}
