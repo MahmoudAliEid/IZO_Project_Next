@@ -125,6 +125,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
   const [activeStep, setActiveStep] = useState(0)
+  const [unitId, setUnitId] = useState('')
   const [initialValues, setInitialValues] = useState({
     name: '',
     code: '',
@@ -153,7 +154,119 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     custom_field_2: '',
     custom_field_3: '',
     custom_field_4: '',
-    product_type: 'single'
+    product_type: 'single',
+    tableData: [
+      {
+        id: 1,
+        unit_id: unitId,
+        value: 'default_price',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 2,
+        unit_id: unitId,
+        value: 'whole_price',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 3,
+        unit_id: unitId,
+        value: 'retail_price',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 4,
+        unit_id: unitId,
+        value: 'minimum_price',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 5,
+        unit_id: unitId,
+        value: 'last_price',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 6,
+        unit_id: unitId,
+        value: 'ecm_before_price',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 7,
+        unit_id: unitId,
+        value: 'ecm_after_price',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 8,
+        unit_id: unitId,
+        value: 'custom_price_1',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 9,
+        unit_id: unitId,
+        value: 'custom_price_2',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 10,
+        unit_id: unitId,
+        value: 'custom_price_3',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      },
+      {
+        id: 11,
+        unit_id: unitId,
+        value: 'custom_price_4',
+        single_dpp: 0,
+        single_dpp_in_tax: 0,
+        profit_percent: 0,
+        single_dsp: 0,
+        single_dsp_inc_tax: 0
+      }
+    ]
   })
 
   // ** Test
@@ -163,6 +276,12 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
 
   // ** Hooks
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (initialValues.unit_id) {
+      setUnitId(initialValues.unit_id)
+    }
+  }, [initialValues.unit_id])
 
   useEffect(() => {
     const token = getCookie('token')

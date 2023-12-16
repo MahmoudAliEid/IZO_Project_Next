@@ -18,8 +18,23 @@ import { Box, FormControl, InputLabel, Select, MenuItem ,Chip,Button, Divider, G
 import { SelectChangeEvent } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
+// Types
+ type PropsType ={
+  initialValues: {
+    product_type: string;
+    unit_id: string;
+    sub_unit_id: string[];
+  };
+  errors: Record<string, unknown>;
+  touched: Record<string, unknown>;
+  handleBlur: () => void;
+  handleChange: () => void;
+  setFieldValue: () => void;
+}
 
-const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+
+
+const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }:PropsType) => {
  // ** States
   const [tax, setTax] = useState('')
   const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
@@ -141,6 +156,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
       single_dsp_inc_tax: ''
     }
   ])
+
+
   const [tableDataChild1, setTableDataChild1] = useState([
     {
       id: 1,
@@ -366,6 +383,19 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     }
   ])
 
+  // ** Function to set value
+  const updateValue = (id, newValue, name) => {
+  const updatedTableData = initialValues.tableData.map(item => {
+    if (item.id === id+1) {
+      return { ...item, [name]: newValue };
+    }
+    return item;
+  });
+
+  setFieldValue('tableData', updatedTableData);
+  console.log(name, 'name of the field');
+  console.log(newValue, 'new value');
+}
 
   // ** Grid columns
   const columns: GridColDef[] = [
@@ -414,12 +444,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
               onChange={e => {
                 const value = e.target.value
-                setTableData(prev => {
-                  const newData = [...prev]
-                  newData[params.row.id - 1].single_dpp = value
-
-                  return newData
-                })
+                const id = params.row.id - 1
+                updateValue(id, value,"single_dpp")
               }}
             />
           </Box>
@@ -432,12 +458,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               }
               onChange={e => {
                 const value = e.target.value
-                setTableData(prev => {
-                  const newData = [...prev]
-                  newData[params.row.id - 1].single_dpp_in_tax = value
-
-                  return newData
-                })
+                const id = params.row.id - 1
+                updateValue(id, value,"single_dpp_in_tax")
               }}
             />
           </Box>
@@ -469,12 +491,9 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               value={params.row.profit_percent}
               onChange={e => {
                 const value = e.target.value
-                setTableData(prev => {
-                  const newData = [...prev]
-                  newData[params.row.id - 1].profit_percent = value
+                const id = params.row.id - 1
+                updateValue(id, value,"profit_percent")
 
-                  return newData
-                })
               }}
             />
           </Box>
@@ -506,12 +525,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               }
               onChange={e => {
                 const value = e.target.value
-                setTableData(prev => {
-                  const newData = [...prev]
-                  newData[params.row.id - 1].single_dsp = value
-
-                  return newData
-                })
+                const id = params.row.id - 1
+                updateValue(id, value,"single_dsp")
               }}
             />
           </Box>
@@ -527,13 +542,11 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                   : ''
               }
               onChange={e => {
-                const value = e.target.value
-                setTableData(prev => {
-                  const newData = [...prev]
-                  newData[params.row.id - 1].single_dsp_inc_tax = value
 
-                  return newData
-                })
+                 const value = e.target.value
+                const id = params.row.id - 1
+                updateValue(id, value,"single_dsp_inc_tax")
+
               }}
             />
           </Box>
@@ -590,7 +603,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     setProductType(event.target.value)
   }
 
-  if (initialValues.product_type === 'single') {
+  if (initialValues.product_type) {
 
     return (
       <Card style={{ height: '100%', width: '100%' }} ref={cardRef}>
@@ -624,8 +637,13 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           </FormControl>
 
           <FormControl fullWidth>
-            <InputLabel>Product Type:</InputLabel>
-            <Select value={initialValues.product_type} onChange={handleChange} label='Product Type'>
+            <InputLabel>Product Type</InputLabel>
+            <Select
+              value={initialValues.product_type}
+              onChange={handleChange}
+              label='Product Type'
+              name='product_type'
+            >
               <MenuItem value={'single'}>Single</MenuItem>
               <MenuItem value={'variable'}>Variable</MenuItem>
               <MenuItem value={'combo'}>Combo</MenuItem>
@@ -654,7 +672,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           </FormControl>
         </Box>
         <Box padding={2}>
-          <DataGrid autoHeight columns={columns} rowHeight={120} rows={tableData} />
+          <DataGrid autoHeight columns={columns} rowHeight={120} rows={initialValues.tableData} />
          {
             subUnitsIds.length > 0 && (
               <Button
