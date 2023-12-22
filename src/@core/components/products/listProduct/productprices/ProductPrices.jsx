@@ -4,39 +4,21 @@
 // ** React Imports
 import { ChangeEvent, useState, useEffect, useRef, Fragment } from 'react'
 
-
 //** Redux Imports
 import { useDispatch, useSelector } from 'react-redux'
-
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import TextField from '@mui/material/TextField'
-import { Box, FormControl, InputLabel, Select, MenuItem ,Chip,Button, Divider, Grid, Typography } from '@mui/material'
-import { SelectChangeEvent } from '@mui/material'
+import { Box, FormControl, InputLabel, Select, MenuItem, Chip, Button, Divider, Grid, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
-// Types
- type PropsType ={
-  initialValues: {
-    product_type: string;
-    unit_id: string;
-    sub_unit_id: string[];
-  };
-  errors: Record<string, unknown>;
-  touched: Record<string, unknown>;
-  handleBlur: () => void;
-  handleChange: () => void;
-  setFieldValue: () => void;
-}
-
-
-
-const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }:PropsType) => {
- // ** States
+const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+  // ** States
   const [tax, setTax] = useState('')
+
   const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
   const [productType, setProductType] = useState('')
   const [unitsData, setUnitsData] = useState([])
@@ -156,7 +138,6 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
       single_dsp_inc_tax: ''
     }
   ])
-
 
   const [tableDataChild1, setTableDataChild1] = useState([
     {
@@ -383,26 +364,52 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     }
   ])
 
-  // ** Function to set value
-  const updateValue = (id, newValue, name) => {
-  const updatedTableData = initialValues.tableData.map(item => {
-    if (item.id === id+1) {
-      return { ...item, [name]: newValue };
-    }
-    return item;
-  });
+  // update the table data when tax changes 🔥
+  useEffect(() => {
+    // update the table data
+    const updatedTableData = initialValues.tableData.map(item => {
+      return {
+        ...item,
+        ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
+        ['single_dsp_inc_tax']:
+          Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
+          Number(item.single_dpp) +
+          (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
+      }
+    })
 
-  setFieldValue('tableData', updatedTableData);
-  console.log(name, 'name of the field');
-  console.log(newValue, 'new value');
-}
+    // console.log(updatedTableData, 'updatedTableData 🔥')
+
+    setFieldValue('tableData', updatedTableData)
+  }, [tax])
+
+  // ** update the table data when profit percent changes 🔥
+  const updateValue = (id, newValue, name) => {
+    const updatedTableData = initialValues.tableData.map(item => {
+      if (item.id === id + 1) {
+        return {
+          ...item,
+          [name]: Number(newValue),
+          ['single_dsp']: Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp),
+          ['single_dsp_inc_tax']:
+            Number(item.single_dpp) * Number(newValue) * 0.01 +
+            Number(item.single_dpp) +
+            (Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp)) * Number(tax)
+        }
+      }
+
+      return item
+    })
+
+    setFieldValue('tableData', updatedTableData)
+  }
 
   // ** Grid columns
-  const columns: GridColDef[] = [
+  const columns = [
     {
       field: 'value',
       headerName: 'Header',
-      width: 140,
+      width: 200,
       renderCell: params => (
         <div
           style={{
@@ -427,7 +434,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     {
       field: 'single_dpp',
       headerName: 'Default Purchase Price',
-      width: 400,
+      width: 200,
       renderCell: params => (
         <div
           style={{
@@ -443,9 +450,26 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               type='text'
               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
               onChange={e => {
-                const value = e.target.value
-                const id = params.row.id - 1
-                updateValue(id, value,"single_dpp")
+                const updatedTableData = initialValues.tableData.map(item => {
+                  if (item.id === params.row.id) {
+                    return {
+                      ...item,
+                      ['single_dpp']: Number(e.target.value),
+                      ['single_dpp_in_tax']: Number(e.target.value) + Number(e.target.value) * Number(tax),
+                      ['single_dsp']:
+                        Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value),
+                      ['single_dsp_inc_tax']:
+                        Number(e.target.value) * Number(item.profit_percent) * 0.01 +
+                        Number(e.target.value) +
+                        (Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value)) *
+                          Number(tax)
+                    }
+                  }
+
+                  return item
+                })
+
+                setFieldValue('tableData', updatedTableData)
               }}
             />
           </Box>
@@ -454,13 +478,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <TextField
               type='text'
               value={
-                params.row.single_dpp ? Number(params.row.single_dpp) * Number(tax) + Number(params.row.single_dpp) : ''
+                params.row.single_dpp ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(tax) : ''
               }
-              onChange={e => {
-                const value = e.target.value
-                const id = params.row.id - 1
-                updateValue(id, value,"single_dpp_in_tax")
-              }}
             />
           </Box>
         </div>
@@ -469,13 +488,14 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     {
       field: 'xmargin',
       headerName: 'X Margin(%)',
-      width: 220,
+      width: 200,
       renderCell: params => (
         <div
           style={{
             display: 'flex',
             alignItems: 'end',
-            height: '85%'
+            height: '85%',
+            width: '100%'
           }}
         >
           <Box
@@ -492,8 +512,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               onChange={e => {
                 const value = e.target.value
                 const id = params.row.id - 1
-                updateValue(id, value,"profit_percent")
-
+                updateValue(id, value, 'profit_percent')
               }}
             />
           </Box>
@@ -503,7 +522,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     {
       field: 'defaultSalesPrice',
       headerName: 'Default Sales Price',
-      width: 400,
+      width: 200,
       renderCell: params => (
         <div
           style={{
@@ -523,11 +542,6 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                     Number(params.row.single_dpp)
                   : ''
               }
-              onChange={e => {
-                const value = e.target.value
-                const id = params.row.id - 1
-                updateValue(id, value,"single_dsp")
-              }}
             />
           </Box>
           <Box>
@@ -536,18 +550,13 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               type='text'
               value={
                 params.row.single_dpp
-                  ? Number(params.row.single_dpp) * Number(tax) * Number(params.row.profit_percent) * 0.01 +
-                    Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-                    Number(params.row.single_dpp)
+                  ? Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
+                    Number(params.row.single_dpp) +
+                    (Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
+                      Number(params.row.single_dpp)) *
+                      Number(tax)
                   : ''
               }
-              onChange={e => {
-
-                 const value = e.target.value
-                const id = params.row.id - 1
-                updateValue(id, value,"single_dsp_inc_tax")
-
-              }}
             />
           </Box>
         </div>
@@ -555,11 +564,9 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     }
   ]
 
-
   // ** Hooks
   const cardRef = useRef(null)
   const theme = useTheme()
-
 
   // ** Selectors
   const productData = useSelector(state => state.getCreateProduct?.data?.value)
@@ -587,24 +594,23 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     }
   }, [initialValues.unit_id])
 
-    // ** filter sub units
+  // ** filter sub units
   useEffect(() => {
-      const filteredSubUnits = subUnitsData.filter(subUnit => subUnit.parent_id === initialValues.unit_id)
-      setFilteredSubUnitsData(filteredSubUnits.length ? filteredSubUnits : [])
-    }, [subUnitsData, initialValues.unit_id])
+    const filteredSubUnits = subUnitsData.filter(subUnit => subUnit.parent_id === initialValues.unit_id)
+    setFilteredSubUnitsData(filteredSubUnits.length ? filteredSubUnits : [])
+  }, [subUnitsData, initialValues.unit_id])
 
   // ** Functions
 
-  const handleChangeTax = (event: SelectChangeEvent) => {
+  const handleChangeTax = event => {
     setTax(event.target.value)
   }
 
-  const handleChangeProductType = (event: SelectChangeEvent) => {
+  const handleChangeProductType = event => {
     setProductType(event.target.value)
   }
 
   if (initialValues.product_type) {
-
     return (
       <Card style={{ height: '100%', width: '100%' }} ref={cardRef}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
@@ -629,7 +635,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 <em>Please Select</em>
               </MenuItem>
               <MenuItem value={0}>Vat 0 %</MenuItem>
-              <MenuItem value={0.05}>Vat 0.05 %</MenuItem>
+              <MenuItem value={0.05}>Vat 5 %</MenuItem>
               <MenuItem value={0.1}>Vat 10 %</MenuItem>
               <MenuItem value={1}>Vat 1</MenuItem>
               <MenuItem value={2}>Vat 2</MenuItem>
@@ -638,12 +644,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
 
           <FormControl fullWidth>
             <InputLabel>Product Type</InputLabel>
-            <Select
-              value={initialValues.product_type}
-              onChange={handleChange}
-              label='Product Type'
-              name='product_type'
-            >
+            <Select value={initialValues.product_type} onChange={handleChange} label='Product Type' name='product_type'>
               <MenuItem value={'single'}>Single</MenuItem>
               <MenuItem value={'variable'}>Variable</MenuItem>
               <MenuItem value={'combo'}>Combo</MenuItem>
@@ -673,9 +674,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
         </Box>
         <Box padding={2}>
           <DataGrid autoHeight columns={columns} rowHeight={120} rows={initialValues.tableData} />
-         {
-            subUnitsIds.length > 0 && (
-              <Button
+          {subUnitsIds.length > 0 && (
+            <Button
               variant='contained'
               color='primary'
               onClick={() => {
@@ -684,28 +684,23 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             >
               {showMore ? 'Show Less' : 'Show More'}
             </Button>
-            )
-         }
+          )}
         </Box>
 
         {showMore &&
           subUnitsIds.length > 0 &&
-          subUnitsIds.map(
-            (subUnit, index) => (
-
-              (
-                <Box
-                  key={index}
-                  sx={{
-                    marginTop: '1rem',
-                    padding: '1rem',
-                    border: '1px solid ',
-                    borderRadius: '10px',
-                    borderColor:theme => theme.palette.divider,
-                  }}
-                >
-
-                  <Grid item xs={6} sx={{my:5}}>
+          subUnitsIds.map((subUnit, index) => (
+            <Box
+              key={index}
+              sx={{
+                marginTop: '1rem',
+                padding: '1rem',
+                border: '1px solid ',
+                borderRadius: '10px',
+                borderColor: theme => theme.palette.divider
+              }}
+            >
+              <Grid item xs={6} sx={{ my: 5 }}>
                 <FormControl fullWidth>
                   <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
                   <Select
@@ -719,19 +714,21 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                     renderValue={selected =>
                       filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            <Chip
-                              label={filteredSubUnitsData.find(subUnit => subUnit.id === selected[index])?.name || null}
-                              onDelete={() => {
-                                const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== selected[index])
-                                setFieldValue('sub_unit_id', updatedSubUnitIds)
-                                setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== selected[index]))
-                              }}
-                            />
+                          <Chip
+                            label={filteredSubUnitsData.find(subUnit => subUnit.id === selected[index])?.name || null}
+                            onDelete={() => {
+                              const updatedSubUnitIds = initialValues.sub_unit_id.filter(
+                                item => item !== selected[index]
+                              )
+                              setFieldValue('sub_unit_id', updatedSubUnitIds)
+                              setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== selected[index]))
+                            }}
+                          />
                         </Box>
                       ) : null
                     }
                     onBlur={handleBlur}
-                    disabled={ true}
+                    disabled={true}
                   >
                     {initialValues.sub_unit_id.length >= 2 && (
                       <MenuItem value='' disabled>
@@ -742,9 +739,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                       <MenuItem
                         key={subUnit.id}
                         value={subUnit.id}
-                        disabled={
-                            !initialValues.sub_unit_id.includes(subUnit.id)
-                        }
+                        disabled={!initialValues.sub_unit_id.includes(subUnit.id)}
                       >
                         {subUnit.name}
                       </MenuItem>
@@ -753,29 +748,21 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 </FormControl>
               </Grid>
 
-                  <DataGrid
-                    autoHeight
-                    columns={columns}
-                    rowHeight={120}
-                    rows={index === 0 ? tableDataChild1 : tableDataChild2}
-                  />
-                </Box>
-              )
-            )
-          )}
+              <DataGrid
+                autoHeight
+                columns={columns}
+                rowHeight={120}
+                rows={index === 0 ? tableDataChild1 : tableDataChild2}
+              />
+            </Box>
+          ))}
       </Card>
     )
-    }
+  }
 
-  if (initialValues.product_type === "variable") {
-    return (
-      <Typography>
-        Under Developments
-      </Typography>
-
-    )
-    }
-
+  if (initialValues.product_type === 'variable') {
+    return <Typography>Under Developments</Typography>
+  }
 }
 
 export default ProductPrices

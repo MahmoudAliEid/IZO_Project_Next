@@ -272,8 +272,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   // ** Test
   console.log('from stepper product isEdit & itemId 🎶', isEdit, itemId)
 
-  console.log('Hello Word ✨✨✨✨✨')
-
   // ** Hooks
   const dispatch = useDispatch()
 
@@ -361,6 +359,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
               handleBlur={handleBlur}
               handleChange={handleChange}
               setFieldValue={setFieldValue}
+              setInitialValues={setInitialValues}
             />
           </Fragment>
         )
