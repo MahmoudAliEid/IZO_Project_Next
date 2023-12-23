@@ -581,7 +581,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
 
   // update  unit_id when unit changes for first child 🔥
   useEffect(() => {
-    const updatedTableData = initialValues.tableDataOne.map(item => {
+    const updatedTableData = initialValues.tableDataChildOne.map(item => {
       return {
         ...item,
         ['unit_id']: subUnitsIds.length > 0 ? subUnitsIds[0] : ''
@@ -589,11 +589,11 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     })
 
     setFieldValue('tableData', updatedTableData)
-  }, [subUnitsIds, setFieldValue, initialValues.tableDataOne])
+  }, [subUnitsIds, setFieldValue, initialValues.tableDataChildOne])
 
   // update  unit_id when unit changes for second child 🔥
   useEffect(() => {
-    const updatedTableData = initialValues.tableDataTwo.map(item => {
+    const updatedTableData = initialValues.tableDataChildTwo.map(item => {
       return {
         ...item,
         ['unit_id']: subUnitsIds.length > 0 ? subUnitsIds[1] : ''
@@ -601,7 +601,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     })
 
     setFieldValue('tableData', updatedTableData)
-  }, [subUnitsIds, setFieldValue, initialValues.tableDataTwo])
+  }, [subUnitsIds, setFieldValue, initialValues.tableDataChildTwo])
 
   useEffect(() => {
     setUnitsData(units)
