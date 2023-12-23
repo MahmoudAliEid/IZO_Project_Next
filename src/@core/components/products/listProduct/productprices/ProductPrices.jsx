@@ -589,7 +589,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     })
 
     setFieldValue('tableData', updatedTableData)
-  }, [subUnitsIds, setFieldValue, initialValues.tableDataChildOne])
+  })
 
   // update  unit_id when unit changes for second child 🔥
   useEffect(() => {
@@ -601,7 +601,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
     })
 
     setFieldValue('tableData', updatedTableData)
-  }, [subUnitsIds, setFieldValue, initialValues.tableDataChildTwo])
+  })
 
   useEffect(() => {
     setUnitsData(units)
