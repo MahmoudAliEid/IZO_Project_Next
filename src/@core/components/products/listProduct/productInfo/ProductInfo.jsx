@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { useEffect, useState } from 'react'
-import { EditorState, convertToRaw, convertToHTML } from 'draft-js'
+import { EditorState, convertToRaw, convertToHTML, ContentState } from 'draft-js'
 
 // ** MUI
 import {
@@ -56,6 +56,20 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   const [newUnit, setNewUnit] = useState(false)
   const [filteredSubCategoriesData, setFilteredSubCategoriesData] = useState([])
   const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
+
+  // ** States for Editor
+  const [editorState, setEditorState] = useState(EditorState.createEmpty())
+  const [editorState2, setEditorState2] = useState(EditorState.createEmpty())
+
+  // Editor
+  // const contentBlock = htmlToDraft(initialValues.short_description)
+  // let editorState
+  // if (contentBlock) {
+  //   const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks)
+  //   editorState = EditorState.createWithContent(contentState)
+  // } else {
+  //   editorState = EditorState.createEmpty()
+  // }
 
   // ** Selectors
 
@@ -135,6 +149,19 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
     newBrand
   ])
 
+  // set Editor to main valuse
+  useEffect(() => {
+    if (editorState) {
+      setFieldValue('long_description', convertToRaw(editorState.getCurrentContent()))
+    }
+  }, [editorState, setFieldValue])
+
+  useEffect(() => {
+    if (editorState2) {
+      setFieldValue('short_description', convertToRaw(editorState2.getCurrentContent()))
+    }
+  }, [editorState2, setFieldValue])
+
   // ** Functions
   const handleUnitOnClick = () => {
     setOpenUnit(true)
@@ -154,6 +181,9 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   const toggleBrand = () => {
     setOpenBrand(prev => !prev)
   }
+
+  // console.log(editorState, convertToRaw(editorState.getCurrentContent()), 'editorState this is  first one 💖💖💓')
+  // console.log(editorState2, convertToRaw(editorState2.getCurrentContent()), 'editorState this is  second one 💌💟💟')
 
   return (
     <Grid container spacing={12}>
@@ -246,7 +276,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 disabled={initialValues.sub_unit_id && initialValues.sub_unit_id.length > 0 ? true : false}
                 onChange={handleChange}
                 name='unit_id'
-                id='demo-simple-select'
+                id='demo-simple-select-label'
                 label='Unit'
                 fullWidth
                 onBlur={handleBlur}
@@ -579,20 +609,14 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
       <Grid item xs={12} className='match-height'>
         <Typography variant='h6'>Long Description</Typography>
         <EditorWrapper>
-          <ReactDraftWysiwyg
-            editorState={initialValues.long_description}
-            onEditorStateChange={data => setFieldValue('long_description', data)}
-          />
+          <ReactDraftWysiwyg editorState={editorState} onEditorStateChange={data => setEditorState(data)} />
         </EditorWrapper>
       </Grid>
 
       <Grid item xs={12} className='match-height'>
         <Typography variant='h6'>Short Description</Typography>
         <EditorWrapper>
-          <ReactDraftWysiwyg
-            editorState={initialValues.short_description}
-            onEditorStateChange={data => setFieldValue('short_description', data)}
-          />
+          <ReactDraftWysiwyg editorState={editorState2} onEditorStateChange={data => setEditorState2(data)} />
         </EditorWrapper>
       </Grid>
 
