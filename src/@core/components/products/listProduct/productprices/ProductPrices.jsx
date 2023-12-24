@@ -18,12 +18,468 @@ import { useTheme } from '@mui/material/styles'
 const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
   // ** States
   const [tax, setTax] = useState('')
+
   const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
+  const [productType, setProductType] = useState('')
   const [unitsData, setUnitsData] = useState([])
   const [subUnitsIds, setSubUnitsIds] = useState([])
   const [unitId, setUnitId] = useState('')
   const [subUnitsData, setSubUnitsData] = useState([])
   const [showMore, setShowMore] = useState(false)
+  const [tableData, setTableData] = useState([
+    {
+      id: 1,
+      unit_id: unitId,
+      value: 'default_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 2,
+      unit_id: unitId,
+      value: 'whole_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 3,
+      unit_id: unitId,
+      value: 'retail_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 4,
+      unit_id: unitId,
+      value: 'minimum_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 5,
+      unit_id: unitId,
+      value: 'last_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 6,
+      unit_id: unitId,
+      value: 'ecm_before_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 7,
+      unit_id: unitId,
+      value: 'ecm_after_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 8,
+      unit_id: unitId,
+      value: 'custom_price_1',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 9,
+      unit_id: unitId,
+      value: 'custom_price_2',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 10,
+      unit_id: unitId,
+      value: 'custom_price_3',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 11,
+      unit_id: unitId,
+      value: 'custom_price_4',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    }
+  ])
+
+  const [tableDataChild1, setTableDataChild1] = useState([
+    {
+      id: 1,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'default_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 2,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'whole_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 3,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'retail_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 4,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'minimum_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 5,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'last_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 6,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'ecm_before_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 7,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'ecm_after_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 8,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'custom_price_1',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 9,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'custom_price_2',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 10,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'custom_price_3',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 11,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
+      value: 'custom_price_4',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    }
+  ])
+  const [tableDataChild2, setTableDataChild2] = useState([
+    {
+      id: 1,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'default_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 2,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'whole_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 3,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'retail_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 4,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'minimum_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 5,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'last_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 6,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'ecm_before_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 7,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'ecm_after_price',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 8,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'custom_price_1',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 9,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'custom_price_2',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 10,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'custom_price_3',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    },
+    {
+      id: 11,
+      unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
+      value: 'custom_price_4',
+      single_dpp: '',
+      single_dpp_in_tax: '',
+      profit_percent: '',
+      single_dsp: '',
+      single_dsp_inc_tax: ''
+    }
+  ])
+
+  // update the table data when tax changes 🔥
+  // useEffect(() => {
+  //   // update the table data
+  //   const updatedTableData = initialValues.tableData.map(item => {
+  //     return {
+  //       ...item,
+  //       ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
+  //       ['single_dsp_inc_tax']:
+  //         Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
+  //         Number(item.single_dpp) +
+  //         (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
+  //     }
+  //   })
+
+  //   // console.log(updatedTableData, 'updatedTableData 🔥')
+
+  //   setFieldValue('tableData', updatedTableData)
+  // }, [tax, setFieldValue, initialValues.tableData])
+
+  // ** for child 1
+  // useEffect(() => {
+  //   // update the table data
+  //   const updatedTableData = initialValues.tableDataChildOne.map(item => {
+  //     return {
+  //       ...item,
+  //       ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
+  //       ['single_dsp_inc_tax']:
+  //         Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
+  //         Number(item.single_dpp) +
+  //         (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
+  //     }
+  //   })
+
+  //   // console.log(updatedTableData, 'updatedTableData 🔥')
+
+  //   setFieldValue('tableDataChildOne', updatedTableData)
+  // }, [tax, setFieldValue, initialValues.tableDataChildOne])
+
+  // ** for child 2
+  // useEffect(() => {
+  //   // update the table data
+  //   const updatedTableData = initialValues.tableDataChildTwo.map(item => {
+  //     return {
+  //       ...item,
+  //       ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
+  //       ['single_dsp_inc_tax']:
+  //         Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
+  //         Number(item.single_dpp) +
+  //         (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
+  //     }
+  //   })
+
+  //   // console.log(updatedTableData, 'updatedTableData 🔥')
+
+  //   setFieldValue('tableDataChildTwo', updatedTableData)
+  // }, [tax, setFieldValue, initialValues.tableDataChildTwo])
+
+  // update  unit_id when unit changes 🔥
+  useEffect(() => {
+    const updatedTableData = tableData.map(item => {
+      return {
+        ...item,
+        ['unit_id']: unitId
+      }
+    })
+
+    setFieldValue('tableData', updatedTableData)
+  }, [unitId, setFieldValue, tableData])
+
+  // Update First input
+
+  const updateFirstInput = (id, newValue, name, tableName) => {
+    const updatedTableData = initialValues[`${tableName}`].map(item => {
+      if (item.id === id + 1) {
+        return {
+          ...item,
+          [name]: Number(newValue),
+
+          // ['single_dpp']: Number(item.single_dpp),
+
+          ['single_dpp_in_tax']: Number(newValue) + Number(newValue) * Number(initialValues.tax),
+          ['single_dsp']: Number(newValue) * Number(item.profit_percent) * 0.01 + Number(newValue),
+          ['single_dsp_inc_tax']:
+            Number(newValue) * Number(item.profit_percent) * 0.01 +
+            Number(newValue) +
+            (Number(newValue) * Number(item.profit_percent) * 0.01 + Number(newValue)) * Number(initialValues.tax)
+        }
+      }
+
+      return item
+    })
+    setFieldValue(`${tableName}`, updatedTableData)
+  }
+
+  // ** update the table data when profit percent changes 🔥
+  const updateValue = (id, newValue, name, tableName) => {
+    const updatedTableData = initialValues[`${tableName}`].map(item => {
+      if (item.id === id + 1) {
+        return {
+          ...item,
+          [name]: Number(newValue),
+          ['single_dsp']: Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp),
+          ['single_dsp_inc_tax']:
+            Number(item.single_dpp) * Number(newValue) * 0.01 +
+            Number(item.single_dpp) +
+            (Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp)) * Number(initialValues.tax)
+        }
+      }
+
+      return item
+    })
+
+    setFieldValue(`${tableName}`, updatedTableData)
+  }
+
+  console.log('Tax each time 🤍🤍', initialValues.tax)
 
   // ** Grid columns
   const columns = [
@@ -70,27 +526,10 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <TextField
               type='text'
               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
-              onChange={e => {
-                const updatedTableData = initialValues.tableData.map(item => {
-                  if (item.id === params.row.id) {
-                    return {
-                      ...item,
-                      ['single_dpp']: Number(e.target.value),
-                      ['single_dpp_in_tax']: Number(e.target.value) + Number(e.target.value) * Number(tax),
-                      ['single_dsp']:
-                        Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value),
-                      ['single_dsp_inc_tax']:
-                        Number(e.target.value) * Number(item.profit_percent) * 0.01 +
-                        Number(e.target.value) +
-                        (Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value)) *
-                          Number(tax)
-                    }
-                  }
-
-                  return item
-                })
-
-                setFieldValue('tableData', updatedTableData)
+              onChange={event => {
+                const id = params.row.id - 1
+                const newValue = event.target.value
+                updateFirstInput(id, newValue, 'single_dpp', 'tableData')
               }}
             />
           </Box>
@@ -99,7 +538,9 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <TextField
               type='text'
               value={
-                params.row.single_dpp ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(tax) : ''
+                params.row.single_dpp
+                  ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(initialValues.tax)
+                  : ''
               }
             />
           </Box>
@@ -175,7 +616,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                     Number(params.row.single_dpp) +
                     (Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
                       Number(params.row.single_dpp)) *
-                      Number(tax)
+                      Number(initialValues.tax)
                   : ''
               }
             />
@@ -509,100 +950,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
   const productData = useSelector(state => state.getCreateProduct?.data?.value)
   const { units, sub_units } = productData
 
-  // ** useEffects
-  // ** update the table data when tax changes 🔥
-  useEffect(() => {
-    // update the table data
-    const updatedTableData = initialValues.tableData.map(item => {
-      return {
-        ...item,
-        ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
-        ['single_dsp_inc_tax']:
-          Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
-          Number(item.single_dpp) +
-          (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
-      }
-    })
-
-    // console.log(updatedTableData, 'updatedTableData 🔥')
-
-    setFieldValue('tableData', updatedTableData)
-  }, [tax])
-
-  // ** for child 1
-  useEffect(() => {
-    // update the table data
-    const updatedTableData = initialValues.tableDataChildOne.map(item => {
-      return {
-        ...item,
-        ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
-        ['single_dsp_inc_tax']:
-          Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
-          Number(item.single_dpp) +
-          (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
-      }
-    })
-
-    // console.log(updatedTableData, 'updatedTableData 🔥')
-
-    setFieldValue('tableDataChildOne', updatedTableData)
-  }, [tax])
-
-  // ** for child 2
-  useEffect(() => {
-    // update the table data
-    const updatedTableData = initialValues.tableDataChildTwo.map(item => {
-      return {
-        ...item,
-        ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
-        ['single_dsp_inc_tax']:
-          Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
-          Number(item.single_dpp) +
-          (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
-      }
-    })
-
-    // console.log(updatedTableData, 'updatedTableData 🔥')
-
-    setFieldValue('tableDataChildOne', updatedTableData)
-  }, [tax])
-
-  // update  unit_id when unit changes 🔥
-  useEffect(() => {
-    const updatedTableData = initialValues.tableData.map(item => {
-      return {
-        ...item,
-        ['unit_id']: unitId
-      }
-    })
-
-    setFieldValue('tableData', updatedTableData)
-  }, [unitId, setFieldValue, initialValues.tableData])
-
-  // update  unit_id when unit changes for first child 🔥
-  useEffect(() => {
-    const updatedTableData = initialValues.tableDataChildOne.map(item => {
-      return {
-        ...item,
-        ['unit_id']: subUnitsIds.length > 0 ? subUnitsIds[0] : ''
-      }
-    })
-
-    setFieldValue('tableData', updatedTableData)
-  })
-
-  // update  unit_id when unit changes for second child 🔥
-  useEffect(() => {
-    const updatedTableData = initialValues.tableDataChildTwo.map(item => {
-      return {
-        ...item,
-        ['unit_id']: subUnitsIds.length > 0 ? subUnitsIds[1] : ''
-      }
-    })
-
-    setFieldValue('tableData', updatedTableData)
-  })
-
+  // ** useEffect
   useEffect(() => {
     setUnitsData(units)
     if (sub_units) {
@@ -632,29 +980,12 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
 
   // ** Functions
 
-  // ** update the table data when profit percent changes 🔥
-  const updateValue = (id, newValue, name, tableName) => {
-    const updatedTableData = initialValues[`${tableName}`].map(item => {
-      if (item.id === id + 1) {
-        return {
-          ...item,
-          [name]: Number(newValue),
-          ['single_dsp']: Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp),
-          ['single_dsp_inc_tax']:
-            Number(item.single_dpp) * Number(newValue) * 0.01 +
-            Number(item.single_dpp) +
-            (Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp)) * Number(tax)
-        }
-      }
-
-      return item
-    })
-
-    setFieldValue(`${tableName}`, updatedTableData)
-  }
-
   const handleChangeTax = event => {
     setTax(event.target.value)
+  }
+
+  const handleChangeProductType = event => {
+    setProductType(event.target.value)
   }
 
   if (initialValues.product_type) {
@@ -677,10 +1008,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
         >
           <FormControl fullWidth>
             <InputLabel>Applicable Tax:</InputLabel>
-            <Select value={tax} onChange={handleChangeTax} label='Applicable Tax'>
-              <MenuItem value=''>
-                <em>Please Select</em>
-              </MenuItem>
+            <Select value={initialValues.tax} onChange={handleChange} label='Applicable Tax' name='tax'>
               <MenuItem value={0}>Vat 0 %</MenuItem>
               <MenuItem value={0.05}>Vat 5 %</MenuItem>
               <MenuItem value={0.1}>Vat 10 %</MenuItem>

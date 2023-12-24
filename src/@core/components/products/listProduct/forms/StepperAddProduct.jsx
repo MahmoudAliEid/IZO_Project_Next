@@ -155,6 +155,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     custom_field_3: '',
     custom_field_4: '',
     product_type: 'single',
+    tax: 0,
     tableData: [
       {
         id: 1,
