@@ -27,6 +27,8 @@ import PublicIcon from '@mui/icons-material/Public'
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
 import { fetchViewContact } from 'src/store/apps/contacts/getViewContactSlice'
 import ProductPrices from '../productprices/ProductPrices'
+import { useDispatch, useSelector } from 'react-redux'
+import { saveProduct } from 'src/store/apps/products/productStoreSlice'
 
 // import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
 
@@ -48,9 +50,6 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 // ** Styled Component
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import { getCookie } from 'cookies-next'
-
-// ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux'
 
 // import { AppDispatch } from 'src/redux/store'
 
@@ -155,6 +154,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     custom_field_3: '',
     custom_field_4: '',
     product_type: 'single',
+    positionDetailsValue: [],
     tax: 0,
     tableData: [
       {
@@ -618,7 +618,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const handleSubmitForm = (values, { resetForm }) => {
     // ** Test
     console.log(values, 'from submit Product 🐱‍🏍')
-
+    dispatch(saveProduct(values))
     setActiveStep(activeStep + 1)
     resetForm()
   }

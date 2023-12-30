@@ -436,6 +436,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
   // Update First input
 
   const updateFirstInput = (id, newValue, name, tableName) => {
+    console.log('tableName ============ 🌚', tableName)
     const updatedTableData = initialValues[`${tableName}`].map(item => {
       if (item.id === id + 1) {
         return {
@@ -460,6 +461,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
 
   // ** update the table data when profit percent changes 🔥
   const updateValue = (id, newValue, name, tableName) => {
+    console.log('tableName ============ 🌚', tableName)
     const updatedTableData = initialValues[`${tableName}`].map(item => {
       if (item.id === id + 1) {
         return {
@@ -669,27 +671,10 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <TextField
               type='text'
               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
-              onChange={e => {
-                const updatedTableData = initialValues.tableDataChildOne.map(item => {
-                  if (item.id === params.row.id) {
-                    return {
-                      ...item,
-                      ['single_dpp']: Number(e.target.value),
-                      ['single_dpp_in_tax']: Number(e.target.value) + Number(e.target.value) * Number(tax),
-                      ['single_dsp']:
-                        Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value),
-                      ['single_dsp_inc_tax']:
-                        Number(e.target.value) * Number(item.profit_percent) * 0.01 +
-                        Number(e.target.value) +
-                        (Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value)) *
-                          Number(tax)
-                    }
-                  }
-
-                  return item
-                })
-
-                setFieldValue('tableDataChildOne', updatedTableData)
+              onChange={event => {
+                const id = params.row.id - 1
+                const newValue = event.target.value
+                updateFirstInput(id, newValue, 'single_dpp', 'tableDataChildOne')
               }}
             />
           </Box>
@@ -698,7 +683,9 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <TextField
               type='text'
               value={
-                params.row.single_dpp ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(tax) : ''
+                params.row.single_dpp
+                  ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(initialValues.tax)
+                  : ''
               }
             />
           </Box>
@@ -774,7 +761,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                     Number(params.row.single_dpp) +
                     (Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
                       Number(params.row.single_dpp)) *
-                      Number(tax)
+                      Number(initialValues.tax)
                   : ''
               }
             />
@@ -827,27 +814,10 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <TextField
               type='text'
               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
-              onChange={e => {
-                const updatedTableData = initialValues.tableDataChildTwo.map(item => {
-                  if (item.id === params.row.id) {
-                    return {
-                      ...item,
-                      ['single_dpp']: Number(e.target.value),
-                      ['single_dpp_in_tax']: Number(e.target.value) + Number(e.target.value) * Number(tax),
-                      ['single_dsp']:
-                        Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value),
-                      ['single_dsp_inc_tax']:
-                        Number(e.target.value) * Number(item.profit_percent) * 0.01 +
-                        Number(e.target.value) +
-                        (Number(e.target.value) * Number(item.profit_percent) * 0.01 + Number(e.target.value)) *
-                          Number(tax)
-                    }
-                  }
-
-                  return item
-                })
-
-                setFieldValue('tableDataChildTwo', updatedTableData)
+              onChange={event => {
+                const id = params.row.id - 1
+                const newValue = event.target.value
+                updateFirstInput(id, newValue, 'single_dpp', 'tableDataChildTwo')
               }}
             />
           </Box>
@@ -856,7 +826,9 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <TextField
               type='text'
               value={
-                params.row.single_dpp ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(tax) : ''
+                params.row.single_dpp
+                  ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(initialValues.tax)
+                  : ''
               }
             />
           </Box>
@@ -932,7 +904,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                     Number(params.row.single_dpp) +
                     (Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
                       Number(params.row.single_dpp)) *
-                      Number(tax)
+                      Number(initialValues.tax)
                   : ''
               }
             />
