@@ -2,48 +2,30 @@
 
 import * as React from 'react'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Rating } from 'react-simple-star-rating'
 
-import Modal from '@mui/material/Modal'
 import Stack from '@mui/material/Stack'
-import Item from '@mui/material/Stack'
 import Chip from '@mui/material/Chip'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: '#fff',
-  borderRadius: 2,
-  p: 4,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  border: '0px solid transparent'
-}
+import { useTheme } from '@mui/material/styles'
+
+// ** MUI Imports
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
 
 export default function RatingComponent() {
   const [open, setOpen] = React.useState(localStorage.getItem('rating') ? false : true)
   const [feedback, setFeedback] = React.useState(false)
-  const handleOpen = () => setOpen(true)
+
   const handleClose = () => setOpen(false)
   const handelCloseFeedback = () => setFeedback(false)
 
-  const [rating, setRating] = useState(0)
-  const [hoverRating, setHoverRating] = useState(0)
+  const theme = useTheme()
 
   // Catch Rating value
   const handleRating = rate => {
-    // set rating
-    setRating(rate)
-
     //  close modal after rating
     setOpen(false)
 
@@ -52,11 +34,8 @@ export default function RatingComponent() {
       setFeedback(true)
     }, 1000)
 
-    // localStorage.setItem('rating', rate)
+    localStorage.setItem('rating', rate)
   }
-
-  // Optinal callback functions
-  const onPointerMove = (value, index) => setHoverRating(prev => value)
 
   useEffect(() => {
     if (feedback) {
@@ -67,42 +46,81 @@ export default function RatingComponent() {
   }, [feedback])
 
   return (
-    <div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <Box sx={style}>
-          <h1
-            style={{
-              textAlign: 'center'
-            }}
-          >
-            Rate Our Service
-          </h1>
-          <Rating
-            onClick={handleRating}
-            onPointerMove={onPointerMove}
-            SVGstyle={{
-              margin: '0px 15px'
-            }}
-            transition={true}
-          />
-          <Stack sx={{ px: 6, py: 5 }} direction='row' justifyContent={'space-between'} gap={2} width={1}>
-            <Chip label='Bad' variant='outlined' /> <Chip label='Excellent' variant='outlined' />
-          </Stack>
-        </Box>
-      </Modal>
-      <Modal
+    <React.Fragment>
+      <Dialog open={open} maxWidth='sm' fullWidth={true} onClose={handleClose} aria-labelledby='max-width-dialog-title'>
+        <DialogContent
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <DialogContentText id='alert-dialog-description'>
+            <Box>
+              <h1
+                style={{
+                  textAlign: 'center',
+                  color: theme.palette.primary.main
+                }}
+              >
+                Rate Our Service
+              </h1>
+              <Rating
+                onClick={handleRating}
+                SVGstyle={{
+                  margin: '0px 15px'
+                }}
+                transition={true}
+              />
+              <Stack sx={{ px: 6, py: 5 }} direction='row' justifyContent={'space-between'} gap={2} width={1}>
+                <Chip
+                  label='Bad'
+                  variant='outlined'
+                  style={{
+                    color: theme.palette.primary.main
+                  }}
+                />{' '}
+                <Chip
+                  label='Excellent'
+                  variant='outlined'
+                  style={{
+                    color: theme.palette.primary.main
+                  }}
+                />
+              </Stack>
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
         open={feedback}
+        maxWidth='sm'
+        fullWidth={true}
         onClose={handelCloseFeedback}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
+        aria-labelledby='max-width-dialog-title'
       >
-        <Box sx={style}>Thank you for your feedback! ✨</Box>
-      </Modal>
-    </div>
+        <DialogContent
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <DialogContentText id='alert-dialog-description'>
+            <Box>
+              <h1
+                style={{
+                  textAlign: 'center',
+                  color: theme.palette.primary.main
+                }}
+              >
+                Thank you for your feedback! ✨
+              </h1>
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+    </React.Fragment>
   )
 }
