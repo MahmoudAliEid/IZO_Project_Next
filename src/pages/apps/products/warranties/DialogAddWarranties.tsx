@@ -24,7 +24,7 @@ import { InputLabel } from '@mui/material';
 import { Select } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { FormHelperText } from '@mui/material';
-import LottieAnimation from 'src/@core/components/utilities/loadingComp'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 import MainDone from 'src/@core/components/mainLoading/MainDone'
 
 const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
@@ -52,11 +52,13 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
 
   useEffect(() => {
     if (isEdit && itemId !== undefined) {
+      //@ts-ignore
       dispatch(getWarrantyDetails(itemId));
 
     }
-  }, [isEdit])
+  }, [isEdit, dispatch, itemId])
 
+//@ts-ignore
   const warrantiesDetailsResponse = useSelector((state: { getAllWarrantiesDetailsSlice: { data: any } }) => state.getAllWarrantiesDetailsSlice.entity);
 
   useEffect(() => {
@@ -72,44 +74,49 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
 
 
 
-
+//@ts-ignore
   const storeWarrantiesResponse = useSelector((state: { storeWarrantiesSlice: { data: any } }) => state.storeWarrantiesSlice.entities);
-  const storeWarrantiesResponseStatuse = useSelector((state: { storeWarrantiesSlice: { data: any } }) => state.storeWarrantiesSlice);
+  const storeWarrantiesResponseStatus = useSelector((state: { storeWarrantiesSlice: { data: any } }) => state.storeWarrantiesSlice);
 
-  if (storeWarrantiesResponseStatuse) {
-    console.log(storeWarrantiesResponseStatuse, "storeWarrantiesResponseStatuse for edit 🔥🔥");
+  if (storeWarrantiesResponseStatus) {
+    console.log(storeWarrantiesResponseStatus, "storeWarrantiesResponseStatus for edit 🔥🔥");
   }
 
   useEffect(() => {
     if (storeWarrantiesResponse.status === 200) {
+      //@ts-ignore
       dispatch(getAllWarranties());
     }
   }
-    , [storeWarrantiesResponse])
+    , [storeWarrantiesResponse, dispatch])
 
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     console.log(values, "values for submit");
     if (isEdit && itemId) {
+      //@ts-ignore
       dispatch(updateWarranty({ updateData: values, id: itemId }));
     }
     else {
-
+    //@ts-ignore
       dispatch(storeWarranty(values));
 
     }
 
     setOpenLottie(true)
+
+
     resetForm();
 
   }
 
-
+//@ts-ignore
   const updateWarrantiesResponse = useSelector((state: { updateWarrantiesSlice: { data: any } }) => state.updateWarrantiesSlice.entity);
+  const updateWarrantiesMain = useSelector((state: { updateWarrantiesSlice: { data: any } }) => state.updateWarrantiesSlice);
 
   useEffect(() => {
     if (updateWarrantiesResponse.status === 200) {
       // console.log(updateWarrantiesResponse, "updateWarrantiesResponse for edit 🔥🔥");
-
+//@ts-ignore
       dispatch(getAllWarranties());
 
       // resetForm();
@@ -120,19 +127,20 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
       //   duration_type: '',
       // })
 
+//@ts-ignore
       dispatch(getWarrantyDetails(itemId));
     }
   }
-    , [updateWarrantiesResponse])
+    , [updateWarrantiesResponse, dispatch, itemId])
 
 
 
 
   return (
     <Fragment>
-      <LottieAnimation open={openLottie}
+      <LoadingAnimation open={openLottie}
         onClose={() => setOpenLottie(false)}
-        storeWarrantiesResponseStatuse={storeWarrantiesResponseStatuse} />
+        statusType={isEdit?updateWarrantiesMain:storeWarrantiesResponseStatus} />
       <Dialog
         open={open}
         onClose={toggle}

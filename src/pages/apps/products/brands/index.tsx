@@ -12,7 +12,7 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import Menu from '@mui/material/Menu'
-import Link from 'next/link'
+
 
 
 // ** Custom Components
@@ -35,11 +35,13 @@ import DialogAddBrands from './DialogAddBrands'
 // import DialogDeleteBrand from './DialogDeleteBrand'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert';
 import DialogViewBrand from './DialogViewBrand'
+import Image from 'next/image';
 
 const escapeRegExp = (value: string) => {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
+//@ts-ignore
 const RowOptions = ({ id }) => {
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -56,8 +58,12 @@ const RowOptions = ({ id }) => {
   }
   const handleDelete = async () => {
     console.log(id, "id for delete 🙌🙌🙌🙌🙌");
-    await dispatch(deleteBrand(id));
-    await dispatch(fetchAllBrands());
+
+    //@ts-ignore
+    dispatch(deleteBrand(id));
+
+    //@ts-ignore
+     dispatch(fetchAllBrands());
     handleRowOptionsClose();
   }
 
@@ -243,7 +249,39 @@ const columns: GridColDef[] = [
     headerName: 'Image ',
     field: 'image_url',
     renderCell: ({ row }) => (
-      <img src={row.image} alt="Brand" style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+      <Box
+          sx={{
+            padding: '5px 0',
+            color: 'text.secondary',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          {row.image? (
+            <div className='file-details'>
+              <div className='file-preview'>
+                    <Image
+                      alt={'Category Image'}
+                      src={row.image}
+                      width={48}
+                      height={48}
+                      style={{
+                      margin: '3px 0',
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      borderRadius: '8px',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
+              </div>
+            </div>
+          ) : (
+            'No Image'
+          )}
+        </Box>
     ),
 
   },
@@ -265,6 +303,8 @@ const AllBrands = () => {
   const handleSearch = (searchValue: string) => {
     setSearchText(searchValue)
     const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
+
+    //@ts-ignore
     const filteredRows = data.filter(row => {
       return Object.keys(row).some(field => {
         // @ts-ignore
@@ -280,12 +320,14 @@ const AllBrands = () => {
 
   useEffect(() => {
     const getAllBrands = async () => {
-      await dispatch(fetchAllBrands())
+      //@ts-ignore
+      dispatch(fetchAllBrands())
     }
     getAllBrands()
-  }, [])
+  }, [dispatch])
 
   // get all brands from redux store
+  //@ts-ignore
   const allBrandsFromRedux = useSelector((state: { getallbrandsSlice: { data: any } }) => state.getallbrandsSlice.brands)
 
   useEffect(() => {
@@ -304,7 +346,7 @@ const AllBrands = () => {
     <Card style={{ height: "100%", width: "100%" }} ref={cardRef}>
       <DialogAddBrands open={openDialogAddBrands} toggle={handleAddClickOpen} isEdit={false} />
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
-        <CardHeader title="All Brands" />
+        <CardHeader title="Brands List" />
 
 
 

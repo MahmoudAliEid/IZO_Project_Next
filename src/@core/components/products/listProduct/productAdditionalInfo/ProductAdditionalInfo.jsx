@@ -30,7 +30,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   const [positionDetailsValue, setPositionDetailsValue] = useState([])
 
   // ** Store Vars
-  const store = useSelector(state => state.getCreateProduct.data.value.product_racks)
+  const store = useSelector(state => state.getCreateProduct?.data?.value?.product_racks)
 
   // ** Get data on mount
   useEffect(() => {
@@ -51,18 +51,44 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
         const positionDetailsValue = positionDetails.map(item => {
           return {
             id: item.id,
-            name: item.value.name,
             value: item.value.value.map(item => {
               return { [item]: '' }
             })
           }
         })
-        setPositionDetailsValue(positionDetailsValue)
+        setFieldValue('positionDetailsValue', positionDetailsValue)
+
+        // setPositionDetailsValue(positionDetailsValue)
       }
 
       handleAddPosition()
     }
-  }, [positionDetails, store])
+  }, [positionDetails, store, setFieldValue])
+
+  // ** Function to Handle Position Details updates
+  const updateValue = (name, value, index, innerIndex) => {
+    const updatedTableData = initialValues.positionDetailsValue.map((item, indexMain) => {
+      if (indexMain === index) {
+        return {
+          ...item,
+          value: item.value.map((item, i) => {
+            if (i === innerIndex) {
+              return {
+                ...item,
+                [name]: value
+              }
+            } else {
+              return item
+            }
+          })
+        }
+      } else {
+        return item
+      }
+    })
+
+    setFieldValue(`positionDetailsValue`, updatedTableData)
+  }
 
   // const positionHandleChange = (e, item) => {
   //   const { name, value } = e.target
@@ -89,16 +115,17 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
                           <TextField
                             fullWidth
                             label={item}
-                            value={positionDetailsValue[index]?.value[innerIndex][item]}
+                            value={initialValues.positionDetailsValue[index]?.value[innerIndex][item]}
                             onChange={e => {
                               const { name, value } = e.target
 
-                              setPositionDetailsValue(prev => {
-                                const prevValue = [...prev]
-                                prevValue[index].value[innerIndex][name] = value
+                              // setPositionDetailsValue(prev => {
+                              //   const prevValue = [...prev]
+                              //   prevValue[index].value[innerIndex][name] = value
 
-                                return prevValue
-                              })
+                              //   return prevValue
+                              // })
+                              updateValue(name, value, index, innerIndex)
                             }}
                             name={item}
                           />

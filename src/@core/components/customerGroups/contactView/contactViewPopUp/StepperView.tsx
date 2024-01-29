@@ -72,7 +72,8 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
 
-// import { AppDispatch } from 'src/redux/store'
+
+import { AppDispatch } from 'src/store'
 import { fetchCreateContactData } from 'src/store/apps/contacts/contactCreateSlice'
 import { saveNewContact } from 'src/store/apps/contacts/contactStoreSlice'
 import { fetchContactData } from 'src/store/apps/contacts/contactEditSlice'
@@ -81,7 +82,9 @@ import BadgeIcon from '@mui/icons-material/Badge'
 
 // Date Picker Imports
 import DatePicker from 'react-datepicker'
-import CustomInput from './PickersCustomInput'
+
+// import CustomInput from './PickersCustomInput'
+
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 const steps = [
@@ -146,13 +149,69 @@ const roleColors = {
   subscriber: 'primary'
 }
 
-const statusColors = {
+type Status = 'active' | 'pending' | 'inactive';
+
+const statusColors: Record<Status, string> = {
   active: 'success',
   pending: 'warning',
   inactive: 'secondary'
 }
+interface ContactData {
+  contact_status: Status;
+  business_id: string;
+  type: string;
+  name: string;
+  email: string;
+  mobile: string;
+  landline: string;
+  alternate_number: string;
+  tax_number: string;
+  address_line_1: string;
+  address_line_2: string;
+  city: string;
+  state: string;
+  country: string;
+  zip_code: string;
+  customer_group_id: string;
+  supplier_business_name: string;
+  prefix: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  pay_term_number: string;
+  pay_term_type: string;
+  contact_id: string;
+  custom_field1: string;
+  custom_field2: string;
+  custom_field3: string;
+  custom_field4: string;
+  custom_field5: string;
+  custom_field6: string;
+  custom_field7: string;
+  custom_field8: string;
+  custom_field9: string;
+  custom_field10: string;
+  shipping_address: string;
+  position: string;
+  dob: string;
+  credit_limit: string;
+  opening_balance: string;
+  created_by: string;
+  converted_on: string;
+  converted_by: string;
+  balance: string;
+  price_group_id: string;
+  crm_source: string;
+  crm_life_stage: string;
+  deleted_at: string;
+  created_at: string;
 
+}
 
+interface Props {
+  step: number;
+  ContactData: ContactData;
+}
 const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
   const [initialValues, setInitialValues] = useState<any>({
     type: '',
@@ -208,14 +267,16 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
   ])
 
   // ** Hooks
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+
+    //@ts-ignore
     dispatch(fetchCreateContactData(contact))
-  }, [dispatch])
+  }, [dispatch, contact])
 
   // ** States
-  const data = useSelector((state: { createUser: { data: any } }) => state.contactCreateSlice?.data)
+  const data = useSelector((state: { contactCreateSlice: { data: any } }) => state.contactCreateSlice?.data)
 
   useEffect(() => {
     if (data !== null && data !== undefined && data.type !== undefined) {
@@ -244,7 +305,7 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
     setActiveStep(0)
   }
 
-  const getStepContent = ({ step, ContactData }: any) => {
+  const getStepContent = ({ step, ContactData }:Props) => {
     switch (step) {
       case 0:
         return (
@@ -302,7 +363,9 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
                     size='small'
                     label={ContactData.contact_status}
                     sx={{ fontWeight: 500 }}
-                    color={statusColors[ContactData.contact_status]}
+
+                    //@ts-ignore
+                    color={ContactData && ContactData.contact_status ? statusColors[ContactData.contact_status] : 'primary'}
                   />
                 </Box>
 
@@ -675,11 +738,12 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
 
   useEffect(() => {
     if (itemId && isEdit) {
+      //@ts-ignore
       dispatch(fetchContactData({ itemId }))
     }
   }, [dispatch, itemId, isEdit])
 
-  const contactEditData = useSelector((state: { contactEditSlice: { data: any } }) => state.contactEditSlice?.contact)
+  const contactEditData = useSelector((state: { contactEditSlice: { contact: any } }) => state.contactEditSlice?.contact)
 
   useEffect(() => {
     if (
@@ -775,8 +839,12 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
 
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     if (!isEdit) {
+
+      //@ts-ignore
       dispatch(saveNewContact(values))
     } else {
+
+      //@ts-ignore
       dispatch(updateContact({ updateData: values, id: itemId }))
     }
 

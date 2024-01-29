@@ -7,7 +7,8 @@ import notify from 'src/utils/notify'
 export const storeWarranty = createAsyncThunk('warranties/storeWarranty', async (warranty, { rejectWithValue }) => {
   try {
     const token = getCookie('token')
-    const response = await axios.post('https://test.izocloud.net/api/app/react/warranties/save', warranty, {
+    const url = getCookie('apiUrl')
+    const response = await axios.post(`${url}/app/react/warranties/save`, warranty, {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     })
 

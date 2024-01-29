@@ -37,6 +37,8 @@ export default middleware = async req => {
   // }
 
   //  || req.nextUrl.pathname.startsWith('/')
+
+  // ** First Time
   if (
     (!validToken && url != 'http://localhost:3000/login' && url.includes('/dashboards')) ||
     url == 'http://localhost:3000/'
@@ -50,4 +52,19 @@ export default middleware = async req => {
   }
 
   return NextResponse.next()
+
+  // // ** First Second
+  // if (url.includes('/login') && !validToken) {
+  //   return NextResponse.next()
+  // }
+
+  // if (!validToken && !url.includes('/login') && url.includes('/dashboards')) {
+  //   return NextResponse.redirect('/login')
+  // }
+
+  // if (validToken && (url.includes('/login') || url.includes('/register') || url.includes('/loginFirstTime'))) {
+  //   return NextResponse.redirect('/dashboards/analytics')
+  // }
+
+  // return NextResponse.next()
 }

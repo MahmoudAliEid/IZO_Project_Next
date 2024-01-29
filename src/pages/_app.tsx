@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+// import { ReactNode  } from 'react'
 import { ToastContainer } from 'react-toastify'
 
 // ** Next Imports
@@ -18,11 +18,17 @@ import NProgress from 'nprogress'
 // ** Emotion Imports
 import { CacheProvider } from '@emotion/react'
 import type { EmotionCache } from '@emotion/cache'
+import { Global, css } from '@emotion/react'
+
+import { useTheme } from '@mui/material/styles'
+import useThemeColor from 'src/@core/utils/useThemeColor'
 
 // ** Config Imports
 import 'src/configs/i18n'
-import { defaultACLObj } from 'src/configs/acl'
+
+// import { defaultACLObj } from 'src/configs/acl'
 import themeConfig from 'src/configs/themeConfig'
+
 
 // ** Fake-DB Import
 import 'src/@fake-db'
@@ -32,16 +38,18 @@ import { Toaster } from 'react-hot-toast'
 
 // ** Component Imports
 import UserLayout from 'src/layouts/UserLayout'
-import AclGuard from 'src/@core/components/auth/AclGuard'
+
+// import AclGuard from 'src/@core/components/auth/AclGuard'
 import ThemeComponent from 'src/@core/theme/ThemeComponent'
-import AuthGuard from 'src/@core/components/auth/AuthGuard'
-import GuestGuard from 'src/@core/components/auth/GuestGuard'
+
+// import AuthGuard from 'src/@core/components/auth/AuthGuard'
+// import GuestGuard from 'src/@core/components/auth/GuestGuard'
 
 // ** Spinner Import
-import Spinner from 'src/@core/components/spinner'
+// import Spinner from 'src/@core/components/spinner'
 
 // ** Contexts
-import { AuthProvider } from 'src/context/AuthContext'
+// import { AuthProvider } from 'src/context/AuthContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
 
 // ** Styled Components
@@ -70,11 +78,11 @@ type ExtendedAppProps = AppProps & {
   emotionCache: EmotionCache
 }
 
-type GuardProps = {
-  authGuard: boolean
-  guestGuard: boolean
-  children: ReactNode
-}
+// type GuardProps = {
+//   authGuard: boolean
+//   guestGuard: boolean
+//   children: ReactNode
+// }
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -91,19 +99,22 @@ if (themeConfig.routingLoader) {
   })
 }
 
-const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
-  if (guestGuard) {
-    return <GuestGuard fallback={<Spinner />}>{children}</GuestGuard>
-  } else if (!guestGuard && !authGuard) {
-    return <>{children}</>
-  } else {
-    return <AuthGuard fallback={<Spinner />}>{children}</AuthGuard>
-  }
-}
+// const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
+//   if (guestGuard) {
+//     return <GuestGuard fallback={<Spinner />}>{children}</GuestGuard>
+//   } else if (!guestGuard && !authGuard) {
+//     return <>{children}</>
+//   } else {
+//     return <AuthGuard fallback={<Spinner />}>{children}</AuthGuard>
+//   }
+// }
 
 // ** Configure JSS & ClassName
+
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+  const theme = useTheme();
+  const { themeColor}=useThemeColor();
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
@@ -112,15 +123,47 @@ const App = (props: ExtendedAppProps) => {
 
   const setConfig = Component.setConfig ?? undefined
 
-  const authGuard = Component.authGuard ?? true
+  // const authGuard = Component.authGuard ?? true
 
-  const guestGuard = Component.guestGuard ?? false
+  // const guestGuard = Component.guestGuard ?? false
 
-  const aclAbilities = Component.acl ?? defaultACLObj
+  // const aclAbilities = Component.acl ?? defaultACLObj
+
+  console.log('theme color 👁‍🗨👁‍🗨 🤩🤩', themeColor)
+  console.log('theme color from _app 🤍 👁‍🗨👁‍🗨', theme.palette.primary.main)
+
 
   return (
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
+
+    <Global
+          styles={css`
+            ::selection {
+              background-color: ${themeColor} ;
+            }
+            ::-moz-selection {
+              background-color: ${themeColor} ;
+            }
+            input:-webkit-autofill,
+              input:-webkit-autofill:hover,
+              input:-webkit-autofill:focus,
+              textarea:-webkit-autofill,
+              textarea:-webkit-autofill:hover,
+              textarea:-webkit-autofill:focus,
+              select:-webkit-autofill,
+              select:-webkit-autofill:hover,
+              select:-webkit-autofill:focus {
+
+                -webkit-box-shadow: 0 0 0px 1000px ${themeColor} inset !important;
+                transition: background-color 5000s ease-in-out 0s;
+              }
+
+
+          `}
+        />
+
+
         <Head>
           <title>{`${themeConfig.templateName}`}</title>
           <meta name='description' content={`${themeConfig.templateName} – IZO Admin Dashboard`} />
@@ -133,11 +176,12 @@ const App = (props: ExtendedAppProps) => {
           <SettingsConsumer>
             {({ settings }) => {
               return (
-                <ThemeComponent settings={settings}>
+                <ThemeComponent settings={settings} >
                   {/* <Guard authGuard={authGuard} guestGuard={guestGuard}>
                       <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}></AclGuard>
                     </Guard> */}
-                  {getLayout(<Component {...pageProps} />)}
+
+                  {getLayout(<Component {...pageProps}  />)}
                   <ReactHotToast>
                     <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
                   </ReactHotToast>

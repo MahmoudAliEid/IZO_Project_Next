@@ -5,7 +5,8 @@ import { getCookie } from 'cookies-next'
 // Async thunk for fetching the data
 export const fetchAllBrands = createAsyncThunk('brands/fetchAll', async () => {
   const token = getCookie('token')
-  const response = await axios.get('https://test.izocloud.net/api/app/react/brands/all', {
+  const url = getCookie('apiUrl')
+  const response = await axios.get(`${url}/app/react/brands/all`, {
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
   })
 

@@ -2,8 +2,15 @@
 
 // ** React Imports
 import { ChangeEvent, useState, useEffect, useRef, Fragment } from 'react'
-import { Button, Divider } from '@mui/material'
+import { Button, Divider,Grid } from '@mui/material'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+// ** Custom Components
+import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp';
+
+
 
 
 // ** MUI Imports
@@ -30,22 +37,31 @@ import IconButton from '@mui/material/IconButton'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import DialogAddBrands from './DialogAddWarranties'
-import DialogDeleteWarranties from './DialogDeleteWarranties'
-import MainDone from 'src/@core/components/mainLoading/MainDone'
-import LottieAnimation from 'src/@core/components/utilities/loadingComp';
+
+
 
 const escapeRegExp = (value: string) => {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
+//@ts-ignore
 const RowOptions = ({ id }) => {
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [openDialogEditBrands, setOpenDialogEditBrands] = useState<boolean>(false)
-  const [openDialogDeleteWarrantiess, setOpenDialogDeleteWarrantiess] = useState<boolean>(false)
+  const [openAlert, setOpenAlert] = useState<boolean>(false)
+  const [openLoading, setOpenLoading] = useState<boolean>(false)
   const dispatch = useDispatch()
+
+  const selectDeleteWarranty = useSelector((state: {deleteWarrantiesSlice:{data:any}}) => state.deleteWarrantiesSlice);
+
+
   const handleRowOptionsClick = (event: any) => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const handleLoading = () => {
+    setOpenLoading(!openLoading)
   }
 
   const handleRowOptionsClose = () => {
@@ -53,8 +69,18 @@ const RowOptions = ({ id }) => {
   }
   const handleDelete = async () => {
     console.log(id, "id for delete 🙌🙌🙌🙌🙌");
-    await dispatch(deleteWarranty(id));
-    await dispatch(getAllWarranties())
+
+    handleLoading()
+
+    //@ts-ignore
+
+    dispatch(deleteWarranty(id)).then(() => {
+      //@ts-ignore
+
+      dispatch(getAllWarranties())
+    })
+
+
     handleRowOptionsClose();
   }
 
@@ -62,9 +88,11 @@ const RowOptions = ({ id }) => {
     setOpenDialogEditBrands(!openDialogEditBrands)
   }
 
-  const handleDeleteBrand = () => {
-    setOpenDialogDeleteWarrantiess(!openDialogDeleteWarrantiess)
+  const handleDeleteAlert = () => {
+    setOpenAlert(!openAlert)
   }
+
+
 
   return (
     <Fragment>
@@ -98,7 +126,7 @@ const RowOptions = ({ id }) => {
           Edit
         </MenuItem>
         <MenuItem onClick={() => {
-          handleDeleteBrand()
+          handleDeleteAlert()
           handleRowOptionsClose()
         }
         }
@@ -117,13 +145,12 @@ const RowOptions = ({ id }) => {
       }
 
       {
-        openDialogDeleteWarrantiess && <DialogDeleteWarranties
-          open={openDialogDeleteWarrantiess}
-          onClose={handleDeleteBrand}
-          onConfirm={handleDelete}
-        />
+        openAlert && <DeleteGlobalAlert name='Unit' open={openAlert} close={handleDeleteAlert} mainHandleDelete={handleDelete} />
       }
 
+      {
+        openLoading && <LoadingAnimation open={openLoading} onClose={handleLoading} statusType={selectDeleteWarranty} />
+      }
 
 
     </Fragment>
@@ -194,12 +221,14 @@ const AllBrands = () => {
 
   useEffect(() => {
     const getAllBrands = async () => {
-      await dispatch(getAllWarranties())
+      //@ts-ignore
+      dispatch(getAllWarranties())
     }
     getAllBrands()
-  }, [])
+  }, [dispatch])
 
   // get all Warranties from redux
+  //@ts-ignore
   const allWarrantiesFromRedux = useSelector((state: { getallWarrantiesSlice: { data: any } }) => state.getallWarrantiesSlice.entities)
 
   useEffect(() => {
@@ -215,10 +244,10 @@ const AllBrands = () => {
   };
 
   return (
+    <Grid container spacing={6}>
+      <Grid item lg={12} xs={12}>
     <Card style={{ height: "100%", width: "100%" }} ref={cardRef}>
-      <DialogAddBrands open={openDialogAddBrands} toggle={handleAddClickOpen} isEdit={false} />
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
-        <CardHeader title="All Warranties" />
+        <CardHeader title="Warranties List" />
         <Divider sx={{ m: '0 !important' }} />
         <Box
           sx={{
@@ -237,9 +266,11 @@ const AllBrands = () => {
           </Box>
         </Box>
 
-      </Box>
 
-      <DataGrid
+
+          <Box>
+            {
+              data ?  <DataGrid
         autoHeight
         columns={columns}
         pageSizeOptions={[7, 10, 25, 50]}
@@ -257,8 +288,29 @@ const AllBrands = () => {
             onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
           }
         }}
-      />
-    </Card>
+            />:<Grid>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '16px 0'
+                  }}
+                >
+                  <Box>
+                    <ProgressCustomization />
+                  </Box>
+                </Box>
+              </Grid>
+            }
+
+            </Box>
+
+        </Card>
+      </Grid>
+      <DialogAddBrands open={openDialogAddBrands} toggle={handleAddClickOpen} isEdit={false} />
+    </Grid>
   )
 }
 

@@ -39,8 +39,8 @@ const StoreTable = ({ tableData }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {tableData.map(row => (
-            <StyledTableRow key={row}>
+          {tableData.map((row, index) => (
+            <StyledTableRow key={index}>
               <StyledTableCell>{row.store}</StyledTableCell>
               <StyledTableCell colSpan={2}>{row.qty}</StyledTableCell>
             </StyledTableRow>

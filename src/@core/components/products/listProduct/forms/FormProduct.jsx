@@ -54,6 +54,7 @@ const FormProduct = ({ isEdit, open, toggle, itemId }) => {
         scroll='body'
         maxWidth='lg'
         fullWidth={true}
+        fullScreen={true}
         onClose={handleClose}
         aria-labelledby='max-width-dialog-title'
       >

@@ -8,7 +8,8 @@ export const updateWarranty = createAsyncThunk('warranties/updateWarranty', asyn
   const { updateData, id } = payload
   try {
     const token = getCookie('token')
-    const response = await axios.post(`https://test.izocloud.net/api/app/react/warranties/update/${id}`, updateData, {
+    const url = getCookie('apiUrl')
+    const response = await axios.post(`${url}/app/react/warranties/update/${id}`, updateData, {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     })
     console.log(response.data, '===> response from updateWarranty 🙌🙌')
@@ -22,21 +23,23 @@ export const updateWarranty = createAsyncThunk('warranties/updateWarranty', asyn
 // Slice for warranty updates
 export const warrantyUpdateSlice = createSlice({
   name: 'warrantyUpdates',
-  initialState: { entity: [], loading: 'idle', error: null },
+  initialState: { entity: [], loading: false, error: false, success: false },
   reducers: {},
   extraReducers: builder => {
     builder
       .addCase(updateWarranty.pending, state => {
-        state.loading = 'loading'
+        state.loading = true
       })
       .addCase(updateWarranty.fulfilled, (state, action) => {
-        state.loading = 'idle'
+        state.loading = false
+        state.success = true
         state.entity = action.payload
         console.log(action.payload, '===> action.payload')
         notify('Warranty successfully updated.', 'success')
       })
       .addCase(updateWarranty.rejected, (state, action) => {
-        state.loading = 'idle'
+        state.loading = false
+        state.error = true
         state.error = action.payload
         console.log(action.payload, '===> action.payload')
         notify('There is an error try again later', 'error')

@@ -6,7 +6,8 @@ import { getCookie } from 'cookies-next'
 export const getAllWarranties = createAsyncThunk('warranties/getAllWarranties', async (_, { rejectWithValue }) => {
   try {
     const token = getCookie('token')
-    const response = await axios.get('https://test.izocloud.net/api/app/react/warranties/all', {
+    const url = getCookie('apiUrl')
+    const response = await axios.get(`${url}/app/react/warranties/all`, {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     })
 

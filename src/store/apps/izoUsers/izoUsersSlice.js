@@ -13,10 +13,11 @@ const initialState = {
   error: null
 }
 
-export const fetchIzoUsers = createAsyncThunk('dashboard/fetchIzoUsers', async (token, url) => {
+export const fetchIzoUsers = createAsyncThunk('dashboard/fetchIzoUsers', async payload => {
+  const { token, url } = payload
   console.log(token)
   try {
-    const response = await axios.get('https://test.izocloud.net/api/app/react/users', {
+    const response = await axios.get(`${url}/app/react/users`, {
       headers: {
         Authorization: 'Bearer ' + `${token}`
       }

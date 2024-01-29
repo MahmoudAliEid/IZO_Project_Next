@@ -2,6 +2,9 @@
 // ** React Imports
 import { Fragment, useState } from 'react'
 
+// ** Next Import
+import Link from 'next/link'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
@@ -14,13 +17,11 @@ import { FormikErrors, FormikTouched } from 'formik'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
-// ** Link Next
-import Link from 'next/link'
-
-// ** Third Party Components
 import toast from 'react-hot-toast'
+
+// ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
+
 
 interface FileProp {
   name: string
@@ -32,9 +33,13 @@ interface Props {
   initialValues: any // replace 'any' with the actual type of your initialValues
   errors: FormikErrors<any> // replace 'any' with the actual type of your form values
   touched: FormikTouched<any> // replace 'any' with the actual type of your form values
+  name: string,
+  value: any,
   handleBlur: (field: string) => void
   handleChange: (e: React.ChangeEvent<any>) => void // replace 'any' with the actual type of your event
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
+  setIsNotDone: (value: boolean) => void
+  setUpload: (value: boolean) => void
 }
 
 // Styled component for the upload image inside the dropzone area
@@ -60,41 +65,29 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const Productbarochure: React.FC<Props> = ({
-  initialValues,
-  errors,
-  touched,
-  handleBlur,
-  handleChange,
-  setFieldValue
-}) => {
+const ImageUploadVariable = ({value, name, setFieldValue,setIsNotDone ,setUpload}: Props) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
   // ** Hooks
   const theme = useTheme()
   const { getRootProps, getInputProps } = useDropzone({
-    maxSize: 20000000, // 20MB in bytes,
     maxFiles: 1,
     accept: {
-      'application/pdf': ['.pdf'],
-      'text/csv': ['.csv'],
-      'application/zip': ['.zip'],
-      'application/msword': ['.doc'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-      'image/jpeg': ['.jpeg'],
-      'image/jpg': ['.jpg'],
-      'image/png': ['.png']
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif']
     },
     onDrop: (acceptedFiles: File[]) => {
       setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
       setFieldValue(
-        'productbrochure',
+        `${name}`,
+
         acceptedFiles.map((file: File) => Object.assign(file))
       )
+      setIsNotDone(false)
+      setUpload(true)
     },
     onDropRejected: () => {
-      toast.error('You can only upload files with a maximum size of 20 MB.', {
+      toast.error('You can only upload image with a maximum size of 2 MB.', {
         duration: 2000
       })
     }
@@ -112,30 +105,73 @@ const Productbarochure: React.FC<Props> = ({
     const uploadedFiles = files
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
     setFiles([...filtered])
+    setFieldValue(`${name}`,[])
+    setIsNotDone(true)
+    setUpload(false)
   }
 
-  const fileList = files.map((file: FileProp) => (
-    <ListItem key={file.name}>
-      <div className='file-details'>
-        <div className='file-preview'>{renderFilePreview(file)}</div>
-        <div>
-          <Typography className='file-name'>{file.name}</Typography>
-          <Typography className='file-size' variant='body2'>
-            {Math.round(file.size / 100) / 10 > 1000
-              ? `${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
-              : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
-          </Typography>
+  const fileList = files.length > 0 ? (
+      files.map(file => (
+        <ListItem
+          sx={{
+            display: 'flex',
+            flexDirection: ['row', 'row', 'row'],
+            justifyContent: 'space-between'
+          }}
+          key={file.name}
+        >
+          <div className='file-details'>
+            <div className='file-preview'>{renderFilePreview(file)}</div>
+            <div>
+              <Typography className='file-name'>{file.name}</Typography>
+              <Typography className='file-size' variant='body2'>
+                {Math.round(file.size / 100) / 10 > 1000
+                  ? ` ${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
+                  : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
+              </Typography>
+            </div>
+          </div>
+          <IconButton onClick={() => handleRemoveFile(file)}>
+            <Icon icon='bx:x' fontSize={20} />
+          </IconButton>
+        </ListItem>
+      ))
+    ) : Array.isArray(value) ? null:  (
+      <ListItem
+        sx={{
+          display: 'flex',
+          flexDirection: ['row', 'row', 'row'],
+          justifyContent: 'space-between'
+        }}
+      >
+        <div className='file-details'>
+          <div>
+            <Typography className='file-name'>The Image:</Typography>
+          </div>
+          <div className='file-preview'>
+            <img width={38} height={38} alt={'preview-img'} src={value} />
+          </div>
+            <div>
+              <Typography className='file-name'>{value}</Typography>
+            </div>
         </div>
-      </div>
-      <IconButton onClick={() => handleRemoveFile(file)}>
-        <Icon icon='bx:x' fontSize={20} />
-      </IconButton>
-    </ListItem>
-  ))
+          <IconButton onClick={() => {
+            setFieldValue(`${name}`,[])
+          setIsNotDone(true)
+          setUpload(false)
+          }}>
+          <Icon icon='bx:x' fontSize={20} />
+        </IconButton>
+      </ListItem>
+    )
 
   const handleRemoveAllFiles = () => {
     setFiles([])
+    setIsNotDone(true)
+
+    setUpload(false)
   }
+  console.log('value form image uploading', value)
 
   return (
     <Fragment>
@@ -145,7 +181,8 @@ const Productbarochure: React.FC<Props> = ({
           <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
             <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
-            <Typography color='textSecondary'> Allowed File: .pdf, .csv, .zip, .doc, .docx, .jpeg, .jpg, .png</Typography>
+            <Typography color='textSecondary'>Allowed only 1 image</Typography>
+
             <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
               Drop files here or click{' '}
               <Link href='/' onClick={e => e.preventDefault()}>
@@ -153,7 +190,6 @@ const Productbarochure: React.FC<Props> = ({
               </Link>{' '}
               thorough your machine
             </Typography>
-
           </Box>
         </Box>
       </div>
@@ -166,9 +202,16 @@ const Productbarochure: React.FC<Props> = ({
             </Button>
           </div>
         </Fragment>
-      ) : null}
+      ) : (<Fragment>
+          <List>{fileList}</List>
+          {/* <div className='buttons'>
+            <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
+              Remove All
+            </Button>
+          </div> */}
+        </Fragment>)}
     </Fragment>
   )
 }
 
-export default Productbarochure
+export default ImageUploadVariable

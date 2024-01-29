@@ -21,19 +21,21 @@ import * as styles from './styles.module.css'
 // ** MUI Components
 import Button from '@mui/material/Button'
 
+
 // import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
 import IconButton from '@mui/material/IconButton'
-import Box, { BoxProps } from '@mui/material/Box'
+import Box from '@mui/material/Box'
+import Card , { CardProps } from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 
 // import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
-import { styled } from '@mui/material/styles'
+import { styled ,useTheme } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { MenuItem, Grid } from '@mui/material'
@@ -71,7 +73,7 @@ type RegisterData = {
   language: string
 }
 
-const CenterWrapper = styled(Box)<BoxProps>(({ theme }) => ({
+const CenterWrapper = styled(Card)<CardProps>(({ theme }) => ({
   width: '100%',
   minHeight: '100vh', // Set the height to 100% of the viewport height for vertical centering
   display: 'flex',
@@ -79,7 +81,6 @@ const CenterWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   flexWrap: 'wrap',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: 'white !important',
   borderRadius: '25px',
   boxShadow: '3px 5px 10px rgba(0, 0, 0, 0.5)',
 
@@ -162,6 +163,7 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
   })
 
   const dispatch = useDispatch<AppDispatch>()
+  const theme = useTheme()
 
 
   useEffect(() => {
@@ -251,10 +253,7 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
     setMrMrs(event.target.value)
   }
 
-  //array of currencies
 
-  const arrCurrenciesValues = Object.values(currencies)
-  const arrCurrenciesKeys = Object.keys(currencies)
 
   return (
     <Grid
@@ -263,13 +262,13 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
       alignItems='center'
       justifyContent='center'
       sx={{
-        backgroundColor: '#f4f4f4',
+
         minHeight: '100vh'
       }}
     >
       <CenterWrapper sx={{ margin: '20px 0' }}>
         <Image
-          src={'/izoLogo/izo_logo_black.png'}
+          src={`/izoLogo/izo-logo-${theme.palette.mode}.png`}
           alt='izo-logo'
           width={200}
           height={200}
@@ -432,11 +431,16 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                       label='Choose Currency ID'
                       onChange={handleChange}
                     >
-                      {arrCurrenciesValues.map((currency: any, index: number) => (
+
+                      {
+
+                        //@ts-ignore
+
+                        currencies.map((currency: any, index: number) => (
 
 
-                        <MenuItem key={index} value={arrCurrenciesKeys[index]}>
-                          {arrCurrenciesKeys[index]} - {currency}
+                        <MenuItem key={index} value={currency.id}>
+                          {currency.value}
                         </MenuItem>
 
 

@@ -19,6 +19,9 @@ import MuiDrawer, { DrawerProps } from '@mui/material/Drawer'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+// ** Next Cookies
+import { setCookie } from 'cookies-next'
+
 // ** Type Import
 import { Settings } from 'src/@core/context/settingsContext'
 
@@ -71,6 +74,8 @@ const ColorBox = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const Customizer = () => {
+
+
   // ** State
   const [open, setOpen] = useState<boolean>(false)
 
@@ -95,6 +100,27 @@ const Customizer = () => {
 
   const handleChange = (field: keyof Settings, value: Settings[keyof Settings]): void => {
     saveSettings({ ...settings, [field]: value })
+  }
+
+  const handleLocalColorChange = (color: string) => {
+    if (color === 'primary') {
+      setCookie('localThemeColor', '#696CFF')
+    }
+    if (color === 'secondary') {
+      setCookie('localThemeColor', '#8592A3')
+    }
+    if (color === 'success') {
+      setCookie('localThemeColor', '#4caf50')
+    }
+    if (color === 'error') {
+      setCookie('localThemeColor', '#f44336')
+    }
+    if (color === 'warning') {
+      setCookie('localThemeColor', '#ec6608')
+    }
+    if (color === 'info') {
+      setCookie('localThemeColor', '#03C3EC')
+    }
   }
 
   return (
@@ -174,7 +200,10 @@ const Customizer = () => {
               <Typography>Primary Color</Typography>
               <Box sx={{ display: 'flex' }}>
                 <ColorBox
-                  onClick={() => handleChange('themeColor', 'primary')}
+                  onClick={() => {
+                    handleChange('themeColor', 'primary')
+                    handleLocalColorChange('primary')
+                  }}
                   sx={{
                     backgroundColor: '#696CFF',
                     ...(themeColor === 'primary'
@@ -183,7 +212,10 @@ const Customizer = () => {
                   }}
                 />
                 <ColorBox
-                  onClick={() => handleChange('themeColor', 'secondary')}
+                  onClick={() => {
+                    handleChange('themeColor', 'secondary')
+                    handleLocalColorChange('secondary')
+                  }}
                   sx={{
                     backgroundColor: 'secondary.main',
                     ...(themeColor === 'secondary'
@@ -192,7 +224,10 @@ const Customizer = () => {
                   }}
                 />
                 <ColorBox
-                  onClick={() => handleChange('themeColor', 'success')}
+                  onClick={() => {
+                    handleChange('themeColor', 'success')
+                    handleLocalColorChange('success')
+                  }}
                   sx={{
                     backgroundColor: 'success.main',
                     ...(themeColor === 'success'
@@ -201,7 +236,10 @@ const Customizer = () => {
                   }}
                 />
                 <ColorBox
-                  onClick={() => handleChange('themeColor', 'error')}
+                  onClick={() => {
+                    handleChange('themeColor', 'error')
+                    handleLocalColorChange('error')
+                  }}
                   sx={{
                     backgroundColor: 'error.main',
                     ...(themeColor === 'error'
@@ -211,7 +249,10 @@ const Customizer = () => {
                 />
                 <ColorBox
 
-                  onClick={() => handleChange('themeColor', 'warning')}
+                  onClick={() => {
+                    handleChange('themeColor', 'warning')
+                    handleLocalColorChange('warning')
+                  }}
                   sx={{
                     backgroundColor: '#ec6608',
                     ...(themeColor === 'warning'
@@ -220,7 +261,10 @@ const Customizer = () => {
                   }}
                 />
                 <ColorBox
-                  onClick={() => handleChange('themeColor', 'info')}
+                  onClick={() => {
+                    handleChange('themeColor', 'info')
+                    handleLocalColorChange('info')
+                  }}
                   sx={{
                     backgroundColor: 'info.main',
                     ...(themeColor === 'info' ? { width: 53, height: 53, m: theme => theme.spacing(1.5, 0.75, 0) } : {})

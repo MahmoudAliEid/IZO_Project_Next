@@ -15,7 +15,7 @@ const useSubmitUser = () => {
     if (itemId) {
       dispatch(mainFunPost({ userData, itemId }))
         .then(() => {
-          dispatch(mainFunGet(token, url))
+          dispatch(mainFunGet({ token, url }))
         })
         .catch(error => {
           console.error('There is an Error try again later!', error)
@@ -23,7 +23,7 @@ const useSubmitUser = () => {
     } else {
       dispatch(mainFunPost(userData))
         .then(() => {
-          dispatch(mainFunGet(token, url))
+          dispatch(mainFunGet({ token, url }))
         })
         .catch(error => {
           console.error('There is an Error try again later!', error)

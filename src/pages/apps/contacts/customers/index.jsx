@@ -62,9 +62,9 @@ import axios from 'axios'
 
 // ** Custom Table Components Imports
 // import TableHeader from 'src/views/apps/user/list/TableHeader'
-import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
+// import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 
-import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
+// import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
 
 // ** Vars
 // const userRoleObj = {
@@ -142,7 +142,7 @@ const RowOptions = ({ id, type }) => {
 
     dispatch(postDeleteUser({ id }))
       .then(() => {
-        dispatch(fetchIzoUsers(token, url))
+        dispatch(fetchIzoUsers({ token, url }))
         console.log('User deleted id, token, url', id, token, url)
         handleRowOptionsClose()
       })
@@ -610,7 +610,7 @@ const columns = [
   // },
 ]
 
-const Customers = ({ apiData }) => {
+const Customers = () => {
   // ** State
   const [addCustomerOpen, setAddCustomerOpen] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })

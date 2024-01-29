@@ -134,7 +134,7 @@ const RowOptions = ({ id, setOpenViewMain }) => {
 
     dispatch(deleteProduct({ id, token }))
       .then(() => {
-        dispatch(fetchProducts(token))
+        dispatch(fetchProducts({ token }))
 
         handleRowOptionsClose()
       })
@@ -271,13 +271,14 @@ const columns = [
                 alt={'Product Image'}
                 src={row.image}
                 width={300}
-                height={300}
+                height={250}
                 style={{
                   margin: '3px 0',
                   maxWidth: '100%',
                   maxHeight: '100%',
                   borderRadius: '8px',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  objectFit: 'cover'
                 }}
               />
             </Box>
@@ -638,6 +639,10 @@ const ProductsTable = () => {
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
   const [data, setData] = useState([])
+  const [prevPageUrl, setPrevPageUrl] = useState(null)
+  const [nextPageUrl, setNextPageUrl] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [lastPage, setLastPage] = useState(null)
   const [withImage, setWithImage] = useState(1)
   const [TabValue, setTabValue] = useState('1')
   const [notForSale, setNotForSale] = useState(false)
@@ -654,12 +659,33 @@ const ProductsTable = () => {
 
   // ** Selectors
   const store = useSelector(state => state.getProducts?.data?.value?.items)
+  const prevPage = useSelector(state => state.getProducts?.data?.value?.info.prev_page_url)
+  const nextPage = useSelector(state => state.getProducts?.data?.value?.info.next_page_url)
+  const last_page = useSelector(state => state.getProducts?.data?.value?.info.last_page)
+  const current_page = useSelector(state => state.getProducts?.data?.value?.info.current_page)
 
   // ** Hooks
   const dispatch = useDispatch()
   useEffect(() => {
     setData(store)
   }, [store])
+
+  // ** update page url next and prev
+  useEffect(() => {
+    setPrevPageUrl(prevPage)
+  }, [prevPage])
+
+  useEffect(() => {
+    setNextPageUrl(nextPage)
+  }, [nextPage])
+
+  useEffect(() => {
+    setLastPage(+last_page)
+  }, [last_page])
+
+  useEffect(() => {
+    setCurrentPage(+current_page)
+  }, [current_page])
 
   useEffect(() => {
     // ** Cookies
@@ -671,7 +697,7 @@ const ProductsTable = () => {
 
   useEffect(() => {
     if (token && url) {
-      dispatch(fetchProducts(token))
+      dispatch(fetchProducts({ token }))
     }
   }, [dispatch, token, url])
 
@@ -704,31 +730,160 @@ const ProductsTable = () => {
     }
   }
 
+  // ** handle next page
+  const handleOnNextPage = () => {
+    if (nextPageUrl) {
+      dispatch(fetchProducts({ token, query: nextPageUrl }))
+    }
+  }
+
+  // ** handle prev page
+  const handleOnPrevPage = () => {
+    if (prevPageUrl) {
+      dispatch(fetchProducts({ token, query: prevPageUrl }))
+    }
+  }
+
+  // ** handle page number
+  const renderPageNumbers = () => {
+    let buttons = []
+
+    if (!lastPage || !currentPage) return buttons
+
+    if (lastPage === 1) return buttons
+
+    // if (lastPage > 1 && currentPage === lastPage) return buttons
+
+    if (lastPage > 1) {
+      let pages = Array.from({ length: lastPage }, (_, i) => i + 1) // Create an array of page numbers
+      let chunks = []
+
+      // Split the pages array into chunks of 3
+      for (let i = 0; i < pages.length; i += 3) {
+        chunks.push(pages.slice(i, i + 3))
+      }
+
+      // Find the chunk that contains the current page
+      let currentChunk = chunks.find(chunk => chunk.includes(currentPage))
+
+      // Map the current chunk to buttons
+      buttons = currentChunk.map(i => (
+        <Button
+          key={i}
+          color='primary'
+          variant={i === currentPage ? 'contained' : 'outlined'}
+          onClick={() => {
+            dispatch(fetchProducts({ token, query: `/app/react/products/all?page=${i}` }))
+          }}
+          sx={{ my: 2, px: 2, mr: 2 }}
+        >
+          {i}
+        </Button>
+      ))
+
+      // If there are more pages, add an ellipsis button
+      if (currentChunk[currentChunk.length - 1] < lastPage) {
+        buttons.push(
+          <IconButton
+            key='ellipsis'
+            color='primary'
+            onClick={() => {
+              dispatch(
+                fetchProducts({
+                  token,
+                  query: `/app/react/products/all?page=${currentChunk[currentChunk.length - 1] + 1}`
+                })
+              )
+            }}
+            sx={{ my: 2, px: 2, mr: 2 }}
+          >
+            <Icon icon='eva:more-horizontal-fill' color='primary' />
+          </IconButton>
+        )
+      }
+
+      // If there are more pages, add an ellipsis button vers
+      if (currentChunk[0] > 1) {
+        buttons.unshift(
+          <IconButton
+            key='ellipsis-towards-beginning'
+            color='primary'
+            onClick={() => {
+              dispatch(
+                fetchProducts({
+                  token,
+                  query: `/app/react/products/all?page=${currentChunk[0] - 1}`
+                })
+              )
+            }}
+            sx={{ my: 2, px: 2, mr: 2 }}
+          >
+            <Icon icon='eva:more-horizontal-fill' color='primary' />
+          </IconButton>
+        )
+      }
+
+      return buttons
+    } else {
+      return buttons
+    }
+  }
+
+  console.log('last page 🤩🤩🤩🙂🙂🙂', lastPage)
+
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
         {newData ? (
-          <DataGrid
-            autoHeight
-            columns={columns}
-            disableRowSelectionOnClick
-            pageSizeOptions={[10, 25, 50]}
-            paginationModel={paginationModel}
-            slots={{ toolbar: QuickSearchToolbar }}
-            onPaginationModelChange={setPaginationModel}
-            rows={filteredData.length ? filteredData : newData}
-            getRowHeight={() => 'auto'}
-            slotProps={{
-              baseButton: {
-                variant: 'outlined'
-              },
-              toolbar: {
-                value: searchText,
-                clearSearch: () => handleSearch(''),
-                onChange: event => handleSearch(event.target.value)
-              }
-            }}
-          />
+          <>
+            <DataGrid
+              autoHeight
+              columns={columns}
+              disableRowSelectionOnClick
+              pageSizeOptions={[10, 25, 50]}
+              paginationModel={paginationModel}
+              slots={{ toolbar: QuickSearchToolbar }}
+              onPaginationModelChange={setPaginationModel}
+              rows={filteredData.length ? filteredData : newData}
+              getRowId={row => row.id + row.name}
+              getRowHeight={() => 'auto'}
+              slotProps={{
+                baseButton: {
+                  variant: 'outlined'
+                },
+                toolbar: {
+                  value: searchText,
+                  clearSearch: () => handleSearch(''),
+                  onChange: event => handleSearch(event.target.value)
+                }
+              }}
+            />
+            <Grid item xs={12}>
+              <Box sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+                <Button
+                  variant='contained'
+                  disabled={!prevPageUrl}
+                  color='primary'
+                  onClick={handleOnPrevPage}
+                  sx={{ my: 2, px: 2, mx: 2 }}
+                  startIcon={<Icon icon='bx:bx-chevron-left' />}
+                >
+                  Prev Page
+                </Button>
+                {renderPageNumbers().length > 0 && renderPageNumbers().map(btn => btn)}
+                <Button
+                  variant='contained'
+                  disabled={!nextPageUrl}
+                  color='primary'
+                  onClick={handleOnNextPage}
+                  sx={{ my: 2, px: 2 }}
+                  endIcon={<Icon icon='bx:bx-chevron-right' />}
+                >
+                  Next Page
+                </Button>
+              </Box>
+            </Grid>
+          </>
         ) : (
           <Grid>
             <Box

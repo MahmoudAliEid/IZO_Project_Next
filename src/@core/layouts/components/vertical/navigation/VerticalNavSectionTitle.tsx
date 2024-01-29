@@ -11,7 +11,8 @@ import { Settings } from 'src/@core/context/settingsContext'
 
 // ** Custom Components Imports
 import Translations from 'src/layouts/components/Translations'
-import CanViewNavSectionTitle from 'src/layouts/components/acl/CanViewNavSectionTitle'
+
+// import CanViewNavSectionTitle from 'src/layouts/components/acl/CanViewNavSectionTitle'
 
 interface Props {
   navHover: boolean

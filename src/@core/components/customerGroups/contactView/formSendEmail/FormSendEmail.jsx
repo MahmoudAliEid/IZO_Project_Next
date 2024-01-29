@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 // ** Third Party Imports
 // import { EditorState } from 'draft-js'
-import { EditorState, convertToRaw, convertToHTML } from 'draft-js'
+import { EditorState, convertToRaw } from 'draft-js'
 
 // ** Styles
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'

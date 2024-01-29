@@ -30,7 +30,8 @@ import { NavGroup, LayoutProps } from 'src/@core/layouts/types'
 import VerticalNavItems from './VerticalNavItems'
 import UserIcon from 'src/layouts/components/UserIcon'
 import Translations from 'src/layouts/components/Translations'
-import CanViewNavGroup from 'src/layouts/components/acl/CanViewNavGroup'
+
+// import CanViewNavGroup from 'src/layouts/components/acl/CanViewNavGroup'
 
 // ** Hook Import
 import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'

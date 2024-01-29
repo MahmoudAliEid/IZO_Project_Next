@@ -4,7 +4,6 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
 import Typography from '@mui/material/Typography'
-import { styled } from '@mui/material/styles'
 import CustomTable from 'src/@core/components/customerGroups/contactView/customTable/CustomTable'
 import SalesTable from 'src/@core/components/customerGroups/contactView/salesTable/SalesTable'
 import PurchasesTable from 'src/@core/components/customerGroups/contactView/purchasesTable/PurchasesTable'
@@ -13,17 +12,7 @@ import FormSendEmail from 'src/@core/components/customerGroups/contactView/formS
 // ** Next Import
 import Link from 'next/link'
 
-// import PrintButton from 'src/@core/components/customerGroups/contactView/printButton/PrintButton'
-
-// import ReactToPrint from 'react-to-print'
-
-// ** Hooks
-// import { useSettings } from 'src/@core/hooks/useSettings' // ** Hooks Imports
-// import useBgColor from 'src/@core/hooks/useBgColor'
-
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-
 import { MenuItem, Select, FormControl, InputLabel, FormControlLabel, Checkbox } from '@mui/material'
 import { sub, startOfDay, endOfDay, startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns'
 
@@ -41,33 +30,7 @@ import ThreePIcon from '@mui/icons-material/ThreeP'
 // import FilePresentIcon from '@mui/icons-material/FilePresent'
 import PersonIcon from '@mui/icons-material/Person' // Name Icon
 import EmailIcon from '@mui/icons-material/Email' // Email Icon
-// import CallIcon from '@mui/icons-material/Call' // Mobile Icon
-// import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
-// import LocationOnIcon from '@mui/icons-material/LocationOn' // Address Icon
-// import EventIcon from '@mui/icons-material/Event' // Date of Birth Icon
-// import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
-// import RadarIcon from '@mui/icons-material/Radar'
-// import SourceIcon from '@mui/icons-material/Source'
-// import AccountBalanceIcon from '@mui/icons-material/AccountBalance' // Payment Term Number Icon
-// import AccessTimeIcon from '@mui/icons-material/AccessTime' // Payment Term Type Icon
-// import ApprovalIcon from '@mui/icons-material/Approval'
-// import DeleteIcon from '@mui/icons-material/Delete' // Deleted At Icon
-// import CreateIcon from '@mui/icons-material/Create' // Created At Icon
-// import UpdateIcon from '@mui/icons-material/Update' // Updated At Icon
-// import PaymentIcon from '@mui/icons-material/Payment' // Price Group ID Icon
 import CreditCardIcon from '@mui/icons-material/CreditCard' // Tax Number Icon
-// import CheckIcon from '@mui/icons-material/Check' // Contact Status Icon
-// import LocationCityIcon from '@mui/icons-material/LocationCity' // City Icon
-// import LocationSearchingIcon from '@mui/icons-material/LocationSearching' // State Icon
-// import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined' // Country Icon
-// import PersonOutlineIcon from '@mui/icons-material/PersonOutline' // Contact ID Icon
-// import PlaceIcon from '@mui/icons-material/Place' // Zip Code Icon
-// import BadgeIcon from '@mui/icons-material/Badge'
-
-// import BorderColorIcon from '@mui/icons-material/BorderColor'
-
-// import EditCalendarIcon from '@mui/icons-material/EditCalendar'
-// import CropRotateIcon from '@mui/icons-material/CropRotate'
 
 // ** React Imports
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -84,39 +47,15 @@ import DateRangeDropdown from 'src/@core/components/dateRange/DateRangeDropdown'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
-
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-// import AdapterDayjs from '@mui/x-date-pickers/AdapterDayjs'
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import Button from '@mui/material/Button'
-
 import Divider from '@mui/material/Divider'
-
-// import MenuItem from '@mui/material/MenuItem'
-// import { styled } from '@mui/material/styles'
-// import TextField from '@mui/material/TextField'
-
-// import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
-
 import CardActions from '@mui/material/CardActions'
-
-// import DialogTitle from '@mui/material/DialogTitle'
-// import FormControl from '@mui/material/FormControl'
-// import DialogContent from '@mui/material/DialogContent'
-// import DialogActions from '@mui/material/DialogActions'
-// import InputAdornment from '@mui/material/InputAdornment'
-// import LinearProgress from '@mui/material/LinearProgress'
-// import FormControlLabel from '@mui/material/FormControlLabel'
-// import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Custom Components
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import ViewPopUp from 'src/@core/components/customerGroups/contactView/contactViewPopUp/ViewPopUp'
-
-// import UserSuspendDialog from 'src/views/apps/user/view/UserSuspendDialog'
-// import UserSubscriptionDialog from 'src/views/apps/user/view/UserSubscriptionDialog'
 
 const roleColors = {
   admin: 'error',
@@ -156,32 +95,32 @@ const data = {
 }
 
 //** Styled Components */
-const ButtonStyled = styled(Button)(({ theme }) => {
-  // ** Hook
-  // const { settings } = useSettings()
-  // const bgColors = useBgColor()
+// const ButtonStyled = styled(Button)(({ theme }) => {
+//   // ** Hook
+//   // const { settings } = useSettings()
+//   // const bgColors = useBgColor()
 
-  return {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center', // Center the content horizontally and vertically
-    flexDirection: 'column', // Stack the content vertically
-    textAlign: 'center', // Center text content if any
+//   return {
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'center', // Center the content horizontally and vertically
+//     flexDirection: 'column', // Stack the content vertically
+//     textAlign: 'center', // Center text content if any
 
-    // color: theme.palette.text.primary,
-    color: 'white',
-    borderRadius: theme.shape.borderRadius,
-    fontFamily: theme.typography.fontFamily,
-    backgroundColor: `${hexToRGBA(theme.palette.primary.main, 1)} !important`,
+//     // color: theme.palette.text.primary,
+//     color: 'white',
+//     borderRadius: theme.shape.borderRadius,
+//     fontFamily: theme.typography.fontFamily,
+//     backgroundColor: `${hexToRGBA(theme.palette.primary.main, 1)} !important`,
 
-    // boxShadow: theme.shadows[settings.skin === 'bordered' ? 0 : 7],
-    border: `1px solid ${theme.palette.primary.main}`,
+//     // boxShadow: theme.shadows[settings.skin === 'bordered' ? 0 : 7],
+//     border: `1px solid ${theme.palette.primary.main}`,
 
-    // border: settings.skin === 'bordered' ? `1px solid ${theme.palette.divider}` : 'none',
-    padding: 2, // Adjust the padding as needed
-    minWidth: 50 // Set a minimum width for responsiveness
-  }
-})
+//     // border: settings.skin === 'bordered' ? `1px solid ${theme.palette.divider}` : 'none',
+//     padding: 2, // Adjust the padding as needed
+//     minWidth: 50 // Set a minimum width for responsiveness
+//   }
+// })
 
 const TabsIcon = ({ id, type }) => {
   // ** State

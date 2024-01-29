@@ -9,6 +9,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import { useTheme } from '@mui/material/styles'
 
 const data = ['year', 'month', 'today']
 
@@ -16,12 +17,17 @@ const yearData = ['2023', '2022', '2021', '2020', '2019']
 
 export default function Filter({ handleOptionSelect, typeofData }) {
   // const [dataType, setDataType] = React.useState('')
-  const [yearType, setYearType] = React.useState('')
+  const [yearType] = React.useState('')
   const [loading, setLoading] = React.useState(false)
+
+  const theme = useTheme()
 
   function handleClick() {
     setLoading(true)
-    const savedLayout = JSON.parse(localStorage.getItem('layout'))
+
+    // to save the layout in local storage
+    // const savedLayout = JSON.parse(localStorage.getItem('layout'))
+
     setTimeout(() => {
       setLoading(false)
     }, 3000)
@@ -32,7 +38,7 @@ export default function Filter({ handleOptionSelect, typeofData }) {
   }
   const orangeBoxStyle = {
     height: '55px',
-    boxShadow: '0 1px 20px 1px #ff3e1d !important',
+    boxShadow: `0 1px 20px 1px ${theme.palette.primary.main} !important`,
     '&:hover': {
       boxShadow: 'none !important'
     }

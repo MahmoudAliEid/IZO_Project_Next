@@ -11,7 +11,7 @@ import format from 'date-fns/format'
 import addDays from 'date-fns/addDays'
 import DatePicker from 'react-datepicker'
 
-const DateRangeDropdown = ({ selectedRange, setSelectedRange, getDateRange }) => {
+const DateRangeDropdown = ({ selectedRange, setSelectedRange }) => {
   const theme = useTheme() // Add this line to get the theme
   const { direction } = theme
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'

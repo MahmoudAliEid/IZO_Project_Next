@@ -166,7 +166,7 @@ const initialValues = {
 };
 
 
-const Header = styled(Box)<BoxProps>(({ theme }) => ({
+export const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(3, 4),
@@ -350,7 +350,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                 <FormControl fullWidth sx={{ mb: 6 }}>
                   <InputLabel
                     id="demo-simple-select-standard-label"
-                  >Acount Cash </InputLabel>
+                  >Account Cash </InputLabel>
                   <Select
                     fullWidth
                     labelId="demo-simple-select-standard-label"
@@ -359,7 +359,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     error={!!touched.prefix && !!errors.prefix}
-                    label="Acount Cash"
+                    label="Account Cash"
                   >
                     {
                       Object.keys(Requirements).length === 0 ? null :
@@ -1370,12 +1370,12 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
 
                 {/*
 
-                fild Acount Holder Name
+                fild Account Holder Name
               */}
                 <Field as={TextField}
                   name="holderName"
-                  label="Acount Holder Name" variant="outlined" fullWidth margin="normal"
-                  placeholder="acount holder name"
+                  label="Account Holder Name" variant="outlined" fullWidth margin="normal"
+                  placeholder="Account holder name"
                   value={values.holderName}
                   onChange={handleChange}
                 />

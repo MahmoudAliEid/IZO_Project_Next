@@ -24,49 +24,51 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }))
 
-const dataValue = [
-  {
-    average_sale_price: 100,
-    heights_sale_price: 150,
-    lowest_sale_price: 50,
-    last_sale_price: 120
-  },
-  {
-    average_sale_price: 200,
-    heights_sale_price: 250,
-    lowest_sale_price: 150,
-    last_sale_price: 220
-  }
-]
-
 // Define the table component
-const TableAverage = ({ dataColumns }) => {
-  // Calculate the total current amount
-  // const totalCurrentAmount = tableData.reduce((acc, item) => acc + item.qty, 0)
-
+const CustomTableView = ({ dataRows, dataColumns }) => {
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
             {dataColumns.map((column, index) => (
-              <StyledTableCell key={index}>{column.name}</StyledTableCell>
+              <StyledTableCell
+                key={index}
+                align={column.align || 'center'}
+                sx={{
+                  minWidth: column.minWidth || 100,
+                  flex: column.flex || 1,
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+                }}
+              >
+                {column.headerName}
+              </StyledTableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {dataValue?.map((row, index) => (
-            <StyledTableRow key={index}>
-              <StyledTableCell>{row.average_sale_price}</StyledTableCell>
-              <StyledTableCell>{row.heights_sale_price}</StyledTableCell>
-              <StyledTableCell>{row.lowest_sale_price}</StyledTableCell>
-              <StyledTableCell>{row.last_sale_price}</StyledTableCell>
+          {dataRows ? (
+            dataRows?.map((row, idR) => (
+              <StyledTableRow key={idR}>
+                {dataColumns.map((column, idx) => {
+                  const value = row[column.field]
+
+                  return (
+                    <StyledTableCell key={idx}>{column.renderCell ? column.renderCell(row) : value}</StyledTableCell>
+                  )
+                })}
+              </StyledTableRow>
+            ))
+          ) : (
+            <StyledTableRow>
+              <StyledTableCell>No Rows</StyledTableCell>
             </StyledTableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </TableContainer>
   )
 }
 
-export default TableAverage
+export default CustomTableView

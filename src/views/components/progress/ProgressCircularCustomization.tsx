@@ -17,7 +17,7 @@ const CircularProgressIndeterminate = styled(CircularProgress)<CircularProgressP
 const ProgressCircularCustomization = () => {
   return (
     <Box sx={{ position: 'relative' }}>
-      <CircularProgressDeterminate variant='determinate' size={40} thickness={5} value={100} />
+      <CircularProgressDeterminate variant='determinate' size={40} thickness={5} />
       <CircularProgressIndeterminate variant='indeterminate' disableShrink size={40} thickness={5} />
     </Box>
   )

@@ -58,11 +58,14 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
 
   useEffect(() => {
     if (isEdit && itemId !== undefined) {
+
+      //@ts-ignore
       dispatch(fetchBrandDetails(itemId));
 
     }
-  }, [isEdit])
+  }, [isEdit, itemId, dispatch])
 
+ //@ts-ignore
   const brandDetailsResponse = useSelector((state: { getbrandDetailsSlice: { data: any } }) => state.getbrandDetailsSlice.brand);
 
   useEffect(() => {
@@ -85,14 +88,16 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
 
   useEffect(() => {
     if (storeBrandResponse.status === 200) {
+       //@ts-ignore
       dispatch(fetchAllBrands());
     }
   }
-    , [storeBrandResponse])
+    , [storeBrandResponse, dispatch])
 
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     console.log(values, "values for submit");
     if (isEdit && itemId) {
+      //@ts-ignore
       dispatch(updateBrand({ updateData: { ...values, image }, id: itemId }))
 
     }
@@ -100,7 +105,9 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
 
 
       if (isCustom) {
+         //@ts-ignore
         dispatch(storeBrand({ ...values, image })).then(() => {
+          //@ts-ignore
           dispatch(fetchCreateProduct()).then(() => {
             setNewBrand(true)
           })
@@ -108,6 +115,7 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
 
 
       } else {
+          //@ts-ignore
         dispatch(storeBrand({ ...values, image }));
       }
 
@@ -122,11 +130,11 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
   useEffect(() => {
     if (updateBrandResponse.status === 200) {
       // console.log(updateBrandResponse, "updateBrandResponse for edit 🔥🔥");
-
+ //@ts-ignore
       dispatch(fetchAllBrands());
     }
   }
-    , [updateBrandResponse])
+    , [updateBrandResponse, dispatch])
 
 
 

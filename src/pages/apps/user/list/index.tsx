@@ -24,11 +24,9 @@ import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import CardContent from '@mui/material/CardContent'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+
 
 
 // ** Icon Imports
@@ -40,7 +38,6 @@ import { fetchIzoUsers } from 'src/store/apps/izoUsers/izoUsersSlice'
 
 
 // ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import CardStatisticsHorizontal from 'src/@core/components/card-statistics/card-stats-horizontal'
 
@@ -48,32 +45,27 @@ import CardStatisticsHorizontal from 'src/@core/components/card-statistics/card-
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Actions Imports
-import { fetchData, deleteUser } from 'src/store/apps/user'
 
 // ** Third Party Components
 import axios from 'axios'
 
 // ** Types Imports
-import { RootState, AppDispatch } from 'src/store'
+import { AppDispatch } from 'src/store'
 import { CardStatsType } from 'src/@fake-db/types'
 import { ThemeColor } from 'src/@core/layouts/types'
 import { UsersType } from 'src/types/apps/userTypes'
 import { CardStatsHorizontalProps } from 'src/@core/components/card-statistics/types'
 
 // ** Custom Table Components Imports
-import TableHeader from 'src/views/apps/user/list/TableHeader'
-import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
-
-import SidebarEditUser from 'src/views/apps/user/list/EditUserDrawer'
 import DialogAddUser from 'src/views/apps/user/list/DialogAddUser'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
 }
 
-interface UserStatusType {
-  [key: string]: ThemeColor
-}
+// interface UserStatusType {
+//   [key: string]: ThemeColor
+// }
 
 // ** Vars
 const userRoleObj: UserRoleType = {
@@ -88,11 +80,11 @@ interface CellType {
   row: UsersType
 }
 
-const userStatusObj: UserStatusType = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
-}
+// const userStatusObj: UserStatusType = {
+//   active: 'success',
+//   pending: 'warning',
+//   inactive: 'secondary'
+// }
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   fontWeight: 600,
@@ -128,7 +120,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   // ** State
-  const [dataFetched, setDataFetched] = useState(false);
+  // const [dataFetched, setDataFetched] = useState(false);
   const [editUserOpen, setEditUserOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -160,7 +152,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
     dispatch(postDeleteUser({ id }))
       .then(() => {
         //@ts-ignore
-        dispatch(fetchIzoUsers(token, url));
+        dispatch(fetchIzoUsers({token, url}));
         console.log('User deleted id, token, url', id, token, url);
         handleRowOptionsClose();
       })
@@ -380,7 +372,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
     if (token && url) {
       //@ts-ignore
-      dispatch(fetchIzoUsers(token, url));
+      dispatch(fetchIzoUsers({token, url}));
     }
 
   }, [dispatch, token, url])
@@ -430,15 +422,22 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
 
           <Divider sx={{ m: '0 !important' }} />
           <Box
-            sx={{ p: 6, gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}
-          >
-            <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-              <Button onClick={toggleAddUserDrawer} variant='contained'>
-                Add User
-              </Button>
-
+              sx={{
+                p: 6,
+                gap: 4,
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '200px' }}>
+                <Button fullWidth startIcon={<AddCircleOutlineIcon />} onClick={toggleAddUserDrawer} variant='contained'>
+                  Add
+                </Button>
+              </Box>
             </Box>
-          </Box>
+
           <Box >
             {data ? <DataGrid
               autoHeight

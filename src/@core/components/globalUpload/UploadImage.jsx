@@ -77,53 +77,54 @@ const UploadImage = ({ image, setImage }) => {
     setImage([...filtered])
   }
 
-  const fileList = Array.isArray(image) ? (
-    image.map(file => (
+  const fileList =
+    Array.isArray(image) && image.length > 0 ? (
+      image.map(file => (
+        <ListItem
+          sx={{
+            display: 'flex',
+            flexDirection: ['row', 'row', 'row'],
+            justifyContent: 'space-between'
+          }}
+          key={file.name}
+        >
+          <div className='file-details'>
+            <div className='file-preview'>{renderFilePreview(file)}</div>
+            <div>
+              <Typography className='file-name'>{file.name}</Typography>
+              <Typography className='file-size' variant='body2'>
+                {Math.round(file.size / 100) / 10 > 1000
+                  ? ` ${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
+                  : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
+              </Typography>
+            </div>
+          </div>
+          <IconButton onClick={() => handleRemoveFile(file)}>
+            <Icon icon='bx:x' fontSize={20} />
+          </IconButton>
+        </ListItem>
+      ))
+    ) : (
       <ListItem
         sx={{
           display: 'flex',
           flexDirection: ['row', 'row', 'row'],
           justifyContent: 'space-between'
         }}
-        key={file.name}
       >
         <div className='file-details'>
-          <div className='file-preview'>{renderFilePreview(file)}</div>
           <div>
-            <Typography className='file-name'>{file.name}</Typography>
-            <Typography className='file-size' variant='body2'>
-              {Math.round(file.size / 100) / 10 > 1000
-                ? ` ${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
-                : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
-            </Typography>
+            <Typography className='file-name'>The Image:</Typography>
+          </div>
+          <div className='file-preview'>
+            <img width={38} height={38} alt={'preview-img'} src={image} />
           </div>
         </div>
-        <IconButton onClick={() => handleRemoveFile(file)}>
+        <IconButton onClick={() => setImage('')}>
           <Icon icon='bx:x' fontSize={20} />
         </IconButton>
       </ListItem>
-    ))
-  ) : (
-    <ListItem
-      sx={{
-        display: 'flex',
-        flexDirection: ['row', 'row', 'row'],
-        justifyContent: 'space-between'
-      }}
-    >
-      <div className='file-details'>
-        <div>
-          <Typography className='file-name'>The Image:</Typography>
-        </div>
-        <div className='file-preview'>
-          <img width={38} height={38} alt={'preview-img'} src={image} />
-        </div>
-      </div>
-      <IconButton onClick={() => setImage('')}>
-        <Icon icon='bx:x' fontSize={20} />
-      </IconButton>
-    </ListItem>
-  )
+    )
 
   // const handleRemoveAllFiles = () => {
   //   setImage([])

@@ -7,6 +7,7 @@ export interface RootState {
           id: string
           first_name: string
         }
+        success: boolean
       }
       status: string | boolean
       message: string

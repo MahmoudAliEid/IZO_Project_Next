@@ -410,6 +410,7 @@ const Units = () => {
               p: 6,
               gap: 4,
               display: 'flex',
+
               flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: 'space-between'

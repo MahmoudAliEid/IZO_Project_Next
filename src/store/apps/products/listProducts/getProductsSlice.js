@@ -16,20 +16,32 @@ const initialState = {
   error: null
 }
 
-export const fetchProducts = createAsyncThunk('dashboard/fetchProducts', async token => {
+export const fetchProducts = createAsyncThunk('dashboard/fetchProducts', async payload => {
   const url = getCookie('apiUrl')
+  const { token, query } = payload
+  console.log(token, url, query, 'token, url, query form fetchProducts')
 
-  console.log(token, url)
+  if (query) {
+    const response = await axios.get(`${url}${query}`, {
+      headers: {
+        Authorization: 'Bearer ' + `${token}`
+      }
+    })
 
-  const response = await axios.get(`${url}/app/react/products/all`, {
-    headers: {
-      Authorization: 'Bearer ' + `${token}`
-    }
-  })
+    const data = response.data
 
-  const data = response.data
+    return data
+  } else {
+    const response = await axios.get(`${url}/app/react/products/all`, {
+      headers: {
+        Authorization: 'Bearer ' + `${token}`
+      }
+    })
 
-  return data
+    const data = response.data
+
+    return data
+  }
 })
 
 // Create a Redux slice

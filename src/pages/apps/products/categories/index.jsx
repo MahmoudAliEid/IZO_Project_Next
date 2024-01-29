@@ -328,7 +328,6 @@ const columns = [
           {row.image_url ? (
             <div className='file-details'>
               <div className='file-preview'>
-                {/* <img width={38} height={38} alt={'Category Image'} src={row.image_url} /> */}
                 {row.image_url === 'Loading...' ? (
                   <Box
                     sx={{

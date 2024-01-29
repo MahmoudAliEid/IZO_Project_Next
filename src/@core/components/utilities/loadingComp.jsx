@@ -6,22 +6,22 @@ import loadingAnimation2 from '/src/animation/loading.json'
 import { Dialog, DialogContent } from '@mui/material'
 import { Typography } from '@mui/material'
 import Image from 'next/image'
-import { styled, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 
-const LottieAnimation = ({ open, onClose, storeWarrantiesResponseStatuse }) => {
+const LoadingAnimation = ({ open, onClose, statusType }) => {
   const theme = useTheme()
 
-  console.log(storeWarrantiesResponseStatuse, '===> storeWarrantiesResponseStatuse')
+  console.log(statusType, '===> statusType')
 
   useEffect(() => {
-    if (storeWarrantiesResponseStatuse.success || storeWarrantiesResponseStatuse.error) {
+    if (statusType.success || statusType.error) {
       setTimeout(onClose, 2000)
     }
-  }, [storeWarrantiesResponseStatuse.success, storeWarrantiesResponseStatuse.error])
+  }, [statusType.success, statusType.error, onClose])
 
   return (
     <Fragment>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} maxWidth='xs' fullWidth scroll='body'>
         <DialogContent
           sx={{
             display: 'flex',
@@ -36,27 +36,27 @@ const LottieAnimation = ({ open, onClose, storeWarrantiesResponseStatuse }) => {
 
           <Lottie
             animationData={
-              storeWarrantiesResponseStatuse.loading
+              statusType.loading
                 ? loadingAnimation2
-                : storeWarrantiesResponseStatuse.success
+                : statusType.success
                 ? successAnimation
-                : storeWarrantiesResponseStatuse.error
+                : statusType.error
                 ? errorAnimation
                 : null
             }
             style={{
-              width: '300px',
-              height: '300px'
+              width: '250px',
+              height: '200px'
             }}
           />
 
-          <Typography variant='h5' sx={{ mt: 2 }}>
-            {storeWarrantiesResponseStatuse.loading ? (
-              <h1>Loading...</h1>
-            ) : storeWarrantiesResponseStatuse.success ? (
-              <h1>Success</h1>
-            ) : storeWarrantiesResponseStatuse.error ? (
-              <h1>Error</h1>
+          <Typography variant='h4' sx={{ mt: 2, py: 2 }}>
+            {statusType.loading ? (
+              <span>Loading...</span>
+            ) : statusType.success ? (
+              <span>Success 🎉✨</span>
+            ) : statusType.error ? (
+              <span>Error ❌</span>
             ) : null}
           </Typography>
         </DialogContent>
@@ -65,4 +65,4 @@ const LottieAnimation = ({ open, onClose, storeWarrantiesResponseStatuse }) => {
   )
 }
 
-export default LottieAnimation
+export default LoadingAnimation

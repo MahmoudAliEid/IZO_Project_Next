@@ -1,8 +1,6 @@
 // ** React Imports
 import { useState, ReactNode, useEffect } from 'react'
 
-
-
 import 'react-toastify/dist/ReactToastify.css'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -10,8 +8,6 @@ import { setCookie } from 'cookies-next'
 import { fetchUsers } from 'src/store/apps/users'
 import axios from 'axios'
 import { getCookie } from 'cookies-next'
-
-
 
 // redux
 import { login } from 'src/store/apps/auth/login/index.js'
@@ -42,6 +38,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
+import Grid from '@mui/material/Grid'
 
 
 // import FormHelperText from '@mui/material/FormHelperText'
@@ -94,9 +91,6 @@ const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 
-
-
-
 const LinkStyled = styled(Link)(() => ({
   fontSize: '0.875rem',
   textDecoration: 'none',
@@ -134,12 +128,10 @@ export async function getStaticProps() {
 }
 
 
-
-
 const LoginPage: React.FC<{ userData: UserData }> & {
   getLayout: (page: ReactNode) => ReactNode
   guestGuard?: boolean
-} = ({ userData }) => {
+} = () => {
 
   const router = useRouter()
   const secretKey = "izo-"
@@ -152,15 +144,17 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   const [Language, setLanguage] = useState<string>('')
   const [userNameError, setUserNameError] = useState<string>('')
   const [passwordError, setPasswordError] = useState<string>('')
+  const [successAuthLogin, setSuccessAuthLogin] = useState<any>(false)
+  const [loginFirstTime, setLoginFirstTime] = useState<any>(false)
   const currentYear = new Date().getFullYear()
   const dispatch = useDispatch()
-
-
 
   // **selecting
   const login_first_time = useSelector((state: RootState) => state.login.login_first_time)
   const usersDataNames = useSelector((state: RootStateUsers) => state.usersNames.data?.users)
+  const successLogin = useSelector((state: RootState) => state.login.data.authorization?.success)
 
+  // **useEffect
   useEffect(() => {
     //fetching users
     //@ts-ignore
@@ -168,6 +162,32 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
 
   }, [dispatch])
+
+  useEffect(() => {
+    if (successLogin) {
+      setSuccessAuthLogin(true)
+    }
+  }, [successLogin])
+
+  useEffect(() => {
+    if (login_first_time) {
+      setLoginFirstTime(true)
+    }
+  }, [login_first_time])
+
+  // handle redirect if user is first time
+  useEffect(() => {
+    if (loginFirstTime) {
+      router.replace('/loginFirstTime')
+    }
+  }, [loginFirstTime, router])
+
+   // Handle Redirect if user is logged in successfully
+  useEffect(() => {
+    if (successAuthLogin) {
+      router.replace('/dashboards/analytics/')
+    }
+  }, [successAuthLogin, router])
 
 
   const handleOnSubmit = (e: any) => {
@@ -196,27 +216,24 @@ const LoginPage: React.FC<{ userData: UserData }> & {
       if (!password || !username) notify(" Fields can't be Empty", "error");
 
       //to go into page login for first time
-      if (login_first_time) {
-        router.replace('/loginFirstTime')
-      }
+      // if (login_first_time) {
+      //   router.replace('/loginFirstTime')
+      // }
 
       //@ts-ignore
       dispatch(login(loginData))
 
       setCookie("key", secretKey + password + username)
 
-      setTimeout(() => {
-        router.replace('/dashboards/analytics/');
-
-      }, 2000);
-
-
-
+      // setTimeout(() => {
+      //     router.replace('/dashboards/analytics/')
+      // }, 2000);
     } catch (error: any) {
       console.log(error)
     }
   }
 
+  // ** Hooks
   const theme = useTheme()
   const { settings } = useSettings()
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
@@ -239,7 +256,6 @@ const LoginPage: React.FC<{ userData: UserData }> & {
 
   }
 
-
   // const handleChangeRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setRememberMe(event.target.checked)
   // }
@@ -250,12 +266,12 @@ const LoginPage: React.FC<{ userData: UserData }> & {
     setPassword(event.target.value)
   }
 
-  let arrUsersData = null
-  if (usersDataNames) {
-    arrUsersData = Object.values(usersDataNames)
-  } else {
-    arrUsersData = Object.values(userData.users)
-  }
+  // let arrUsersData = null
+  // if (usersDataNames) {
+  //   arrUsersData = Object.values(usersDataNames)
+  // } else {
+  //   arrUsersData = Object.values(userData.users)
+  // }
 
   return (
     <Box className='content-right'>
@@ -268,14 +284,16 @@ const LoginPage: React.FC<{ userData: UserData }> & {
         sx={{ ...(skin === 'bordered' && !hidden && { borderLeft: `1px solid ${theme.palette.divider}` }) }}
       >
         <Box sx={{ mx: 'auto', maxWidth: 400 }}>
-          <Box sx={{ mb: 8, display: 'flex', alignItems: 'center' }}>
-            <Image src={'/izoLogo/izo_logo_black.png'} alt='logo' width={40} height={40} background-color={'black'} />
-
+          <Grid container >
+            <Grid item xs={12} justifyContent={'center'} alignSelf={'center'} alignContent={'center'}  >
+            <Image  src={`/izoLogo/izo-logo-${theme.palette.mode}.png`} alt='logo' width={100} height={100}  background-color={'black'} style={{ margin: "0 auto", display:'block'}}  />
+            </Grid>
+            <Grid item xs={12}  >
             <Box sx={{ mx: 'auto', maxWidth: 400 }}>
               <FormControl
+                  fullWidth
                 sx={{
                   m: 1,
-                  minWidth: 120,
                   '& .Mui-focused': {
                     borderColor: '#ec6608 !important',
                     color: '#ec6608 !important',
@@ -303,8 +321,9 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                   <MenuItem value='en'>English</MenuItem>
                 </TextField>
               </FormControl>
-            </Box>
-          </Box>
+              </Box>
+              </Grid>
+          </Grid>
 
           <Typography variant='h6' sx={{ mb: 1.5 }}>
             Welcome to {themeConfig.templateName.toUpperCase()}! 👋🏻

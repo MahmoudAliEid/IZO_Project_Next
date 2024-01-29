@@ -37,6 +37,32 @@ export default function RatingComponent() {
     localStorage.setItem('rating', rate)
   }
 
+  // Function to handle bad rating on click
+  const handleBadRating = () => {
+    //  close modal after rating
+    setOpen(false)
+
+    // open feedback modal
+    setTimeout(() => {
+      setFeedback(true)
+    }, 1000)
+
+    localStorage.setItem('rating', 1)
+  }
+
+  // Function to handle excellent rating on click
+  const handleExcellentRating = () => {
+    //  close modal after rating
+    setOpen(false)
+
+    // open feedback modal
+    setTimeout(() => {
+      setFeedback(true)
+    }, 1000)
+
+    localStorage.setItem('rating', 5)
+  }
+
   useEffect(() => {
     if (feedback) {
       setTimeout(() => {
@@ -76,6 +102,7 @@ export default function RatingComponent() {
                 <Chip
                   label='Bad'
                   variant='outlined'
+                  onClick={handleBadRating}
                   style={{
                     color: theme.palette.primary.main
                   }}
@@ -83,6 +110,7 @@ export default function RatingComponent() {
                 <Chip
                   label='Excellent'
                   variant='outlined'
+                  onClick={handleExcellentRating}
                   style={{
                     color: theme.palette.primary.main
                   }}

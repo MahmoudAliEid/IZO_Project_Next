@@ -12,7 +12,7 @@ import CardHeader from '@mui/material/CardHeader'
 import PageHeader from 'src/@core/components/page-header'
 
 // ** Demo Components Imports
-import TableBasic from 'src/views/table/mui/TableBasic'
+// import TableBasic from 'src/views/table/mui/TableBasic'
 import TableDense from 'src/views/table/mui/TableDense'
 import TableSpanning from 'src/views/table/mui/TableSpanning'
 import TableCustomized from 'src/views/table/mui/TableCustomized'
@@ -38,12 +38,13 @@ const MUITable = () => {
         }
         subtitle={<Typography variant='body2'>Tables display sets of data. They can be fully customized</Typography>}
       />
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <Card>
           <CardHeader title='Basic Table' />
+
           <TableBasic />
         </Card>
-      </Grid>
+      </Grid> */}
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Dense Table' />

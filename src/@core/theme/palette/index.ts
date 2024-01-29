@@ -45,9 +45,8 @@ const DefaultPalette = (mode: Palette['mode'], settings: Settings): Palette => {
       darkPaperBg: darkPaperBgColor,
       collapseTogglerBg: collapseTogglerBgColor(),
       bodyBg: mode === 'light' ? '#F5F5F9' : 'rgb(57 57 57)', // Same as palette.background.default but doesn't consider bordered skin
-      trackBg: mode === 'light' ? '#EBEEF0' : '#444463',
-      avatarBg: mode === 'light' ? '#F0EFF0' : '#3F3B59',
-      tableHeaderBg: mode === 'light' ? '#F3F4F6' : '#353649'
+      avatarBg: mode === 'light' ? '#F0EFF0' : '#424242',
+      tableHeaderBg: mode === 'light' ? '#F3F4F6' : '#424242'
     },
     mode: mode,
     common: {

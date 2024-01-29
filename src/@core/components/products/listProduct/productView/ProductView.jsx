@@ -36,6 +36,10 @@ import { fetchViewStockProduct } from 'src/store/apps/products/listProducts/acti
 import { useDispatch, useSelector } from 'react-redux'
 import TableAverage from './TableAverage'
 
+//** Third part */
+import ReactHtmlParser from 'react-html-parser'
+import CustomTableView from './CustomTableView'
+
 // Styled Grid component
 const StyledGrid = styled(Grid)(({ theme }) => ({
   display: 'flex',
@@ -55,6 +59,36 @@ const ProductView = ({ open, setOpen, id }) => {
 
   // ** Selector
   const store = useSelector(state => state.getViewStockProduct?.data?.value)
+
+  const dataNames = [
+    {
+      field: 'name',
+      headerName: 'Name',
+      size: 'small'
+    },
+    { field: 'description', headerName: 'Description', size: 'small' },
+    { field: 'full_description', headerName: 'Full Description', size: 'small' },
+    { field: 'alert_qty', headerName: 'Alert Qty' },
+    { field: 'barcode_type', headerName: 'Barcode Type' },
+    { field: 'brand', headerName: 'Brand' },
+    { field: 'category', headerName: 'Category' },
+    { field: 'code', headerName: 'Code' },
+    { field: 'cost', headerName: 'Cost' },
+    { field: 'manage_stock', headerName: 'Manage Stock' },
+    { field: 'product_locations', headerName: 'Product Locations' },
+    { field: 'product_type', headerName: 'Product Type' },
+    { field: 'second_code', headerName: 'Second Code' },
+    { field: 'sub_category', headerName: 'Sub Category' },
+    { field: 'tax', headerName: 'Tax' },
+    { field: 'total_quantity', headerName: 'Total Quantity' },
+    { field: 'unit', headerName: 'Unit' },
+    { field: 'warranty', headerName: 'Warranty' },
+    { field: 'weight', headerName: 'Weight' },
+    { field: 'custom_field_1', headerName: 'Custom Field1' },
+    { field: 'custom_field_2', headerName: 'Custom Field2' },
+    { field: 'custom_field_3', headerName: 'Custom Field3' },
+    { field: 'custom_field_4', headerName: 'Custom Field4' }
+  ]
 
   // ** Hook
   const {
@@ -78,7 +112,7 @@ const ProductView = ({ open, setOpen, id }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleCancel} scroll='body' fullWidth maxWidth='lg'>
+    <Dialog open={open} onClose={handleCancel} scroll='body' fullWidth maxWidth='lg' fullScreen>
       <Card>
         <CardHeader title='Product Details' />
 
@@ -139,7 +173,7 @@ const ProductView = ({ open, setOpen, id }) => {
             {productInfo?.video ? (
               <Grid item xs={12} lg={6} md={6} sm={12}>
                 <Divider sx={{ mb: 2 }}>
-                  <Chip label='Product Video' color='primary' variant='outlined' s />
+                  <Chip label='Product Video' color='primary' variant='outlined' />
                 </Divider>
 
                 <CardContent>
@@ -154,12 +188,48 @@ const ProductView = ({ open, setOpen, id }) => {
 
       <Card>
         <Divider sx={{ mb: 2 }}>
-          <Chip label='Product Information' color='primary' variant='outlined' s />
+          <Chip label='Product Information' color='primary' variant='outlined' />
         </Divider>
 
         <CardContent>
           <Grid container spacing={2}>
-            <Grid item xs={12} lg={4} md={4} sm={12}>
+            {productInfo &&
+              dataNames.map((data, index) => {
+                return (
+                  <Grid
+                    item
+                    xs={12}
+                    lg={
+                      data.field === 'name' || data.field === 'full_description' || data.field === 'description'
+                        ? 12
+                        : 4
+                    }
+                    md={
+                      data.field === 'name' || data.field === 'full_description' || data.field === 'description'
+                        ? 12
+                        : 4
+                    }
+                    sm={12}
+                    key={index}
+                  >
+                    <Box sx={{ display: 'flex', mb: 4 }}>
+                      <Icon sx={{ mr: 4, color: 'text.secondary' }} />
+                      <Typography sx={{ ml: 3, mr: 2, fontWeight: 700, color: 'text.secondary' }}>
+                        {data.headerName}:
+                      </Typography>
+                      {(data.field === 'description' && productInfo[data.field]) ||
+                      (data.field === 'full_description' && productInfo[data.field]) ? (
+                        <Chip label={ReactHtmlParser(productInfo[data.field])} />
+                      ) : (
+                        <Chip label={productInfo[data.field]} size={'small'} />
+                      )}
+                      {/* {productInfo[data.field] ? <Chip label={productInfo[data.field] || ''} size={'small'} /> : null} */}
+                    </Box>
+                  </Grid>
+                )
+              })}
+
+            {/* <Grid item xs={12} lg={4} md={4} sm={12}>
               <Box sx={{ display: 'flex', mb: 4 }}>
                 <Icon sx={{ mr: 4, color: 'text.secondary' }} icon='fluent:number-symbol-16-filled' />
                 <Typography sx={{ ml: 3, mr: 2, fontWeight: 700, color: 'text.secondary' }}>Item Code:</Typography>
@@ -248,6 +318,22 @@ const ProductView = ({ open, setOpen, id }) => {
                 <Typography sx={{ color: 'text.secondary' }}>{productInfo?.product_type || ''}</Typography>
               </Box>
             </Grid>
+
+            <Grid item xs={12} lg={4} md={4} sm={12}>
+              <Box sx={{ display: 'flex', mb: 4 }}>
+                <Icon sx={{ mr: 4, color: 'text.secondary' }} icon='fluent:text-description-28-regular' />
+                <Typography sx={{ ml: 3, mr: 2, fontWeight: 700, color: 'text.secondary' }}>
+                  Full Description:
+                </Typography>
+                {ReactHtmlParser(productInfo?.full_description)}
+              </Box>
+
+              <Box sx={{ display: 'flex', mb: 4 }}>
+                <Icon sx={{ mr: 4, color: 'text.secondary' }} icon='fluent:text-description-28-regular' />
+                <Typography sx={{ ml: 3, mr: 2, fontWeight: 700, color: 'text.secondary' }}>description:</Typography>
+                {ReactHtmlParser(productInfo?.description)}
+              </Box>
+            </Grid> */}
             {/* <Grid item xs={12} lg={6}>
               <Box sx={{ display: 'flex', mb: 4 }}>
                 <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Item Code:</Typography>
@@ -282,7 +368,7 @@ const ProductView = ({ open, setOpen, id }) => {
               </Box>
 
               <Box sx={{ display: 'flex', mb: 4 }}>
-                <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>Sub category:</Typography>
+                <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>description</Typography>
                 <Typography sx={{ color: 'text.secondary' }}>CARDEN</Typography>
               </Box>
 
@@ -322,9 +408,128 @@ const ProductView = ({ open, setOpen, id }) => {
         </CardContent>
       </Card>
 
+      {productInfo?.rack && productInfo?.rack.length > 0 ? (
+        <Card sx={{ pb: 2 }}>
+          <Divider sx={{ mb: 2 }}>
+            <Chip label='Racks' color='primary' variant='outlined' />
+          </Divider>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <CustomTableView
+                dataRows={productInfo?.rack}
+                dataColumns={[
+                  {
+                    field: 'name',
+                    headerName: 'Location'
+                  },
+                  {
+                    field: 'rack',
+                    headerName: 'Rack',
+                    renderCell: row => <Typography>{row.rack}</Typography>
+                  },
+                  {
+                    field: 'row',
+                    headerName: 'Row'
+                  },
+                  {
+                    field: 'position',
+                    headerName: 'Position'
+                  }
+                ]}
+              />
+            </Grid>
+          </Grid>
+        </Card>
+      ) : null}
+
+      {productInfo?.variable_rows && productInfo?.variable_rows.length > 0 ? (
+        <Card sx={{ pb: 2 }}>
+          <Divider sx={{ mb: 2 }}>
+            <Chip label='Variations' color='primary' variant='outlined' />
+          </Divider>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <CustomTableView
+                dataRows={productInfo?.variable_rows}
+                dataColumns={[
+                  {
+                    field: 'name',
+                    headerName: 'variations',
+                    flex: 0.35,
+                    minWidth: 210,
+                    renderCell: row => <Typography variant='body2'>{row.name}</Typography>
+                  },
+                  {
+                    field: 'sub_sku',
+                    flex: 0.2,
+                    headerName: 'Item Code',
+                    renderCell: row => <Typography variant='body2'>{row.sub_sku}</Typography>
+                  },
+                  {
+                    field: 'default_purchase_price',
+                    headerName: 'Default Purchase Price (Exc. tax)',
+                    flex: 0.35,
+                    minWidth: 180,
+                    renderCell: row => <Typography variant='body2'>{row.default_purchase_price}</Typography>
+                  },
+                  {
+                    field: 'dpp_inc_tax',
+                    headerName: 'Default Purchase Price (Inc. tax)',
+                    flex: 0.35,
+                    minWidth: 180,
+                    renderCell: row => <Typography variant='body2'>{row.dpp_inc_tax}</Typography>
+                  },
+                  {
+                    field: 'profit_percent',
+                    headerName: 'x Margin(%)',
+                    flex: 0.2,
+                    minWidth: 120,
+                    renderCell: row => <Typography variant='body2'>{row.profit_percent}</Typography>
+                  },
+                  {
+                    field: 'default_sell_price',
+                    headerName: 'Default Sell Price (Exc. tax)',
+                    flex: 0.35,
+                    minWidth: 170,
+                    renderCell: row => <Typography variant='body2'>{row.default_sell_price}</Typography>
+                  },
+                  {
+                    field: 'sell_price_inc_tax',
+                    headerName: 'Default Sell Price (Inc. tax)',
+                    flex: 0.35,
+                    minWidth: 170,
+                    renderCell: row => <Typography variant='body2'>{row.sell_price_inc_tax}</Typography>
+                  },
+                  {
+                    field: 'image',
+                    headerName: 'Image',
+                    align: 'center',
+                    minWidth: 150,
+                    renderCell: row => (
+                      <img
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '10px'
+                        }}
+                        src={row.image}
+                        alt='product image'
+                      />
+                    )
+                  }
+                ]}
+              />
+            </Grid>
+          </Grid>
+        </Card>
+      ) : null}
+
       <Card>
         <Divider sx={{ mb: 2 }}>
-          <Chip label='Store' color='primary' variant='outlined' s />
+          <Chip label='Store' color='primary' variant='outlined' />
         </Divider>
 
         <Grid container spacing={2}>
@@ -335,7 +540,7 @@ const ProductView = ({ open, setOpen, id }) => {
       </Card>
       <Card sx={{ pt: 10 }}>
         <Divider sx={{ mb: 2 }}>
-          <Chip label='Average Sale Price' color='primary' variant='outlined' s />
+          <Chip label='Average Sale Price' color='primary' variant='outlined' />
         </Divider>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -352,7 +557,7 @@ const ProductView = ({ open, setOpen, id }) => {
       </Card>
       <Card sx={{ pt: 10 }}>
         <Divider sx={{ mb: 2 }}>
-          <Chip label='Average Sale Price' color='primary' variant='outlined' s />
+          <Chip label='Average Sale Price' color='primary' variant='outlined' />
         </Divider>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -370,7 +575,7 @@ const ProductView = ({ open, setOpen, id }) => {
 
       <Card>
         <Divider sx={{ mb: 2 }}>
-          <Chip label='Actions' color='primary' variant='outlined' s />
+          <Chip label='Actions' color='primary' variant='outlined' />
         </Divider>
         <CardActions sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
           <Button size='large' variant='outlined' color='secondary' onClick={handleCancel}>

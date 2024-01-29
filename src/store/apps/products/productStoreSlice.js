@@ -5,1082 +5,434 @@ import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
 
 // First, create the async thunk
-export const saveProduct = createAsyncThunk('products/save', async product => {
-  console.log(product, '===> product from saveProduct 🙌🙌')
+export const saveProduct = createAsyncThunk('dashboard/createProduct', async payload => {
+  const { product } = payload
 
-  // {
-  //     "name": "kjlhhjb",
-  //     "code": "kjkjkn",
-  //     "code2": "kmn55",
-  //     "barcode_type": "C128",
-  //     "unit_id": 30,
-  //     "sub_unit_id": [],
-  //     "brand_id": 47,
-  //     "category_id": 7,
-  //     "sub_category_id": 8,
-  //     "enable_stock": false,
-  //     "alert_quantity": null,
-  //     "warranty_id": 4,
-  //     "long_description": {
-  //         "blocks": [
-  //             {
-  //                 "key": "b1jfq",
-  //                 "text": "",
-  //                 "type": "unstyled",
-  //                 "depth": 0,
-  //                 "inlineStyleRanges": [],
-  //                 "entityRanges": [],
-  //                 "data": {}
-  //             }
-  //         ],
-  //         "entityMap": {}
-  //     },
-  //     "short_description": {
-  //         "blocks": [
-  //             {
-  //                 "key": "etrtd",
-  //                 "text": "",
-  //                 "type": "unstyled",
-  //                 "depth": 0,
-  //                 "inlineStyleRanges": [],
-  //                 "entityRanges": [],
-  //                 "data": {}
-  //             }
-  //         ],
-  //         "entityMap": {}
-  //     },
-  //     "location": 1,
-  //     "productimage": [],
-  //     "productmultipleimages": [],
-  //     "productbrochure": [],
-  //     "productvideo": [],
-  //     "expiry_period_type": "no Applicable",
-  //     "not_for_sale": false,
-  //     "expiry_period": "",
-  //     "weight": "",
-  //     "custom_field_1": "",
-  //     "custom_field_2": "",
-  //     "custom_field_3": "",
-  //     "custom_field_4": "",
-  //     "product_type": "single",
-  //     "tax": 0.05,
-  //     "tableData": [
-  //         {
-  //             "id": 1,
-  //             "unit_id": 30,
-  //             "value": "default_price",
-  //             "single_dpp": 100,
-  //             "single_dpp_in_tax": 105,
-  //             "profit_percent": 25,
-  //             "single_dsp": 125,
-  //             "single_dsp_inc_tax": 131.25
-  //         },
-  //         {
-  //             "id": 2,
-  //             "unit_id": 30,
-  //             "value": "whole_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 3,
-  //             "unit_id": 30,
-  //             "value": "retail_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 4,
-  //             "unit_id": 30,
-  //             "value": "minimum_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 5,
-  //             "unit_id": 30,
-  //             "value": "last_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 6,
-  //             "unit_id": 30,
-  //             "value": "ecm_before_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 7,
-  //             "unit_id": 30,
-  //             "value": "ecm_after_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 8,
-  //             "unit_id": 30,
-  //             "value": "custom_price_1",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 9,
-  //             "unit_id": 30,
-  //             "value": "custom_price_2",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 10,
-  //             "unit_id": 30,
-  //             "value": "custom_price_3",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 11,
-  //             "unit_id": 30,
-  //             "value": "custom_price_4",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         }
-  //     ],
-  //     "tableDataChildOne": [
-  //         {
-  //             "id": 1,
-  //             "unit_id": "",
-  //             "value": "default_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 2,
-  //             "unit_id": "",
-  //             "value": "whole_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 3,
-  //             "unit_id": "",
-  //             "value": "retail_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 4,
-  //             "unit_id": "",
-  //             "value": "minimum_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 5,
-  //             "unit_id": "",
-  //             "value": "last_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 6,
-  //             "unit_id": "",
-  //             "value": "ecm_before_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 7,
-  //             "unit_id": "",
-  //             "value": "ecm_after_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 8,
-  //             "unit_id": "",
-  //             "value": "custom_price_1",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 9,
-  //             "unit_id": "",
-  //             "value": "custom_price_2",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 10,
-  //             "unit_id": "",
-  //             "value": "custom_price_3",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 11,
-  //             "unit_id": "",
-  //             "value": "custom_price_4",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         }
-  //     ],
-  //     "tableDataChildTwo": [
-  //         {
-  //             "id": 1,
-  //             "unit_id": "",
-  //             "value": "default_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 2,
-  //             "unit_id": "",
-  //             "value": "whole_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 3,
-  //             "unit_id": "",
-  //             "value": "retail_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 4,
-  //             "unit_id": "",
-  //             "value": "minimum_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 5,
-  //             "unit_id": "",
-  //             "value": "last_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 6,
-  //             "unit_id": "",
-  //             "value": "ecm_before_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 7,
-  //             "unit_id": "",
-  //             "value": "ecm_after_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 8,
-  //             "unit_id": "",
-  //             "value": "custom_price_1",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 9,
-  //             "unit_id": "",
-  //             "value": "custom_price_2",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 10,
-  //             "unit_id": "",
-  //             "value": "custom_price_3",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 11,
-  //             "unit_id": "",
-  //             "value": "custom_price_4",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         }
-  //     ]
+  // Server side code
+  // let array = JSON.parse(req.body.mahmoud_ali_test)
+  // formData.append('mahmoud_ali_test', JSON.stringify([1, 2]))
+  // console.log(product, '===> product data from saveProduct 🙌🙌')
+  // console.log(product.long_description.blocks.at(0).text, '===> product.long_description?.block[0].text ☀☀🌞🌞🌞')
+  // console.log('product locations 💲💲', JSON.stringify(product.location))
+  // console.log('product locations test two 💙', product.location)
+  // console.log('product front test three 💙', JSON.stringify([1, 2]))
+  // console.log('product sub unit id 💙', JSON.stringify(product.sub_unit_id))
+  // console.log('product sub unit id  second💙', product.sub_unit_id)
+  // const test=product_racks:[
+  //   {id:{"row":'1',"position":'1',"rack":'1'},}
+  //   ]
+  // console.log('product image', product.productImage[0])
+
+  const jsonData = [
+    { id: 1, value: [{ rack: 'jk' }, { row: 'mn,' }, { position: 'njuy' }] },
+    { id: 2, value: [{ rack: 'j' }, { row: 'mloi' }, { position: 'nmklo' }] },
+    { id: 3, value: [{ rack: 'yui8' }, { row: 'nh56' }, { position: 'njhg' }] },
+    { id: 4, value: [{ rack: 'omnj' }, { row: '8990' }, { position: 'mkjser' }] },
+    { id: 5, value: [{ rack: 'uio' }, { row: 'bgh' }, { position: 'nbhj' }] }
+  ]
+
+  for (let i = 0; i < jsonData.length; i++) {
+    for (let j = 0; j < jsonData[i].value.length; j++) {
+      console.log('json data 🥰🥰🥰', jsonData[i].value[j].rack)
+    }
+  }
+  console.log('test racks id 👀👁', jsonData[0].id)
+  console.log('test racks rack 🤣', jsonData[0].value[0].rack)
+
+  console.log('show more value💦 ', product.show_more_price)
+  console.log('my fav per 🎇✨✨', product.my_fav_per)
+
+  const formData = new FormData()
+  formData.append('my_fav_per', product.my_fav_per || '')
+  formData.append('name', product.name || '')
+  formData.append('product_type', product.product_type || '')
+  formData.append('unit_id', product.unit_id || '')
+
+  if (product.sub_unit_id && product.sub_unit_id.length > 0) {
+    for (let i = 0; i < product.sub_unit_id.length; i++) {
+      formData.append(`sub_unit_id[${i}]`, product.sub_unit_id[i])
+    }
+  }
+  if (product.location && product.location.length > 0) {
+    for (let i = 0; i < product.location.length; i++) {
+      formData.append(`product_locations[${i}]`, product.location[i])
+    }
+  }
+  formData.append('category_id', product.category_id || '')
+  formData.append('sub_category_id', product.sub_category_id || '')
+  formData.append('brand_id', product.brand_id || '')
+  formData.append('tax_id', product.tax_id)
+  formData.append('enable_stock', product.enable_stock || '')
+  formData.append('alert_quantity', product.alert_quantity || '')
+  formData.append('code', product.code || '')
+  formData.append('code2', product.code2 || '')
+  formData.append('barcode_type', product.barcode_type || '')
+  formData.append('expiry_period', product.expiry_period || '')
+  formData.append('expiry_period_type', product.expiry_period_type || '')
+  formData.append('weight', product.weight || '')
+  formData.append('custom_field_1', product.custom_field_1 || '')
+  formData.append('custom_field_2', product.custom_field_2 || '')
+  formData.append('custom_field_3', product.custom_field_3 || '')
+  formData.append('custom_field_4', product.custom_field_4 || '')
+  formData.append('warranty_id', product.warranty_id)
+  formData.append('not_for_sale', product.not_for_sale)
+
+  if (product.long_description.blocks && product.long_description?.blocks.length > 0 && product?.long_description) {
+    formData.append('full_description', product.long_description?.blocks.at(0).text || '')
+  }
+  if (product.short_description?.blocks && product.short_description?.blocks.length > 0 && product.short_description) {
+    formData.append('description', product.short_description?.blocks.at(0).text || '')
+  }
+
+  if (product?.productmultipleimages && product?.productmultipleimages.length > 0) {
+    for (let i = 0; i < product?.productmultipleimages.length; i++) {
+      formData.append(`more_image[${i}]`, product?.productmultipleimages[i])
+    }
+  }
+
+  formData.append('image', (product.productImage && product?.productImage[0]) || '')
+  formData.append('bruchore', (product.productbrochure && product?.productbrochure[0]) || '')
+  formData.append('video', (product.productvideo && product?.productvideo[0]) || '')
+
+  // ** Single Product Price
+  if (product.product_type === 'single') {
+    if (product.tableData && product.tableData.length > 0) {
+      formData.append(
+        'table_price_1',
+        JSON.stringify(
+          [
+            {
+              unit_id: product.unit_id,
+              value: 'default_price',
+              single_dpp: product.tableData[0].single_dpp,
+              single_dpp_inc_tax: product.tableData[0].single_dpp_in_tax,
+              profit_percent: product.tableData[0].profit_percent,
+              single_dsp: product.tableData[0].single_dsp,
+              single_dsp_inc_tax: product.tableData[0].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'whole_price',
+              single_dpp: product.tableData[1].single_dpp,
+              single_dpp_inc_tax: product.tableData[1].single_dpp_in_tax,
+              profit_percent: product.tableData[1].profit_percent,
+              single_dsp: product.tableData[1].single_dsp,
+              single_dsp_inc_tax: product.tableData[1].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'retail_price',
+              single_dpp: product.tableData[2].single_dpp,
+              single_dpp_inc_tax: product.tableData[2].single_dpp_in_tax,
+              profit_percent: product.tableData[2].profit_percent,
+              single_dsp: product.tableData[2].single_dsp,
+              single_dsp_inc_tax: product.tableData[2].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'minimum_price',
+              single_dpp: product.tableData[3].single_dpp,
+              single_dpp_inc_tax: product.tableData[3].single_dpp_in_tax,
+              profit_percent: product.tableData[3].profit_percent,
+              single_dsp: product.tableData[3].single_dsp,
+              single_dsp_inc_tax: product.tableData[3].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'last_price',
+              single_dpp: product.tableData[4].single_dpp,
+              single_dpp_inc_tax: product.tableData[4].single_dpp_in_tax,
+              profit_percent: product.tableData[4].profit_percent,
+              single_dsp: product.tableData[4].single_dsp,
+              single_dsp_inc_tax: product.tableData[4].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'ecm_before_price',
+              single_dpp: product.tableData[5].single_dpp,
+              single_dpp_inc_tax: product.tableData[5].single_dpp_in_tax,
+              profit_percent: product.tableData[5].profit_percent,
+              single_dsp: product.tableData[5].single_dsp,
+              single_dsp_inc_tax: product.tableData[5].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'ecm_after_price',
+              single_dpp: product.tableData[6].single_dpp,
+              single_dpp_inc_tax: product.tableData[6].single_dpp_in_tax,
+              profit_percent: product.tableData[6].profit_percent,
+              single_dsp: product.tableData[6].single_dsp,
+              single_dsp_inc_tax: product.tableData[6].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'custom_price_1',
+              single_dpp: product.tableData[7].single_dpp,
+              single_dpp_inc_tax: product.tableData[7].single_dpp_in_tax,
+              profit_percent: product.tableData[7].profit_percent,
+              single_dsp: product.tableData[7].single_dsp,
+              single_dsp_inc_tax: product.tableData[7].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'custom_price_2',
+              single_dpp: product.tableData[8].single_dpp,
+              single_dpp_inc_tax: product.tableData[8].single_dpp_in_tax,
+              profit_percent: product.tableData[8].profit_percent,
+              single_dsp: product.tableData[8].single_dsp,
+              single_dsp_inc_tax: product.tableData[8].single_dsp_inc_tax
+            },
+            {
+              unit_id: product.unit_id,
+              value: 'custom_price_3',
+              single_dpp: product.tableData[9].single_dpp,
+              single_dpp_inc_tax: product.tableData[9].single_dpp_in_tax,
+              profit_percent: product.tableData[9].profit_percent,
+              single_dsp: product.tableData[9].single_dsp,
+              single_dsp_inc_tax: product.tableData[9].single_dsp_inc_tax
+            }
+          ] || null
+        )
+      )
+    }
+    if (product.tableDataChildOne && product.tableDataChildOne.length > 0 && product.show_more_price) {
+      formData.append(
+        'table_price_2',
+        JSON.stringify([
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'default_price',
+            single_dpp: product.tableDataChildOne[0].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[0].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[0].profit_percent,
+            single_dsp: product.tableDataChildOne[0].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[0].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'whole_price',
+            single_dpp: product.tableDataChildOne[1].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[1].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[1].profit_percent,
+            single_dsp: product.tableDataChildOne[1].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[1].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'retail_price',
+            single_dpp: product.tableDataChildOne[2].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[2].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[2].profit_percent,
+            single_dsp: product.tableDataChildOne[2].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[2].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'minimum_price',
+            single_dpp: product.tableDataChildOne[3].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[3].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[3].profit_percent,
+            single_dsp: product.tableDataChildOne[3].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[3].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'last_price',
+            single_dpp: product.tableDataChildOne[4].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[4].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[4].profit_percent,
+            single_dsp: product.tableDataChildOne[4].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[4].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'ecm_before_price',
+            single_dpp: product.tableDataChildOne[5].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[5].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[5].profit_percent,
+            single_dsp: product.tableDataChildOne[5].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[5].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'ecm_after_price',
+            single_dpp: product.tableDataChildOne[6].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[6].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[6].profit_percent,
+            single_dsp: product.tableDataChildOne[6].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[6].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'custom_price_1',
+            single_dpp: product.tableDataChildOne[7].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[7].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[7].profit_percent,
+            single_dsp: product.tableDataChildOne[7].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[7].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'custom_price_2',
+            single_dpp: product.tableDataChildOne[8].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[8].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[8].profit_percent,
+            single_dsp: product.tableDataChildOne[8].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[8].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[0],
+            value: 'custom_price_3',
+            single_dpp: product.tableDataChildOne[9].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildOne[9].single_dpp_in_tax,
+            profit_percent: product.tableDataChildOne[9].profit_percent,
+            single_dsp: product.tableDataChildOne[9].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildOne[9].single_dsp_inc_tax
+          }
+        ])
+      )
+    }
+    if (product.tableDataChildTwo && product.tableDataChildTwo.length > 0 && product.show_more_price) {
+      formData.append(
+        'table_price_3',
+        JSON.stringify([
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'default_price',
+            single_dpp: product.tableDataChildTwo[0].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[0].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[0].profit_percent,
+            single_dsp: product.tableDataChildTwo[0].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[0].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'whole_price',
+            single_dpp: product.tableDataChildTwo[1].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[1].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[1].profit_percent,
+            single_dsp: product.tableDataChildTwo[1].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[1].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'retail_price',
+            single_dpp: product.tableDataChildTwo[2].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[2].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[2].profit_percent,
+            single_dsp: product.tableDataChildTwo[2].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[2].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'minimum_price',
+            single_dpp: product.tableDataChildTwo[3].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[3].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[3].profit_percent,
+            single_dsp: product.tableDataChildTwo[3].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[3].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'last_price',
+            single_dpp: product.tableDataChildTwo[4].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[4].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[4].profit_percent,
+            single_dsp: product.tableDataChildTwo[4].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[4].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'ecm_before_price',
+            single_dpp: product.tableDataChildTwo[5].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[5].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[5].profit_percent,
+            single_dsp: product.tableDataChildTwo[5].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[5].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'ecm_after_price',
+            single_dpp: product.tableDataChildTwo[6].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[6].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[6].profit_percent,
+            single_dsp: product.tableDataChildTwo[6].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[6].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'custom_price_1',
+            single_dpp: product.tableDataChildTwo[7].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[7].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[7].profit_percent,
+            single_dsp: product.tableDataChildTwo[7].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[7].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'custom_price_2',
+            single_dpp: product.tableDataChildTwo[8].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[8].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[8].profit_percent,
+            single_dsp: product.tableDataChildTwo[8].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[8].single_dsp_inc_tax
+          },
+          {
+            unit_id: product.sub_unit_id[1],
+            value: 'custom_price_3',
+            single_dpp: product.tableDataChildTwo[9].single_dpp,
+            single_dpp_inc_tax: product.tableDataChildTwo[9].single_dpp_in_tax,
+            profit_percent: product.tableDataChildTwo[9].profit_percent,
+            single_dsp: product.tableDataChildTwo[9].single_dsp,
+            single_dsp_inc_tax: product.tableDataChildTwo[9].single_dsp_inc_tax
+          }
+        ])
+      )
+    }
+  }
+
+  formData.append('product_racks', JSON.stringify(product.positionDetailsValue))
+
+  // ** Variable Product Price
+  if (product.product_type === 'variable') {
+    formData.append('product_variation', JSON.stringify(product.product_variation))
+  }
+
+  if (product.product_variation.length > 0) {
+    product.product_variation.map((item, parentIndex) => {
+      item.variations.map((item, index) => {
+        formData.append(`variation_images_${parentIndex}_${index}`, item.image[0])
+        console.log(`variation_images_${parentIndex}_${index} 😛😛😛😛`, item.image[0])
+      })
+    })
+  }
+
+  // if (product.positionDetailsValue && product.positionDetailsValue?.length > 0) {
+  //   for (let i = 0; i < product.positionDetailsValue.length; i++) {
+  //     const id = product.positionDetailsValue[i].id
+  //     if (product.positionDetailsValue[i].value.length > 0) {
+  //       for (let j = 0; j < product.positionDetailsValue[i].value.length; j++) {
+  //         console.log(`product_racks`, [{ [id]: [product.positionDetailsValue[i].values[j]] }])
+  //       }
+  //     }
+  //   }
   // }
 
-  // name:test 225130
-  // product_type:single
-  // unit_id:1
-  // sub_unit_id[]:1
-  // sub_unit_id[]:2
-  // brand_id:1
-  // category_id:1
-  // sub_category_id:11
-  // tax_id:1
-  // enable_stock:1
-  // alert_quantity:10
-  // code:2251230
-  // code2:2252230
-  // barcode_type:C128
-  // expiry_period:12
-  // expiry_period_type:months
-  // weight:
-  // custom_field_1:
-  // custom_field_2:
-  // custom_field_3:
-  // custom_field_4:
-  // description:hello world
-  // warranty_id:1
-  // not_for_sale:0
-  // full_description:22222222
-  // product_locations[]:1
-  // //unit_D[]:1
-  // //unit_D[]:2
-  // //single_dpp1[]:100
-  // //single_dpp1[]:200
-  // //single_dpp_inc_tax1[]:125
-  // //single_dpp_inc_tax1[]:1253
-  // //profit_percent1[]:25
-  // //profit_percent1[]:25
-  // //single_dsp1[]:16
-  // //single_dsp1[]:15
-  // //single_dsp_inc_tax1[]:25
-  // //single_dsp_inc_tax1[]:150
-  // //single_dpp2[]:100
-  // //single_dpp2[]:200
-  // //single_dpp_inc_tax2[]:125
-  // //single_dpp_inc_tax2[]:1253
-  // //profit_percent2[]:25
-  // //profit_percent2[]:25
-  // //single_dsp2[]:16
-  // //single_dsp2[]:15
-  // //single_dsp_inc_tax2[]:25
-  // //single_dsp_inc_tax2[]:150
-  // //single_variation_id1:126
-  // product_racks[][1][rack]:12
-  // product_racks[][1][row]:23
-  // product_racks[][1][position]:34
-  // product_racks[][5][rack]:45
-  // product_racks[][5][row]:56
-  // product_racks[][5][position]:67
-  // table_price_1[0][unit_id]:1
-  // table_price_1[0][value]:default_price
-  // table_price_1[0][single_dpp]:1000
-  // table_price_1[0][single_dpp_inc_tax]:1050
-  // table_price_1[0][profit_percent]:10
-  // table_price_1[0][single_dsp]:1100
-  // table_price_1[0][single_dsp_inc_tax]:1155
-  // table_price_1[1][unit_id]:2
-  // table_price_1[1][value]:whole_price
-  // table_price_1[1][single_dpp]:1000
-  // table_price_1[1][single_dpp_inc_tax]:1050
-  // table_price_1[1][profit_percent]:10
-  // table_price_1[1][single_dsp]:1100
-  // table_price_1[1][single_dsp_inc_tax]:1155
-
-  // {
-  //   name: product.name,
-  //   product_type: product.product_type,
-  //   unit_id: product.unit_id,
-  //   'sub_unit_id[]': product.sub_unit_id,
-  //   'sub_unit_id[]': [],
-  //   brand_id: product.brand_id,
-  //   category_id: product.category_id,
-  //   sub_category_id: product.sub_category_id,
-  //   tax_id: product.tax,
-  //   enable_stock: product.enable_stock,
-  //   alert_quantity: product.alert_quantity,
-  //   code: product.code,
-  //   code2: product.code2,
-  //   barcode_type: product.barcode_type,
-  //   expiry_period: product.expiry_period,
-  //   expiry_period_type: product.expiry_period_type,
-  //   weight: product.weight,
-  //   custom_field_1: product.custom_field_1,
-  //   custom_field_2: product.custom_field_2,
-  //   custom_field_3: product.custom_field_3,
-  //   custom_field_4: product.custom_field_4,
-  //   description: product.short_description,
-  //   warranty_id: product.warranty_id,
-  //   not_for_sale: product.not_for_sale,
-  //   full_description: product.long_description,
-  //   'product_locations[]': product.location,
-
-  //   //unit_D[]:1
-  //   //unit_D[]:2
-  //   //single_dpp1[]:100
-  //   //single_dpp1[]:200
-  //   //single_dpp_inc_tax1[]:125
-  //   //single_dpp_inc_tax1[]:1253
-  //   //profit_percent1[]:25
-  //   //profit_percent1[]:25
-  //   //single_dsp1[]:16
-  //   //single_dsp1[]:15
-  //   //single_dsp_inc_tax1[]:25
-  //   //single_dsp_inc_tax1[]:150
-  //   //single_dpp2[]:100
-  //   //single_dpp2[]:200
-  //   //single_dpp_inc_tax2[]:125
-  //   //single_dpp_inc_tax2[]:1253
-  //   //profit_percent2[]:25
-  //   //profit_percent2[]:25
-  //   //single_dsp2[]:16
-  //   //single_dsp2[]:15
-  //   //single_dsp_inc_tax2[]:25
-  //   //single_dsp_inc_tax2[]:150
-  //   //single_variation_id1:126
-  //   'product_racks[][1][rack]': 12,
-  //   'product_racks[][1][row]': 23,
-  //   'product_racks[][1][position]': 34,
-  //   'product_racks[][5][rack]': 45,
-  //   'product_racks[][5][row]': 56,
-  //   'product_racks[][5][position]': 67,
-  //   'table_price_1[0][unit_id]': product.unit_id,
-  //   'table_price_1[0][value]': product.tableData[0].value,
-  //   'table_price_1[0][single_dpp]': product.tableData[0].single_dpp,
-  //   'table_price_1[0][single_dpp_inc_tax]': product.tableData[0].single_dpp_in_tax,
-  //   'table_price_1[0][profit_percent]': product.tableData[0].profit_percent,
-  //   'table_price_1[0][single_dsp]': product.tableData[0].single_dsp,
-  //   'table_price_1[0][single_dsp_inc_tax]': product.tableData[0].single_dsp_inc_tax,
-  //   'table_price_1[1][unit_id]': product.unit_id,
-  //   'table_price_1[1][value]': product.tableData[1].value,
-  //   'table_price_1[1][single_dpp]': product.tableData[1].single_dpp,
-  //   'table_price_1[1][single_dpp_inc_tax]': product.tableData[1].single_dpp_in_tax,
-  //   'table_price_1[1][profit_percent]': product.tableData[1].profit_percent,
-  //   'table_price_1[1][single_dsp]': product.tableData[1].single_dsp,
-  //   'table_price_1[1][single_dsp_inc_tax]': product.tableData[1].single_dsp_inc_tax
-  // },
-
-  //   {
-  //     "name": "jghguytucfx",
-  //     "code": "kjhjkk3214235",
-  //     "code2": "klhkjhgj+6564",
-  //     "barcode_type": "EAN13",
-  //     "unit_id": 1,
-  //     "sub_unit_id": [
-  //         61,
-  //         60
-  //     ],
-  //     "brand_id": 51,
-  //     "category_id": 36,
-  //     "sub_category_id": "",
-  //     "enable_stock": true,
-  //     "alert_quantity": "jkghkgj",
-  //     "warranty_id": 10,
-  //     "long_description": {
-  //         "blocks": [
-  //             {
-  //                 "key": "dl13e",
-  //                 "text": "uhghjkghj",
-  //                 "type": "unstyled",
-  //                 "depth": 0,
-  //                 "inlineStyleRanges": [],
-  //                 "entityRanges": [],
-  //                 "data": {
-  //                     "text-align": "right"
-  //                 }
-  //             }
-  //         ],
-  //         "entityMap": {}
-  //     },
-  //     "short_description": {
-  //         "blocks": [
-  //             {
-  //                 "key": "f7oii",
-  //                 "text": "lkj;hjk",
-  //                 "type": "unstyled",
-  //                 "depth": 0,
-  //                 "inlineStyleRanges": [],
-  //                 "entityRanges": [],
-  //                 "data": {}
-  //             }
-  //         ],
-  //         "entityMap": {}
-  //     },
-  //     "location": 1,
-  //     "productimage": [],
-  //     "productmultipleimages": [],
-  //     "productbrochure": [],
-  //     "productvideo": [],
-  //     "expiry_period_type": "months",
-  //     "not_for_sale": true,
-  //     "expiry_period": "3165",
-  //     "weight": "5211465",
-  //     "custom_field_1": "kjhgjg",
-  //     "custom_field_2": "llkjk",
-  //     "custom_field_3": "lkhjkh",
-  //     "custom_field_4": "kjhkj",
-  //     "product_type": "single",
-  //     "tax": 0.05,
-  //     "tableData": [
-  //         {
-  //             "id": 1,
-  //             "unit_id": 1,
-  //             "value": "default_price",
-  //             "single_dpp": 100,
-  //             "single_dpp_in_tax": 105,
-  //             "profit_percent": 25,
-  //             "single_dsp": 125,
-  //             "single_dsp_inc_tax": 131.25
-  //         },
-  //         {
-  //             "id": 2,
-  //             "unit_id": 1,
-  //             "value": "whole_price",
-  //             "single_dpp": 200,
-  //             "single_dpp_in_tax": 210,
-  //             "profit_percent": 25,
-  //             "single_dsp": 250,
-  //             "single_dsp_inc_tax": 262.5
-  //         },
-  //         {
-  //             "id": 3,
-  //             "unit_id": 1,
-  //             "value": "retail_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 4,
-  //             "unit_id": 1,
-  //             "value": "minimum_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 5,
-  //             "unit_id": 1,
-  //             "value": "last_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 6,
-  //             "unit_id": 1,
-  //             "value": "ecm_before_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 7,
-  //             "unit_id": 1,
-  //             "value": "ecm_after_price",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 8,
-  //             "unit_id": 1,
-  //             "value": "custom_price_1",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 9,
-  //             "unit_id": 1,
-  //             "value": "custom_price_2",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 10,
-  //             "unit_id": 1,
-  //             "value": "custom_price_3",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         },
-  //         {
-  //             "id": 11,
-  //             "unit_id": 1,
-  //             "value": "custom_price_4",
-  //             "single_dpp": "",
-  //             "single_dpp_in_tax": "",
-  //             "profit_percent": "",
-  //             "single_dsp": "",
-  //             "single_dsp_inc_tax": ""
-  //         }
-  //     ],
-  //     "tableDataChildOne": [
-  //         {
-  //             "id": 1,
-  //             "unit_id": "",
-  //             "value": "default_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 2,
-  //             "unit_id": "",
-  //             "value": "whole_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 3,
-  //             "unit_id": "",
-  //             "value": "retail_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 4,
-  //             "unit_id": "",
-  //             "value": "minimum_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 5,
-  //             "unit_id": "",
-  //             "value": "last_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 6,
-  //             "unit_id": "",
-  //             "value": "ecm_before_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 7,
-  //             "unit_id": "",
-  //             "value": "ecm_after_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 8,
-  //             "unit_id": "",
-  //             "value": "custom_price_1",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 9,
-  //             "unit_id": "",
-  //             "value": "custom_price_2",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 10,
-  //             "unit_id": "",
-  //             "value": "custom_price_3",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 11,
-  //             "unit_id": "",
-  //             "value": "custom_price_4",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         }
-  //     ],
-  //     "tableDataChildTwo": [
-  //         {
-  //             "id": 1,
-  //             "unit_id": "",
-  //             "value": "default_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 2,
-  //             "unit_id": "",
-  //             "value": "whole_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 3,
-  //             "unit_id": "",
-  //             "value": "retail_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 4,
-  //             "unit_id": "",
-  //             "value": "minimum_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 5,
-  //             "unit_id": "",
-  //             "value": "last_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 6,
-  //             "unit_id": "",
-  //             "value": "ecm_before_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 7,
-  //             "unit_id": "",
-  //             "value": "ecm_after_price",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 8,
-  //             "unit_id": "",
-  //             "value": "custom_price_1",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 9,
-  //             "unit_id": "",
-  //             "value": "custom_price_2",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 10,
-  //             "unit_id": "",
-  //             "value": "custom_price_3",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         },
-  //         {
-  //             "id": 11,
-  //             "unit_id": "",
-  //             "value": "custom_price_4",
-  //             "single_dpp": 0,
-  //             "single_dpp_in_tax": 0,
-  //             "profit_percent": 0,
-  //             "single_dsp": 0,
-  //             "single_dsp_inc_tax": 0
-  //         }
-  //     ]
-  // }
-
-  // new product
-  //   name:BISCUITS 2220
-  // product_type:single
-  // unit_id:1
-  // sub_unit_id[]:1
-  // sub_unit_id[]:2
-  // category_id:1
-  // sub_category_id:11
-  // tax_id:1
-  // enable_stock:1
-  // alert_quantity:10
-  // code:bst2220
-  // code2:bs2220
-  // barcode_type:C128
-  // expiry_period:12
-  // expiry_period_type:months
-  // weight:
-  // custom_field_1:
-  // custom_field_2:
-  // custom_field_3:
-  // custom_field_4:
-  // description:hello world
-  // warranty_id:3
-  // not_for_sale:0
-  // full_description:22222222
-  // product_locations[]:1
-  // //unit_D[]:1
-  // //unit_D[]:2
-  // //single_dpp1[]:100
-  // //single_dpp1[]:200
-  // //single_dpp_inc_tax1[]:125
-  // //single_dpp_inc_tax1[]:1253
-  // //profit_percent1[]:25
-  // //profit_percent1[]:25
-  // //single_dsp1[]:16
-  // //single_dsp1[]:15
-  // //single_dsp_inc_tax1[]:25
-  // //single_dsp_inc_tax1[]:150
-  // //single_dpp2[]:100
-  // //single_dpp2[]:200
-  // //single_dpp_inc_tax2[]:125
-  // //single_dpp_inc_tax2[]:1253
-  // //profit_percent2[]:25
-  // //profit_percent2[]:25
-  // //single_dsp2[]:16
-  // //single_dsp2[]:15
-  // //single_dsp_inc_tax2[]:25
-  // //single_dsp_inc_tax2[]:150
-  // //single_variation_id1:126
-  // product_racks[][1][rack]:12
-  // product_racks[][1][row]:23
-  // product_racks[][1][position]:34
-  // product_racks[][5][rack]:45
-  // product_racks[][5][row]:56
-  // product_racks[][5][position]:67
-  // table_price_1[0][unit_id]:1
-  // table_price_1[0][value]:default_price
-  // table_price_1[0][single_dpp]:1000
-  // table_price_1[0][single_dpp_inc_tax]:1050
-  // table_price_1[0][profit_percent]:10
-  // table_price_1[0][single_dsp]:1100
-  // table_price_1[0][single_dsp_inc_tax]:1155
-  // table_price_1[1][unit_id]:2
-  // table_price_1[1][value]:whole_price
-  // table_price_1[1][single_dpp]:1000
-  // table_price_1[1][single_dpp_inc_tax]:1050
-  // table_price_1[1][profit_percent]:10
-  // table_price_1[1][single_dsp]:1100
-  // table_price_1[1][single_dsp_inc_tax]:1155
+  // console.log(
+  //   'product form data racks positions 🥰🥰🥰',
+  //   product.positionDetailsValue.map((item, index) => ({
+  //     [product.positionDetailsValue[index].id]: [item.value.map(item => item)]
+  //   }))
+  // )
+  console.log('product form data racks positions 🥰🥰🥰', JSON.stringify(product.positionDetailsValue))
 
   const token = getCookie('token')
-  const response = await axios.post(
-    'https://test.izocloud.net/api/app/react/products/save',
-    {
-      name: product.name,
-      product_type: product.product_type,
-      unit_id: product.unit_id,
-      sub_unit_id: product.sub_unit_id,
-      category_id: product.category_id,
-      sub_category_id: product.sub_category_id,
-      tax_id: 1, //product.tax,
-      enable_stock: product.enable_stock,
-      alert_quantity: product.alert_quantity,
-      code: product.code,
-      code2: product.code2,
-      barcode_type: product.barcode_type,
-      expiry_period: product.expiry_period,
-      expiry_period_type: product.expiry_period_type,
-      weight: product.weight,
-      custom_field_1: product.custom_field_1,
-      custom_field_2: product.custom_field_2,
-      custom_field_3: product.custom_field_3,
-      custom_field_4: product.custom_field_4,
-      description: product.short_description.blocks[0].text,
-      warranty_id: product.warranty_id,
-      not_for_sale: product.not_for_sale === false ? 0 : 1,
-      full_description: product.long_description.blocks[0].text,
-      product_locations: [product.location],
-      product_racks: [
-        {
-          1: {
-            rack: 12,
-            row: 23,
-            position: 34
-          },
-          5: {
-            rack: 45,
-            row: 56,
-            position: 67
-          }
-        }
-      ],
-      table_price_1: [
-        {
-          unit_id: product.unit_id,
-          value: 'default_price',
-          single_dpp: product.tableData[0].single_dpp,
-          single_dpp_inc_tax: product.tableData[0].single_dpp_in_tax,
-          profit_percent: product.tableData[0].profit_percent,
-          single_dsp: product.tableData[0].single_dsp,
-          single_dsp_inc_tax: product.tableData[0].single_dsp_inc_tax
-        },
-        {
-          unit_id: product.unit_id,
-          value: 'whole_price',
-          single_dpp: product.tableData[1].single_dpp,
-          single_dpp_inc_tax: product.tableData[1].single_dpp_in_tax,
-          profit_percent: product.tableData[1].profit_percent,
-          single_dsp: product.tableData[1].single_dsp,
-          single_dsp_inc_tax: product.tableData[1].single_dsp_inc_tax
-        }
-      ]
-    },
-    {
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+  const response = await axios.post('https://test.izocloud.net/api/app/react/products/save', formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
     }
-  )
+  })
 
   console.log(response.data, '===> response from saveProduct 🙌🙌')
 
@@ -1088,25 +440,40 @@ export const saveProduct = createAsyncThunk('products/save', async product => {
 })
 
 // Then, create the slice
-const productSlice = createSlice({
-  name: 'products',
-  initialState: { entities: [], loading: 'idle' },
+const productStoreSlice = createSlice({
+  name: 'productStore',
+  initialState: {
+    data: [],
+    status: 'idle',
+    error: false,
+    loading: false,
+    success: false
+  },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(saveProduct.pending, state => {
-      state.loading = 'loading'
-      console.log('loading')
+      state.status = 'loading'
+      state.loading = true
+      state.success = false
+      state.error = false
     })
     builder.addCase(saveProduct.fulfilled, (state, action) => {
-      state.entities.push(action.payload)
-      state.loading = 'idle'
-      console.log('fulfilled')
+      state.loading = false
+      state.success = true
+      state.error = false
+      state.status = 'succeeded'
+      console.log('fulfilled from store product ', action)
+      notify('Product saved successfully', 'success')
     })
-    builder.addCase(saveProduct.rejected, state => {
-      state.loading = 'idle'
-      console.log('rejected')
+    builder.addCase(saveProduct.rejected, (state, action) => {
+      state.loading = false
+      state.success = false
+      state.error = true
+      state.status = 'failed'
+      console.log('rejected from store product ', action)
+      notify('Product not saved', 'error')
     })
   }
 })
 
-export default productSlice.reducer
+export default productStoreSlice.reducer

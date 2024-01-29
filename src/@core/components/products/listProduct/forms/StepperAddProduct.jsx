@@ -43,6 +43,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import StepperCustomDot from './StepperCustomDot'
 import ProductInfo from '../productInfo/ProductInfo'
 import ProductMedia from '../productmedia'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
@@ -125,6 +126,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const [url, setUrl] = useState('')
   const [activeStep, setActiveStep] = useState(0)
   const [unitId, setUnitId] = useState('')
+  const [openLoading, setOpenLoading] = useState(false)
   const [initialValues, setInitialValues] = useState({
     name: '',
     code: '',
@@ -138,10 +140,11 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     enable_stock: false,
     alert_quantity: null,
     warranty_id: '',
+    show_more_price: false,
     long_description: EditorState.createEmpty(),
     short_description: EditorState.createEmpty(),
-    location: '',
-    productimage: [],
+    location: [],
+    productImage: [],
     productmultipleimages: [],
     productbrochure: [],
     productvideo: [],
@@ -156,10 +159,10 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     product_type: 'single',
     positionDetailsValue: [],
     tax: 0,
+    tax_id: '',
     tableData: [
       {
         id: 1,
-        unit_id: unitId,
         value: 'default_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -169,7 +172,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 2,
-        unit_id: unitId,
         value: 'whole_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -179,7 +181,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 3,
-        unit_id: unitId,
         value: 'retail_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -189,7 +190,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 4,
-        unit_id: unitId,
         value: 'minimum_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -199,7 +199,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 5,
-        unit_id: unitId,
         value: 'last_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -209,7 +208,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 6,
-        unit_id: unitId,
         value: 'ecm_before_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -219,7 +217,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 7,
-        unit_id: unitId,
         value: 'ecm_after_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -229,7 +226,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 8,
-        unit_id: unitId,
         value: 'custom_price_1',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -239,7 +235,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 9,
-        unit_id: unitId,
         value: 'custom_price_2',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -249,18 +244,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 10,
-        unit_id: unitId,
         value: 'custom_price_3',
-        single_dpp: 0,
-        single_dpp_in_tax: 0,
-        profit_percent: 0,
-        single_dsp: 0,
-        single_dsp_inc_tax: 0
-      },
-      {
-        id: 11,
-        unit_id: unitId,
-        value: 'custom_price_4',
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -271,7 +255,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     tableDataChildOne: [
       {
         id: 1,
-        unit_id: unitId,
         value: 'default_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -281,7 +264,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 2,
-        unit_id: unitId,
         value: 'whole_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -291,7 +273,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 3,
-        unit_id: unitId,
         value: 'retail_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -301,7 +282,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 4,
-        unit_id: unitId,
         value: 'minimum_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -311,7 +291,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 5,
-        unit_id: unitId,
         value: 'last_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -321,7 +300,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 6,
-        unit_id: unitId,
         value: 'ecm_before_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -331,7 +309,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 7,
-        unit_id: unitId,
         value: 'ecm_after_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -341,7 +318,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 8,
-        unit_id: unitId,
         value: 'custom_price_1',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -351,7 +327,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 9,
-        unit_id: unitId,
         value: 'custom_price_2',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -361,18 +336,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 10,
-        unit_id: unitId,
         value: 'custom_price_3',
-        single_dpp: 0,
-        single_dpp_in_tax: 0,
-        profit_percent: 0,
-        single_dsp: 0,
-        single_dsp_inc_tax: 0
-      },
-      {
-        id: 11,
-        unit_id: unitId,
-        value: 'custom_price_4',
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -383,7 +347,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     tableDataChildTwo: [
       {
         id: 1,
-        unit_id: unitId,
         value: 'default_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -393,7 +356,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 2,
-        unit_id: unitId,
         value: 'whole_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -403,7 +365,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 3,
-        unit_id: unitId,
         value: 'retail_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -413,7 +374,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 4,
-        unit_id: unitId,
         value: 'minimum_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -423,7 +383,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 5,
-        unit_id: unitId,
         value: 'last_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -433,7 +392,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 6,
-        unit_id: unitId,
         value: 'ecm_before_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -443,7 +401,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 7,
-        unit_id: unitId,
         value: 'ecm_after_price',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -453,7 +410,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 8,
-        unit_id: unitId,
         value: 'custom_price_1',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -463,7 +419,6 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 9,
-        unit_id: unitId,
         value: 'custom_price_2',
         single_dpp: 0,
         single_dpp_in_tax: 0,
@@ -473,32 +428,126 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 10,
-        unit_id: unitId,
         value: 'custom_price_3',
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
         single_dsp: 0,
         single_dsp_inc_tax: 0
-      },
+      }
+    ],
+    product_variation: [
       {
-        id: 11,
-        unit_id: unitId,
-        value: 'custom_price_4',
-        single_dpp: 0,
-        single_dpp_in_tax: 0,
-        profit_percent: 0,
-        single_dsp: 0,
-        single_dsp_inc_tax: 0
+        id: 1,
+        variation_template_id: '',
+        variations: [
+          {
+            sub_sku: '',
+            variation_value_id: null,
+            value: '',
+            default_purchase_price: 0,
+            dpp_inc_tax: 0,
+            profit_percent: 0,
+            default_sell_price: 0,
+            sell_price_inc_tax: 0,
+            image: []
+          }
+        ]
       }
     ]
   })
+
+  // localStorage.setItem('TableCount', 2 )
+  // const [test, setTest] = useState({
+  //  tableOne: [
+  //           {
+  //                   itemCode: '',
+  //                   value: '',
+  //                   exc: '',
+  //                   inc: '',
+  //                   profit: ''
+  //                   ,
+  //                   second_exc: '',
+  //                   second_inc: '',
+  //                   image: '',
+  //             },
+  //           {
+  //                   itemCode: '',
+  //                   value: '',
+  //                   exc: '',
+  //                   inc: '',
+  //                   profit: ''
+  //                   ,
+  //                   second_exc: '',
+  //                   second_inc: '',
+  //                   image: '',
+  //             },
+  //           {
+  //                   itemCode: '',
+  //                   value: '',
+  //                   exc: '',
+  //                   inc: '',
+  //                   profit: ''
+  //                   ,
+  //                   second_exc: '',
+  //                   second_inc: '',
+  //                   image: '',
+  //             },
+
+  //   ],
+  //   TableTwo: [
+
+  //   ]
+
+  // })
+
+  // // add Object to test in table one
+  // const addTableOne = (id) => {
+  //   setTest({
+  //     ...test,
+  //     [`table_${id}`]: [...test.tableOne, {
+  //       itemCode: '',
+  //       value: '',
+  //       exc: '',
+  //       inc: '',
+  //       profit: ''
+  //       ,
+  //       second_exc: '',
+  //       second_inc: '',
+  //       image: '',
+  //     }]
+  //   })
+  // }
+
+  // // add Table  as array of objects to test
+  // const addTable = () => {
+  //   const tableCount= localStorage.getItem('TableCount')
+  //   setTest({
+  //     ...test,
+  //     [`Table_${Number(tableCount) + 1}`]: [
+  //       {
+  //         itemCode: '',
+  //         value: '',
+  //         exc: '',
+  //         inc: '',
+  //         profit: ''
+  //         ,
+  //         second_exc: '',
+  //         second_inc: '',
+  //         image: '',
+  //       }
+  //     ]
+  //   })
+
+  // }
 
   // ** Test
   console.log('from stepper product isEdit & itemId 🎶', isEdit, itemId)
 
   // ** Hooks
   const dispatch = useDispatch()
+  const saveProductMain = useSelector(state => state.postCreateProduct)
+  console.log(saveProductMain, 'from stepper saveProductMain 🎶')
 
   useEffect(() => {
     if (initialValues.unit_id) {
@@ -601,26 +650,30 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   //** Validation
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
-    code: Yup.string().required('Code is required'),
+    code: Yup.string(),
     code2: Yup.string(),
-    barcode_type: Yup.string(),
-    unit_id: Yup.string(),
+    barcode_type: Yup.string().required('Barcode type is required'),
+    unit_id: Yup.string().required('Unit is required'),
     brand_id: Yup.string(),
-    category_id: Yup.string(),
-    sub_category_id: Yup.string(),
-    enable_stock: Yup.string(),
+    category_id: Yup.string().required('Category is required'),
+    sub_category_id: Yup.string().required('Sub Category is required'),
+    enable_stock: Yup.boolean(),
     alert_quantity: Yup.string().required('Alert quantity is required when stock is enabled'),
     warranty_id: Yup.string(),
-    location: Yup.string()
+    location: Yup.array()
+      .required('Location is required')
+      .test('not-empty', 'Business Location must not be empty', array => array.length > 0)
   })
 
   // ** Submit
   const handleSubmitForm = (values, { resetForm }) => {
     // ** Test
     console.log(values, 'from submit Product 🐱‍🏍')
-    dispatch(saveProduct(values))
+    dispatch(saveProduct({ product: values }))
     setActiveStep(activeStep + 1)
-    resetForm()
+    setOpenLoading(true)
+
+    // resetForm()
   }
 
   const renderContent = () => {
@@ -707,6 +760,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
         height: '600px'
       }}
     >
+      <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={saveProductMain} />
       <CardContent
         sx={{
           overflowY: 'auto',

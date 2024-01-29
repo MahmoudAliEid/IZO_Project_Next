@@ -30,6 +30,8 @@ import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
 import { FormControl, Select, InputLabel, FormControlLabel, Checkbox } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { Global, css } from '@emotion/react'
+import useThemeColor from 'src/@core/utils/useThemeColor'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
@@ -57,6 +59,7 @@ const ListProducts = () => {
   const [url, setUrl] = useState(null)
   const [TabValue, setTabValue] = useState('1')
   const title = 'Products List'
+  const { themeColor } = useThemeColor()
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -75,7 +78,7 @@ const ListProducts = () => {
 
   useEffect(() => {
     if (token && url) {
-      dispatch(fetchProducts(token))
+      dispatch(fetchProducts({ token }))
     }
   }, [dispatch, token, url])
 

@@ -3,7 +3,6 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import notify from 'src/utils/notify'
 
 // Define the initial state
 const initialState = {

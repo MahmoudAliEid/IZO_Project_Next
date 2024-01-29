@@ -79,6 +79,7 @@ import postCreateProductUnitSlice from './apps/products/listProducts/actions/pos
 import getCreateProductUnitSlice from './apps/products/listProducts/actions/getCreateProductUnitSlice'
 import getViewStockSlice from './apps/products/listProducts/actions/getViewStockSlice'
 import postImportOQSlice from './apps/products/openingQuantity/actions/postImportOQSlice'
+import productStoreSlice from './apps/products/productStoreSlice'
 
 export const store = configureStore({
   reducer: {
@@ -146,6 +147,7 @@ export const store = configureStore({
     getCreateProduct: getCreateProductSlice,
     getProducts: getProductsSlice,
     postDeleteProduct: postDeleteProductSlice,
+    postCreateProduct: productStoreSlice,
     postCreateProductUnit: postCreateProductUnitSlice,
     getCreateProductUnit: getCreateProductUnitSlice,
     postDeleteSPGroup: postDeleteSPGroupSlice,
@@ -158,7 +160,7 @@ export const store = configureStore({
     getExportSPGroup: getExportSPGSlice,
     postImportSPGroup: postImportSPGSlice,
     getViewStockProduct: getViewStockSlice,
-    postImportOQ: postImportOQSlice,
+    postImportOQ: postImportOQSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

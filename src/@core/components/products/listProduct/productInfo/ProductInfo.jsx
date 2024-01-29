@@ -214,7 +214,6 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
             onBlur={handleBlur}
             error={touched.code && !!errors.code}
             helperText={touched.code && errors.code ? String(errors.code) : ''}
-            required
           />
         </FormControl>
       </Grid>
@@ -239,6 +238,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
           <InputLabel id='demo-simple-select-label'>Barcode Type</InputLabel>
           <Select
             value={initialValues.barcode_type}
+            required
             onChange={handleChange}
             name='barcode_type'
             id='demo-simple-select'
@@ -248,15 +248,17 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
             error={touched.barcode_type && !!errors.barcode_type}
             helperText={touched.barcode_type && errors.barcode_type ? String(errors.barcode_type) : ''}
           >
-            <MenuItem value=''>
-              <em>Select a barcode type</em>
-            </MenuItem>
             {barcodeTypeData.map(code => (
               <MenuItem key={code.id} value={code.id}>
                 {code.value}
               </MenuItem>
             ))}
           </Select>
+          {touched.barcode_type && errors.barcode_type ? (
+            <FormHelperText error={touched.barcode_type && !!errors.barcode_type}>
+              {touched.barcode_type && errors.barcode_type ? String(errors.barcode_type) : null}
+            </FormHelperText>
+          ) : null}
         </FormControl>
       </Grid>
 
@@ -275,6 +277,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 value={initialValues.unit_id || selectedUnit}
                 disabled={initialValues.sub_unit_id && initialValues.sub_unit_id.length > 0 ? true : false}
                 onChange={handleChange}
+                required
                 name='unit_id'
                 id='demo-simple-select-label'
                 label='Unit'
@@ -283,12 +286,9 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 error={touched.unit_id && !!errors.unit_id}
                 helperText={touched.unit_id && errors.unit_id ? String(errors.unit_id) : ''}
               >
-                <MenuItem value=''>
-                  <em>Select a unit</em>
-                </MenuItem>
                 {unitsData.map(unit => (
                   <MenuItem key={unit.id} value={unit.id}>
-                    {unit.name}
+                    {unit.value}
                   </MenuItem>
                 ))}
               </Select>
@@ -310,6 +310,11 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 ? 'Disabled when select sub Units'
                 : null}
             </FormHelperText>
+            {touched.unit_id && !!errors.unit_id ? (
+              <FormHelperText error={touched.unit_id && !!errors.unit_id}>
+                {touched.unit_id && errors.unit_id ? String(errors.unit_id) : null}
+              </FormHelperText>
+            ) : null}
           </FormControl>
         </Grid>
       </Grid>
@@ -438,6 +443,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               <Select
                 value={initialValues.category_id}
                 onChange={handleChange}
+                required
                 name='category_id'
                 id='demo-simple-select'
                 label='Category'
@@ -446,9 +452,6 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 error={touched.category_id && !!errors.category_id}
                 helperText={touched.category_id && errors.category_id ? String(errors.category_id) : ''}
               >
-                <MenuItem value=''>
-                  <em>Select a category</em>
-                </MenuItem>
                 {categoriesData.map(category => (
                   <MenuItem key={category.id} value={category.id}>
                     {category.value}
@@ -467,6 +470,11 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               +
             </Button>
           </Grid>
+          <FormControl>
+            <FormHelperText error={touched.category_id && !!errors.category_id}>
+              {touched.category_id && errors.category_id ? String(errors.category_id) : null}
+            </FormHelperText>
+          </FormControl>
         </Grid>
       </Grid>
 
@@ -478,17 +486,28 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               <Select
                 value={initialValues.sub_category_id}
                 onChange={handleChange}
+                required
                 name='sub_category_id'
                 id='demo-simple-select'
                 label='Sub Category'
                 fullWidth
                 onBlur={handleBlur}
+                renderValue={selected =>
+                  filteredSubCategoriesData && filteredSubCategoriesData.length > 0 ? (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      <Chip
+                        label={filteredSubCategoriesData.find(subCategory => subCategory.id === selected)?.value.name}
+                        onDelete={() => {
+                          const updatedSubCategoryIds = initialValues.sub_category_id.filter(item => item !== selected)
+                          setFieldValue('sub_category_id', updatedSubCategoryIds)
+                        }}
+                      />
+                    </Box>
+                  ) : null
+                }
                 error={touched.sub_category_id && !!errors.sub_category_id}
                 helperText={touched.sub_category_id && errors.sub_category_id ? String(errors.sub_category_id) : ''}
               >
-                <MenuItem value=''>
-                  <em>Select a Sub Category</em>
-                </MenuItem>
                 {filteredSubCategoriesData.map(subCategory => (
                   <MenuItem key={subCategory.id} value={subCategory.id}>
                     {subCategory.value.name}
@@ -507,6 +526,13 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               +
             </Button>
           </Grid>
+          <FormControl>
+            <FormHelperText error={touched.sub_category_id && !!errors.sub_category_id}>
+              {touched.sub_category_id && errors.sub_category_id
+                ? String(errors.sub_category_id) + ', ' + 'if no sub-cat.. should add one'
+                : null}
+            </FormHelperText>
+          </FormControl>
         </Grid>
       </Grid>
 
@@ -515,18 +541,36 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
           <InputLabel id='demo-simple-select-label'>Business Locations</InputLabel>
           <Select
             value={initialValues.location}
+            multiple
             onChange={handleChange}
+            required
             name='location'
             id='demo-simple-select'
             label='Business Locations'
             fullWidth
             onBlur={handleBlur}
+            renderValue={selected =>
+              businessLocationsData && businessLocationsData.length > 0 ? (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected.map(value => (
+                    <Chip
+                      key={value}
+                      label={businessLocationsData.find(location => location.id === value)?.value || null}
+                      onDelete={() => {
+                        const updatedLocationIds = initialValues.location.filter(item => item !== value)
+                        setFieldValue('location', updatedLocationIds)
+                      }}
+                    />
+                  ))}
+                </Box>
+              ) : null
+            }
             error={touched.location && !!errors.location}
             helperText={touched.location && errors.location ? String(errors.location) : ''}
           >
-            <MenuItem value=''>
+            {/* <MenuItem value=''>
               <em>Select a location</em>
-            </MenuItem>
+            </MenuItem> */}
             {businessLocationsData.map(location => (
               <MenuItem key={location.id} value={location.id}>
                 {location.value}
@@ -534,6 +578,9 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
             ))}
           </Select>
         </FormControl>
+        <FormHelperText error={touched.location && !!errors.location}>
+          {touched.location && errors.location ? String(errors.location) : null}
+        </FormHelperText>
       </Grid>
 
       <Grid item xs={12} lg={6} md={6} sm={12}>

@@ -3,28 +3,30 @@ import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
 
 // Async thunk for deleting a brand
+import axios from 'axios'
+
 export const deleteBrand = createAsyncThunk('brands/delete', async payload => {
   const token = getCookie('token')
+  const urlToken = getCookie('apiUrl')
 
-  const url = `https://test.izocloud.net/api/app/react/brands/del/${payload}`
+  const url = `${urlToken}/app/react/brands/del/${payload}`
 
-  const response = await fetch(url, {
-    method: 'POST',
+  const response = await axios({
+    method: 'post',
+    url: url,
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     }
   })
 
-  if (!response.ok) {
+  if (response.status !== 200) {
     throw new Error('Network response was not ok')
   }
 
-  const data = await response.json()
+  // console.log(response.data, 'this is my response form brand')
 
-  // console.log(data, 'this is my response form brand')
-
-  return data
+  return response.data
 })
 
 // Initial state

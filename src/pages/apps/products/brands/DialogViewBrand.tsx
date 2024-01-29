@@ -19,12 +19,15 @@ const DialogViewBrand: React.FC<DialogViewBrandProps> = ({ open, onClose, brandI
     const dispatch = useDispatch()
     const [brand, setBrand] = React.useState<any>({})
     useEffect(() => {
-        if (brandID !== undefined) {
+      if (brandID !== undefined) {
+           //@ts-ignore
             dispatch(fetchBrandDetails(brandID))
         }
-    }, [brandID])
+    }, [brandID, dispatch])
 
-    const brandDetailsResponse = useSelector(
+  const brandDetailsResponse = useSelector(
+
+    //@ts-ignore
         (state: { getbrandDetailsSlice: { data: any } }) => state.getbrandDetailsSlice.brand
     )
 
@@ -49,16 +52,16 @@ const DialogViewBrand: React.FC<DialogViewBrandProps> = ({ open, onClose, brandI
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
                             <Box sx={{ width: '50%' }}>
-                                <label>Name</label>
+                                <label>Name:</label>
                                 <Chip label={brand.name} sx={{ marginLeft: '1rem' }} />
                             </Box>
                             <Box sx={{ width: '50%' }}>
-                                <label>Description</label>
+                                <label>Description:</label>
                                 <Chip label={brand.description} sx={{ marginLeft: '1rem' }} />
                             </Box>
                         </Box>
                         <Box sx={{ width: '50%' }}>
-                            <label>Use for repair</label>
+                            <label>Use for repair:</label>
                             <Chip label={brand.use_for_repair} sx={{ marginLeft: '1rem' }} />
                         </Box>
                         <Box sx={{ width: '50%' }}
@@ -72,7 +75,7 @@ const DialogViewBrand: React.FC<DialogViewBrandProps> = ({ open, onClose, brandI
                         >
                             <span
                             >
-                                Image
+                                Image:
                             </span>
                             <img src={brand.image_url} alt='' style={{
                                 borderRadius: '15px', width: '200px', height: '200px',
@@ -83,7 +86,7 @@ const DialogViewBrand: React.FC<DialogViewBrandProps> = ({ open, onClose, brandI
                 )}
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color='primary'>
+                <Button onClick={onClose} color='primary' variant='contained'>
                     Close
                 </Button>
             </DialogActions>
