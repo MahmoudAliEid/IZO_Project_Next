@@ -7,6 +7,7 @@ import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
 
 const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
   // ** Hook
+  //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   return {

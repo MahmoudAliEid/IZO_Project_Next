@@ -15,6 +15,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 const DatePickerWrapper = styled(Box)<BoxProps>(({ theme }) => {
   // ** Hook
   const { settings } = useSettings()
+  //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   return {

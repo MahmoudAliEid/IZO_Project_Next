@@ -99,6 +99,7 @@ const HorizontalNavGroup = (props: Props) => {
   const { mode, skin, direction } = settings
 
   //@ts-ignore
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
   const { navSubItemIcon, menuTextTruncate, horizontalMenuToggle, horizontalMenuAnimation } = themeConfig
 

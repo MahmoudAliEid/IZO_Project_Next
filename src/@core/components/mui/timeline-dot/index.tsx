@@ -17,6 +17,7 @@ const TimelineDot = (props: CustomTimelineDotProps) => {
 
   // ** Hook
   const theme = useTheme()
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   const colors: ColorsType = {

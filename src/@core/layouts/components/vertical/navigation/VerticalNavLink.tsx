@@ -80,6 +80,7 @@ const VerticalNavLink = ({
 }: Props) => {
   // ** Hooks
   const router = useRouter()
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   // ** Vars

@@ -12,6 +12,7 @@ const Badge = (props: CustomBadgeProps) => {
   const { sx, skin, color } = props
 
   // ** Hook
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   const colors: UseBgColorType = {

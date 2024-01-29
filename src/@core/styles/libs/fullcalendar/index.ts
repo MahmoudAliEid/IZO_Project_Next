@@ -10,6 +10,7 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const CalendarWrapper = styled(Box)<BoxProps>(({ theme }) => {
   // ** Hook
+  //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   return {

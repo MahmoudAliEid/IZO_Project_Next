@@ -15,6 +15,8 @@ const Chip = (props: CustomChipProps) => {
   const { sx, skin, color, rounded } = props
 
   // ** Hook
+
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   const colors: UseBgColorType = {

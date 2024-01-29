@@ -65,6 +65,7 @@ const HorizontalNavLink = (props: Props) => {
   const { mode } = settings
 
   //@ts-ignore
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
   const { navSubItemIcon, menuTextTruncate } = themeConfig
 

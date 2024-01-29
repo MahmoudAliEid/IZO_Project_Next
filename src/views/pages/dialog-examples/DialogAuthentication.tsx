@@ -38,6 +38,7 @@ const DialogAuthentication = () => {
 
   // ** Hooks
   const { settings } = useSettings()
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   // ** Var

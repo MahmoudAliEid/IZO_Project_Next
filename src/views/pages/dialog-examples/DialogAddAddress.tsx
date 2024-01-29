@@ -40,6 +40,7 @@ const DialogAddAddress = () => {
   const [addressType, setAddressType] = useState<'home' | 'office'>('home')
 
   // ** Hooks
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   return (

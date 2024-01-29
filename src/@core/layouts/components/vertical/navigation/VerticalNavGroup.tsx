@@ -86,6 +86,7 @@ const VerticalNavGroup = (props: Props) => {
   // ** Hooks & Vars
   const router = useRouter()
   const currentURL = router.asPath
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
   const { direction, mode, navCollapsed, verticalNavToggleType } = settings
 

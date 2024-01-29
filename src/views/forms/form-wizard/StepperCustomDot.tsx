@@ -24,6 +24,7 @@ const StepperCustomDot = (props: StepIconProps) => {
 
   // ** Hooks
   const theme = useTheme()
+   //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   if (error) {
