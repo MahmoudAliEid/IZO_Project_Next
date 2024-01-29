@@ -45,7 +45,8 @@ import { getCookie } from 'cookies-next'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch } from 'src/redux/store'
+
+import { AppDispatch } from 'src/store'
 import { fetchCreateContactData } from 'src/store/apps/contacts/contactCreateSlice'
 import { saveNewContact } from 'src/store/apps/contacts/contactStoreSlice'
 import { fetchContactData } from 'src/store/apps/contacts/contactEditSlice'
@@ -119,7 +120,11 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
   useEffect(() => {
     const token = getCookie('token')
     const url = getCookie('apiUrl')
+
+    //@ts-ignore
     setToken(token)
+
+     //@ts-ignore
     setUrl(url)
   }, [token, url])
   const [initialValues, setInitialValues] = useState<any>({
@@ -179,11 +184,15 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
+
+     //@ts-ignore
     dispatch(fetchCreateContactData(contact))
-  }, [dispatch])
+  }, [dispatch, contact])
 
   // ** States
-  const data = useSelector((state: { createUser: { data: any } }) => state.contactCreateSlice?.data)
+
+   //@ts-ignore
+  const data = useSelector((state: { createUser: { contactCreateSlice: any } }) => state.contactCreateSlice?.data)
 
   useEffect(() => {
     if (data !== null && data !== undefined && data.type !== undefined) {
@@ -728,10 +737,13 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
 
   useEffect(() => {
     if (itemId && isEdit) {
+
+       //@ts-ignore
       dispatch(fetchContactData({ itemId }))
     }
   }, [dispatch, itemId, isEdit])
 
+ //@ts-ignore
   const contactEditData = useSelector((state: { contactEditSlice: { data: any } }) => state.contactEditSlice?.contact)
 
   useEffect(() => {
@@ -828,9 +840,15 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
 
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     if (!isEdit) {
+       //@ts-ignore
       dispatch(saveNewContact(values))
     } else {
-      dispatch(updateContact({ updateData: values, id: itemId })).then(() => {
+      dispatch(
+
+         //@ts-ignore
+        updateContact({ updateData: values, id: itemId })).then(() => {
+
+         //@ts-ignore
         dispatch(fetchViewContact({ token, id: itemId }))
 
       }

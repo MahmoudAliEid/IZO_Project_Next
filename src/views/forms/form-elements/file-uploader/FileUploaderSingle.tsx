@@ -7,7 +7,7 @@ import Link from 'next/link'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled} from '@mui/material/styles'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 
 // ** Third Party Imports
@@ -46,8 +46,8 @@ const FileUploaderSingle = () => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
-  // ** Hook
-  const theme = useTheme()
+
+
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
     accept: {

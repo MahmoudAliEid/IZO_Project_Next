@@ -12,54 +12,56 @@ import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
 // ** Custom Components
-import CustomChip from 'src/@core/components/mui/chip'
-import CustomAvatar from 'src/@core/components/mui/avatar'
+// import CustomChip from 'src/@core/components/mui/chip'
+// import CustomAvatar from 'src/@core/components/mui/avatar'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Types Imports
-import { ThemeColor } from 'src/@core/layouts/types'
-import { DataGridRowType, SalesGridRowType } from 'src/@fake-db/types'
+import { SalesGridRowType } from 'src/@fake-db/types'
+
+// import { ThemeColor } from 'src/@core/layouts/types'
+// DataGridRowType,
 
 // ** Utils Import
-import { getInitials } from 'src/@core/utils/get-initials'
+// import { getInitials } from 'src/@core/utils/get-initials'
 
-interface StatusObj {
-  [key: number]: {
-    title: string
-    color: ThemeColor
-  }
-}
+// interface StatusObj {
+//   [key: number]: {
+//     title: string
+//     color: ThemeColor
+//   }
+// }
 
 // ** renders client column
-const renderClient = (params: GridRenderCellParams) => {
+// const renderClient = (params: GridRenderCellParams) => {
 
-  const { row } = params
-  const stateNum = Math.floor(Math.random() * 6)
-  const states = ['success', 'error', 'warning', 'info', 'primary', 'secondary']
-  const color = states[stateNum]
+//   const { row } = params
+//   const stateNum = Math.floor(Math.random() * 6)
+//   const states = ['success', 'error', 'warning', 'info', 'primary', 'secondary']
+//   const color = states[stateNum]
 
-  if (row.avatar.length) {
-    return <CustomAvatar src={`/images/avatars/${row.avatar}`} sx={{ mr: 3, width: '1.875rem', height: '1.875rem' }} />
-  } else {
-    return (
-      <CustomAvatar
-        skin='light'
-        color={color as ThemeColor}
-        sx={{ mr: 3, fontSize: '.8rem', width: '1.875rem', height: '1.875rem' }}
-      >
-        {getInitials(row.full_name ? row.full_name : 'John Doe')}
-      </CustomAvatar>
-    )
-  }
-}
+//   if (row.avatar.length) {
+//     return <CustomAvatar src={`/images/avatars/${row.avatar}`} sx={{ mr: 3, width: '1.875rem', height: '1.875rem' }} />
+//   } else {
+//     return (
+//       <CustomAvatar
+//         skin='light'
+//         color={color as ThemeColor}
+//         sx={{ mr: 3, fontSize: '.8rem', width: '1.875rem', height: '1.875rem' }}
+//       >
+//         {getInitials(row.full_name ? row.full_name : 'John Doe')}
+//       </CustomAvatar>
+//     )
+//   }
+// }
 
-const statusObj: StatusObj = {
-  1: { title: 'current', color: 'primary' },
-  2: { title: 'professional', color: 'success' },
-  3: { title: 'rejected', color: 'error' },
-  4: { title: 'resigned', color: 'warning' },
-  5: { title: 'applied', color: 'info' }
-}
+// const statusObj: StatusObj = {
+//   1: { title: 'current', color: 'primary' },
+//   2: { title: 'professional', color: 'success' },
+//   3: { title: 'rejected', color: 'error' },
+//   4: { title: 'resigned', color: 'warning' },
+//   5: { title: 'applied', color: 'info' }
+// }
 
 const escapeRegExp = (value: string) => {
   return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')

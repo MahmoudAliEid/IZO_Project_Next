@@ -1,6 +1,7 @@
 // ** Custom Component Import
 import CardStatisticsVertical from 'src/@core/components/card-statistics/card-stats-vertical'
-import { OptionType } from 'src/@core/components/option-menu/types'
+
+//import { OptionType } from 'src/@core/components/option-menu/types'
 
 type CardStatisticsProps = {
   Purchase: string
