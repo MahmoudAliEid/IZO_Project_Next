@@ -3,9 +3,29 @@ import mock from 'src/@fake-db/mock'
 
 // ** Types
 import { CardStatsType } from 'src/@fake-db/types'
-import { UsersType, ProjectListDataType } from 'src/types/apps/userTypes'
+import { ProjectListDataType } from 'src/types/apps/userTypes'
+
+// ** Types
+import { ThemeColor } from 'src/@core/layouts/types'
+
+export type UsersType = {
+  id: number
+  role: string
+  email: string
+  status: string
+  avatar: string
+  billing: string
+  company: string
+  country: string
+  contact: string
+  fullName: string
+  username: string
+  currentPlan: string
+  avatarColor?: ThemeColor
+}
 
 const data: { users: UsersType[] } = {
+  //@ts-ignore
   users: [
     {
       id: 1,
