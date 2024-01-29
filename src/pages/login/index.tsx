@@ -70,6 +70,7 @@ import styles from './styles.module.css'
 
 import { RootState } from 'src/types/apps/rooteState'
 import notify from 'src/utils/notify'
+import { FormHelperText, Select } from '@mui/material'
 
 
 const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -304,22 +305,23 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                 }}
                 size='small'
               >
-                <TextField
-                  select
-                  label='Language'
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <TranslateIcon />
-                      </InputAdornment>
-                    )
-                  }}
-                  value={Language}
-                  onChange={handleChangeLanguage}
-                >
-                  <MenuItem value='ar'>Arabic</MenuItem>
-                  <MenuItem value='en'>English</MenuItem>
-                </TextField>
+                <InputLabel id="demo-simple-select-label">Language</InputLabel>
+  <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+                    value={Language}
+
+                    //@ts-ignore
+    onChange={handleChangeLanguage}
+    startAdornment={
+      <InputAdornment position='start'>
+        <TranslateIcon />
+      </InputAdornment>
+    }
+  >
+    <MenuItem value='ar'>Arabic</MenuItem>
+    <MenuItem value='en'>English</MenuItem>
+  </Select>
               </FormControl>
               </Box>
               </Grid>
@@ -386,6 +388,8 @@ const LoginPage: React.FC<{ userData: UserData }> & {
               </TextField>
             </FormControl>) : (
 
+
+
               <FormControl
                 fullWidth
                 sx={{
@@ -399,23 +403,27 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                   }
                 }}
               >
-                <TextField
+                <InputLabel id='outlined-select-currency-label'>User Name</InputLabel>
+                <Select
                   id='outlined-select-currency'
-                  type='text'
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <AccountCircle />
-                      </InputAdornment>
-                    )
-                  }}
-                  label='User Name'
-                  error={userNameError ? true : false}
-                  value={username}
-                  helperText={userNameError}
+                    value={username}
+
+                    //@ts-ignore
                   onChange={handleChangeUserName}
+                  startAdornment={
+                    <InputAdornment position='start'>
+                      <AccountCircle />
+                    </InputAdornment>
+                  }
+                  error={userNameError ? true : false}
                 >
-                </TextField>
+                  {usersDataNames?.map((user: any, index: number) => (
+                    <MenuItem key={index} value={user.value}>
+                      {user.value}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {userNameError && <FormHelperText>{userNameError}</FormHelperText>}
               </FormControl>
             )}
 

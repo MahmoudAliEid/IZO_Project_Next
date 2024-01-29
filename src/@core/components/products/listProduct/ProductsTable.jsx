@@ -881,6 +881,8 @@ const ProductsTable = () => {
                 >
                   Next Page
                 </Button>
+
+                <Typography sx={{ color: 'text.secondary' }}>Last page {lastPage}</Typography>
               </Box>
             </Grid>
           </>

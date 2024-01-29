@@ -21,6 +21,7 @@ import { FieldArray } from 'formik'
 // ** User Components
 import ProductVariable from '../productVariable/ProductVariable'
 import ProductPriceCell from './ProductPricesCell'
+import CompoProduct from '../compoProduct/CompoProduct'
 
 const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
   // ** States
@@ -1515,7 +1516,16 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             touched={touched}
           />
         )}
-        {initialValues.product_type === 'combo' && <Typography>Under Developments</Typography>}
+        {initialValues.product_type === 'combo' && (
+          <CompoProduct
+            initialValues={initialValues}
+            setFieldValue={setFieldValue}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            errors={errors}
+            touched={touched}
+          />
+        )}
       </Card>
     )
   }

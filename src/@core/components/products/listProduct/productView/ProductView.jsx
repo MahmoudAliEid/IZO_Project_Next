@@ -66,8 +66,7 @@ const ProductView = ({ open, setOpen, id }) => {
       headerName: 'Name',
       size: 'small'
     },
-    { field: 'description', headerName: 'Description', size: 'small' },
-    { field: 'full_description', headerName: 'Full Description', size: 'small' },
+
     { field: 'alert_qty', headerName: 'Alert Qty' },
     { field: 'barcode_type', headerName: 'Barcode Type' },
     { field: 'brand', headerName: 'Brand' },
@@ -82,12 +81,14 @@ const ProductView = ({ open, setOpen, id }) => {
     { field: 'tax', headerName: 'Tax' },
     { field: 'total_quantity', headerName: 'Total Quantity' },
     { field: 'unit', headerName: 'Unit' },
-    { field: 'warranty', headerName: 'Warranty' },
     { field: 'weight', headerName: 'Weight' },
     { field: 'custom_field_1', headerName: 'Custom Field1' },
     { field: 'custom_field_2', headerName: 'Custom Field2' },
     { field: 'custom_field_3', headerName: 'Custom Field3' },
-    { field: 'custom_field_4', headerName: 'Custom Field4' }
+    { field: 'custom_field_4', headerName: 'Custom Field4' },
+    { field: 'warranty', headerName: 'Warranty' },
+    { field: 'description', headerName: 'Description', size: 'small' },
+    { field: 'full_description', headerName: 'Full Description', size: 'small' }
   ]
 
   // ** Hook
@@ -200,12 +201,18 @@ const ProductView = ({ open, setOpen, id }) => {
                     item
                     xs={12}
                     lg={
-                      data.field === 'name' || data.field === 'full_description' || data.field === 'description'
+                      data.field === 'name' ||
+                      data.field === 'full_description' ||
+                      data.field === 'description' ||
+                      data.field === 'warranty'
                         ? 12
                         : 4
                     }
                     md={
-                      data.field === 'name' || data.field === 'full_description' || data.field === 'description'
+                      data.field === 'name' ||
+                      data.field === 'full_description' ||
+                      data.field === 'description' ||
+                      data.field === 'warranty'
                         ? 12
                         : 4
                     }
@@ -421,19 +428,23 @@ const ProductView = ({ open, setOpen, id }) => {
                 dataColumns={[
                   {
                     field: 'name',
-                    headerName: 'Location'
+                    headerName: 'Location',
+                    align: 'left'
                   },
                   {
                     field: 'rack',
                     headerName: 'Rack',
+                    align: 'left',
                     renderCell: row => <Typography>{row.rack}</Typography>
                   },
                   {
                     field: 'row',
+                    align: 'left',
                     headerName: 'Row'
                   },
                   {
                     field: 'position',
+                    align: 'left',
                     headerName: 'Position'
                   }
                 ]}
@@ -557,7 +568,7 @@ const ProductView = ({ open, setOpen, id }) => {
       </Card>
       <Card sx={{ pt: 10 }}>
         <Divider sx={{ mb: 2 }}>
-          <Chip label='Average Sale Price' color='primary' variant='outlined' />
+          <Chip label='Average  Purchase Price' color='primary' variant='outlined' />
         </Divider>
         <Grid container spacing={2}>
           <Grid item xs={12}>
