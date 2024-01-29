@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 
 // ** React Imports
-import { ElementType, Fragment } from 'react'
+import { ElementType} from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -10,7 +10,6 @@ import { useRouter } from 'next/router'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-import List from '@mui/material/List'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -29,7 +28,6 @@ import { Settings } from 'src/@core/context/settingsContext'
 // ** Custom Components Imports
 import UserIcon from 'src/layouts/components/UserIcon'
 import Translations from 'src/layouts/components/Translations'
-import CanViewNavLink from 'src/layouts/components/acl/CanViewNavLink'
 
 // ** Hook Import
 import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
@@ -64,13 +62,15 @@ const HorizontalNavLink = (props: Props) => {
 
   // ** Hook & Vars
   const router = useRouter()
-  const { skin, mode } = settings
+  const { mode } = settings
+
+  //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
   const { navSubItemIcon, menuTextTruncate } = themeConfig
 
   const icon = item.icon ? item.icon : navSubItemIcon
 
-  const Wrapper = !hasParent ? List : Fragment
+
 
   const isNavLinkActive = () => {
     if (router.pathname === item.path || handleURLQueries(router, item.path)) {

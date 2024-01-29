@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { Box, Button, CardActions, Divider, CardHeader } from '@mui/material'
 
 // ** formik
 import { FieldArray, Form } from 'formik'
 import TableVariationVariable from 'src/@core/components/products/listProduct/productVariable/TableVariationVariable'
 
-const ProductVariable = ({ initialValues, setFieldValue, handleChange, handleBlur, errors, touched }) => {
+const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
   return (
     <Box padding={2}>
       <Form>

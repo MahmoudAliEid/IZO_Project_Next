@@ -1,7 +1,6 @@
 'use client';
 
-/* eslint-disable import/newline-after-import */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
@@ -24,7 +23,6 @@ import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -34,25 +32,21 @@ import { convertDateFormat } from 'src/@core/layouts/utils';
 
 // ** Third Party Imports
 import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup'
+
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
-// ** Actions Imports
-import { addUser } from 'src/store/apps/user'
+
 
 // formik imports
-import { Formik, Form, Field } from 'formik';
+import { Formik,  Field } from 'formik';
 
 // ** Types Imports
-import { RootState, AppDispatch } from 'src/store'
-import { UsersType } from 'src/types/apps/userTypes'
-import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
+import { AppDispatch } from 'src/store'
 
-// import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
 
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
 import CustomInput from './PickersCustomInput'
@@ -65,15 +59,7 @@ interface SidebarAddUserType {
   itemId: number
 }
 
-// interface UserData {
-//   email: string
-//   billing: string
-//   company: string
-//   country: string
-//   contact: number
-//   fullName: string
-//   username: string
-// }
+
 
 
 const validationSchema = Yup.object().shape({
@@ -84,15 +70,15 @@ const validationSchema = Yup.object().shape({
 });
 
 
-const showErrors = (field: string, valueLen: number, min: number) => {
-  if (valueLen === 0) {
-    return `${field} field is required`
-  } else if (valueLen > 0 && valueLen < min) {
-    return `${field} must be at least ${min} characters`
-  } else {
-    return ''
-  }
-}
+// const showErrors = (field: string, valueLen: number, min: number) => {
+//   if (valueLen === 0) {
+//     return `${field} field is required`
+//   } else if (valueLen > 0 && valueLen < min) {
+//     return `${field} must be at least ${min} characters`
+//   } else {
+//     return ''
+//   }
+// }
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
@@ -200,7 +186,6 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
   const theme = useTheme()
   const { direction } = theme
   const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
-  const [date, setDate] = useState<any>(new Date())
   const { handleSubmitData } = useSubmitUser();
 
   // ** Hooks
@@ -330,7 +315,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
 
     handleSubmitData(postEditUser, fetchIzoUsers, values, itemId);
 
-    // resetForm();
+    resetForm();
   };
 
 
@@ -1067,7 +1052,7 @@ const SidebarEditUser = (props: SidebarAddUserType) => {
                     popperPlacement={popperPlacement}
                     onChange={(date: any) => {
                       values.dateOfBirth = date
-                      setDate(date)
+
                     }}
                     placeholderText='Click to select a date'
                     customInput={<CustomInput label='Date of Birth' />}

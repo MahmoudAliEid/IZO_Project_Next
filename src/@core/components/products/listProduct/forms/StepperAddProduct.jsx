@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
-import { ChangeEvent, Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { EditorState } from 'draft-js'
 
 // ** MUI Imports
@@ -9,23 +8,13 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Stepper from '@mui/material/Stepper'
-import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import StepLabel from '@mui/material/StepLabel'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import MuiStep, { StepProps } from '@mui/material/Step'
-import InputAdornment from '@mui/material/InputAdornment'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import MuiStep from '@mui/material/Step'
+import { Formik } from 'formik'
 import * as Yup from 'yup'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
-import PublicIcon from '@mui/icons-material/Public'
-import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
-import { fetchViewContact } from 'src/store/apps/contacts/getViewContactSlice'
 import ProductPrices from '../productprices/ProductPrices'
 import { useDispatch, useSelector } from 'react-redux'
 import { saveProduct } from 'src/store/apps/products/productStoreSlice'
@@ -52,13 +41,6 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import StepperWrapper from 'src/@core/styles/mui/stepper'
 import { getCookie } from 'cookies-next'
 
-// import { AppDispatch } from 'src/redux/store'
-
-// Date Picker Imports
-import DatePicker from 'react-datepicker'
-
-// import CustomInput from './PickersCustomInput'
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import ProductAdditionalInfo from '../productAdditionalInfo/ProductAdditionalInfo'
 
 const steps = [
@@ -693,7 +675,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     setActiveStep(activeStep + 1)
     setOpenLoading(true)
 
-    // resetForm()
+    resetForm()
   }
 
   const renderContent = () => {

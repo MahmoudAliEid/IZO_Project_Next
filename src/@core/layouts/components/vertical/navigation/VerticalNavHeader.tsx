@@ -1,12 +1,10 @@
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** Next Import
 import Link from 'next/link'
 import Image from 'next/image'
 
 // ** MUI Imports
 import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import { styled, useTheme } from '@mui/material/styles'
 
@@ -16,8 +14,7 @@ import { LayoutProps } from 'src/@core/layouts/types'
 // ** Custom Icon Import
 import Icon from 'src/@core/components/icon'
 
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
+
 
 interface Props {
   navHover: boolean
@@ -60,19 +57,20 @@ const VerticalNavHeader = (props: Props) => {
     navHover,
     settings,
     saveSettings,
-    collapsedNavWidth,
+
     toggleNavVisibility,
-    navigationBorderWidth,
+
     menuLockedIcon: userMenuLockedIcon,
     navMenuBranding: userNavMenuBranding,
     menuUnlockedIcon: userMenuUnlockedIcon
-  } = props
+} = props
+
 
   // ** Hooks & Vars
   const theme = useTheme()
   const { skin, direction, navCollapsed } = settings
 
-  const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
+  // const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
 
   const handleButtonClick = () => {
     if (hidden) {
@@ -82,17 +80,17 @@ const VerticalNavHeader = (props: Props) => {
     }
   }
 
-  const menuHeaderPaddingLeft = () => {
-    if (navCollapsed && !navHover) {
-      if (userNavMenuBranding) {
-        return 0
-      } else {
-        return (collapsedNavWidth - navigationBorderWidth - 22) / 8
-      }
-    } else {
-      return 8
-    }
-  }
+  // const menuHeaderPaddingLeft = () => {
+  //   if (navCollapsed && !navHover) {
+  //     if (userNavMenuBranding) {
+  //       return 0
+  //     } else {
+  //       return (collapsedNavWidth - navigationBorderWidth - 22) / 8
+  //     }
+  //   } else {
+  //     return 8
+  //   }
+  // }
 
   const svgRotationDeg = () => {
     if (navCollapsed) {

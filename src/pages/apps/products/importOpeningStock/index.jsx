@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** MUI Imports
-import { Grid, Card, Box, CardContent, Button, CardActions, CardHeader, Typography, Alert } from '@mui/material'
+import { Grid, Card, CardContent, Button, CardActions, CardHeader, Typography, Alert } from '@mui/material'
 
 // ** Custom Components
 import UploadFile from 'src/@core/components/globalUpload/UploadFile'
@@ -53,6 +52,7 @@ const ImportOpeningStock = () => {
   const handleSubmitForm = (values, { resetForm }) => {
     console.log('values 🐱‍👤', values)
     dispatch(postImportOQ({ data: values }))
+    resetForm()
   }
 
   console.log('initialValues 🐱‍👤', initialValues)

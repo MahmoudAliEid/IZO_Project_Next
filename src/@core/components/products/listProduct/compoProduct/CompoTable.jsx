@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState } from 'react'
 
 // ** MUI Imports
 import Paper from '@mui/material/Paper'
@@ -11,7 +10,7 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
-import { useSelector } from 'react-redux'
+
 import {
   IconButton,
   Menu,
@@ -34,15 +33,16 @@ import Icon from 'src/@core/components/icon'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import CustomInputField from '../productVariable/components/CustomInputField'
 
-const CompoTable = ({ rows, productIndex, values, handleChange, pushVariation, remove, setFieldValue }) => {
+const CompoTable = ({ rows, productIndex, values, handleChange, remove, setFieldValue }) => {
   // ** States
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [open, setOpen] = useState(false)
-  const [variationsParent, setVariationsParent] = useState([])
-  const [variationsChild, setVariationsChild] = useState([])
-  const [filteredVariationChildSecond, setFilteredVariationChildSecond] = useState([])
-  const [searchProduct, setSearchProduct] = useState(null)
+
+  // const [variationsParent, setVariationsParent] = useState([])
+  // const [variationsChild, setVariationsChild] = useState([])
+  // const [filteredVariationChildSecond, setFilteredVariationChildSecond] = useState([])
+  // const [searchProduct, setSearchProduct] = useState(null)
 
   // ** Selectors
   // const variation_templates = useSelector(state => state.getCreateProduct?.data?.value?.variation_templates)

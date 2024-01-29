@@ -1,20 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { Fragment } from 'react'
 
 // ** MUI Imports
-import Button from '@mui/material/Button'
+
 import Dialog from '@mui/material/Dialog'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import StepperView from './StepperView'
+
 
 // import StepperStoreSuppliers from 'src/views/apps/contacts/suppliers/StepperStoreSuppliers'
 
@@ -40,6 +40,8 @@ const CustomCloseButton =
     }))
 
 const ViewPopUp = ({ open, toggle, isEdit, itemId, contact, contactData }: any) => {
+
+   console.log('data from view popup isEdit', isEdit, 'itemId', itemId, 'contact', contact, 'contactData', contactData)
   const handleClose = () => {
     toggle()
   }

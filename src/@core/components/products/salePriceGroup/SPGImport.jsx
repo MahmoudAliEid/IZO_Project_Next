@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// ** React Imports
-import { useState } from 'react'
-
 // ** cookies
 import { getCookie } from 'cookies-next'
 
@@ -9,7 +5,7 @@ import { getCookie } from 'cookies-next'
 import axios from 'axios'
 
 // ** MUI Imports
-import { Grid, Card, Box, CardContent, Button, CardActions, CardHeader, Typography } from '@mui/material'
+import { Grid, Card, CardContent, Button, CardActions, CardHeader, Typography } from '@mui/material'
 
 // ** Custom Components
 import UploadFile from 'src/@core/components/globalUpload/UploadFile'
@@ -18,7 +14,7 @@ import UploadFile from 'src/@core/components/globalUpload/UploadFile'
 import { Formik } from 'formik'
 
 // ** Store & Actions
-import { fetchExportSPGroup } from 'src/store/apps/products/salePriceGroup/actions/getExportSPGSlice'
+// import { fetchExportSPGroup } from 'src/store/apps/products/salePriceGroup/actions/getExportSPGSlice'
 import { postImportSPGroup } from 'src/store/apps/products/salePriceGroup/actions/postImportSPGSlice'
 import { useDispatch } from 'react-redux'
 
@@ -27,9 +23,6 @@ const SPGImport = () => {
   const initialValues = {
     file: []
   }
-
-  // ** Cookies
-  const token = getCookie('token')
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -61,7 +54,7 @@ const SPGImport = () => {
     console.log('values 🐱‍👤', values)
     dispatch(postImportSPGroup({ data: values }))
 
-    // resetForm()
+    resetForm()
   }
 
   console.log('initialValues 🐱‍👤', initialValues)

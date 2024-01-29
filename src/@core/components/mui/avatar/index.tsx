@@ -18,6 +18,8 @@ const Avatar = forwardRef((props: CustomAvatarProps, ref: Ref<any>) => {
 
   // ** Hook
   const theme = useTheme()
+
+  //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
 
   const getAvatarStyles = (skin: 'filled' | 'light' | 'light-static' | undefined, skinColor: ThemeColor) => {

@@ -1,5 +1,4 @@
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { Fragment, useState, useEffect } from 'react'
 
@@ -8,10 +7,9 @@ import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContentText from '@mui/material/DialogContentText'
+
 import TextField from '@mui/material/TextField'
-import { useFormik } from 'formik'
+
 import * as Yup from 'yup';
 import { Formik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,7 +17,6 @@ import { storeBrand } from 'src/store/apps/products/brands/storebrandSlice'
 import { fetchAllBrands } from 'src/store/apps/products/brands/getallbrandsSlice'
 import { fetchBrandDetails } from 'src/store/apps/products/brands/getbrandDetailsSlice'
 import { updateBrand } from 'src/store/apps/products/brands/updatebrandSlice'
-import AddNewBrandImage from './AddNewBrandImage'
 import UploadImage from 'src/@core/components/globalUpload/UploadImage'
 import { FormControlLabel } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';

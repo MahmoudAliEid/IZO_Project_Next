@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// ** React Imports
+
 import { SyntheticEvent, useState, useEffect, Fragment } from 'react'
 
 // ** Next Import
@@ -35,7 +34,7 @@ import { Settings } from 'src/@core/context/settingsContext'
 import HorizontalNavItems from './HorizontalNavItems'
 import UserIcon from 'src/layouts/components/UserIcon'
 import Translations from 'src/layouts/components/Translations'
-import CanViewNavGroup from 'src/layouts/components/acl/CanViewNavGroup'
+
 
 // ** Hook Import
 import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
@@ -98,6 +97,8 @@ const HorizontalNavGroup = (props: Props) => {
   const router = useRouter()
   const currentURL = router.asPath
   const { mode, skin, direction } = settings
+
+  //@ts-ignore
   const bgColors: UseBgColorType = useBgColor()
   const { navSubItemIcon, menuTextTruncate, horizontalMenuToggle, horizontalMenuAnimation } = themeConfig
 

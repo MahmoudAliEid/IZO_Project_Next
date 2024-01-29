@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { Fragment, useState } from 'react'
 

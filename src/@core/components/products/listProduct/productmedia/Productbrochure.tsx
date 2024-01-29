@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
 import { Fragment, useState } from 'react'
 
@@ -61,11 +61,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 }))
 
 const Productbarochure: React.FC<Props> = ({
-  initialValues,
-  errors,
-  touched,
-  handleBlur,
-  handleChange,
+
   setFieldValue
 }) => {
   // ** State

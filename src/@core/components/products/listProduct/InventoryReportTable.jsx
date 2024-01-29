@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 // ** React & Components
 import { useState, useEffect } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -9,7 +7,6 @@ import FormProduct from 'src/@core/components/products/listProduct/forms/FormPro
 
 // ** Next Imports
 import { getCookie } from 'cookies-next'
-import Image from 'next/image'
 import Link from 'next/link'
 
 // ** MUI Imports
@@ -24,18 +21,11 @@ import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import Tab from '@mui/material/Tab'
-import TabList from '@mui/lab/TabList'
-import TabPanel from '@mui/lab/TabPanel'
-import TabContext from '@mui/lab/TabContext'
-import { FormControl, Select, InputLabel } from '@mui/material'
-import { styled } from '@mui/material/styles'
+
+// import { styled } from '@mui/material/styles'
 
 // ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-
-// ** Custom Component Import
-import TabsWrapper from 'src/@core/styles/mui/TabsWrapper'
+// import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 // ** Third Party Components
 import { DataGrid } from '@mui/x-data-grid'
@@ -44,13 +34,13 @@ import { DataGrid } from '@mui/x-data-grid'
 import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { fetchProducts } from 'src/store/apps/products/listProducts/getProductsSlice'
 import { deleteProduct } from 'src/store/apps/products/listProducts/postDeleteProductSlice'
 
-const StyledButton = styled(Button)(({ theme }) => ({
-  backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.2)} !important`
-}))
+// const StyledButton = styled(Button)(({ theme }) => ({
+//   backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.2)} !important`
+// }))
 
 const RowOptions = ({ id }) => {
   // console.log(data, setData)
@@ -193,219 +183,6 @@ const RowOptions = ({ id }) => {
     </>
   )
 }
-
-// const columns = [
-//   {
-//     flex: 0.1,
-//     minWidth: 90,
-//     sortable: false,
-//     field: 'actions',
-//     headerName: 'Actions',
-//     renderCell: ({ row }) => <RowOptions id={row.id} data={row.data} setData={row.setData} />
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 310,
-
-//     minHeight: 310,
-//     field: 'image_url',
-//     headerName: 'Image',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Box
-//           sx={{
-//             padding: '5px 0',
-//             color: 'text.secondary',
-//             width: '100%',
-//             height: '100%',
-//             display: 'flex',
-//             justifyContent: 'center',
-//             alignItems: 'center'
-//           }}
-//         >
-//           {row.image ? (
-//             <div className='file-details'>
-//               <div className='file-preview'>
-//                 {/* <img width={38} height={38} alt={'Category Image'} src={row.image_url} /> */}
-//                 {row.image === 'Loading...' ? (
-//                   <Box
-//                     sx={{
-//                       display: 'flex',
-//                       flexWrap: 'wrap',
-//                       alignItems: 'center',
-//                       justifyContent: 'center',
-//                       margin: '20px 0'
-//                     }}
-//                   >
-//                     <Box>
-//                       <ProgressCustomization />
-//                     </Box>
-//                   </Box>
-//                 ) : (
-//                   <Image
-//                     alt={'Product Image'}
-//                     src={row.image}
-//                     width={300}
-//                     height={300}
-//                     style={{
-//                       margin: '3px 0',
-//                       maxWidth: '100%',
-//                       maxHeight: '100%',
-//                       borderRadius: '8px',
-//                       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-//                     }}
-//                   />
-//                 )}
-//               </div>
-//             </div>
-//           ) : (
-//             'No Image'
-//           )}
-//         </Box>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 220,
-//     field: 'name',
-//     headerName: 'Product Name',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.name ? row.name : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 200,
-//     field: 'product_type',
-//     headerName: 'Product Type',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.product_type ? row.product_type : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 200,
-//     field: 'location',
-//     headerName: 'Business Location ',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.location ? row.location : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 200,
-//     field: 'unit_const_pice',
-//     headerName: 'Unit Cost Price',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.unit_const_pice ? row.unit_const_pice + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.26,
-//     minWidth: 210,
-//     field: 'unit_sale_pice',
-//     headerName: 'Unit Sale Price Exc.Vat',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.unit_const_pice ? row.unit_const_pice + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'sale_pice',
-//     headerName: 'Sale Price',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.sale_pice ? row.sale_pice + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     minHeight: 150,
-//     field: 'current_stock',
-//     headerName: 'Current Stock',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Grid container spacing={2} sx={{ margin: '5px 0', mb: 5 }}>
-//           <Grid item xs={12}>
-//             <Typography sx={{ color: 'text.secondary' }}>{row.stock ? row.stock : 'Not available'}</Typography>
-//           </Grid>
-//           <Grid item xs={12}>
-//             <StyledButton variant='outlined' size='small'>
-//               View Stock
-//             </StyledButton>
-//           </Grid>
-//         </Grid>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 220,
-//     field: 'category',
-//     headerName: 'Category ',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.category ? row.category : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 220,
-//     field: 'brand',
-//     headerName: 'Brand ',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.brand ? row.brand : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.2,
-//     minWidth: 180,
-//     field: 'tax',
-//     headerName: 'Tax',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.tax ? row.tax : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.2,
-//     minWidth: 180,
-//     field: 'code',
-//     headerName: 'Item Code',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.code ? row.code : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 180,
-//     field: 'created_by',
-//     headerName: 'Created By',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography noWrap sx={{ color: 'text.secondary' }}>
-//           {row.created_by ? row.created_by : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   }
-// ]
 
 const columns = [
   {
@@ -627,6 +404,8 @@ const InventoryReportTable = () => {
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
   const [data, setData] = useState([])
+
+  console.log(setData, 'setData from InventoryReportTable')
 
   // ** Constants
   const title = 'Inventory Report'

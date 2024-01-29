@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
-import { ChangeEvent, Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -18,8 +18,8 @@ import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import MuiStep, { StepProps } from '@mui/material/Step'
 import InputAdornment from '@mui/material/InputAdornment'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import Select from '@mui/material/Select'
+import { Formik, Field} from 'formik'
 import * as Yup from 'yup'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PublicIcon from '@mui/icons-material/Public'
@@ -117,6 +117,8 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
 
+  console.log( isView,' is view');
+
   useEffect(() => {
     const token = getCookie('token')
     const url = getCookie('apiUrl')
@@ -167,15 +169,14 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
   })
 
   const [activeStep, setActiveStep] = useState<number>(0)
-  const [date, setDate] = useState<any>(new Date())
-  const [customer_group, setCustomerGroup] = useState<any>([])
-  const [ContactType, setContactType] = useState<any>([
+
+  const [ContactType] = useState<any>([
     { id: 1, name: 'customer' },
     { id: 2, name: 'supplier' },
     { id: 3, name: 'Both' }
   ])
 
-  const [PayTermType, setPayTermType] = useState<any>([
+  const [PayTermType] = useState<any>([
     { id: 1, name: 'days' },
     { id: 2, name: 'months' }
   ])
@@ -196,7 +197,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
 
   useEffect(() => {
     if (data !== null && data !== undefined && data.type !== undefined) {
-      setCustomerGroup(data.customer_group)
+
 
       // set type of contact in initial values
       setInitialValues((prev: any) => ({
@@ -221,7 +222,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
     setActiveStep(0)
   }
 
-  const getStepContent = ({ values, errors, touched, handleBlur, handleChange, setFieldValue, step }: any) => {
+  const getStepContent = ({ values, errors, touched, handleBlur, handleChange, step }: any) => {
     switch (step) {
       case 0:
         return (
@@ -421,7 +422,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                     id='basic-input'
                     onChange={(date: any) => {
                       values.dob = date
-                      setDate(date)
+
                     }}
                     placeholderText='Click to select a date'
                     customInput={<CustomInput label='Date of Birth' />}

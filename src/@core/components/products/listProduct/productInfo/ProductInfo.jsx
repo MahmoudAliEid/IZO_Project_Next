@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { useEffect, useState } from 'react'
-import { EditorState, convertToRaw, convertToHTML, ContentState } from 'draft-js'
+import { EditorState, convertToRaw } from 'draft-js'
 
 // ** MUI
 import {
@@ -12,7 +11,6 @@ import {
   InputLabel,
   MenuItem,
   Button,
-  Icon,
   Checkbox,
   FormControlLabel,
   Typography,

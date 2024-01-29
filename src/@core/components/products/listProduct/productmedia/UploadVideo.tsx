@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
 import { Fragment, useState } from 'react'
 
@@ -62,7 +62,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const UploadVideo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }: Props) => {
+const UploadVideo = ({ setFieldValue }: Props) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 

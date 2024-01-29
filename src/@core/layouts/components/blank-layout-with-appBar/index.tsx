@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** Next Import
 import Link from 'next/link'
 import Image from 'next/image'
@@ -6,11 +6,10 @@ import Image from 'next/image'
 // ** MUI Imports
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
+
 import { styled, useTheme } from '@mui/material/styles'
 
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
+
 
 // ** Hook
 import { useSettings } from 'src/@core/hooks/useSettings'

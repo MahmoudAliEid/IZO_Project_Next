@@ -1,31 +1,28 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
-import { ChangeEvent, Fragment, useState, useEffect } from 'react'
+import {  Fragment, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Stepper from '@mui/material/Stepper'
 import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import StepLabel from '@mui/material/StepLabel'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import MuiStep, { StepProps } from '@mui/material/Step'
-import InputAdornment from '@mui/material/InputAdornment'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Select from '@mui/material/Select'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Chip from '@mui/material/Chip'
 import Checkbox from '@mui/material/Checkbox'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { Formik,Field } from 'formik'
 import * as Yup from 'yup'
 
 // ** Third Party Imports
@@ -47,7 +44,7 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
-import { AppDispatch } from 'src/redux/store'
+import { AppDispatch } from 'src/store'
 import { fetchIzoUsers } from 'src/store/apps/izoUsers/izoUsersSlice'
 import useSubmitUser from 'src/hooks/useSubmitUser';
 import { storeUser } from 'src/store/apps/izoUsers/storeUserSlice.js'
@@ -59,18 +56,18 @@ import { postEditUser } from 'src/store/apps/izoUsers/postEditUserSlice';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 
 // Date Picker Imports
-import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
+import DatePicker from 'react-datepicker'
 import CustomInput from './PickersCustomInput'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { getCookie } from 'cookies-next'
 import { convertDateFormat } from 'src/@core/layouts/utils';
 
-interface State {
-  password: string
-  password2: string
-  showPassword: boolean
-  showPassword2: boolean
-}
+// interface State {
+//   password: string
+//   password2: string
+//   showPassword: boolean
+//   showPassword2: boolean
+// }
 
 type RequirementsType = {
   BusinessLocation: []
@@ -227,7 +224,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
   })
 
   const [activeStep, setActiveStep] = useState<number>(0)
-  const [date, setDate] = useState<any>(new Date())
+
 
   const [Requirements, setRequirements] = useState<RequirementsType>({
     BusinessLocation: [],
@@ -274,7 +271,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
       //@ts-ignore
       isEdit ? dispatch(fetchEditUsers({ token, url, itemId })) : resetForm()
     }
-  }, [dispatch, token, url, itemId])
+  }, [dispatch, token, url, itemId , isEdit])
 
   const editData = useSelector((state: { editUsers: { data: any } }) => state.editUsers.data)
 
@@ -811,7 +808,10 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                             padding: '0.5rem'
                           }}
                         >
-                          {selected.map(value => (
+                          {
+
+                          //@ts-ignore
+                            selected.map(value => (
                             <Box key={value}>
                               <Chip
                                 variant='outlined'
@@ -821,6 +821,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                                 onDelete={value => {
                                   setFieldValue(
                                     'location_permissions',
+
+                                    //@ts-ignore
                                     values.location_permissions.filter(option => option !== value)
                                   )
                                 }}
@@ -929,7 +931,10 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                         padding: '0.5rem'
                       }}
                     >
-                      {selected.map(value => (
+                      {
+
+                        //@ts-ignore
+                        selected.map(value => (
                         <Box key={value}>
                           <Chip
                             variant='outlined'
@@ -939,6 +944,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                             onDelete={value => {
                               setFieldValue(
                                 'patternList',
+
+                                //@ts-ignore
                                 values.patternList.filter(option => option !== value)
                               )
                             }}
@@ -1000,7 +1007,10 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                           padding: '0.5rem'
                         }}
                       >
-                        {selected.map(value => (
+                        {
+
+                          //@ts-ignore
+                          selected.map(value => (
                           <Box key={value}>
                             <Chip
                               variant='outlined'
@@ -1010,6 +1020,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                               onDelete={value => {
                                 setFieldValue(
                                   'selectedContact',
+
+                                  //@ts-ignore
                                   values.selectedContact.filter(option => option !== value)
                                 )
                               }}
@@ -1053,7 +1065,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   id='basic-input'
                   onChange={(date: any) => {
                     values.dateOfBirth = date
-                    setDate(date)
+
                   }}
                   placeholderText='Click to select a date'
                   customInput={<CustomInput label='Date of Birth' />}

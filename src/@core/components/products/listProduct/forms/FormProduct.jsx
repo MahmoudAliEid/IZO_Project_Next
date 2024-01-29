@@ -1,17 +1,12 @@
-// This is setup for create Adding new Product
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { Fragment } from 'react'
 
 // ** MUI Imports
-import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
 import IconButton from '@mui/material/IconButton'
 
 // ** Icon Imports

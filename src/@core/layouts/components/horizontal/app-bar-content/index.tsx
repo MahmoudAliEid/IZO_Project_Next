@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** Next Import
 import Link from 'next/link'
 import Image from 'next/image'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
+
 
 // useTheme
 import { styled, useTheme } from '@mui/material/styles'
@@ -13,8 +13,7 @@ import { styled, useTheme } from '@mui/material/styles'
 // ** Type Import
 import { LayoutProps } from 'src/@core/layouts/types'
 
-// ** Theme Config Import
-import themeConfig from 'src/configs/themeConfig'
+
 
 interface Props {
   hidden: LayoutProps['hidden']

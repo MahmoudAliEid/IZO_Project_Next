@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { getCookie } from 'cookies-next'
@@ -7,21 +6,6 @@ import notify from 'src/utils/notify'
 // First, create the async thunk
 export const saveProduct = createAsyncThunk('dashboard/createProduct', async payload => {
   const { product } = payload
-
-  // Server side code
-  // let array = JSON.parse(req.body.mahmoud_ali_test)
-  // formData.append('mahmoud_ali_test', JSON.stringify([1, 2]))
-  // console.log(product, '===> product data from saveProduct 🙌🙌')
-  // console.log(product.long_description.blocks.at(0).text, '===> product.long_description?.block[0].text ☀☀🌞🌞🌞')
-  // console.log('product locations 💲💲', JSON.stringify(product.location))
-  // console.log('product locations test two 💙', product.location)
-  // console.log('product front test three 💙', JSON.stringify([1, 2]))
-  // console.log('product sub unit id 💙', JSON.stringify(product.sub_unit_id))
-  // console.log('product sub unit id  second💙', product.sub_unit_id)
-  // const test=product_racks:[
-  //   {id:{"row":'1',"position":'1',"rack":'1'},}
-  //   ]
-  // console.log('product image', product.productImage[0])
 
   const jsonData = [
     { id: 1, value: [{ rack: 'jk' }, { row: 'mn,' }, { position: 'njuy' }] },

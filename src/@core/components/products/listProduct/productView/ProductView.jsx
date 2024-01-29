@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { useEffect, useState } from 'react'
 
@@ -16,7 +15,7 @@ import {
   Button,
   Chip
 } from '@mui/material'
-import { styled, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 
 // ** Custom Components
 import SwiperThumbnails from 'src/views/components/swiper/SwiperThumbnails'
@@ -41,17 +40,17 @@ import ReactHtmlParser from 'react-html-parser'
 import CustomTableView from './CustomTableView'
 
 // Styled Grid component
-const StyledGrid = styled(Grid)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  [theme.breakpoints.down('md')]: {
-    borderBottom: `1px solid ${theme.palette.divider}`
-  },
-  [theme.breakpoints.up('md')]: {
-    borderRight: `1px solid ${theme.palette.divider}`
-  }
-}))
+// const StyledGrid = styled(Grid)(({ theme }) => ({
+//   display: 'flex',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   [theme.breakpoints.down('md')]: {
+//     borderBottom: `1px solid ${theme.palette.divider}`
+//   },
+//   [theme.breakpoints.up('md')]: {
+//     borderRight: `1px solid ${theme.palette.divider}`
+//   }
+// }))
 
 const ProductView = ({ open, setOpen, id }) => {
   // ** States

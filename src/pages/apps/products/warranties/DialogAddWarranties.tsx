@@ -1,5 +1,5 @@
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
 import { Fragment, useState, useEffect } from 'react'
 
@@ -25,17 +25,17 @@ import { Select } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
-import MainDone from 'src/@core/components/mainLoading/MainDone'
+
 
 const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
 
   // console.log(itemId, "itemId for edit 🔥🔥");
   const [openLottie, setOpenLottie] = useState<boolean>(false)
   const dispatch = useDispatch()
-  const [durationType, setDurationType] = useState<any>([
+  const durationType=[
     "days", "months", "years"
   ]
-  )
+
   const [initialValues, setInitialValues] = useState<any>({
     name: '',
     description: '',
@@ -162,7 +162,7 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
             enableReinitialize={true}
           >
 
-            {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
+            {({ values, errors, touched, handleBlur, handleChange,  resetForm }) => (
               <form>
                 <div style={{ marginBottom: '1rem' }}>
                   <TextField

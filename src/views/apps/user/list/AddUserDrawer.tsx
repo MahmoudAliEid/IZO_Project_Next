@@ -1,9 +1,8 @@
 'use client';
 
-/* eslint-disable import/newline-after-import */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect,forwardRef } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { fetchIzoUsers } from 'src/store/apps/izoUsers/izoUsersSlice'
 import useSubmitUser from 'src/hooks/useSubmitUser';
@@ -22,7 +21,6 @@ import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -31,22 +29,20 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 
 // ** Third Party Imports
 import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
-// ** Actions Imports
-import { addUser } from 'src/store/apps/user'
+
 
 // formik imports
-import { Formik, Form, Field } from 'formik';
+import { Formik,  Field } from 'formik';
 
 // ** Types Imports
-import { RootState, AppDispatch } from 'src/store'
-import { UsersType } from 'src/types/apps/userTypes'
+import {  AppDispatch } from 'src/store'
+
 import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
 
 // import { isLoading, error, data, createUser } from 'src/hooks/useCreateUser'
@@ -54,8 +50,7 @@ import { fetchCreateUsers } from 'src/store/apps/izoUsers/createUserSlice'
 import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
-// ** React Imports
-import { forwardRef } from 'react'
+
 interface PickerProps {
   label?: string
   readOnly?: boolean
@@ -197,7 +192,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
   const theme = useTheme()
   const { direction } = theme
   const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
-  const [date, setDate] = useState<any>(new Date())
+
 
 
   const { handleSubmitData } = useSubmitUser();
@@ -1067,7 +1062,7 @@ const SidebarAddUser = (props: SidebarAddUserType) => {
                     popperPlacement={popperPlacement}
                     onChange={(date: any) => {
                       values.dateOfBirth = date
-                      setDate(date)
+
                     }}
                     placeholderText='Click to select a date'
                     customInput={<CustomInput label='Date of Birth' />}

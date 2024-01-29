@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
 import { ReactNode } from 'react'
 
@@ -18,8 +18,6 @@ import { styled, useTheme } from '@mui/material/styles'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'

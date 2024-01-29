@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { Box, Button, CardActions, Divider, CardHeader } from '@mui/material'
 
 // ** formik
 import { FieldArray, Form } from 'formik'
 import CompoTable from './CompoTable'
 
-const CompoProduct = ({ initialValues, setFieldValue, handleChange, handleBlur, errors, touched }) => {
+const CompoProduct = ({ initialValues, setFieldValue, handleChange }) => {
   return (
     <Box padding={2}>
       <Form>
         <FieldArray name='product_compo'>
-          {({ push, remove }) => (
+          {() => (
             <Box
               sx={{
                 padding: '1rem'

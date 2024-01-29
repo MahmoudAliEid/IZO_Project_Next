@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
-import { ChangeEvent, Fragment, useState, useEffect } from 'react'
+import {Fragment, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -8,24 +7,17 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Stepper from '@mui/material/Stepper'
-import MenuItem from '@mui/material/MenuItem'
+
 import { styled } from '@mui/material/styles'
 import StepLabel from '@mui/material/StepLabel'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
 import MuiStep, { StepProps } from '@mui/material/Step'
-import InputAdornment from '@mui/material/InputAdornment'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 
-import PublicIcon from '@mui/icons-material/Public'
+// import * as Yup from 'yup'
+
 import BorderColorIcon from '@mui/icons-material/BorderColor'
-import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
-import ChromeReaderModeIcon from '@mui/icons-material/ChromeReaderMode'
+
 
 import BusinessIcon from '@mui/icons-material/Business' // Business Icon
 import DomainIcon from '@mui/icons-material/Domain' // Type Icon
@@ -43,9 +35,6 @@ import SourceIcon from '@mui/icons-material/Source'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance' // Payment Term Number Icon
 import AccessTimeIcon from '@mui/icons-material/AccessTime' // Payment Term Type Icon
 import ApprovalIcon from '@mui/icons-material/Approval'
-import DeleteIcon from '@mui/icons-material/Delete' // Deleted At Icon
-import CreateIcon from '@mui/icons-material/Create' // Created At Icon
-import UpdateIcon from '@mui/icons-material/Update' // Updated At Icon
 import PaymentIcon from '@mui/icons-material/Payment' // Price Group ID Icon
 import CreditCardIcon from '@mui/icons-material/CreditCard' // Tax Number Icon
 import CropRotateIcon from '@mui/icons-material/CropRotate'
@@ -75,17 +64,10 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { AppDispatch } from 'src/store'
 import { fetchCreateContactData } from 'src/store/apps/contacts/contactCreateSlice'
-import { saveNewContact } from 'src/store/apps/contacts/contactStoreSlice'
 import { fetchContactData } from 'src/store/apps/contacts/contactEditSlice'
-import { updateContact } from 'src/store/apps/contacts/contactUpdateSlice'
 import BadgeIcon from '@mui/icons-material/Badge'
 
-// Date Picker Imports
-import DatePicker from 'react-datepicker'
 
-// import CustomInput from './PickersCustomInput'
-
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 const steps = [
   {
@@ -141,13 +123,13 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   }
 }))
 
-const roleColors = {
-  admin: 'error',
-  editor: 'info',
-  author: 'warning',
-  maintainer: 'success',
-  subscriber: 'primary'
-}
+// const roleColors = {
+//   admin: 'error',
+//   editor: 'info',
+//   author: 'warning',
+//   maintainer: 'success',
+//   subscriber: 'primary'
+// }
 
 type Status = 'active' | 'pending' | 'inactive';
 
@@ -252,19 +234,22 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
     opening_balance: ''
   })
 
-  const [activeStep, setActiveStep] = useState<number>(0)
-  const [date, setDate] = useState<any>(new Date())
   const [customer_group, setCustomerGroup] = useState<any>([])
-  const [ContactType, setContactType] = useState<any>([
-    { id: 1, name: 'customer' },
-    { id: 2, name: 'supplier' },
-    { id: 3, name: 'Both' }
-  ])
+  const [activeStep, setActiveStep] = useState<number>(0)
 
-  const [PayTermType, setPayTermType] = useState<any>([
-    { id: 1, name: 'days' },
-    { id: 2, name: 'months' }
-  ])
+  // const [date, setDate] = useState<any>(new Date())
+  // const [ContactType, setContactType] = useState<any>([
+  //   { id: 1, name: 'customer' },
+  //   { id: 2, name: 'supplier' },
+  //   { id: 3, name: 'Both' }
+  // ])
+
+  // const [PayTermType, setPayTermType] = useState<any>([
+  //   { id: 1, name: 'days' },
+  //   { id: 2, name: 'months' }
+  // ])
+
+console.log('data >>>',customer_group,initialValues)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>();
@@ -695,44 +680,45 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
         return 'Unknown Step'
     }
   }
-  const validationSchema = Yup.object().shape({
-    type: Yup.string().required('Type is required'),
-    supplier_business_name: Yup.string().required('Supplier business name is required'),
-    prefix: Yup.string().required('Prefix is required'),
-    first_name: Yup.string().required('First name is required'),
-    middle_name: Yup.string(),
-    last_name: Yup.string().required('Last name is required'),
-    tax_number: Yup.string().required('Tax number is required'),
-    pay_term_number: Yup.string(),
-    pay_term_type: Yup.string(),
-    mobile: Yup.string().required('Mobile number is required'),
-    landline: Yup.string().required('Landline is required'),
-    alternate_number: Yup.string(),
-    city: Yup.string().required('City is required'),
-    state: Yup.string().required('State is required'),
-    country: Yup.string().required('Country is required'),
-    address_line_1: Yup.string(),
-    address_line_2: Yup.string(),
-    customer_group_id: Yup.string().required('Customer group ID is required'),
-    zip_code: Yup.string().required('Zip code is required'),
-    contact_id: Yup.string(),
-    custom_field1: Yup.string(),
-    custom_field2: Yup.string(),
-    custom_field3: Yup.string(),
-    custom_field4: Yup.string(),
-    custom_field5: Yup.string(),
-    custom_field6: Yup.string(),
-    custom_field7: Yup.string(),
-    custom_field8: Yup.string(),
-    custom_field9: Yup.string(),
-    custom_field10: Yup.string(),
-    email: Yup.string().email('Invalid email address').required('Email is required'),
-    shipping_address: Yup.string().required('Shipping address is required'),
-    position: Yup.string().required('Position is required'),
-    dob: Yup.date().required('Date of birth is required'),
-    credit_limit: Yup.string().required('Credit limit is required'),
-    opening_balance: Yup.string().required('Opening balance is required'),
-  });
+
+  // const validationSchema = Yup.object().shape({
+  //   type: Yup.string().required('Type is required'),
+  //   supplier_business_name: Yup.string().required('Supplier business name is required'),
+  //   prefix: Yup.string().required('Prefix is required'),
+  //   first_name: Yup.string().required('First name is required'),
+  //   middle_name: Yup.string(),
+  //   last_name: Yup.string().required('Last name is required'),
+  //   tax_number: Yup.string().required('Tax number is required'),
+  //   pay_term_number: Yup.string(),
+  //   pay_term_type: Yup.string(),
+  //   mobile: Yup.string().required('Mobile number is required'),
+  //   landline: Yup.string().required('Landline is required'),
+  //   alternate_number: Yup.string(),
+  //   city: Yup.string().required('City is required'),
+  //   state: Yup.string().required('State is required'),
+  //   country: Yup.string().required('Country is required'),
+  //   address_line_1: Yup.string(),
+  //   address_line_2: Yup.string(),
+  //   customer_group_id: Yup.string().required('Customer group ID is required'),
+  //   zip_code: Yup.string().required('Zip code is required'),
+  //   contact_id: Yup.string(),
+  //   custom_field1: Yup.string(),
+  //   custom_field2: Yup.string(),
+  //   custom_field3: Yup.string(),
+  //   custom_field4: Yup.string(),
+  //   custom_field5: Yup.string(),
+  //   custom_field6: Yup.string(),
+  //   custom_field7: Yup.string(),
+  //   custom_field8: Yup.string(),
+  //   custom_field9: Yup.string(),
+  //   custom_field10: Yup.string(),
+  //   email: Yup.string().email('Invalid email address').required('Email is required'),
+  //   shipping_address: Yup.string().required('Shipping address is required'),
+  //   position: Yup.string().required('Position is required'),
+  //   dob: Yup.date().required('Date of birth is required'),
+  //   credit_limit: Yup.string().required('Credit limit is required'),
+  //   opening_balance: Yup.string().required('Opening balance is required'),
+  // });
 
   // ======================== handle Edit contact ==============================
 
@@ -837,21 +823,21 @@ const StepperView = ({ isEdit, itemId, contact, ContactData }: any) => {
     }
   }, [contactEditData, isEdit])
 
-  const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
-    if (!isEdit) {
+  // const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
+  //   if (!isEdit) {
 
-      //@ts-ignore
-      dispatch(saveNewContact(values))
-    } else {
+  //     //@ts-ignore
+  //     dispatch(saveNewContact(values))
+  //   } else {
 
-      //@ts-ignore
-      dispatch(updateContact({ updateData: values, id: itemId }))
-    }
+  //     //@ts-ignore
+  //     dispatch(updateContact({ updateData: values, id: itemId }))
+  //   }
 
-    // activeStep === steps.length - 1 ? toast.success('Form Submitted') : null
-    setActiveStep(activeStep + 1)
-    resetForm()
-  }
+  //   // activeStep === steps.length - 1 ? toast.success('Form Submitted') : null
+  //   setActiveStep(activeStep + 1)
+  //   resetForm()
+  // }
 
   const renderContent = () => {
     if (activeStep === steps.length) {

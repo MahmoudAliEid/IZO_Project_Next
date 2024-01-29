@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
 import { useState, useEffect } from 'react'
 
@@ -8,14 +7,9 @@ import {
   FormControl,
   TextField,
   Select,
-  InputLabel,
   MenuItem,
-  Button,
-  Icon,
   Checkbox,
   FormControlLabel,
-  Typography,
-  FormHelperText,
   CardHeader,
   Chip,
   Divider
@@ -27,7 +21,8 @@ import { useSelector } from 'react-redux'
 const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
   // ** State
   const [positionDetails, setPositionDetails] = useState(null)
-  const [positionDetailsValue, setPositionDetailsValue] = useState([])
+
+  // const [positionDetailsValue, setPositionDetailsValue] = useState([])
 
   // ** Store Vars
   const store = useSelector(state => state.getCreateProduct?.data?.value?.product_racks)
@@ -141,8 +136,6 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
       </>
     )
   }
-
-  console.log(positionDetailsValue, 'positionDetailsValue 🥎🥎⚽⚽')
 
   return (
     <Grid container spacing={6}>

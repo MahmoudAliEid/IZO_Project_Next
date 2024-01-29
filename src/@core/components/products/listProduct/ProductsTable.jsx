@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React & Components
 import { useState, useEffect, Fragment } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -10,32 +9,21 @@ import ProductView from 'src/@core/components/products/listProduct/productView/P
 // ** Next Imports
 import { getCookie } from 'cookies-next'
 import Image from 'next/image'
-import Link from 'next/link'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import Card from '@mui/material/Card'
+
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import Tab from '@mui/material/Tab'
-import TabList from '@mui/lab/TabList'
-import TabPanel from '@mui/lab/TabPanel'
-import TabContext from '@mui/lab/TabContext'
-import { FormControl, Select, InputLabel, FormControlLabel, Checkbox } from '@mui/material'
+
 import { styled } from '@mui/material/styles'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-
-// ** Custom Component Import
-import TabsWrapper from 'src/@core/styles/mui/TabsWrapper'
 
 // ** Third Party Components
 import { DataGrid } from '@mui/x-data-grid'
@@ -76,7 +64,7 @@ const ViewInventory = ({ row }) => {
 }
 
 const RowOptions = ({ id, setOpenViewMain }) => {
-  // console.log(data, setData)
+  console.log(setOpenViewMain, 'setOpenViewMain')
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -420,219 +408,9 @@ const columns = [
   }
 ]
 
-// const columnsInventoryReport = [
-//   {
-//     flex: 0.1,
-//     minWidth: 90,
-//     sortable: false,
-//     field: 'action',
-//     headerName: 'Action',
-//     renderCell: ({ row }) => <RowOptions id={row.id} />
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'product',
-//     headerName: 'Product Name',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.product ? row.product : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.2,
-//     minWidth: 150,
-//     field: 'sku',
-//     headerName: 'SKU',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.sku ? row.sku : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'location',
-//     headerName: 'Business Location',
-//     renderCell: ({ row }) => {
-//       return <Typography sx={{ color: 'text.secondary' }}>{row.location ? row.location : 'Not available'}</Typography>
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 150,
-//     field: 'unit_price',
-//     headerName: 'Unit Price',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.unit_price ? row.unit_price + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 210,
-//     field: 'current_stock_value_individual_price',
-//     headerName: 'Current Stock Value (At the individual price to buy)',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.current_stock_value_individual_price
-//             ? row.current_stock_value_individual_price + ' ' + 'AED'
-//             : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 210,
-//     field: 'current_stock_value_purchase_price',
-//     headerName: 'Current Stock Value (By purchase price)',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.current_stock_value_purchase_price
-//             ? row.current_stock_value_purchase_price + ' ' + 'AED'
-//             : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 210,
-//     field: 'purchase_price_local_currency',
-//     headerName: 'Purchase Price in Local Currency',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.purchase_price_local_currency ? row.purchase_price_local_currency + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 220,
-//     field: 'current_stock_value_sale_price',
-//     headerName: 'Current Stock Value (At the price of individuals for sale)',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.current_stock_value_sale_price ? row.current_stock_value_sale_price + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 210,
-//     field: 'current_stock_value_sale_price',
-//     headerName: 'Current Stock Value (By sale price)',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.current_stock_value_sale_price ? row.current_stock_value_sale_price + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'selling_price_local_currency',
-//     headerName: 'Selling price in local currency',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.selling_price_local_currency ? row.selling_price_local_currency + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'potential_individual_profit',
-//     headerName: 'Potential individual profit',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.potential_individual_profit ? row.potential_individual_profit + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'potential_profit',
-//     headerName: 'Potential profit',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.potential_profit ? row.potential_profit + ' ' + 'AED' : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'total_unit_sold',
-//     headerName: 'Total unit sold',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.total_unit_sold ? row.total_unit_sold : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'total_unit_transferred',
-//     headerName: 'Total Unit Transferred',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.total_unit_transferred ? row.total_unit_transferred : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'total_unit_adjusted',
-//     headerName: 'Total Unit Adjusted',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.total_unit_adjusted ? row.total_unit_adjusted : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   },
-//   {
-//     flex: 0.25,
-//     minWidth: 190,
-//     field: 'current_stock_manufacturing',
-//     headerName: 'Current Stock (Manufacturing)',
-//     renderCell: ({ row }) => {
-//       return (
-//         <Typography sx={{ color: 'text.secondary' }}>
-//           {row.current_stock_manufacturing ? row.current_stock_manufacturing : 'Not available'}
-//         </Typography>
-//       )
-//     }
-//   }
-// ]
 const ProductsTable = () => {
   // ** State
-  const [openForm, setOpenForm] = useState(false)
+
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
@@ -643,15 +421,11 @@ const ProductsTable = () => {
   const [nextPageUrl, setNextPageUrl] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [lastPage, setLastPage] = useState(null)
-  const [withImage, setWithImage] = useState(1)
-  const [TabValue, setTabValue] = useState('1')
-  const [notForSale, setNotForSale] = useState(false)
 
   // const [dataTree, setDataTree] = useState(null)
 
   // ** Constants
   const newData = data && data.length ? data.map(item => ({ ...item })) : []
-  const title = 'Products List'
 
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -700,16 +474,6 @@ const ProductsTable = () => {
       dispatch(fetchProducts({ token }))
     }
   }, [dispatch, token, url])
-
-  // ** Functions
-  const handleAddClickOpen = () => setOpenForm(true)
-  const toggle = () => {
-    setOpenForm(prev => !prev)
-  }
-
-  const handleChangeTabValue = (event, newValue) => {
-    setTabValue(newValue)
-  }
 
   // ** handle search function
   const handleSearch = searchValue => {

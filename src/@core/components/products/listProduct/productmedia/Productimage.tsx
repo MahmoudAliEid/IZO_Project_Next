@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 // ** React Imports
 import { Fragment, useState } from 'react'
 
@@ -60,7 +60,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const Productimage = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }: Props) => {
+const Productimage = ({  setFieldValue }: Props) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
