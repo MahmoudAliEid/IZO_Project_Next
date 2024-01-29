@@ -58,6 +58,8 @@ const UserDropdown = (props: Props) => {
 
   const imgCookieFunc = () => {
     const imgCookie = getCookie("imgUrl")
+
+    //@ts-ignore
     setImgCookie(imgCookie)
   }
 
@@ -122,6 +124,8 @@ const UserDropdown = (props: Props) => {
       >
         <Avatar
           alt='John Doe'
+
+          //@ts-ignore
           src={imgCookie}
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
