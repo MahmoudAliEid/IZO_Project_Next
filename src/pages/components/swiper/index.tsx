@@ -154,6 +154,7 @@ const Swiper = () => {
               jsx: source.SwiperThumbnailsJSXCode
             }}
           >
+            {/* @ts-ignore */}
             <SwiperThumbnails direction={direction} />
           </CardSnippet>
         </Grid>
