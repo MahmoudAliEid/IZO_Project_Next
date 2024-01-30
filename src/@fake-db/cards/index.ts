@@ -39,13 +39,16 @@ const cardStatsData: CardStatsType = {
       subtitle: 'Last year analytics '
     }
   ],
+
   statsVertical: [
+    //@ts-ignore
     {
       stats: '$14,854',
       trendNumber: 28.14,
       title: 'Transactions',
       avatarSrc: '/images/cards/stats-vertical-card.png'
     },
+    //@ts-ignore
     {
       title: 'Order',
       stats: '$1,286',
@@ -53,12 +56,14 @@ const cardStatsData: CardStatsType = {
       trendNumber: 13.24,
       avatarSrc: '/images/cards/stats-vertical-cube.png'
     },
+    //@ts-ignore
     {
       title: 'Profit',
       stats: '$12,638',
       trendNumber: 72.8,
       avatarSrc: '/images/cards/stats-vertical-chart.png'
     },
+    //@ts-ignore
     {
       stats: '$2,468',
       trend: 'negative',
@@ -66,12 +71,14 @@ const cardStatsData: CardStatsType = {
       trendNumber: 14.82,
       avatarSrc: '/images/cards/stats-vertical-paypal.png'
     },
+    //@ts-ignore
     {
       stats: '$42,389',
       title: 'Revenue',
       trendNumber: 52.18,
       avatarSrc: '/images/cards/stats-vertical-desktop.png'
     },
+    //@ts-ignore
     {
       title: 'Sales',
       stats: '$4,679',
