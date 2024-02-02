@@ -212,10 +212,32 @@ const CrmSalesAnalytics = () => {
         enableShades: false,
         colorScale: {
           ranges: [
-            { from: 0, to: 1000, name: '1K', color: rgbaToHex(hexToRGBA(theme.palette.primary.main, 0.2)) },
-            { from: 1001, to: 2000, name: '2K', color: rgbaToHex(hexToRGBA(theme.palette.primary.main, 0.4)) },
-            { from: 2001, to: 3000, name: '3K', color: rgbaToHex(hexToRGBA(theme.palette.primary.main, 0.6)) },
-            { from: 3001, to: 4000, name: '4K', color: rgbaToHex(hexToRGBA(theme.palette.primary.main, 1)) }
+
+            {
+              from: 0, to: 1000, name: '1K', color: rgbaToHex(
+                //@ts-ignore
+                hexToRGBA(theme.palette.primary.main, 0.2)
+              )
+            },
+            {
+              from: 1001, to: 2000, name: '2K', color: rgbaToHex(
+                //@ts-ignore
+                hexToRGBA(theme.palette.primary.main, 0.4))
+            },
+            {
+              from: 2001, to: 3000, name: '3K', color: rgbaToHex(
+                //@ts-ignore
+                hexToRGBA(theme.palette.primary.main, 0.6))
+            },
+
+            {
+              from: 3001, to: 4000, name: '4K', color:
+
+                rgbaToHex(
+                //@ts-ignore
+                  hexToRGBA(theme.palette.primary.main, 1)
+                )
+            }
           ]
         }
       }
