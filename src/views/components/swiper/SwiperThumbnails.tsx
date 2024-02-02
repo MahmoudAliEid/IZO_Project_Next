@@ -70,7 +70,7 @@ const SwiperThumbnails = ({ images, direction }: { images: [], direction: Direct
   return (
     <>
       <Box ref={sliderRef} className='keen-slider' >
-        {images.map((img, index) => (
+        {images && Array.isArray(images)&& images.length>0 && images.map((img, index) => (
           <Box sx={{ display: 'flex', height: 340 }} key={img + index} className='keen-slider__slide'>
             <img style={{
               width: "100%",
@@ -98,7 +98,7 @@ const SwiperThumbnails = ({ images, direction }: { images: [], direction: Direct
       </Box>
 
       <Box sx={{ mt: 4 }} ref={thumbnailRef} className='keen-slider thumbnail'>
-        {images.map((img, index) => (
+        {images && Array.isArray(images)&& images.length>0 &&images.map((img, index) => (
           <Box key={img+index} sx={{ width: " 150px", height: "100px", display: 'flex', cursor: 'pointer' }} className='keen-slider__slide'>
             <img style={{
               width: "100%",
