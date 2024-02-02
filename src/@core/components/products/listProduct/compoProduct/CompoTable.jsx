@@ -9,7 +9,7 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
-import TablePagination from '@mui/material/TablePagination'
+// import TablePagination from '@mui/material/TablePagination'
 
 import {
   IconButton,
@@ -17,7 +17,6 @@ import {
   MenuItem,
   Tooltip,
   Dialog,
-  Grid,
   Box,
   FormControl,
   InputLabel,
@@ -32,17 +31,19 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Components
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import CustomInputField from '../productVariable/components/CustomInputField'
+import SearchAndSelect from './SearchAndSelect'
 
-const CompoTable = ({ rows, productIndex, values, handleChange, remove, setFieldValue }) => {
+const CompoTable = ({ rows, productIndex, values, handleChange, remove, setFieldValue, push }) => {
   // ** States
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  // const [page, setPage] = useState(0)
+  // const [rowsPerPage, setRowsPerPage] = useState(10)
   const [open, setOpen] = useState(false)
+  // const [allUnits, setAllUnits] = useState([])
 
   // const [variationsParent, setVariationsParent] = useState([])
   // const [variationsChild, setVariationsChild] = useState([])
   // const [filteredVariationChildSecond, setFilteredVariationChildSecond] = useState([])
-  // const [searchProduct, setSearchProduct] = useState(null)
+  const [searchProduct, setSearchProduct] = useState(null)
 
   // ** Selectors
   // const variation_templates = useSelector(state => state.getCreateProduct?.data?.value?.variation_templates)
@@ -67,6 +68,8 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
   //     setFilteredVariationChildSecond(filteredChild)
   //   }
   // }, [variationsChild, searchProduct])
+
+  //** update allUnits when all_units in rows */
 
   // ** columns
   const columns = [
@@ -107,12 +110,18 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
               label='Unit'
               fullWidth
             >
-              <MenuItem value=''>None</MenuItem>
-              <MenuItem value='kg'>kg</MenuItem>
-              <MenuItem value='g'>g</MenuItem>
-              <MenuItem value='l'>l</MenuItem>
-              <MenuItem value='ml'>ml</MenuItem>
-              <MenuItem value='pcs'>pcs</MenuItem>
+              {rows.filter(row => row.initial === false)[params.idx].all_unit &&
+              rows.filter(row => row.initial === false)[params.idx].all_unit.length > 0 ? (
+                rows
+                  .filter(row => row.initial === false)
+                  [params.idx].all_unit.map((unit, idx) => (
+                    <MenuItem key={idx} value={unit.id}>
+                      {unit.value}
+                    </MenuItem>
+                  ))
+              ) : (
+                <MenuItem value={''}>No Units</MenuItem>
+              )}
             </Select>
           </FormControl>
         </Box>
@@ -156,14 +165,14 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
     }
   ]
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage)
+  // }
 
-  const handleChangeRowsPerPage = event => {
-    setRowsPerPage(+event.target.value)
-    setPage(0)
-  }
+  // const handleChangeRowsPerPage = event => {
+  //   setRowsPerPage(+event.target.value)
+  //   setPage(0)
+  // }
 
   // useEffect(() => {
   //   if (filteredVariationChildSecond.length > 0) {
@@ -183,93 +192,98 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
   //   }
   // }, [filteredVariationChildSecond, setFieldValue, productIndex])
 
+  console.log('searchProduct 🎃🎃🎃🎃', searchProduct)
+  console.log('rows form compo table 🎃', rows)
+
   return (
     <>
-      <Box sx={{ my: 2, justifyContent: 'center', alignItems: 'center' }}>
-        <Grid item xs={6} sx={{ my: 5, justifyContent: 'center', alignItems: 'center', alignContent: 'center' }}>
-          <FormControl fullWidth>
-            <InputLabel id='demo-simple-select-label'>Search</InputLabel>
-            <Select
-              value={values.product_compo[productIndex].variation_template_id}
-              name={`product_compo.${productIndex}.search_product`}
-              onChange={e => {
-                handleChange(e)
-                setSearchProduct(e.target.value)
-                setFieldValue(`product_compo.${productIndex}.rows`, [])
-                setOpen(true)
+      <SearchAndSelect
+        rows={rows}
+        values={values}
+        setFieldValue={setFieldValue}
+        handleChange={handleChange}
+        productIndex={productIndex}
+        searchProduct={searchProduct}
+        setSearchProduct={setSearchProduct}
+        push={push}
+        setOpen={setOpen}
+      />
 
-                // setTriggerChange(prev => !prev)
-              }}
-              id='demo-simple-select'
-              label='Search'
-              fullWidth
-            >
-              <MenuItem value=''>None</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-      </Box>
-      {rows && rows.length > 0 ? (
-        <>
-          <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
-            <Table stickyHeader stickyFooter aria-label='sticky table'>
-              <TableHead>
-                <TableRow>
-                  {columns.map((column, idx) => (
-                    <TableCell
-                      key={idx}
-                      align={column.align || 'center'}
-                      sx={{
-                        minWidth: column.minWidth,
-                        flex: column.flex,
-                        flexDirection: 'column',
-                        justifyContent: 'center'
-                      }}
-                    >
-                      {column.headerName}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, idx) => {
-                  return (
+      <>
+        <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+          <Table stickyHeader stickyFooter aria-label='sticky table'>
+            <TableHead>
+              <TableRow>
+                {columns.map((column, idx) => (
+                  <TableCell
+                    key={idx}
+                    align={column.align || 'center'}
+                    sx={{
+                      minWidth: column.minWidth,
+                      flex: column.flex,
+                      flexDirection: 'column',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    {column.headerName}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows && rows.length > 0 ? (
+                rows
+                  .filter(row => row.initial === false)
+                  .map((row, idx) => (
                     <TableRow hover role='checkbox' key={idx}>
                       {columns.map((column, index) => {
                         const params = row[column.field]
+                        console.log(row, 'row form table compo')
 
                         return (
-                          <TableCell key={index} align={column.align}>
+                          <TableCell key={index + 1} align={column.align}>
                             {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
                           </TableCell>
                         )
                       })}
                     </TableRow>
-                  )
-                })}
-              </TableBody>
-              {/* {i want to add table footer contains total Net Total Amount  that === sum of all total_amount per row} */}
-
-              <TableFooter
-                style={{
-                  position: 'sticky',
-                  bottom: '0',
-                  backdropFilter: 'blur(1000px)',
-                  backgroundColor: '#606263'
-                }}
-              >
+                  ))
+              ) : (
                 <TableRow>
+                  <TableCell></TableCell>
                   <TableCell colSpan={3}>
-                    <Typography>Total Net Amount:</Typography>
+                    <Typography variant='body2' align='center' sx={{ my: 10 }}>
+                      No Rows 🍰 🍦
+                    </Typography>
                   </TableCell>
-                  <TableCell align='right' colSpan={2}>
-                    <Typography>{rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)}</Typography>
-                  </TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
-              </TableFooter>
-            </Table>
-          </TableContainer>
-          <TablePagination
+              )}
+            </TableBody>
+            <TableFooter
+              style={{
+                position: 'sticky',
+                bottom: '0',
+
+                backgroundColor: '#424242'
+              }}
+            >
+              <TableRow>
+                <TableCell colSpan={3}>
+                  <Typography>Total Net Amount:</Typography>
+                </TableCell>
+                <TableCell align='right' colSpan={2}>
+                  <Typography>
+                    {rows
+                      .filter(row => row.initial === false)
+                      .reduce((acc, curr) => acc + Number(curr.total_amount), 0)}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+        {/* <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component='div'
             count={rows.length}
@@ -277,19 +291,15 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </>
-      ) : (
-        <Typography variant='h6' align='center' sx={{ my: 10 }}>
-          No Rows
-        </Typography>
-      )}
+          /> */}
+      </>
+
       {open && (
         <Dialog
           open={open}
           onClose={setTimeout(() => {
             setOpen(false)
-          }, 3000)}
+          }, 2000)}
           maxWidth='md'
           fullWidth
           sx={{
@@ -337,11 +347,11 @@ const RowOptions = ({ id, idx, params, remove }) => {
   }
 
   const handleDelete = () => {
-    remove(idx)
+    console.log('id 👀👀👀', id)
+    console.log('idx 👀👀👀', idx)
+    console.log('params 👀👀👀✨', params)
 
-    console.log('id 🎁🎁🎁🎁', id)
-    console.log('idx 🏆🏆🏅🏅🥈🥇', idx)
-    console.log('params 🎃🎃✨', params)
+    remove(idx)
 
     handleRowOptionsClose()
   }
@@ -366,7 +376,7 @@ const RowOptions = ({ id, idx, params, remove }) => {
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <Tooltip title='Delete this Row'>
+        <Tooltip title={`Delete this Row ${idx}`}>
           <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
             <Icon icon='bx:trash-alt' fontSize={20} />
             Delete

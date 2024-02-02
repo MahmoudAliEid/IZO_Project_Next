@@ -1,7 +1,8 @@
 import { TextField, Tooltip } from '@mui/material'
 import { useField } from 'formik'
 
-const CustomInputField = ({ name, value, onChange }) => {
+const CustomInputField = props => {
+  const { name, value, onChange, label } = props
   const [field] = useField(name)
 
   return (
@@ -10,6 +11,7 @@ const CustomInputField = ({ name, value, onChange }) => {
         <Tooltip title={value}>
           <TextField
             type='text'
+            label={label ? label : ''}
             {...field}
             value={value}
             onChange={e => {
@@ -21,6 +23,7 @@ const CustomInputField = ({ name, value, onChange }) => {
         <TextField
           type='text'
           {...field}
+          label={label ? label : ''}
           value={value}
           onChange={e => {
             onChange(e)

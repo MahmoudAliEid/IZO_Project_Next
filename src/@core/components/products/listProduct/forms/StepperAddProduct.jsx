@@ -440,19 +440,22 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     product_compo: [
       {
         item_level_purchase_price_total: 0, //hide
-        profit_percent: 0,
+        profit_percent: '',
         selling_price: 0, //hide
-        selling_price_inc_tax: 0,
+        selling_price_inc_tax: '',
         purchase_price_inc_tax: '',
         search_product: '',
+        p_id: '',
         rows: [
           {
             name: '',
-            composition_variation_id: '', //hide
+            composition_variation_id: '', //hide variation_id
             quantity: 1,
-            unit: '',
-            purchase_price_exc: '',
-            total_amount: 1 // quantity * purchase_price_exc
+            unit: '', //selected unit form menu
+            purchase_price_exc: '', //purchase_price
+            total_amount: 1, // quantity * purchase_price_exc
+            all_unit: [],
+            initial: true
           }
         ]
       }

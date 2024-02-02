@@ -804,11 +804,13 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
 
   // ** useEffect
   useEffect(() => {
-    setUnitsData(units)
     if (sub_units) {
       setSubUnitsData(sub_units)
     }
-  }, [units, sub_units])
+  }, [sub_units])
+  useEffect(() => {
+    setUnitsData(units)
+  }, [units])
 
   // ** filter sub units
   useEffect(() => {

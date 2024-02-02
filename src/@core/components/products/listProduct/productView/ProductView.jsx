@@ -13,15 +13,14 @@ import {
   Typography,
   CardActions,
   Button,
-  Chip
+  Chip,
+  FormControl,
+  TextField
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // ** Custom Components
 import SwiperThumbnails from 'src/views/components/swiper/SwiperThumbnails'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
@@ -218,14 +217,29 @@ const ProductView = ({ open, setOpen, id }) => {
                     sm={12}
                     key={index}
                   >
-                    <Box sx={{ display: 'flex', mb: 4 }}>
-                      <Icon sx={{ mr: 4, color: 'text.secondary' }} />
-                      <Typography sx={{ ml: 3, mr: 2, fontWeight: 700, color: 'text.secondary' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        mb: 4,
+                        gap: 2,
+                        flexDirection:
+                          data.field === 'full_description' || data.field === 'description' ? 'column' : 'row'
+                      }}
+                    >
+                      <Typography sx={{ ml: 3, fontWeight: 700, color: 'text.secondary' }}>
                         {data.headerName}:
                       </Typography>
                       {(data.field === 'description' && productInfo[data.field]) ||
                       (data.field === 'full_description' && productInfo[data.field]) ? (
-                        <Chip label={ReactHtmlParser(productInfo[data.field])} />
+                        <FormControl fullWidth>
+                          <TextField
+                            label={data.field === 'description' ? 'Description' : 'Full Description'}
+                            multiline
+                            rows={4}
+                            value={ReactHtmlParser(productInfo[data.field]) || ''}
+                            variant='outlined'
+                          />
+                        </FormControl>
                       ) : (
                         <Chip label={productInfo[data.field]} size={'small'} />
                       )}
