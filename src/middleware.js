@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { verifyAuth } from './jwt'
 
-export default middleware = async req => {
+const middleware = async req => {
   const token = req.cookies.get('token')
   const key = req.cookies.get('key')
   const path = req.nextUrl.pathname // Extract the path from the URL
@@ -22,3 +22,5 @@ export default middleware = async req => {
   return NextResponse.next()
   // ...
 }
+
+export default middleware
