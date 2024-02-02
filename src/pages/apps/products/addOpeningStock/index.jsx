@@ -1170,3 +1170,13 @@
 // }
 
 // export default ProductPrices
+
+const AddOpeningStock = () => {
+  return (
+    <div>
+      <h1>Add Opening Stock 🎉</h1>
+    </div>
+  )
+}
+
+export default AddOpeningStock
