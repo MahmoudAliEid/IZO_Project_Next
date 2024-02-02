@@ -10,6 +10,14 @@ const middleware = async req => {
   // Redirect logic
   // ...
 
+  // If valid token and attempting to access the home page, redirect to a different page
+  if (validToken && path === '/') {
+    return NextResponse.redirect('/dashboards/analytics')
+  }
+  if (!validToken && path === '/') {
+    return NextResponse.redirect('/login')
+  }
+
   // ** First Time
   if (!validToken && !path.includes('/login') && path.includes('/dashboards')) {
     return NextResponse.redirect('/login')
