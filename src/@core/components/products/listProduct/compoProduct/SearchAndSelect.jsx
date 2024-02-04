@@ -94,7 +94,8 @@ const SearchAndSelect = ({
         purchase_price_exc: searchInfo[0].purchase_price,
         total_amount: 1 * searchInfo[0].purchase_price,
         all_unit: searchInfo[0].all_unit,
-        initial: false
+        initial: false,
+        unit_quantity: 1
       })
 
       // Reset autoAdd after successfully pushing the row
@@ -133,7 +134,8 @@ const SearchAndSelect = ({
                   purchase_price_exc: item.purchase_price,
                   total_amount: 1 * item.purchase_price,
                   all_unit: item.all_unit,
-                  initial: false
+                  initial: false,
+                  unit_quantity: 1
                 })
               )
             } else {
@@ -146,7 +148,8 @@ const SearchAndSelect = ({
                 purchase_price_exc: newValue.purchase_price,
                 total_amount: 1 * newValue.purchase_price,
                 all_unit: newValue.all_unit,
-                initial: false
+                initial: false,
+                unit_quantity: 1
               })
             }
           }

@@ -1,4 +1,4 @@
-import { Box, Divider, CardHeader, FormControl, Chip, Grid } from '@mui/material'
+import { Box, Divider, CardHeader, FormControl, Chip, Grid, FormHelperText } from '@mui/material'
 
 // ** formik
 import { FieldArray, Form } from 'formik'
@@ -60,7 +60,18 @@ const CompoProduct = ({ initialValues, setFieldValue, handleChange }) => {
                                 label={'Margin %'}
                                 name={`product_compo.${productIndex}.profit_percent`}
                                 value={product.profit_percent}
-                                onChange={handleChange}
+                                onChange={e => {
+                                  handleChange(e)
+                                  // update default selling price when profit percent changes add tax
+                                  const newProfit = Number(e.target.value)
+                                  const taxValue = 1 + initialValues.tax
+                                  const newSellingPrice =
+                                    Number(product.item_level_purchase_price_total) * (1 + newProfit / 100) * taxValue
+                                  setFieldValue(
+                                    `product_compo.${productIndex}.selling_price_inc_tax`,
+                                    Number(newSellingPrice).toFixed(2)
+                                  )
+                                }}
                               />
                             </FormControl>
                           </Grid>
@@ -72,9 +83,36 @@ const CompoProduct = ({ initialValues, setFieldValue, handleChange }) => {
                               <CustomInputField
                                 label={'Default Sale Price'}
                                 name={`product_compo.${productIndex}.selling_price_inc_tax`}
-                                value={product.selling_price_inc_tax}
-                                onChange={handleChange}
+                                value={
+                                  product.selling_price_inc_tax
+                                  // ? product.selling_price_inc_tax
+                                  // : product.rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)
+
+                                  // product.selling_price_inc_tax <
+                                  // product.rows
+                                  //   .filter(row => row.initial === false)
+                                  //   .reduce((acc, curr) => acc + Number(curr.total_amount), 0)
+                                  //   ? product.rows
+                                  //       .filter(row => row.initial === false)
+                                  //       .reduce((acc, curr) => acc + Number(curr.total_amount), 0) *
+                                  //     (1 + initialValues.tax)
+                                  //   : product.selling_price_inc_tax
+                                }
+                                onChange={e => {
+                                  handleChange(e)
+                                  setFieldValue(`product_compo.${productIndex}.profit_percent`, 0)
+                                  setFieldValue(
+                                    `product_compo.${productIndex}.change`,
+                                    Number(e.target.value).toFixed(2)
+                                  )
+                                }}
                               />
+                              <FormHelperText sx={{ color: 'red' }}>
+                                {product.selling_price_inc_tax <
+                                  product.rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0) && (
+                                  <span> ⚠You entered Selling price low than Purchase price</span>
+                                )}
+                              </FormHelperText>
                             </FormControl>
                           </Grid>
                         </Grid>

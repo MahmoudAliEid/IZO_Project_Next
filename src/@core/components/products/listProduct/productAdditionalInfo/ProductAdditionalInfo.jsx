@@ -94,7 +94,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   const PositionComponent = () => {
     return (
       <>
-        {positionDetails && positionDetailsValue && positionDetails.length > 0 ? (
+        {positionDetails && positionDetails.length > 0 ? (
           <Grid item xs={12}>
             <Divider>
               <Chip label='Position Details' variant='outlined' color='primary' />

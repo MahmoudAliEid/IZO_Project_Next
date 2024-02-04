@@ -109,24 +109,34 @@ interface UserData {
   users: object
 }
 export async function getStaticProps() {
-  // Fetch data from the API
+  try {
+    const token = getCookie('token');
+    const response = await axios.get(`https://test.izocloud.net/api/app/react/get-user`, {
+      headers: {
+        Authorization: 'Bearer ' + `${token}`,
+      },
+    });
 
-  const token = getCookie('token')
-  const response = await axios.get(`https://test.izocloud.net/api/app/react/get-user`, {
-    headers: {
-      Authorization: 'Bearer ' + `${token}`
-    }
-  })
+    const userData = await response.data;
 
-  const userData = await response.data
+    return {
+      props: {
+        userData,
+      },
+      revalidate: 1, // In seconds
+    };
+  } catch (error) {
+    console.error('Error fetching data:', error);
 
-  return {
-    props: {
-      userData
-    },
-    revalidate: 1, // In seconds
+    return {
+      props: {
+        userData: null,
+      },
+      revalidate: 1, // In seconds
+    };
   }
 }
+
 
 
 const LoginPage: React.FC<{ userData: UserData }> & {
@@ -310,6 +320,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
     labelId="demo-simple-select-label"
     id="demo-simple-select"
                     value={Language}
+                    label='Language'
 
                     //@ts-ignore
     onChange={handleChangeLanguage}
@@ -351,46 +362,8 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                 <FormControlLabel value={"false"} label="Write my User Name" control={<Radio />} />
               </RadioGroup>
             </FormControl>
-            {chooseTypeInputName === "true" ? (<FormControl
-              fullWidth
-              sx={{
-                mb: 2,
-                '& .Mui-focused': {
-                  borderColor: '#ec6608 !important',
-                  color: '#ec6608 !important',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#ec6608 !important'
-                  }
-                }
-              }}
-            >
-              <TextField
-                id='outlined-select-currency'
-                select
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <AccountCircle />
-                    </InputAdornment>
-                  )
-                }}
-                label='User Name'
-                error={userNameError ? true : false}
-                value={username}
-                helperText={userNameError}
-                onChange={handleChangeUserName}
-              >
-                {usersDataNames?.map((user: any, index: number) => (
-                  <MenuItem key={index} value={user.value}>
-                    {user.value}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FormControl>) : (
-
-
-
-              <FormControl
+            {chooseTypeInputName === "true" ? (
+               <FormControl
                 fullWidth
                 sx={{
                   mb: 2,
@@ -405,7 +378,8 @@ const LoginPage: React.FC<{ userData: UserData }> & {
               >
                 <InputLabel id='outlined-select-currency-label'>User Name</InputLabel>
                 <Select
-                  id='outlined-select-currency'
+                    id='outlined-select-currency'
+                    label='User Name'
                     value={username}
 
                     //@ts-ignore
@@ -417,7 +391,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                   }
                   error={userNameError ? true : false}
                 >
-                  {usersDataNames?.map((user: any, index: number) => (
+                  {usersDataNames && Array.isArray(usersDataNames) && usersDataNames.length>0 && usersDataNames?.map((user: any, index: number) => (
                     <MenuItem key={index} value={user.value}>
                       {user.value}
                     </MenuItem>
@@ -425,6 +399,41 @@ const LoginPage: React.FC<{ userData: UserData }> & {
                 </Select>
                 {userNameError && <FormHelperText>{userNameError}</FormHelperText>}
               </FormControl>
+             ) : (
+
+ <FormControl
+              fullWidth
+              sx={{
+                mb: 2,
+                '& .Mui-focused': {
+                  borderColor: '#ec6608 !important',
+                  color: '#ec6608 !important',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ec6608 !important'
+                  }
+                }
+              }}
+            >
+              <TextField
+                id='outlined-select-currency'
+
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <AccountCircle />
+                    </InputAdornment>
+                  )
+                }}
+                label='User Name'
+                error={userNameError ? true : false}
+                value={username}
+                helperText={userNameError}
+                onChange={handleChangeUserName}
+              >
+              </TextField>
+            </FormControl>
+
+
             )}
 
             <FormControl

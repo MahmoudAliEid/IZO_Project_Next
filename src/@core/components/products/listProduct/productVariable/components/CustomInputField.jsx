@@ -2,7 +2,7 @@ import { TextField, Tooltip } from '@mui/material'
 import { useField } from 'formik'
 
 const CustomInputField = props => {
-  const { name, value, onChange, label } = props
+  const { name, value, onChange, label, disabled } = props
   const [field] = useField(name)
 
   return (
@@ -17,6 +17,7 @@ const CustomInputField = props => {
             onChange={e => {
               onChange(e)
             }}
+            disabled={disabled ? true : false}
           />
         </Tooltip>
       ) : (
@@ -28,6 +29,7 @@ const CustomInputField = props => {
           onChange={e => {
             onChange(e)
           }}
+          disabled={disabled ? true : false}
         />
       )}
     </>

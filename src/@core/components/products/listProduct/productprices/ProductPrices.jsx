@@ -930,6 +930,20 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                   }
                 })
                 setFieldValue(`product_variation`, update_product_variations)
+
+                const update_product_compo = initialValues.product_compo.map(pItem => {
+                  const newSellingPrice =
+                    Number(pItem.item_level_purchase_price_total) *
+                    Number(1 + pItem.profit_percent / 100) *
+                    Number(1 + tax.value)
+
+                  return {
+                    ...pItem,
+
+                    ['selling_price_inc_tax']: newSellingPrice
+                  }
+                })
+                setFieldValue(`product_compo`, update_product_compo)
               }}
               label='Applicable Tax'
               name='tax_id'

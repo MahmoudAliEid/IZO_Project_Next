@@ -391,6 +391,10 @@ export const saveProduct = createAsyncThunk('dashboard/createProduct', async pay
     })
   }
 
+  if (product.product_type === 'combo') {
+    formData.append('product_compo', JSON.stringify(product.product_compo))
+  }
+
   // if (product.positionDetailsValue && product.positionDetailsValue?.length > 0) {
   //   for (let i = 0; i < product.positionDetailsValue.length; i++) {
   //     const id = product.positionDetailsValue[i].id

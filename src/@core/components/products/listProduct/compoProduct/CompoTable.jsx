@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Paper from '@mui/material/Paper'
@@ -81,7 +81,7 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
       minWidth: 120,
       renderCell: params => (
         <CustomInputField
-          name={`product_compo.${productIndex}.rows.${params.idx}.name`}
+          name={`product_compo.${productIndex}.rows.${params.idx + 1}.name`}
           value={params.name}
           onChange={handleChange}
         />
@@ -98,27 +98,51 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
           <CustomInputField
             name={`product_compo.${productIndex}.rows.${params.idx}.quantity`}
             value={params.quantity}
-            onChange={handleChange}
+            onChange={e => {
+              handleChange(e)
+              const newValue = Number(e.target.value) * Number(params.purchase_price_exc) * Number(params.unit_quantity)
+              //update total amount when quantity changes
+              console.log('value from quantity', e.target.value, params.purchase_price_exc, params.unit_quantity)
+              setFieldValue(
+                `product_compo.${productIndex}.rows.${params.idx}.total_amount`,
+                Number(newValue).toFixed(2)
+              )
+            }}
           />
           <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
             <Select
               value={params.unit}
               name={`product_compo.${productIndex}.rows.${params.idx}.unit`}
-              onChange={handleChange}
+              onChange={e => {
+                handleChange(e)
+
+                // set value of unit_quantity to unit_quantity
+                setFieldValue(
+                  `product_compo.${productIndex}.rows.${params.idx}.unit_quantity`,
+                  rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
+                )
+                // when unit takes a unit_quantity , update total amount
+
+                setFieldValue(
+                  `product_compo.${productIndex}.rows.${params.idx}.total_amount`,
+                  Number(
+                    params.purchase_price_exc *
+                      params.quantity *
+                      rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
+                  ).toFixed(2)
+                )
+              }}
               id='demo-simple-select'
               label='Unit'
               fullWidth
             >
-              {rows.filter(row => row.initial === false)[params.idx].all_unit &&
-              rows.filter(row => row.initial === false)[params.idx].all_unit.length > 0 ? (
-                rows
-                  .filter(row => row.initial === false)
-                  [params.idx].all_unit.map((unit, idx) => (
-                    <MenuItem key={idx} value={unit.id}>
-                      {unit.value}
-                    </MenuItem>
-                  ))
+              {rows[params.idx].all_unit && rows[params.idx].all_unit.length > 0 ? (
+                rows[params.idx].all_unit.map((unit, idx) => (
+                  <MenuItem key={idx} value={unit.id}>
+                    {unit.value}
+                  </MenuItem>
+                ))
               ) : (
                 <MenuItem value={''}>No Units</MenuItem>
               )}
@@ -131,6 +155,7 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
       field: 'purchase_price_exc',
       headerName: 'Purchase Price Exc Tax',
       align: 'center',
+
       flex: 0.25,
       minWidth: 120,
       renderCell: params => (
@@ -138,6 +163,7 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
           name={`product_compo.${productIndex}.rows.${params.idx}.purchase_price_exc`}
           value={params.purchase_price_exc}
           onChange={handleChange}
+          disabled={true}
         />
       )
     },
@@ -152,6 +178,7 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
           name={`product_compo.${productIndex}.rows.${params.idx}.total_amount`}
           value={params.total_amount}
           onChange={handleChange}
+          disabled={true}
         />
       )
     },
@@ -192,6 +219,49 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
   //   }
   // }, [filteredVariationChildSecond, setFieldValue, productIndex])
 
+  const profit = values.product_compo[productIndex].profit_percent
+
+  useEffect(() => {
+    const tax = values.tax
+
+    setFieldValue(
+      `product_compo.${productIndex}.selling_price_inc_tax`,
+      rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0) * (1 + tax) * (1 + profit / 100)
+    )
+  }, [rows, setFieldValue, productIndex, values.tax, profit])
+
+  // useEffect(() => {
+  //   setFieldValue(
+  //     `product_compo.${productIndex}.selling_price_inc_tax`,
+  //     rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)
+  //   )
+  // }, [rows, setFieldValue, productIndex])
+
+  useEffect(() => {
+    setFieldValue(
+      `product_compo.${productIndex}.item_level_purchase_price_total`,
+      rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)
+    )
+  }, [rows, setFieldValue, productIndex])
+
+  // update selling_price_inc_tax when value.tax changes
+  // useEffect(() => {
+  //   if (values.product_compo[productIndex].change === null) {
+  //     const profit = values.product_compo[productIndex].profit_percent //0
+  //     const tax = values.tax //0.05
+  //     const newSellingPrice =
+  //       Number(values.product_compo[productIndex].item_level_purchase_price_total) * (1 + profit / 100) * (1 + tax)
+  //     setFieldValue(`product_compo.${productIndex}.selling_price_inc_tax`, Number(newSellingPrice).toFixed(2))
+  //   } else {
+  //     const newValue = values.product_compo[productIndex].change
+  //     setFieldValue(`product_compo.${productIndex}.selling_price_inc_tax`, newValue)
+  //   }
+
+  //   return () => {
+  //     setFieldValue(`product_compo.${productIndex}.change`, null)
+  //   }
+  // }, [values, setFieldValue, productIndex])
+
   console.log('searchProduct 🎃🎃🎃🎃', searchProduct)
   console.log('rows form compo table 🎃', rows)
 
@@ -231,29 +301,27 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows && rows.length > 0 ? (
-                rows
-                  .filter(row => row.initial === false)
-                  .map((row, idx) => (
-                    <TableRow hover role='checkbox' key={idx}>
-                      {columns.map((column, index) => {
-                        const params = row[column.field]
-                        console.log(row, 'row form table compo')
+              {rows && rows.length > 1 ? (
+                rows.map((row, idx) => (
+                  <TableRow hover role='checkbox' key={idx} sx={{ display: row.initial ? 'none' : 'default' }}>
+                    {columns.map((column, index) => {
+                      const params = row[column.field]
+                      console.log(row, 'row form table compo')
 
-                        return (
-                          <TableCell key={index + 1} align={column.align}>
-                            {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
-                          </TableCell>
-                        )
-                      })}
-                    </TableRow>
-                  ))
+                      return (
+                        <TableCell key={index + 1} align={column.align}>
+                          {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                ))
               ) : (
                 <TableRow>
                   <TableCell></TableCell>
                   <TableCell colSpan={3}>
                     <Typography variant='body2' align='center' sx={{ my: 10 }}>
-                      No Rows 🍰 🍦
+                      No Rows 🍰
                     </Typography>
                   </TableCell>
                   <TableCell></TableCell>
@@ -273,11 +341,7 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
                   <Typography>Total Net Amount:</Typography>
                 </TableCell>
                 <TableCell align='right' colSpan={2}>
-                  <Typography>
-                    {rows
-                      .filter(row => row.initial === false)
-                      .reduce((acc, curr) => acc + Number(curr.total_amount), 0)}
-                  </Typography>
+                  <Typography>{rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)}</Typography>
                 </TableCell>
               </TableRow>
             </TableFooter>
