@@ -1,6 +1,6 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from 'react'
-import { EditorState } from 'draft-js'
+// import { EditorState } from 'draft-js'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -103,12 +103,17 @@ const Step = styled(MuiStep)(({ theme }) => ({
 }))
 
 const StepperAddProduct = ({ isEdit, itemId }) => {
+  // select names
+  const names = useSelector(state => state.getCreateProduct.data?.value?.product_price)
+
   //** States */
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
+  const [tableNames, setTableNames] = useState(names)
   const [activeStep, setActiveStep] = useState(0)
   const [unitId, setUnitId] = useState('')
   const [openLoading, setOpenLoading] = useState(false)
+  const [updatingProductData, setUpdatingProductData] = useState(null)
   const [initialValues, setInitialValues] = useState({
     name: '',
     code: '',
@@ -119,12 +124,14 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     brand_id: '',
     category_id: '',
     sub_category_id: '',
-    enable_stock: false,
+    enable_stock: 0,
     alert_quantity: null,
     warranty_id: '',
     show_more_price: false,
-    long_description: EditorState.createEmpty(),
-    short_description: EditorState.createEmpty(),
+
+    long_description: '<h1>hi, form izo , Ebrahem & Mahmoud</h1>',
+    short_description:
+      '<h2><span style="font-size: 18px;font-family: Georgia;"><strong>Hello , World!🥒🥒</strong></span></h2>\n',
     location: [],
     productImage: [],
     productmultipleimages: [],
@@ -145,7 +152,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     tableData: [
       {
         id: 1,
-        value: 'default_price',
+        value: `${tableNames[0].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -154,7 +161,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 2,
-        value: 'whole_price',
+        value: `${tableNames[1].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -163,7 +170,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 3,
-        value: 'retail_price',
+        value: `${tableNames[2].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -172,7 +179,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 4,
-        value: 'minimum_price',
+        value: `${tableNames[3].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -181,7 +188,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 5,
-        value: 'last_price',
+        value: `${tableNames[4].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -190,7 +197,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 6,
-        value: 'ecm_before_price',
+        value: `${tableNames[5].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -199,7 +206,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 7,
-        value: 'ecm_after_price',
+        value: `${tableNames[6].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -208,7 +215,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 8,
-        value: 'custom_price_1',
+        value: `${tableNames[7].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -217,7 +224,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 9,
-        value: 'custom_price_2',
+        value: `${tableNames[8].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -226,7 +233,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 10,
-        value: 'custom_price_3',
+        value: `${tableNames[9].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -237,7 +244,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     tableDataChildOne: [
       {
         id: 1,
-        value: 'default_price',
+        value: `${tableNames[0].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -246,7 +253,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 2,
-        value: 'whole_price',
+        value: `${tableNames[1].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -255,7 +262,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 3,
-        value: 'retail_price',
+        value: `${tableNames[2].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -264,7 +271,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 4,
-        value: 'minimum_price',
+        value: `${tableNames[3].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -273,7 +280,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 5,
-        value: 'last_price',
+        value: `${tableNames[4].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -282,7 +289,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 6,
-        value: 'ecm_before_price',
+        value: `${tableNames[5].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -291,7 +298,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 7,
-        value: 'ecm_after_price',
+        value: `${tableNames[6].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -300,7 +307,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 8,
-        value: 'custom_price_1',
+        value: `${tableNames[7].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -309,7 +316,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 9,
-        value: 'custom_price_2',
+        value: `${tableNames[8].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -318,7 +325,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 10,
-        value: 'custom_price_3',
+        value: `${tableNames[9].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -329,7 +336,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     tableDataChildTwo: [
       {
         id: 1,
-        value: 'default_price',
+        value: `${tableNames[0].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -338,7 +345,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 2,
-        value: 'whole_price',
+        value: `${tableNames[1].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -347,7 +354,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 3,
-        value: 'retail_price',
+        value: `${tableNames[2].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -356,7 +363,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 4,
-        value: 'minimum_price',
+        value: `${tableNames[3].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -365,7 +372,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 5,
-        value: 'last_price',
+        value: `${tableNames[4].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -374,7 +381,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 6,
-        value: 'ecm_before_price',
+        value: `${tableNames[5].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -383,7 +390,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 7,
-        value: 'ecm_after_price',
+        value: `${tableNames[6].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -392,7 +399,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 8,
-        value: 'custom_price_1',
+        value: `${tableNames[7].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -401,7 +408,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 9,
-        value: 'custom_price_2',
+        value: `${tableNames[8].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -410,7 +417,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
       },
       {
         id: 10,
-        value: 'custom_price_3',
+        value: `${tableNames[9].value}`,
         single_dpp: 0,
         single_dpp_in_tax: 0,
         profit_percent: 0,
@@ -418,6 +425,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
         single_dsp_inc_tax: 0
       }
     ],
+
     product_variation: [
       {
         id: 1,
@@ -548,6 +556,70 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
 
   // }
 
+  // ** Selector for Update Product
+  const updateProduct = useSelector(state => state.getUpdateProduct?.data?.value.info)
+
+  // Trigger Change in Update Product
+  useEffect(() => {
+    if (updateProduct) {
+      setUpdatingProductData(updateProduct)
+    }
+  }, [updateProduct])
+
+  useEffect(() => {
+    if (names) {
+      setTableNames(names)
+    }
+  }, [names])
+
+  console.log('from stepper tableNames 🧀🧀', tableNames)
+
+  // ** Set Initial Values for Update Product in UseEffect
+  useEffect(() => {
+    if (isEdit && updatingProductData) {
+      setInitialValues(prevState => ({
+        ...prevState,
+        name: updatingProductData.name || prevState.name,
+        code: updatingProductData.code || prevState.code,
+        code2: updatingProductData.code2 || prevState.code2,
+        barcode_type: updatingProductData.barcode_type || prevState.barcode_type,
+        unit_id: updatingProductData.unit_id || prevState.unit_id,
+        sub_unit_id: updatingProductData.sub_unit_id || prevState.sub_unit_id,
+        brand_id: updatingProductData.brand_id || prevState.brand_id,
+        category_id: updatingProductData.category_id || prevState.category_id,
+        sub_category_id: updatingProductData.sub_category_id || prevState.sub_category_id,
+        enable_stock: updatingProductData.enable_stock || prevState.enable_stock,
+        alert_quantity: updatingProductData.alert_quantity || prevState.alert_quantity,
+        warranty_id: updatingProductData.warranty_id || prevState.warranty_id,
+        show_more_price: updatingProductData.show_more_price || prevState.show_more_price,
+        long_description: updatingProductData.long_description || prevState.long_description,
+        short_description: updatingProductData.short_description || prevState.short_description,
+        location: updatingProductData.location || prevState.location,
+        productImage: updatingProductData.productImage || prevState.productImage,
+        productmultipleimages: updatingProductData.productmultipleimages || prevState.productmultipleimages,
+        productbrochure: updatingProductData.productbrochure || prevState.productbrochure,
+        productvideo: updatingProductData.productvideo || prevState.productvideo,
+        not_for_sale: updatingProductData.not_for_sale || prevState.not_for_sale,
+        expiry_period: updatingProductData.expiry_period || prevState.expiry_period,
+        expiry_period_type: updatingProductData.expiry_period_type || prevState.expiry_period_type,
+        weight: updatingProductData.weight || prevState.weight,
+        custom_field_1: updatingProductData.custom_field_1 || prevState.custom_field_1,
+        custom_field_2: updatingProductData.custom_field_2 || prevState.custom_field_2,
+        custom_field_3: updatingProductData.custom_field_3 || prevState.custom_field_3,
+        custom_field_4: updatingProductData.custom_field_4 || prevState.custom_field_4,
+        product_type: updatingProductData.product_type || prevState.product_type,
+        positionDetailsValue: updatingProductData.positionDetailsValue || prevState.positionDetailsValue,
+        tax: updatingProductData.tax || prevState.tax,
+        tax_id: updatingProductData.tax_id || prevState.tax_id,
+        tableData: updatingProductData.tableData || prevState.tableData,
+        tableDataChildOne: updatingProductData.tableDataChildOne || prevState.tableDataChildOne,
+        tableDataChildTwo: updatingProductData.tableDataChildTwo || prevState.tableDataChildTwo,
+        product_variation: updatingProductData.product_variation || prevState.product_variation,
+        product_compo: updatingProductData.product_compo || prevState.product_compo
+      }))
+    }
+  }, [isEdit, updatingProductData])
+
   // ** Test
   console.log('from stepper product isEdit & itemId 🎶', isEdit, itemId)
 
@@ -676,8 +748,12 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const handleSubmitForm = (values, { resetForm }) => {
     // ** Test
     console.log(values, 'from submit Product 🐱‍🏍')
-    dispatch(saveProduct({ product: values }))
-    setActiveStep(activeStep + 1)
+    if (isEdit && itemId) {
+      console.log('from stepper isEdit & itemId ☢☢', isEdit, itemId)
+    } else {
+      dispatch(saveProduct({ product: values }))
+      setActiveStep(activeStep + 1)
+    }
     setOpenLoading(true)
 
     resetForm()

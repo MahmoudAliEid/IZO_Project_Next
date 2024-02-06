@@ -14,8 +14,7 @@ import {
   CardActions,
   Button,
   Chip,
-  FormControl,
-  TextField
+  FormControl
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
@@ -232,13 +231,17 @@ const ProductView = ({ open, setOpen, id }) => {
                       {(data.field === 'description' && productInfo[data.field]) ||
                       (data.field === 'full_description' && productInfo[data.field]) ? (
                         <FormControl fullWidth>
-                          <TextField
-                            label={data.field === 'description' ? 'Description' : 'Full Description'}
-                            multiline
-                            rows={4}
-                            value={ReactHtmlParser(productInfo[data.field]) || ''}
-                            variant='outlined'
-                          />
+                          <Box
+                            sx={{
+                              marginTop: '1rem',
+                              padding: '1rem',
+                              border: '1px solid ',
+                              borderRadius: '10px',
+                              borderColor: theme => theme.palette.divider
+                            }}
+                          >
+                            {ReactHtmlParser(productInfo[data.field]) || ''}
+                          </Box>
                         </FormControl>
                       ) : (
                         <Chip label={productInfo[data.field]} size={'small'} />
@@ -483,48 +486,48 @@ const ProductView = ({ open, setOpen, id }) => {
                     headerName: 'variations',
                     flex: 0.35,
                     minWidth: 210,
-                    renderCell: row => <Typography variant='body2'>{row.name}</Typography>
+                    renderCell: row => <Typography variant='body1'>{row.name}</Typography>
                   },
                   {
                     field: 'sub_sku',
                     flex: 0.2,
                     headerName: 'Item Code',
-                    renderCell: row => <Typography variant='body2'>{row.sub_sku}</Typography>
+                    renderCell: row => <Typography variant='body1'>{row.sub_sku}</Typography>
                   },
                   {
                     field: 'default_purchase_price',
                     headerName: 'Default Purchase Price (Exc. tax)',
                     flex: 0.35,
                     minWidth: 180,
-                    renderCell: row => <Typography variant='body2'>{row.default_purchase_price}</Typography>
+                    renderCell: row => <Typography variant='body1'>{row.default_purchase_price}</Typography>
                   },
                   {
                     field: 'dpp_inc_tax',
                     headerName: 'Default Purchase Price (Inc. tax)',
                     flex: 0.35,
                     minWidth: 180,
-                    renderCell: row => <Typography variant='body2'>{row.dpp_inc_tax}</Typography>
+                    renderCell: row => <Typography variant='body1'>{row.dpp_inc_tax}</Typography>
                   },
                   {
                     field: 'profit_percent',
                     headerName: 'x Margin(%)',
                     flex: 0.2,
                     minWidth: 120,
-                    renderCell: row => <Typography variant='body2'>{row.profit_percent}</Typography>
+                    renderCell: row => <Typography variant='body1'>{row.profit_percent}</Typography>
                   },
                   {
                     field: 'default_sell_price',
                     headerName: 'Default Sell Price (Exc. tax)',
                     flex: 0.35,
                     minWidth: 170,
-                    renderCell: row => <Typography variant='body2'>{row.default_sell_price}</Typography>
+                    renderCell: row => <Typography variant='body1'>{row.default_sell_price}</Typography>
                   },
                   {
                     field: 'sell_price_inc_tax',
                     headerName: 'Default Sell Price (Inc. tax)',
                     flex: 0.35,
                     minWidth: 170,
-                    renderCell: row => <Typography variant='body2'>{row.sell_price_inc_tax}</Typography>
+                    renderCell: row => <Typography variant='body1'>{row.sell_price_inc_tax}</Typography>
                   },
                   {
                     field: 'image',
@@ -532,20 +535,138 @@ const ProductView = ({ open, setOpen, id }) => {
                     align: 'center',
                     minWidth: 150,
                     renderCell: row => (
-                      <img
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          borderRadius: '10px'
-                        }}
-                        src={row.image}
-                        alt='product image'
-                      />
+                      <>
+                        {row.image ? (
+                          <img
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: '10px'
+                            }}
+                            src={row.image}
+                            alt='product image'
+                          />
+                        ) : (
+                          <Typography variant='body1'>No Image</Typography>
+                        )}
+                      </>
                     )
                   }
                 ]}
               />
+            </Grid>
+          </Grid>
+        </Card>
+      ) : null}
+      {productInfo?.combo_rows && productInfo?.combo_rows.length > 0 ? (
+        <Card sx={{ pb: 2 }}>
+          <Divider sx={{ mb: 2 }}>
+            <Chip label='Combo' color='primary' variant='outlined' />
+          </Divider>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <CustomTableView
+                dataRows={productInfo?.combo_rows}
+                dataColumns={[
+                  {
+                    field: 'name',
+                    headerName: 'Product Name',
+                    flex: 0.35,
+                    minWidth: 240,
+                    renderCell: row => <Typography variant='body1'>{row.name}</Typography>
+                  },
+                  {
+                    field: 'sub_sku',
+                    flex: 0.2,
+                    headerName: 'Item Code',
+                    renderCell: row => <Typography variant='body1'>{row.sub_sku}</Typography>
+                  },
+                  {
+                    field: 'default_purchase_price',
+                    headerName: 'Default Purchase Price (Exc. tax)',
+                    flex: 0.35,
+                    minWidth: 150,
+                    renderCell: row => <Typography variant='body1'>{row.default_purchase_price}</Typography>
+                  },
+                  {
+                    field: 'dpp_inc_tax',
+                    headerName: 'Default Purchase Price (Inc. tax)',
+                    flex: 0.35,
+                    minWidth: 150,
+                    renderCell: row => <Typography variant='body1'>{row.dpp_inc_tax}</Typography>
+                  },
+                  {
+                    field: 'profit_percent',
+                    headerName: 'x Margin(%)',
+                    flex: 0.2,
+                    minWidth: 120,
+                    renderCell: row => <Typography variant='body1'>{row.profit_percent}</Typography>
+                  },
+                  {
+                    field: 'default_sell_price',
+                    headerName: 'Default Sell Price (Exc. tax)',
+                    flex: 0.3,
+                    minWidth: 150,
+                    renderCell: row => <Typography variant='body1'>{row.default_sell_price}</Typography>
+                  },
+                  {
+                    field: 'sell_price_inc_tax',
+                    headerName: 'Default Sell Price (Inc. tax)',
+                    flex: 0.3,
+                    minWidth: 150,
+                    renderCell: row => <Typography variant='body1'>{row.sell_price_inc_tax}</Typography>
+                  },
+                  {
+                    field: 'quantity',
+                    headerName: 'Quantity',
+                    flex: 0.2,
+                    minWidth: 80,
+                    renderCell: row => <Typography variant='body1'>{row.quantity}</Typography>
+                  },
+                  {
+                    field: 'net_amount',
+                    headerName: 'Net Amount',
+                    flex: 0.25,
+                    minWidth: 90,
+                    renderCell: row => <Typography variant='body1'>{row.net_amount}</Typography>
+                  },
+                  {
+                    field: 'image',
+                    headerName: 'Image',
+                    align: 'center',
+                    minWidth: 150,
+                    renderCell: row => (
+                      <>
+                        {row.image ? (
+                          <img
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: '10px'
+                            }}
+                            src={row.image}
+                            alt='product image'
+                          />
+                        ) : (
+                          <Typography variant='body1'>No Image</Typography>
+                        )}
+                      </>
+                    )
+                  }
+                ]}
+              />
+            </Grid>
+            {/* for display total total_default_sell_price */}
+            <Grid item xs={12} sx={{ m: 3 }}>
+              <Box sx={{ display: 'flex', mb: 4 }}>
+                <Typography sx={{ mr: 2, fontWeight: 700, color: 'text.secondary' }}>
+                  Total Default Sell Price:
+                </Typography>
+                <Typography sx={{ color: 'text.secondary' }}>{productInfo?.total_default_sell_price}</Typography>
+              </Box>
             </Grid>
           </Grid>
         </Card>

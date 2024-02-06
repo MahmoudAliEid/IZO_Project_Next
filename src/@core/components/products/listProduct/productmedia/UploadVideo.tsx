@@ -1,6 +1,6 @@
 
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment} from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -29,7 +29,7 @@ interface FileProp {
 }
 
 interface Props {
-  initialValues: any; // replace 'any' with the actual type of your initialValues
+  video: string | File[] | any[];
   errors: FormikErrors<any>; // replace 'any' with the actual type of your form values
   touched: FormikTouched<any>; // replace 'any' with the actual type of your form values
   handleBlur: (field: string) => void;
@@ -62,19 +62,20 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const UploadVideo = ({ setFieldValue }: Props) => {
-  // ** State
-  const [files, setFiles] = useState<File[]>([])
+const UploadVideo = ({ video,setFieldValue }: Props) => {
+
+
 
   // ** Hooks
   const theme = useTheme()
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
+    maxSize:25000000,
     accept: {
       'video/*': ['.mp4', '.webm', '.ogg']
     },
     onDrop: (acceptedFiles: File[]) => {
-      setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+
       setFieldValue('productvideo', acceptedFiles.map((file: File) => Object.assign(file)))
     },
     onDropRejected: () => {
@@ -99,32 +100,66 @@ const UploadVideo = ({ setFieldValue }: Props) => {
     }
   }
   const handleRemoveFile = (file: FileProp) => {
-    const uploadedFiles = files
+    const uploadedFiles = video
+
+    //@ts-ignore
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
-    setFiles([...filtered])
+
+     setFieldValue('productvideo', [...filtered])
   }
 
-  const fileList = files.map((file: FileProp) => (
-    <ListItem key={file.name}>
-      <div className='file-details'>
-        <div className='file-preview'>{renderFilePreview(file)}</div>
-        <div>
-          <Typography className='file-name'>{file.name}</Typography>
-          <Typography className='file-size' variant='body2'>
-            {Math.round(file.size / 100) / 10 > 1000
-              ? `${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
-              : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
-          </Typography>
+ const fileList =
+    Array.isArray(video) && video.length > 0 ? (
+      video.map(file => (
+        <ListItem
+          sx={{
+            display: 'flex',
+            flexDirection: ['row', 'row', 'row'],
+            justifyContent: 'space-between'
+          }}
+          key={file.name}
+        >
+          <div className='file-details'>
+            <div className='file-preview'>{renderFilePreview(file)}</div>
+            <div>
+              <Typography className='file-name'>{file.name}</Typography>
+              <Typography className='file-size' variant='body2'>
+                {Math.round(file.size / 100) / 10 > 1000
+                  ? ` ${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
+                  : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
+              </Typography>
+            </div>
+          </div>
+          <IconButton onClick={() => handleRemoveFile(file)}>
+            <Icon icon='bx:x' fontSize={20} />
+          </IconButton>
+        </ListItem>
+      ))
+    ) : (
+      <ListItem
+        sx={{
+          display: 'flex',
+          flexDirection: ['row', 'row', 'row'],
+          justifyContent: 'space-between'
+        }}
+      >
+        <div className='file-details'>
+
+          <div className='file-preview'>
+            <video width="200" height="200" controls src={video as string} />
+           </div>
+            <div>
+            <Typography className='file-name'>The Video</Typography>
+          </div>
         </div>
-      </div>
-      <IconButton onClick={() => handleRemoveFile(file)}>
-        <Icon icon='bx:x' fontSize={20} />
-      </IconButton>
-    </ListItem>
-  ))
+        <IconButton onClick={() => setFieldValue('productvideo',[])}>
+          <Icon icon='bx:x' fontSize={20} />
+        </IconButton>
+      </ListItem>
+    )
 
   const handleRemoveAllFiles = () => {
-    setFiles([])
+    setFieldValue('productvideo', [])
   }
 
   return (
@@ -147,7 +182,7 @@ const UploadVideo = ({ setFieldValue }: Props) => {
           </Box>
         </Box>
       </div>
-      {files.length ? (
+      {video.length ? (
         <Fragment>
           <List>{fileList}</List>
           <div className='buttons'>

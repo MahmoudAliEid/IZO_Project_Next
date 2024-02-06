@@ -1,6 +1,9 @@
 // ** React Imports
 import { useEffect, useState } from 'react'
-import { EditorState, convertToRaw } from 'draft-js'
+
+//  ** Draft Js
+import { EditorState, ContentState, convertFromHTML, convertToRaw } from 'draft-js'
+import draftToHtml from 'draftjs-to-html'
 
 // ** MUI
 import {
@@ -34,6 +37,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
 
 const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+  const contentDataState = ContentState.createFromBlockArray(convertFromHTML(initialValues.long_description))
+  const editorDataState = EditorState.createWithContent(contentDataState)
+
+  // ** for short description
+  const contentDataState2 = ContentState.createFromBlockArray(convertFromHTML(initialValues.short_description))
+  const editorDataState2 = EditorState.createWithContent(contentDataState2)
+
   // ** State
   const [openUnit, setOpenUnit] = useState(false)
   const [openSubUnit, setOpenSubUnit] = useState(false)
@@ -56,8 +66,8 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
 
   // ** States for Editor
-  const [editorState, setEditorState] = useState(EditorState.createEmpty())
-  const [editorState2, setEditorState2] = useState(EditorState.createEmpty())
+  const [editorState, setEditorState] = useState(editorDataState)
+  const [editorState2, setEditorState2] = useState(editorDataState2)
 
   // Editor
   // const contentBlock = htmlToDraft(initialValues.short_description)
@@ -150,13 +160,13 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   // set Editor to main valuse
   useEffect(() => {
     if (editorState) {
-      setFieldValue('long_description', convertToRaw(editorState.getCurrentContent()))
+      setFieldValue('long_description', draftToHtml(convertToRaw(editorState.getCurrentContent())))
     }
   }, [editorState, setFieldValue])
 
   useEffect(() => {
     if (editorState2) {
-      setFieldValue('short_description', convertToRaw(editorState2.getCurrentContent()))
+      setFieldValue('short_description', draftToHtml(convertToRaw(editorState2.getCurrentContent())))
     }
   }, [editorState2, setFieldValue])
 
@@ -182,6 +192,8 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
 
   // console.log(editorState, convertToRaw(editorState.getCurrentContent()), 'editorState this is  first one 💖💖💓')
   // console.log(editorState2, convertToRaw(editorState2.getCurrentContent()), 'editorState this is  second one 💌💟💟')
+  const data = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+  console.log(data)
 
   return (
     <Grid container spacing={12}>
@@ -623,7 +635,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 checked={initialValues.enable_stock}
                 color='primary'
                 onChange={e => {
-                  setFieldValue('enable_stock', e.target.checked === true ? true : false)
+                  setFieldValue('enable_stock', e.target.checked === true ? 1 : 0)
                 }}
                 onBlur={handleBlur}
                 error={touched.enable_stock && !!errors.enable_stock}
@@ -634,7 +646,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
         </FormControl>
       </Grid>
 
-      {initialValues.enable_stock === true ? (
+      {initialValues.enable_stock === 1 ? (
         <Grid item xs={12} lg={6} md={6} sm={12}>
           <FormControl fullWidth>
             <TextField

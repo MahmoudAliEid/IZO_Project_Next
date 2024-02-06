@@ -50,7 +50,7 @@ const CustomTableView = ({ dataRows, dataColumns }) => {
         <TableBody>
           {dataRows ? (
             dataRows?.map((row, idR) => (
-              <StyledTableRow key={idR}>
+              <StyledTableRow key={idR} sx={{ height: '90px' }}>
                 {dataColumns.map((column, idx) => {
                   const value = row[column.field]
 

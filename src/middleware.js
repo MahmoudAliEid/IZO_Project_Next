@@ -100,8 +100,52 @@
 //   // ...
 // }
 
+// import { NextResponse } from 'next/server'
+// import { verifyAuth } from './jwt'
+
+// const middleware = async req => {
+//   const token = req.cookies.get('token')
+//   const key = req.cookies.get('key')
+//   const url = req.url
+//   const validToken = token && key && (await verifyAuth(token, key))
+
+//   // Redirect logic
+//   // ...
+
+//   // First Time
+//   if (!validToken && !url.includes('/login') && url.includes('/dashboards')) {
+//     return NextResponse.redirect('http://localhost:3000/login')
+//   }
+
+//   if (
+//     (!validToken && url !== 'http://localhost:3000/login' && url.includes('/dashboards')) ||
+//     url === 'http://localhost:3000/'
+//   ) {
+//     return NextResponse.redirect('http://localhost:3000/login')
+//   }
+
+//   if (validToken && (url.includes('/login') || url.includes('/register') || url.includes('/loginFirstTime'))) {
+//     return NextResponse.redirect('http://localhost:3000/dashboards/analytics')
+//   }
+
+//   return NextResponse.next()
+// }
+
+// export default middleware
+
 import { NextResponse } from 'next/server'
 import { verifyAuth } from './jwt'
+
+const getBaseUrl = req => {
+  const protocol = req.headers.get('x-forwarded-proto') || 'http'
+  const host = req.headers.get('host')
+
+  // console.log('protocol', protocol)
+  // console.log('host', host)
+  // console.log('req', req)
+
+  return `${protocol}://${host}`
+}
 
 const middleware = async req => {
   const token = req.cookies.get('token')
@@ -112,20 +156,30 @@ const middleware = async req => {
   // Redirect logic
   // ...
 
+  const baseUrl = getBaseUrl(req)
+
   // First Time
   if (!validToken && !url.includes('/login') && url.includes('/dashboards')) {
-    return NextResponse.redirect('http://localhost:3000/login')
+    return NextResponse.redirect(`${baseUrl}/login`)
   }
 
-  if (
-    (!validToken && url !== 'http://localhost:3000/login' && url.includes('/dashboards')) ||
-    url === 'http://localhost:3000/'
-  ) {
-    return NextResponse.redirect('http://localhost:3000/login')
+  if ((!validToken && url !== `${baseUrl}/login` && url.includes('/dashboards')) || url === baseUrl) {
+    return NextResponse.redirect(`${baseUrl}/login`)
   }
 
   if (validToken && (url.includes('/login') || url.includes('/register') || url.includes('/loginFirstTime'))) {
-    return NextResponse.redirect('http://localhost:3000/dashboards/analytics')
+    return NextResponse.redirect(`${baseUrl}/dashboards/analytics`)
+  }
+
+  if (validToken && url === `${baseUrl}/`) {
+    return NextResponse.redirect(`${baseUrl}/dashboards/analytics`)
+  }
+  if (!validToken && url === `${baseUrl}/`) {
+    return NextResponse.redirect(`${baseUrl}/login`)
+  }
+
+  if (!validToken && url.includes('/app')) {
+    return NextResponse.redirect(`${baseUrl}/login`)
   }
 
   return NextResponse.next()

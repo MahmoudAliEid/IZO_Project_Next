@@ -155,19 +155,22 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               value={params.row.single_dpp}
               onChange={e => {
                 handleChange(e)
-                const newSingleDpp = parseFloat(e.target.value)
+                const newSingleDpp = parseFloat(Number(e.target.value))
                 const taxValue = 1 + initialValues.tax
-                setFieldValue(`tableData.${params.row.id - 1}.single_dpp_in_tax`, (newSingleDpp * taxValue).toFixed(2))
+                setFieldValue(
+                  `tableData.${params.row.id - 1}.single_dpp_in_tax`,
+                  Number(newSingleDpp * taxValue).toFixed(2)
+                )
                 setFieldValue(
                   `tableData.${params.row.id - 1}.single_dsp`,
-                  (newSingleDpp * (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)).toFixed(2)
+                  Number(newSingleDpp * (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)).toFixed(
+                    2
+                  )
                 )
                 setFieldValue(
                   `tableData.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (
-                    newSingleDpp *
-                    taxValue *
-                    (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)
+                  Number(
+                    newSingleDpp * taxValue * (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -180,19 +183,24 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               value={params.row.single_dpp_in_tax}
               onChange={e => {
                 handleChange(e)
-                const newSingleDppInTax = parseFloat(e.target.value)
-                const taxValue = 1 + initialValues.tax
-                setFieldValue(`tableData.${params.row.id - 1}.single_dpp`, (newSingleDppInTax / taxValue).toFixed(2))
+                const newSingleDppInTax = parseFloat(Number(e.target.value))
+                const taxValue = Number(1 + initialValues.tax)
+                setFieldValue(
+                  `tableData.${params.row.id - 1}.single_dpp`,
+                  Number(newSingleDppInTax / taxValue).toFixed(2)
+                )
                 setFieldValue(
                   `tableData.${params.row.id - 1}.single_dsp`,
-                  (
+                  Number(
                     (newSingleDppInTax / taxValue) *
-                    (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)
+                      (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
                   `tableData.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (newSingleDppInTax * (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)).toFixed(2)
+                  Number(
+                    newSingleDppInTax * (1 + initialValues.tableData[params.row.id - 1].profit_percent / 100)
+                  ).toFixed(2)
                 )
               }}
             />
@@ -230,7 +238,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const newProfitPercent = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax //1 + 0.05
 
-                if (typeof newProfitPercent === 'number' && isNaN(newProfitPercent)) {
+                if (typeof newProfitPercent === 'number' && !isNaN(newProfitPercent)) {
                   setFieldValue(
                     `tableData.${params.row.id - 1}.single_dsp`,
                     (initialValues.tableData[params.row.id - 1].single_dpp * (1 + newProfitPercent / 100)).toFixed(2) // 1+25/100
@@ -274,8 +282,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               value={params.row.single_dsp}
               onChange={e => {
                 handleChange(e)
-                const newSingleDsp = parseFloat(e.target.value)
-                const taxValue = 1 + initialValues.tax //1+0.05
+                const newSingleDsp = parseFloat(Number(e.target.value))
+                const taxValue = Number(1 + initialValues.tax) //1+0.05
 
                 // setFieldValue(
                 //   `tableData.${params.row.id - 1}.single_dpp`,
@@ -310,8 +318,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               value={params.row.single_dsp_inc_tax}
               onChange={e => {
                 handleChange(e)
-                const newSingleDspIncTax = parseFloat(e.target.value)
-                const taxValue = 1 + initialValues.tax
+                const newSingleDspIncTax = parseFloat(Number(e.target.value))
+                const taxValue = Number(1 + initialValues.tax)
 
                 // setFieldValue(
                 //   `tableData.${params.row.id - 1}.single_dpp`,
@@ -327,7 +335,10 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 //     2
                 //   )
                 // )
-                setFieldValue(`tableData.${params.row.id - 1}.single_dsp`, (newSingleDspIncTax / taxValue).toFixed(2))
+                setFieldValue(
+                  `tableData.${params.row.id - 1}.single_dsp`,
+                  Number(newSingleDspIncTax / taxValue).toFixed(2)
+                )
                 setFieldValue(`tableData.${params.row.id - 1}.profit_percent`, 0)
               }}
             />
@@ -387,21 +398,20 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dpp_in_tax`,
-                  (newSingleDpp * taxValue).toFixed(2)
+                  Number(newSingleDpp * taxValue).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp`,
-                  (
-                    newSingleDpp *
-                    (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
+                  Number(
+                    newSingleDpp * (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (
+                  Number(
                     newSingleDpp *
-                    taxValue *
-                    (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
+                      taxValue *
+                      (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -418,20 +428,19 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dpp`,
-                  (newSingleDppInTax / taxValue).toFixed(2)
+                  Number(newSingleDppInTax / taxValue).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp`,
-                  (
+                  Number(
                     (newSingleDppInTax / taxValue) *
-                    (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
+                      (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (
-                    newSingleDppInTax *
-                    (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
+                  Number(
+                    newSingleDppInTax * (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -470,17 +479,16 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp`,
-                  (
-                    initialValues.tableDataChildOne[params.row.id - 1].single_dpp *
-                    (1 + newProfitPercent / 100)
+                  Number(
+                    initialValues.tableDataChildOne[params.row.id - 1].single_dpp * (1 + newProfitPercent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (
+                  Number(
                     initialValues.tableDataChildOne[params.row.id - 1].single_dpp *
-                    taxValue *
-                    (1 + newProfitPercent / 100)
+                      taxValue *
+                      (1 + newProfitPercent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -526,7 +534,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 // )
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (newSingleDsp * taxValue).toFixed(2)
+                  Number(newSingleDsp * taxValue).toFixed(2)
                 )
               }}
             />
@@ -557,7 +565,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 // )
                 setFieldValue(
                   `tableDataChildOne.${params.row.id - 1}.single_dsp`,
-                  (newSingleDspIncTax / taxValue).toFixed(2)
+                  Number(newSingleDspIncTax / taxValue).toFixed(2)
                 )
               }}
             />
@@ -617,21 +625,20 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dpp_in_tax`,
-                  (newSingleDpp * taxValue).toFixed(2)
+                  Number(newSingleDpp * taxValue).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
-                  (
-                    newSingleDpp *
-                    (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
+                  Number(
+                    newSingleDpp * (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (
+                  Number(
                     newSingleDpp *
-                    taxValue *
-                    (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
+                      taxValue *
+                      (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -648,20 +655,19 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dpp`,
-                  (newSingleDppInTax / taxValue).toFixed(2)
+                  Number(newSingleDppInTax / taxValue).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
-                  (
+                  Number(
                     (newSingleDppInTax / taxValue) *
-                    (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
+                      (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (
-                    newSingleDppInTax *
-                    (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
+                  Number(
+                    newSingleDppInTax * (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -700,17 +706,16 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
-                  (
-                    initialValues.tableDataChildTwo[params.row.id - 1].single_dpp *
-                    (1 + newProfitPercent / 100)
+                  Number(
+                    initialValues.tableDataChildTwo[params.row.id - 1].single_dpp * (1 + newProfitPercent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (
+                  Number(
                     initialValues.tableDataChildTwo[params.row.id - 1].single_dpp *
-                    taxValue *
-                    (1 + newProfitPercent / 100)
+                      taxValue *
+                      (1 + newProfitPercent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -756,7 +761,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 // )
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
-                  (newSingleDsp * taxValue).toFixed(2)
+                  Number(newSingleDsp * taxValue).toFixed(2)
                 )
               }}
             />
@@ -787,7 +792,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 // )
                 setFieldValue(
                   `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
-                  (newSingleDspIncTax / taxValue).toFixed(2)
+                  Number(newSingleDspIncTax / taxValue).toFixed(2)
                 )
               }}
             />

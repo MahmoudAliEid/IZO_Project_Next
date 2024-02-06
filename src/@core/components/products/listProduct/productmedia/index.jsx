@@ -31,7 +31,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
             <CardHeader title='Product Image' sx={{ color: `${theme.palette.primary.main} !important` }} />
             <CardContent>
               <Productimage
-                initialValues={initialValues}
+                image={initialValues.productImage}
                 errors={errors}
                 touched={touched}
                 handleBlur={handleBlur}
@@ -48,7 +48,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
 
             <CardContent>
               <Productmultipleimages
-                initialValues={initialValues}
+                image={initialValues.productmultipleimages}
                 errors={errors}
                 touched={touched}
                 handleBlur={handleBlur}
@@ -64,7 +64,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
             <CardHeader title='Product Brochure' />
             <CardContent>
               <Productbrochure
-                initialValues={initialValues}
+                image={initialValues.productbrochure}
                 errors={errors}
                 touched={touched}
                 handleBlur={handleBlur}
@@ -79,7 +79,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
             <CardHeader title='Product Video' />
             <CardContent>
               <UploadVideo
-                initialValues={initialValues}
+                video={initialValues.productvideo}
                 errors={errors}
                 touched={touched}
                 handleBlur={handleBlur}

@@ -41,7 +41,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   //  }, [positionDetailsValue])
 
   useEffect(() => {
-    if (store && positionDetails) {
+    if (store && positionDetails && initialValues.positionDetailsValue.length === 0) {
       const handleAddPosition = () => {
         const positionDetailsValue = positionDetails.map(item => {
           return {
@@ -58,7 +58,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
 
       handleAddPosition()
     }
-  }, [positionDetails, store, setFieldValue])
+  }, [positionDetails, store, setFieldValue, initialValues.positionDetailsValue])
 
   // ** Function to Handle Position Details updates
   const updateValue = (name, value, index, innerIndex) => {
@@ -92,49 +92,83 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   // }
 
   const PositionComponent = () => {
-    return (
-      <>
-        {positionDetails && positionDetails.length > 0 ? (
+    if (initialValues.positionDetailsValue.length > 0 && !positionDetails) {
+      return (
+        <>
           <Grid item xs={12}>
             <Divider>
               <Chip label='Position Details' variant='outlined' color='primary' />
             </Divider>
             <Grid container spacing={3}>
-              {positionDetails.map((position, index) => (
+              {initialValues.positionDetailsValue.map((position, index) => (
                 <Grid item xs={12} lg={6} md={6} sm={12} key={index}>
-                  <CardHeader title={position.value.name} />
-                  {position.value.value.map((item, innerIndex) => (
+                  <CardHeader title={position.name} />
+                  {position.value.map((item, innerIndex) => (
                     <Grid container spacing={4} sx={{ py: 3 }} key={innerIndex}>
-                      <Grid item xs={12}>
-                        <FormControl fullWidth>
-                          <TextField
-                            fullWidth
-                            label={item}
-                            value={initialValues.positionDetailsValue[index]?.value[innerIndex][item]}
-                            onChange={e => {
-                              const { name, value } = e.target
-
-                              // setPositionDetailsValue(prev => {
-                              //   const prevValue = [...prev]
-                              //   prevValue[index].value[innerIndex][name] = value
-
-                              //   return prevValue
-                              // })
-                              updateValue(name, value, index, innerIndex)
-                            }}
-                            name={item}
-                          />
-                        </FormControl>
-                      </Grid>
+                      {Object.entries(item).map(([key, value]) => (
+                        <Grid item xs={12} key={key}>
+                          <FormControl fullWidth>
+                            <TextField
+                              fullWidth
+                              label={key}
+                              value={value}
+                              onChange={handleChange}
+                              name={`positionDetailsValue.${index}.value.${innerIndex}.${key}`}
+                            />
+                          </FormControl>
+                        </Grid>
+                      ))}
                     </Grid>
                   ))}
                 </Grid>
               ))}
             </Grid>
           </Grid>
-        ) : null}
-      </>
-    )
+        </>
+      )
+    } else if (positionDetails && positionDetails.length > 0 && initialValues.positionDetailsValue.length > 0) {
+      return (
+        <Grid item xs={12}>
+          <Divider>
+            <Chip label='Position Details' variant='outlined' color='primary' />
+          </Divider>
+          <Grid container spacing={3}>
+            {positionDetails.map((position, index) => (
+              <Grid item xs={12} lg={6} md={6} sm={12} key={index}>
+                <CardHeader title={position.value.name} />
+                {position.value.value.map((item, innerIndex) => (
+                  <Grid container spacing={4} sx={{ py: 3 }} key={innerIndex}>
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <TextField
+                          fullWidth
+                          label={item}
+                          value={initialValues.positionDetailsValue[index]?.value[innerIndex][item]}
+                          onChange={e => {
+                            const { name, value } = e.target
+
+                            // setPositionDetailsValue(prev => {
+                            //   const prevValue = [...prev]
+                            //   prevValue[index].value[innerIndex][name] = value
+
+                            //   return prevValue
+                            // })
+                            updateValue(name, value, index, innerIndex)
+                          }}
+                          name={item}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                ))}
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      )
+    } else {
+      return null
+    }
   }
 
   return (

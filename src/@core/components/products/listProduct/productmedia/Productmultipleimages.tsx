@@ -1,6 +1,6 @@
 
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment} from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -29,7 +29,7 @@ interface FileProp {
 }
 
 interface Props {
-  initialValues: any // replace 'any' with the actual type of your initialValues
+  image: string | File[]|any[]
   errors: FormikErrors<any> // replace 'any' with the actual type of your form values
   touched: FormikTouched<any> // replace 'any' with the actual type of your form values
   handleBlur: (field: string) => void
@@ -61,11 +61,10 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 }))
 
 const Productmultipleimages: React.FC<Props> = ({
-
+image,
   setFieldValue
 }) => {
-  // ** State
-  const [files, setFiles] = useState<File[]>([])
+
 
   // ** Hooks
   const theme = useTheme()
@@ -74,7 +73,7 @@ const Productmultipleimages: React.FC<Props> = ({
       'image/*': ['.png', '.jpg', '.jpeg', '.gif']
     },
     onDrop: (acceptedFiles: File[]) => {
-      setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+
       setFieldValue(
         'productmultipleimages',
         acceptedFiles.map((file: File) => Object.assign(file))
@@ -88,40 +87,89 @@ const Productmultipleimages: React.FC<Props> = ({
   })
 
   const renderFilePreview = (file: FileProp) => {
-    if (file.type.startsWith('image')) {
+    if (typeof file === 'string') {
+      return <img width={38} height={38} alt={file} src={file as string} />
+    }
+    else if (file.type.startsWith('image')) {
       return <img width={38} height={38} alt={file.name} src={URL.createObjectURL(file as any)} />
     } else {
       return <Icon icon='bx:file' />
     }
+
   }
 
   const handleRemoveFile = (file: FileProp) => {
-    const uploadedFiles = files
+    const uploadedFiles = image
+
+    //@ts-ignore
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
-    setFiles([...filtered])
+
+    setFieldValue(
+        'productmultipleimages',
+        [...filtered])
+
   }
 
-  const fileList = files.map((file: FileProp) => (
-    <ListItem key={file.name}>
-      <div className='file-details'>
-        <div className='file-preview'>{renderFilePreview(file)}</div>
-        <div>
-          <Typography className='file-name'>{file.name}</Typography>
-          <Typography className='file-size' variant='body2'>
-            {Math.round(file.size / 100) / 10 > 1000
-              ? `${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
-              : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
-          </Typography>
+  const fileList =
+    Array.isArray(image) && image.length > 0 ? (
+      image.map(file => (
+        <ListItem
+          sx={{
+            display: 'flex',
+            flexDirection: ['row', 'row', 'row'],
+            justifyContent: 'space-between'
+          }}
+          key={file.name}
+        >
+          <div className='file-details'>
+            <div className='file-preview'>{renderFilePreview(file)}</div>
+            <div>
+              <Typography className='file-name'>{file.name}</Typography>
+              {
+                file.size ?<Typography className='file-size' variant='body2'>
+                {Math.round(file.size / 100) / 10 > 1000
+                  ? ` ${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
+                  : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
+                </Typography> :
+                  <Typography className='file-size' variant='body2'>
+                    The Image
+                  </Typography>
+              }
+
+            </div>
+          </div>
+          <IconButton onClick={() => handleRemoveFile(file)}>
+            <Icon icon='bx:x' fontSize={20} />
+          </IconButton>
+        </ListItem>
+      ))
+    ) : (
+      <ListItem
+        sx={{
+          display: 'flex',
+          flexDirection: ['row', 'row', 'row'],
+          justifyContent: 'space-between'
+        }}
+      >
+        <div className='file-details'>
+          <div>
+            <Typography className='file-name'>The Image:</Typography>
+          </div>
+          <div className='file-preview'>
+            <img width={38} height={38} alt={'preview-img'} src={image as string} />
+          </div>
         </div>
-      </div>
-      <IconButton onClick={() => handleRemoveFile(file)}>
-        <Icon icon='bx:x' fontSize={20} />
-      </IconButton>
-    </ListItem>
-  ))
+        <IconButton onClick={() => setFieldValue('productmultipleimages',[])}>
+          <Icon icon='bx:x' fontSize={20} />
+        </IconButton>
+      </ListItem>
+    )
 
   const handleRemoveAllFiles = () => {
-    setFiles([])
+    setFieldValue(
+        'productmultipleimages',
+        []
+      )
   }
 
   return (
@@ -143,7 +191,7 @@ const Productmultipleimages: React.FC<Props> = ({
           </Box>
         </Box>
       </div>
-      {files.length ? (
+      {image.length ? (
         <Fragment>
           <List>{fileList}</List>
           <div className='buttons'>

@@ -1,6 +1,6 @@
 
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment} from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -29,7 +29,7 @@ interface FileProp {
 }
 
 interface Props {
-  initialValues: any // replace 'any' with the actual type of your initialValues
+  image: string | File[]|any[]
   errors: FormikErrors<any> // replace 'any' with the actual type of your form values
   touched: FormikTouched<any> // replace 'any' with the actual type of your form values
   handleBlur: (field: string) => void
@@ -61,11 +61,11 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 }))
 
 const Productbarochure: React.FC<Props> = ({
-
+image,
   setFieldValue
 }) => {
   // ** State
-  const [files, setFiles] = useState<File[]>([])
+
 
   // ** Hooks
   const theme = useTheme()
@@ -83,7 +83,7 @@ const Productbarochure: React.FC<Props> = ({
       'image/png': ['.png']
     },
     onDrop: (acceptedFiles: File[]) => {
-      setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+
       setFieldValue(
         'productbrochure',
         acceptedFiles.map((file: File) => Object.assign(file))
@@ -105,32 +105,63 @@ const Productbarochure: React.FC<Props> = ({
   }
 
   const handleRemoveFile = (file: FileProp) => {
-    const uploadedFiles = files
+    const uploadedFiles = image
+
+    //@ts-ignore
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
-    setFiles([...filtered])
+    setFieldValue('productbrochure',[...filtered])
   }
 
-  const fileList = files.map((file: FileProp) => (
-    <ListItem key={file.name}>
-      <div className='file-details'>
-        <div className='file-preview'>{renderFilePreview(file)}</div>
-        <div>
-          <Typography className='file-name'>{file.name}</Typography>
-          <Typography className='file-size' variant='body2'>
-            {Math.round(file.size / 100) / 10 > 1000
-              ? `${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
-              : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
-          </Typography>
+   const fileList =
+    Array.isArray(image) && image.length > 0 ? (
+      image.map(file => (
+        <ListItem
+          sx={{
+            display: 'flex',
+            flexDirection: ['row', 'row', 'row'],
+            justifyContent: 'space-between'
+          }}
+          key={file.name}
+        >
+          <div className='file-details'>
+            <div className='file-preview'>{renderFilePreview(file)}</div>
+            <div>
+              <Typography className='file-name'>{file.name}</Typography>
+              <Typography className='file-size' variant='body2'>
+                {Math.round(file.size / 100) / 10 > 1000
+                  ? ` ${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
+                  : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
+              </Typography>
+            </div>
+          </div>
+          <IconButton onClick={() => handleRemoveFile(file)}>
+            <Icon icon='bx:x' fontSize={20} />
+          </IconButton>
+        </ListItem>
+      ))
+    ) : (
+      <ListItem
+        sx={{
+          display: 'flex',
+          flexDirection: ['row', 'row', 'row'],
+          justifyContent: 'space-between'
+        }}
+      >
+        <div className='file-details'>
+          <div className='file-preview'>
+            <img width={38} height={38} alt={'preview-img'} src={image as string} />
+          </div>
+          <div>
+            <Typography className='file-name'>The Image</Typography>
+          </div>
         </div>
-      </div>
-      <IconButton onClick={() => handleRemoveFile(file)}>
-        <Icon icon='bx:x' fontSize={20} />
-      </IconButton>
-    </ListItem>
-  ))
-
+        <IconButton onClick={() => setFieldValue('productbrochure',[])}>
+          <Icon icon='bx:x' fontSize={20} />
+        </IconButton>
+      </ListItem>
+    )
   const handleRemoveAllFiles = () => {
-    setFiles([])
+    setFieldValue('productbrochure',[])
   }
 
   return (
@@ -153,7 +184,7 @@ const Productbarochure: React.FC<Props> = ({
           </Box>
         </Box>
       </div>
-      {files.length ? (
+      {image.length ? (
         <Fragment>
           <List>{fileList}</List>
           <div className='buttons'>

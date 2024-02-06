@@ -61,12 +61,9 @@ export const saveProduct = createAsyncThunk('dashboard/createProduct', async pay
   formData.append('warranty_id', product.warranty_id)
   formData.append('not_for_sale', product.not_for_sale)
 
-  if (product.long_description.blocks && product.long_description?.blocks.length > 0 && product?.long_description) {
-    formData.append('full_description', product.long_description?.blocks.at(0).text || '')
-  }
-  if (product.short_description?.blocks && product.short_description?.blocks.length > 0 && product.short_description) {
-    formData.append('description', product.short_description?.blocks.at(0).text || '')
-  }
+  formData.append('full_description', product.long_description)
+
+  formData.append('description', product.short_description)
 
   if (product?.productmultipleimages && product?.productmultipleimages.length > 0) {
     for (let i = 0; i < product?.productmultipleimages.length; i++) {

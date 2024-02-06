@@ -7,8 +7,9 @@ import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
+import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
+import { styled } from '@mui/material/styles'
 // import TablePagination from '@mui/material/TablePagination'
 
 import {
@@ -32,6 +33,28 @@ import Icon from 'src/@core/components/icon'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import CustomInputField from '../productVariable/components/CustomInputField'
 import SearchAndSelect from './SearchAndSelect'
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.footer}`]: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.common.black,
+    border: 'none'
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14
+  }
+}))
+
+// const StyledTableRow = styled(TableRow)(({ theme }) => ({
+//   '&:nth-of-type(odd)': {
+//     backgroundColor: theme.palette.action.hover
+//   },
+
+//   // hide last border
+//   '&:last-of-type td, &:last-of-type th': {
+//     border: 0
+//   }
+// }))
 
 const CompoTable = ({ rows, productIndex, values, handleChange, remove, setFieldValue, push }) => {
   // ** States
@@ -331,18 +354,18 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
             <TableFooter
               style={{
                 position: 'sticky',
-                bottom: '0',
-
-                backgroundColor: '#424242'
+                bottom: '0'
               }}
             >
               <TableRow>
-                <TableCell colSpan={3}>
-                  <Typography>Total Net Amount:</Typography>
-                </TableCell>
-                <TableCell align='right' colSpan={2}>
-                  <Typography>{rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)}</Typography>
-                </TableCell>
+                <StyledTableCell colSpan={3}>
+                  <Typography color={'white'}>Total Net Amount:</Typography>
+                </StyledTableCell>
+                <StyledTableCell align='right' colSpan={2}>
+                  <Typography color={'white'}>
+                    {rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)}
+                  </Typography>
+                </StyledTableCell>
               </TableRow>
             </TableFooter>
           </Table>

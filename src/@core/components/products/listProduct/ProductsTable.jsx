@@ -35,6 +35,7 @@ import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts } from 'src/store/apps/products/listProducts/getProductsSlice'
 import { deleteProduct } from 'src/store/apps/products/listProducts/postDeleteProductSlice'
+import { fetchUpdateProduct } from 'src/store/apps/products/getUpdateProductSlice'
 
 const StyledButton = styled(Button)(({ theme }) => ({
   backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.2)} !important`
@@ -137,8 +138,10 @@ const RowOptions = ({ id, setOpenViewMain }) => {
     setOpenAlert(prev => !prev)
   }
   const handleEdit = () => {
+    dispatch(fetchUpdateProduct({ id }))
     setOpen(true)
     console.log(id)
+    handleRowOptionsClose()
   }
 
   //handle view
