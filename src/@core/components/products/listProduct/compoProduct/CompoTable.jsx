@@ -344,7 +344,7 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
                   <TableCell></TableCell>
                   <TableCell colSpan={3}>
                     <Typography variant='body2' align='center' sx={{ my: 10 }}>
-                      No Rows 🍰
+                      No Rows
                     </Typography>
                   </TableCell>
                   <TableCell></TableCell>
