@@ -181,7 +181,7 @@ const LoginPage: React.FC<{ userData: UserData }> & {
   }, [successLogin])
 
   useEffect(() => {
-    if (login_first_time) {
+    if (login_first_time ===true) {
       setLoginFirstTime(true)
     }
   }, [login_first_time])

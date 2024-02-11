@@ -13,8 +13,8 @@ const initialState = {
   error: null
 }
 
-export const fetchVariations = createAsyncThunk('dashboard/fetchVariations', async token => {
-  console.log(token)
+export const fetchVariations = createAsyncThunk('dashboard/fetchVariations', async payload => {
+  const { token } = payload
   try {
     const response = await axios.get('https://test.izocloud.net/api/app/react/variations/all', {
       headers: {

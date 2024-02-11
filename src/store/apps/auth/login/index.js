@@ -8,7 +8,7 @@ const initialState = {
   userType: '',
   token: '',
   status: 'idle',
-  login_first_time: null,
+  login_first_time: false,
   apiUrl: '',
   imgUrl: '',
   userName: '',

@@ -177,7 +177,7 @@ const RowOptions = ({ id, data, setData }) => {
 
     dispatch(deleteVariations({ id }))
       .then(() => {
-        dispatch(fetchVariations(token, url))
+        dispatch(fetchVariations({ token, url }))
         handleRowOptionsClose()
       })
       .catch(error => {
@@ -340,7 +340,7 @@ const Variations = () => {
 
   useEffect(() => {
     if (token && url) {
-      dispatch(fetchVariations(token, url))
+      dispatch(fetchVariations({ token, url }))
       dispatch(fetchCreateVariations(token, url))
     }
   }, [dispatch, token, url])

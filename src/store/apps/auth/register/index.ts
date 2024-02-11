@@ -22,14 +22,16 @@ export interface RegisterState {
   userType: string
   token: string
   status: 'null' | 'pending' | 'success' | 'rejected'
+  register: boolean
 }
 
 // Define an initial state for your reducer
-const initialState: RegisterState = {
+const initialStateDate: RegisterState = {
   data: [],
   userType: '',
   token: '',
-  status: 'null'
+  status: 'null',
+  register: false
 }
 
 export const register = createAsyncThunk('feature/register', async (registerData: RegisterData) => {
@@ -53,23 +55,25 @@ export const register = createAsyncThunk('feature/register', async (registerData
 
 const registerSlice = createSlice({
   name: 'register',
-  initialState,
+  initialState: initialStateDate,
   reducers: {},
   extraReducers: builder => {
     builder.addCase(register.fulfilled, (state, action: PayloadAction<any>) => {
       state.data = action.payload
-
       state.status = 'success'
+      state.register = true
       console.log('from reducer register action:', action)
-      notify('تم تسجيل الحساب بنجاج يمكن تسجيل الدخول الأن', 'success')
+      notify('Registered Successfully you can login in Now 🎉', 'success')
     })
     builder.addCase(register.pending, state => {
       state.status = 'pending'
+      state.register = false
     })
     builder.addCase(register.rejected, (state, action: PayloadAction<any>) => {
       state.status = 'rejected'
+      state.register = false
       console.error('Register rejected:', action)
-      notify('هناك خطأ في عملية التجيل الرجاء ملئ البيانات بشكل صحيح', 'error')
+      notify('There is an Error Try again', 'error')
     })
   }
 })

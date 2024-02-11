@@ -132,7 +132,7 @@ const VariationsForm = ({ type, open, setOpen, handleSubmit }) => {
                 <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                <Button size='large' type='submit' variant='contained' sx={{ ml: 3 }}>
                   Add
                 </Button>
               </Box>

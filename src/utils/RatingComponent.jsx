@@ -14,6 +14,7 @@ import { useTheme } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
+import { Typography } from '@mui/material'
 
 export default function RatingComponent() {
   const [open, setOpen] = React.useState(localStorage.getItem('rating') ? false : true)
@@ -83,20 +84,22 @@ export default function RatingComponent() {
         >
           <DialogContentText id='alert-dialog-description'>
             <Box>
-              <h1
+              <Typography
                 style={{
                   textAlign: 'center',
-                  color: theme.palette.primary.main
+                  color: theme.palette.primary.main,
+                  fontSize: '1.5rem'
                 }}
               >
                 Rate Our Service
-              </h1>
+              </Typography>
               <Rating
                 onClick={handleRating}
                 SVGstyle={{
                   margin: '0px 15px'
                 }}
                 transition={true}
+                size={40}
               />
               <Stack sx={{ px: 6, py: 5 }} direction='row' justifyContent={'space-between'} gap={2} width={1}>
                 <Chip

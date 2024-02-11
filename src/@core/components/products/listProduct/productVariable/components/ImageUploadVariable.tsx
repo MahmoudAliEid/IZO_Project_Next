@@ -39,7 +39,7 @@ interface Props {
   handleChange: (e: React.ChangeEvent<any>) => void // replace 'any' with the actual type of your event
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
   setIsNotDone: (value: boolean) => void
-  setUpload: (value: boolean) => void
+
 }
 
 // Styled component for the upload image inside the dropzone area
@@ -65,7 +65,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const ImageUploadVariable = ({value, name, setFieldValue,setIsNotDone ,setUpload}: Props) => {
+const ImageUploadVariable = ({value, name, setFieldValue,setIsNotDone }: Props) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
@@ -84,7 +84,7 @@ const ImageUploadVariable = ({value, name, setFieldValue,setIsNotDone ,setUpload
         acceptedFiles.map((file: File) => Object.assign(file))
       )
       setIsNotDone(false)
-      setUpload(true)
+
     },
     onDropRejected: () => {
       toast.error('You can only upload image with a maximum size of 2 MB.', {
@@ -107,7 +107,7 @@ const ImageUploadVariable = ({value, name, setFieldValue,setIsNotDone ,setUpload
     setFiles([...filtered])
     setFieldValue(`${name}`,[])
     setIsNotDone(true)
-    setUpload(false)
+
   }
 
   const fileList = files.length > 0 ? (
@@ -158,7 +158,7 @@ const ImageUploadVariable = ({value, name, setFieldValue,setIsNotDone ,setUpload
           <IconButton onClick={() => {
             setFieldValue(`${name}`,[])
           setIsNotDone(true)
-          setUpload(false)
+
           }}>
           <Icon icon='bx:x' fontSize={20} />
         </IconButton>
@@ -169,7 +169,7 @@ const ImageUploadVariable = ({value, name, setFieldValue,setIsNotDone ,setUpload
     setFiles([])
     setIsNotDone(true)
 
-    setUpload(false)
+
   }
   console.log('value form image uploading', value)
 

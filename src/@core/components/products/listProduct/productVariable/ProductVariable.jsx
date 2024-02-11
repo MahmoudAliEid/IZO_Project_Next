@@ -1,10 +1,14 @@
-import { Box, Button, CardActions, Divider, CardHeader } from '@mui/material'
+import { Box, Button, CardActions, Divider, CardHeader, useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 // ** formik
 import { FieldArray, Form } from 'formik'
 import TableVariationVariable from 'src/@core/components/products/listProduct/productVariable/TableVariationVariable'
 
 const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   return (
     <Box padding={2}>
       <Form>
@@ -26,7 +30,7 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
                     borderColor: theme => theme.palette.divider
                   }}
                 >
-                  <CardHeader title={`Product Variation ${product.id}`} />
+                  <CardHeader title={`Product Variation ${productIndex + 1}`} />
                   <Divider
                     sx={{
                       mb: 2
@@ -45,12 +49,21 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
                           remove={remove}
                           setFieldValue={setFieldValue}
                         />
-                        <CardActions>
+                        <CardActions
+                          sx={{
+                            flexDirection: ['column', 'row', 'row'],
+                            justifyContent: 'center'
+                          }}
+                        >
                           <Button
                             type='button'
                             variant='contained'
                             color='primary'
-                            sx={{ my: 2, px: 2, mr: 2 }}
+                            sx={{
+                              my: isMobile ? 1 : 2,
+                              px: isMobile ? 1 : 2,
+                              fontSize: isMobile ? '0.8rem' : 'inherit'
+                            }}
                             onClick={() => {
                               pushVariation({
                                 sub_sku: '',
@@ -71,7 +84,11 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
                             type='button'
                             variant='outlined'
                             color='error'
-                            sx={{ my: 2, px: 2 }}
+                            sx={{
+                              my: isMobile ? 1 : 2,
+                              px: isMobile ? 1 : 2,
+                              fontSize: isMobile ? '0.8rem' : 'inherit'
+                            }}
                             onClick={() => remove(initialValues.product_variation[productIndex].variations.length - 1)}
                           >
                             Remove Variation
@@ -82,12 +99,16 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
                   </FieldArray>
                 </Box>
               ))}
-              <CardActions sx={{ justifyContent: 'center' }}>
+              <CardActions sx={{ justifyContent: 'center', flexDirection: ['column', 'row', 'row'] }}>
                 <Button
                   type='button'
                   variant='contained'
                   color='primary'
-                  sx={{ my: 2, px: 2 }}
+                  sx={{
+                    my: isMobile ? 1 : 2,
+                    px: isMobile ? 1 : 2,
+                    fontSize: isMobile ? '0.8rem' : 'inherit'
+                  }}
                   onClick={() =>
                     push({
                       id: initialValues.product_variation.length + 1,
@@ -114,7 +135,11 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
                   type='button'
                   variant='outlined'
                   color='error'
-                  sx={{ my: 2, px: 2 }}
+                  sx={{
+                    my: isMobile ? 1 : 2,
+                    px: isMobile ? 1 : 2,
+                    fontSize: isMobile ? '0.8rem' : 'inherit'
+                  }}
                   onClick={() => remove(initialValues.product_variation.length - 1)}
                 >
                   Remove Product Variation

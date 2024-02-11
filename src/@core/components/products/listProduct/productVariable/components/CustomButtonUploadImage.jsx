@@ -11,7 +11,6 @@ import DialogUploadImage from './DialogUploadImage'
 
 const CustomButtonUploadImage = ({ value, name, setFieldValue }) => {
   const [open, setOpen] = useState(false)
-  const [upload, setUpload] = useState(false)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -19,7 +18,7 @@ const CustomButtonUploadImage = ({ value, name, setFieldValue }) => {
   return (
     <>
       <IconButton onClick={handleOpen} color='primary'>
-        <Icon icon={upload ? 'bx:bx-image' : 'bx:bx-upload'} fontSize={20} />
+        <Icon icon={value && value.length > 0 ? 'bx:bx-image' : 'bx:bx-upload'} fontSize={20} />
       </IconButton>
 
       {
@@ -29,7 +28,6 @@ const CustomButtonUploadImage = ({ value, name, setFieldValue }) => {
           name={name}
           setFieldValue={setFieldValue}
           value={value}
-          setUpload={setUpload}
         />
       }
     </>

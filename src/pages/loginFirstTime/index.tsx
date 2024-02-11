@@ -23,7 +23,7 @@ import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
 import InputLabel from '@mui/material/InputLabel'
 import IconButton from '@mui/material/IconButton'
-import Box, { BoxProps } from '@mui/material/Box'
+import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
 import { AccountCircle } from '@mui/icons-material'
@@ -32,7 +32,7 @@ import { AccountCircle } from '@mui/icons-material'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
-import { Grid } from '@mui/material'
+import { Grid ,Card,CardProps } from '@mui/material'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -40,7 +40,7 @@ import Icon from 'src/@core/components/icon'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
-const CenterWrapper = styled(Box)<BoxProps>(({ theme }) => ({
+const CenterWrapper = styled(Card)<CardProps>(({ theme }) => ({
   width: '100%',
   minHeight: '100vh', // Set the height to 100% of the viewport height for vertical centering
   display: 'flex',
@@ -91,7 +91,7 @@ const LoginFirstTime = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (statusCode === 200) { router.replace("/login") }
+    if (statusCode === 200 ) { router.replace("/login") }
   }, [statusCode, router])
 
 

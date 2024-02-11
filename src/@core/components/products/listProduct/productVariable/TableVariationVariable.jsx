@@ -338,7 +338,7 @@ const TableVariationVariable = ({ rows, productIndex, values, handleChange, push
   return (
     <>
       <Box sx={{ my: 2 }}>
-        <Grid item xs={6} sx={{ my: 5 }}>
+        <Grid item xs={12} sx={{ my: 5 }}>
           <FormControl fullWidth>
             <InputLabel id='demo-simple-select-label'>Variations</InputLabel>
             <Select

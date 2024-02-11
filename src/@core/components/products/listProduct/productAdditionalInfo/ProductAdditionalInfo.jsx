@@ -12,7 +12,8 @@ import {
   FormControlLabel,
   CardHeader,
   Chip,
-  Divider
+  Divider,
+  InputLabel
 } from '@mui/material'
 
 // ** Store & Actions
@@ -40,15 +41,17 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   //   }
   //  }, [positionDetailsValue])
 
+  /// ** set initial values for position details
   useEffect(() => {
     if (store && positionDetails && initialValues.positionDetailsValue.length === 0) {
       const handleAddPosition = () => {
         const positionDetailsValue = positionDetails.map(item => {
           return {
             id: item.id,
+            type: item.value.type,
             value: item.value.value.map(item => {
               return { [item]: '' }
-            })
+            }) //{ id ,value:[{row: ''}, {column: ''}, {shelf: ''}, {position: '']}
           }
         })
         setFieldValue('positionDetailsValue', positionDetailsValue)
@@ -61,29 +64,29 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   }, [positionDetails, store, setFieldValue, initialValues.positionDetailsValue])
 
   // ** Function to Handle Position Details updates
-  const updateValue = (name, value, index, innerIndex) => {
-    const updatedTableData = initialValues.positionDetailsValue.map((item, indexMain) => {
-      if (indexMain === index) {
-        return {
-          ...item,
-          value: item.value.map((item, i) => {
-            if (i === innerIndex) {
-              return {
-                ...item,
-                [name]: value
-              }
-            } else {
-              return item
-            }
-          })
-        }
-      } else {
-        return item
-      }
-    })
+  // const updateValue = (name, value, index, innerIndex) => {
+  //   const updatedTableData = initialValues.positionDetailsValue.map((item, indexMain) => {
+  //     if (indexMain === index) {
+  //       return {
+  //         ...item,
+  //         value: item.value.map((item, i) => {
+  //           if (i === innerIndex) {
+  //             return {
+  //               ...item,
+  //               [name]: value
+  //             }
+  //           } else {
+  //             return item
+  //           }
+  //         })
+  //       }
+  //     } else {
+  //       return item
+  //     }
+  //   })
 
-    setFieldValue(`positionDetailsValue`, updatedTableData)
-  }
+  //   setFieldValue(`positionDetailsValue`, updatedTableData)
+  // }
 
   // const positionHandleChange = (e, item) => {
   //   const { name, value } = e.target
@@ -144,18 +147,8 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
                           fullWidth
                           label={item}
                           value={initialValues.positionDetailsValue[index]?.value[innerIndex][item]}
-                          onChange={e => {
-                            const { name, value } = e.target
-
-                            // setPositionDetailsValue(prev => {
-                            //   const prevValue = [...prev]
-                            //   prevValue[index].value[innerIndex][name] = value
-
-                            //   return prevValue
-                            // })
-                            updateValue(name, value, index, innerIndex)
-                          }}
-                          name={item}
+                          name={`positionDetailsValue.${index}.value.${innerIndex}.${item}`}
+                          onChange={handleChange}
                         />
                       </FormControl>
                     </Grid>
@@ -175,7 +168,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Grid container spacing={2}>
-          <Grid item xs={8}>
+          <Grid item xs={3} md={2} lg={2}>
             <FormControl fullWidth>
               <TextField
                 fullWidth
@@ -190,17 +183,23 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
               />
             </FormControl>
           </Grid>
-          <Grid item xs={4}>
-            <Select
-              fullWidth
-              value={initialValues.expiry_period_type}
-              onChange={handleChange}
-              name='expiry_period_type'
-            >
-              <MenuItem value='days'>Days</MenuItem>
-              <MenuItem value='months'>Months</MenuItem>
-              <MenuItem value='no Applicable'>No Applicable</MenuItem>
-            </Select>
+          <Grid item xs={9} md={10} lg={10}>
+            <FormControl fullWidth>
+              <InputLabel id='expiry_period_type'>Type</InputLabel>
+              <Select
+                labelId='expiry_period_type'
+                label='Type'
+                fullWidth
+                value={initialValues.expiry_period_type}
+                onChange={handleChange}
+                name='expiry_period_type'
+                sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }} // Adjusted to handle text overflow
+              >
+                <MenuItem value='days'>Days</MenuItem>
+                <MenuItem value='months'>Months</MenuItem>
+                <MenuItem value='no Applicable'>No Applicable</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
       </Grid>

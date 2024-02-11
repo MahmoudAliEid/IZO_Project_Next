@@ -14,13 +14,13 @@ import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Menu from '@mui/material/Menu'
 import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
+import { Grid, useMediaQuery } from '@mui/material'
 
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
@@ -167,7 +167,7 @@ const RowOptions = ({ id, setOpenViewMain }) => {
           vertical: 'top',
           horizontal: 'right'
         }}
-        PaperProps={{ style: { minWidth: '8rem' } }}
+        PaperProps={{ style: { minWidth: '6rem' } }}
       >
         <MenuItem
           onClick={() => {
@@ -414,6 +414,9 @@ const columns = [
 const ProductsTable = () => {
   // ** State
 
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
@@ -511,15 +514,13 @@ const ProductsTable = () => {
     }
   }
 
-  // ** handle page number
+  // Render pagination buttons function
   const renderPageNumbers = () => {
     let buttons = []
 
     if (!lastPage || !currentPage) return buttons
 
     if (lastPage === 1) return buttons
-
-    // if (lastPage > 1 && currentPage === lastPage) return buttons
 
     if (lastPage > 1) {
       let pages = Array.from({ length: lastPage }, (_, i) => i + 1) // Create an array of page numbers
@@ -538,11 +539,15 @@ const ProductsTable = () => {
         <Button
           key={i}
           color='primary'
+          size='small'
           variant={i === currentPage ? 'contained' : 'outlined'}
           onClick={() => {
             dispatch(fetchProducts({ token, query: `/app/react/products/all?page=${i}` }))
           }}
-          sx={{ my: 2, px: 2, mr: 2 }}
+          sx={{
+            minWidth: 'auto',
+            fontSize: isSmallScreen ? '0.6rem' : 'inherit'
+          }}
         >
           {i}
         </Button>
@@ -552,8 +557,13 @@ const ProductsTable = () => {
       if (currentChunk[currentChunk.length - 1] < lastPage) {
         buttons.push(
           <IconButton
+            size='small'
             key='ellipsis'
             color='primary'
+            sx={{
+              minWidth: 'auto',
+              fontSize: isSmallScreen ? '0.6rem' : 'inherit'
+            }}
             onClick={() => {
               dispatch(
                 fetchProducts({
@@ -562,19 +572,19 @@ const ProductsTable = () => {
                 })
               )
             }}
-            sx={{ my: 2, px: 2, mr: 2 }}
           >
             <Icon icon='eva:more-horizontal-fill' color='primary' />
           </IconButton>
         )
       }
 
-      // If there are more pages, add an ellipsis button vers
+      // If there are more pages, add an ellipsis button
       if (currentChunk[0] > 1) {
         buttons.unshift(
           <IconButton
             key='ellipsis-towards-beginning'
             color='primary'
+            size='small'
             onClick={() => {
               dispatch(
                 fetchProducts({
@@ -583,7 +593,10 @@ const ProductsTable = () => {
                 })
               )
             }}
-            sx={{ my: 2, px: 2, mr: 2 }}
+            sx={{
+              minWidth: 'auto',
+              fontSize: isSmallScreen ? '0.6rem' : 'inherit'
+            }}
           >
             <Icon icon='eva:more-horizontal-fill' color='primary' />
           </IconButton>
@@ -594,6 +607,78 @@ const ProductsTable = () => {
     } else {
       return buttons
     }
+  }
+
+  // Pagination grid component
+  const PaginationGrid = () => {
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              justifyContent: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: isSmallScreen ? 0.5 : 1, // Adjust the gap between items
+              mt: 2
+            }}
+          >
+            <Button
+              variant='contained'
+              size='small'
+              disabled={!prevPageUrl}
+              color='primary'
+              onClick={handleOnPrevPage}
+              sx={{
+                mx: isSmallScreen ? 1 : 0,
+                minWidth: 'auto', // Allow the button to shrink to fit its content
+                whiteSpace: 'nowrap', // Prevent button text from wrapping
+                my: isSmallScreen ? 1 : 0, // Adjust margin for small screens
+                px: 1
+              }}
+              startIcon={<Icon icon='bx:bx-chevron-left' />}
+            >
+              {isSmallScreen ? '' : 'Prev Page'} {/* Conditionally render text */}
+            </Button>
+            {renderPageNumbers().length > 0 &&
+              renderPageNumbers().map((btn, index) => (
+                <Box key={index} sx={{ mx: 1 }}>
+                  {btn}
+                </Box> // Wrap each button in a Box to control individual spacing
+              ))}
+            <Button
+              variant='contained'
+              size='small'
+              disabled={!nextPageUrl}
+              color='primary'
+              onClick={handleOnNextPage}
+              sx={{
+                mx: isSmallScreen ? 1 : 0,
+                minWidth: 'auto', // Allow the button to shrink to fit its content
+                whiteSpace: 'nowrap', // Prevent button text from wrapping
+                my: isSmallScreen ? 1 : 0, // Adjust margin for small screens
+                px: 1
+              }}
+              endIcon={<Icon icon='bx:bx-chevron-right' />}
+            >
+              {isSmallScreen ? '' : 'Next Page'} {/* Conditionally render text */}
+            </Button>
+            <Typography
+              sx={{
+                color: 'text.secondary',
+                ml: isSmallScreen ? 0 : 1, // Adjust left margin for small screens
+                mt: isSmallScreen ? 1 : 0, // Adjust top margin for small screens
+                fontSize: isSmallScreen ? '0.6rem' : 'inherit' // Adjust font size for small screens
+              }}
+              variant='body2'
+            >
+              Last page {lastPage}
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    )
   }
 
   console.log('last page 🤩🤩🤩🙂🙂🙂', lastPage)
@@ -624,34 +709,21 @@ const ProductsTable = () => {
                   onChange: event => handleSearch(event.target.value)
                 }
               }}
+              sx={{
+                '& .MuiDataGrid-root': {
+                  minHeight: 'calc(100vh - 200px)' // Adjust this value as needed
+                },
+                '& .MuiDataGrid-columnsContainer': {
+                  flexWrap: 'wrap'
+                },
+                '& .MuiDataGrid-colCell': {
+                  flexBasis: '50%', // Adjust column width for different screen sizes
+                  '@media (max-width: 600px)': {
+                    flexBasis: '100%' // Full width for small screens
+                  }
+                }
+              }}
             />
-            <Grid item xs={12}>
-              <Box sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
-                <Button
-                  variant='contained'
-                  disabled={!prevPageUrl}
-                  color='primary'
-                  onClick={handleOnPrevPage}
-                  sx={{ my: 2, px: 2, mx: 2 }}
-                  startIcon={<Icon icon='bx:bx-chevron-left' />}
-                >
-                  Prev Page
-                </Button>
-                {renderPageNumbers().length > 0 && renderPageNumbers().map(btn => btn)}
-                <Button
-                  variant='contained'
-                  disabled={!nextPageUrl}
-                  color='primary'
-                  onClick={handleOnNextPage}
-                  sx={{ my: 2, px: 2 }}
-                  endIcon={<Icon icon='bx:bx-chevron-right' />}
-                >
-                  Next Page
-                </Button>
-
-                <Typography sx={{ color: 'text.secondary' }}>Last page {lastPage}</Typography>
-              </Box>
-            </Grid>
           </>
         ) : (
           <Grid>
@@ -670,6 +742,7 @@ const ProductsTable = () => {
             </Box>
           </Grid>
         )}
+        <PaginationGrid />
       </Grid>
     </Grid>
   )

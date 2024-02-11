@@ -866,7 +866,8 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             gap: '1rem',
             marginBottom: '1rem',
             width: '100%',
-            padding: '0px 1rem'
+            padding: '0px 1rem',
+            flexDirection: ['column', 'row', 'row']
           }}
         >
           <FormControl fullWidth>

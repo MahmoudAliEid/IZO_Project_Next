@@ -9,7 +9,7 @@ import Icon from 'src/@core/components/icon'
 // ** Custom Components
 import ImageUploadVariable from './ImageUploadVariable'
 
-const DialogUploadImage = ({ open, handleClose, name, setFieldValue, value, setUpload }) => {
+const DialogUploadImage = ({ open, handleClose, name, setFieldValue, value }) => {
   const [isNotDone, setIsNotDone] = useState(true)
 
   return (
@@ -24,13 +24,7 @@ const DialogUploadImage = ({ open, handleClose, name, setFieldValue, value, setU
       scroll='body'
     >
       <Card sx={{ p: 10 }}>
-        <ImageUploadVariable
-          name={name}
-          setFieldValue={setFieldValue}
-          value={value}
-          setIsNotDone={setIsNotDone}
-          setUpload={setUpload}
-        />
+        <ImageUploadVariable name={name} setFieldValue={setFieldValue} value={value} setIsNotDone={setIsNotDone} />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
           <Button onClick={handleClose} disabled={!isNotDone} variant='outlined' color='error'>
             <Icon icon='eva:close-fill' />

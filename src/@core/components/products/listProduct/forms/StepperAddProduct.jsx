@@ -18,6 +18,8 @@ import * as Yup from 'yup'
 import ProductPrices from '../productprices/ProductPrices'
 import { useDispatch, useSelector } from 'react-redux'
 import { saveProduct } from 'src/store/apps/products/productStoreSlice'
+import { postUpdateProduct } from 'src/store/apps/products/postUpdateProductSlice'
+import { fetchProducts } from 'src/store/apps/products/listProducts/getProductsSlice'
 
 // import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
 
@@ -102,14 +104,41 @@ const Step = styled(MuiStep)(({ theme }) => ({
   }
 }))
 
+const StepperHeaderContainer = styled(CardContent)(({ theme }) => ({
+  borderRight: `1px solid ${theme.palette.divider}`,
+  gridColumn: 'span 3',
+
+  [theme.breakpoints.down('md')]: {
+    borderRight: 0,
+    borderBottom: `1px solid ${theme.palette.divider}`
+  }
+}))
+
 const StepperAddProduct = ({ isEdit, itemId }) => {
   // select names
   const names = useSelector(state => state.getCreateProduct.data?.value?.product_price)
 
+  // ** Initial Data Names
+  const testNames = [
+    { id: 1, value: 'Default Price' },
+    { id: 2, value: 'Whole Sale Price' },
+    { id: 3, value: 'Retail Price' },
+    { id: 4, value: 'Minium Price' },
+    { id: 5, value: 'Last Price' },
+    { id: 6, value: 'ECM Before Price' },
+    { id: 7, value: 'ECM After Price' },
+    { id: 8, value: 'Custom Price One' },
+    { id: 9, value: 'Custom Price Two' },
+    { id: 10, value: 'Custom Price Three' }
+  ]
+
+  // const contentDataState = ContentState.createFromBlockArray(convertFromHTML(initialLD))
+  // const editorDataState = EditorState.createWithContent(ContentState.createFromBlockArray(convertFromHTML(initialLD)))
+
   //** States */
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
-  const [tableNames, setTableNames] = useState(names)
+  const [tableNames, setTableNames] = useState(names || testNames)
   const [activeStep, setActiveStep] = useState(0)
   const [unitId, setUnitId] = useState('')
   const [openLoading, setOpenLoading] = useState(false)
@@ -128,10 +157,8 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     alert_quantity: null,
     warranty_id: '',
     show_more_price: false,
-
-    long_description: '<h1>hi, form izo , Ebrahem & Mahmoud</h1>',
-    short_description:
-      '<h2><span style="font-size: 18px;font-family: Georgia;"><strong>Hello , World!🥒🥒</strong></span></h2>\n',
+    long_description: '',
+    short_description: '',
     location: [],
     productImage: [],
     productmultipleimages: [],
@@ -627,6 +654,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   const dispatch = useDispatch()
   const saveProductMain = useSelector(state => state.postCreateProduct)
   console.log(saveProductMain, 'from stepper saveProductMain 🎶')
+  const postUpdateProductMain = useSelector(state => state.postUpdateProduct)
 
   useEffect(() => {
     if (initialValues.unit_id) {
@@ -676,6 +704,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
               handleBlur={handleBlur}
               handleChange={handleChange}
               setFieldValue={setFieldValue}
+              updatingProductData={updatingProductData || []}
             />
           </Fragment>
         )
@@ -750,8 +779,14 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     console.log(values, 'from submit Product 🐱‍🏍')
     if (isEdit && itemId) {
       console.log('from stepper isEdit & itemId ☢☢', isEdit, itemId)
+      dispatch(postUpdateProduct({ newProduct: values, id: itemId })).then(() => {
+        dispatch(fetchProducts({ token }))
+      })
+      setActiveStep(activeStep + 1)
     } else {
-      dispatch(saveProduct({ product: values }))
+      dispatch(saveProduct({ product: values })).then(() => {
+        dispatch(fetchProducts({ token }))
+      })
       setActiveStep(activeStep + 1)
     }
     setOpenLoading(true)
@@ -763,12 +798,16 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     if (activeStep === steps.length) {
       return (
         <>
-          <Typography align='center'>All steps are completed! 🎉</Typography>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button size='large' variant='contained' onClick={handleReset}>
-              Reset
-            </Button>
-          </Box>
+          <Grid container xs={12} mb={5} justifyContent={'center'}>
+            <Grid item xs={12} alignContent={'center'} justifyContent={'center'}>
+              <Typography align='center'>All steps are completed! 🎉</Typography>
+              <Box sx={{ mt: 4, display: 'flex' }}>
+                <Button size='large' variant='contained' onClick={handleReset}>
+                  Reset
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
         </>
       )
     } else {
@@ -790,38 +829,45 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
                     {steps[activeStep].subtitle}
                   </Typography>
                 </Grid>
-
-                {getStepContent({
-                  values,
-                  errors,
-                  touched,
-                  handleBlur,
-                  handleChange,
-                  setFieldValue,
-                  step: activeStep
-                })}
+                <Grid item xs={12} mb={5}>
+                  {getStepContent({
+                    values,
+                    errors,
+                    touched,
+                    handleBlur,
+                    handleChange,
+                    setFieldValue,
+                    step: activeStep
+                  })}
+                </Grid>
 
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Button
-                    size='large'
                     variant='outlined'
                     color='secondary'
                     disabled={activeStep === 0}
                     onClick={handleBack}
+                    sx={{ fontSize: { sx: '0.75rem', md: '1rem' } }}
                   >
                     Back
                   </Button>
                   {activeStep === steps.length - 1 ? (
                     <Button
-                      size='large'
                       variant='contained'
                       color='primary'
+                      sx={{ fontSize: { sx: '0.5rem', md: '1rem' } }}
                       onClick={() => handleSubmitForm(values, { resetForm })}
                     >
                       {isEdit ? 'Update Product' : 'Add Product'}
                     </Button>
                   ) : (
-                    <Button size='large' variant='contained' color='primary' onClick={handleNext}>
+                    <Button
+                      sx={{ fontSize: { sx: '0.5rem', md: '1rem' } }}
+                      size='large'
+                      variant='contained'
+                      color='primary'
+                      onClick={handleNext}
+                    >
                       Next
                     </Button>
                   )}
@@ -835,34 +881,19 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   }
 
   return (
-    <Card
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        gap: 3,
-        height: '600px'
-      }}
-    >
-      <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={saveProductMain} />
-      <CardContent
-        sx={{
-          overflowY: 'auto',
-          gridColumn: 'span 3',
-          borderRight: theme => `1px solid ${theme.palette.divider}`
-        }}
-      >
-        <StepperWrapper>
+    <Card sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
+      <LoadingAnimation
+        open={openLoading}
+        onClose={() => setOpenLoading(false)}
+        statusType={isEdit ? postUpdateProductMain : saveProductMain}
+      />
+      <StepperHeaderContainer>
+        <StepperWrapper sx={{ height: '100%' }}>
           <Stepper
             activeStep={activeStep}
-            connector={<Icon icon='bx:chevron-down' width='20px' height='20px' />}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '2rem'
-            }}
+            orientation='vertical'
+            connector={<></>}
+            sx={{ height: '100%', minWidth: '15rem' }}
           >
             {steps.map((step, index) => {
               return (
@@ -881,7 +912,8 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: '100%'
+                        width: '100%',
+                        padding: '1rem 0'
                       }}
                       onClick={() => {
                         setActiveStep(index)
@@ -897,7 +929,9 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
                             boxShadow: theme => `0 0.1875rem 0.375rem 0 ${hexToRGBA(theme.palette.primary.main, 0.4)}`
                           })
                         }}
-                      ></CustomAvatar>
+                      >
+                        <Icon icon={step.icon} />
+                      </CustomAvatar>
                       <div
                         style={{
                           display: 'flex',
@@ -918,7 +952,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
             })}
           </Stepper>
         </StepperWrapper>
-      </CardContent>
+      </StepperHeaderContainer>
       <CardContent
         sx={{
           overflowY: 'auto',

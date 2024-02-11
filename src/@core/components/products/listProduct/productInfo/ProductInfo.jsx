@@ -35,8 +35,17 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 //** Redux Imports
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline'
 
-const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+const ProductInfo = ({
+  initialValues,
+  errors,
+  touched,
+  handleBlur,
+  handleChange,
+  setFieldValue,
+  updatingProductData
+}) => {
   const contentDataState = ContentState.createFromBlockArray(convertFromHTML(initialValues.long_description))
   const editorDataState = EditorState.createWithContent(contentDataState)
 
@@ -96,6 +105,26 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
 
   // ** Hook
   const dispatch = useDispatch()
+
+  // ** set descriptions when change
+
+  useEffect(() => {
+    if (updatingProductData.long_description) {
+      const contentDataState = ContentState.createFromBlockArray(convertFromHTML(updatingProductData.long_description))
+      const editorDataState = EditorState.createWithContent(contentDataState)
+      setEditorState(editorDataState)
+    }
+  }, [updatingProductData.long_description])
+
+  useEffect(() => {
+    if (updatingProductData.short_description) {
+      const contentDataState2 = ContentState.createFromBlockArray(
+        convertFromHTML(updatingProductData.short_description)
+      )
+      const editorDataState2 = EditorState.createWithContent(contentDataState2)
+      setEditorState2(editorDataState2)
+    }
+  }, [updatingProductData.short_description])
 
   useEffect(() => {
     const filteredSubCategories = subCategoriesData.filter(
@@ -194,9 +223,10 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
   // console.log(editorState2, convertToRaw(editorState2.getCurrentContent()), 'editorState this is  second one 💌💟💟')
   const data = draftToHtml(convertToRaw(editorState.getCurrentContent()))
   console.log(data)
+  console.log('updated data', updatingProductData)
 
   return (
-    <Grid container spacing={12}>
+    <Grid container spacing={12} justifyContent={'center'} alignContent={'center'} alignItems={'center'}>
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <FormControl fullWidth>
           <TextField
@@ -274,45 +304,47 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
 
       <Grid
         item
-        xs={12}
+        xs={12} // Adjusted to take full width in small screens
         lg={initialValues.product_type === 'single' ? 6 : 12}
         md={initialValues.product_type === 'single' ? 6 : 12}
         sm={12}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={10}>
-            <FormControl fullWidth>
-              <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
-              <Select
-                value={initialValues.unit_id || selectedUnit}
-                disabled={initialValues.sub_unit_id && initialValues.sub_unit_id.length > 0 ? true : false}
-                onChange={handleChange}
-                required
-                name='unit_id'
-                id='demo-simple-select-label'
-                label='Unit'
-                fullWidth
-                onBlur={handleBlur}
-                error={touched.unit_id && !!errors.unit_id}
-                helperText={touched.unit_id && errors.unit_id ? String(errors.unit_id) : ''}
+        <FormControl fullWidth>
+          <Grid container spacing={2}>
+            <Grid item xs={9} md={10} lg={10}>
+              <FormControl fullWidth>
+                <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
+                <Select
+                  value={initialValues.unit_id || selectedUnit}
+                  disabled={initialValues.sub_unit_id && initialValues.sub_unit_id.length > 0 ? true : false}
+                  onChange={handleChange}
+                  required
+                  name='unit_id'
+                  id='demo-simple-select-label'
+                  label='Unit'
+                  fullWidth
+                  onBlur={handleBlur}
+                  error={touched.unit_id && !!errors.unit_id}
+                  helperText={touched.unit_id && errors.unit_id ? String(errors.unit_id) : ''}
+                >
+                  {unitsData.map(unit => (
+                    <MenuItem key={unit.id} value={unit.id}>
+                      {unit.value}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={3} md={2} lg={2}>
+              <Button
+                onClick={handleUnitOnClick}
+                sx={{ textAlign: 'center', height: '100%', width: '100%' }}
+                color='primary'
+                variant='contained'
               >
-                {unitsData.map(unit => (
-                  <MenuItem key={unit.id} value={unit.id}>
-                    {unit.value}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={2} justifyContent={'center'}>
-            <Button
-              onClick={handleUnitOnClick}
-              sx={{ textAlign: 'center', height: '100%', width: '100%' }}
-              color='primary'
-              variant='contained'
-            >
-              +
-            </Button>
+                <AddCircleOutline />
+              </Button>
+            </Grid>
           </Grid>
           <FormControl>
             <FormHelperText>
@@ -326,12 +358,13 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               </FormHelperText>
             ) : null}
           </FormControl>
-        </Grid>
+        </FormControl>
       </Grid>
+
       {initialValues.product_type === 'single' ? (
         <Grid item xs={12} lg={6} md={6} sm={12}>
           <Grid container spacing={2}>
-            <Grid item xs={10}>
+            <Grid item xs={9} md={10} lg={10}>
               <FormControl fullWidth>
                 <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
                 <Select
@@ -383,7 +416,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={2} justifyContent={'center'}>
+            <Grid item xs={3} md={2} lg={2} justifyContent={'center'}>
               <Button
                 onClick={handleSubUnitOnClick}
                 sx={{ textAlign: 'center', height: '100%', width: '100%' }}
@@ -391,7 +424,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
                 variant='contained'
                 disabled={initialValues.sub_unit_id.length >= 2}
               >
-                +
+                <AddCircleOutline />
               </Button>
             </Grid>
             <FormControl>
@@ -405,9 +438,9 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
         </Grid>
       ) : null}
 
-      <Grid item xs={12}>
+      <Grid item xs={12} lg={6} md={6} sm={12}>
         <Grid container spacing={2}>
-          <Grid item xs={10}>
+          <Grid item xs={9} md={10} lg={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Brand</InputLabel>
               <Select
@@ -432,14 +465,14 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={2} justifyContent={'center'}>
+          <Grid item xs={3} md={2} lg={2} justifyContent={'center'}>
             <Button
               onClick={handleBrandOnClick}
               sx={{ textAlign: 'center', height: '100%', width: '100%' }}
               color='primary'
               variant='contained'
             >
-              +
+              <AddCircleOutline />
             </Button>
           </Grid>
         </Grid>
@@ -447,7 +480,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <Grid container spacing={2}>
-          <Grid item xs={10}>
+          <Grid item xs={9} md={10} lg={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Category</InputLabel>
               <Select
@@ -470,14 +503,14 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3} md={2} lg={2} justifyContent={'center'}>
             <Button
               onClick={handleCategoryOnClick}
-              sx={{ textAlign: 'center', height: '100%' }}
+              sx={{ textAlign: 'center', height: '100%', width: '100%' }}
               color='primary'
               variant='contained'
             >
-              +
+              <AddCircleOutline />
             </Button>
           </Grid>
           <FormControl>
@@ -490,7 +523,7 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <Grid container spacing={2}>
-          <Grid item xs={10}>
+          <Grid item xs={9} md={10} lg={10}>
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>Sub Category</InputLabel>
               <Select
@@ -526,14 +559,14 @@ const ProductInfo = ({ initialValues, errors, touched, handleBlur, handleChange,
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3} md={2} lg={2} justifyContent={'center'}>
             <Button
               onClick={handleSubCategoryOnClick}
-              sx={{ textAlign: 'center', height: '100%' }}
+              sx={{ textAlign: 'center', height: '100%', width: '100%' }}
               color='primary'
               variant='contained'
             >
-              +
+              <AddCircleOutline />
             </Button>
           </Grid>
           <FormControl>

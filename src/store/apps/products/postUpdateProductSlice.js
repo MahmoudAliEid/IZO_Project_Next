@@ -4,13 +4,27 @@ import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
 
 // First, create the async thunk
-export const updateProduct = createAsyncThunk('dashboard/updateProduct', async payload => {
-  const { product } = payload
+export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', async payload => {
+  const { newProduct, id } = payload
+
+  const product = { ...newProduct }
+
+  // ! compare the data(new) with the previous data(old) and then update the data
+  const positionDetailsValueNEW = newProduct.positionDetailsValue
+  const oldPositionDetailsValue = positionDetailsValueNEW.filter(item => item.type === 'old')
+  const newPositionDetailsValue = positionDetailsValueNEW.filter(item => item.type === 'new')
+
+  console.log('product_racks_update ', oldPositionDetailsValue)
+  console.log('product_racks', newPositionDetailsValue)
+
+  // formData.append('product_racks', JSON.stringify(product.positionDetailsValue))
 
   const formData = new FormData()
   formData.append('name', product.name || '')
   formData.append('product_type', product.product_type || '')
   formData.append('unit_id', product.unit_id || '')
+  formData.append('product_racks_update', JSON.stringify(oldPositionDetailsValue))
+  formData.append('product_racks', JSON.stringify(newPositionDetailsValue))
 
   if (product.sub_unit_id && product.sub_unit_id.length > 0) {
     for (let i = 0; i < product.sub_unit_id.length; i++) {
@@ -51,9 +65,15 @@ export const updateProduct = createAsyncThunk('dashboard/updateProduct', async p
     }
   }
 
-  formData.append('image', (product.productImage && product?.productImage[0]) || '')
-  formData.append('bruchore', (product.productbrochure && product?.productbrochure[0]) || '')
-  formData.append('video', (product.productvideo && product?.productvideo[0]) || '')
+  if (product?.productImage && typeof product?.productImage !== 'string') {
+    formData.append('image', (product.productImage && product?.productImage[0]) || '')
+  }
+  if (product?.productbrochure && typeof product?.productbrochure !== 'string') {
+    formData.append('bruchore', (product.productbrochure && product?.productbrochure[0]) || '')
+  }
+  if (product?.productvideo && typeof product?.productvideo !== 'string') {
+    formData.append('video', (product.productvideo && product?.productvideo[0]) || '')
+  }
 
   // ** Single Product Price
   if (product.product_type === 'single') {
@@ -403,8 +423,6 @@ export const updateProduct = createAsyncThunk('dashboard/updateProduct', async p
     }
   }
 
-  formData.append('product_racks', JSON.stringify(product.positionDetailsValue))
-
   // ** Variable Product Price
   if (product.product_type === 'variable') {
     formData.append('product_variation', JSON.stringify(product.product_variation))
@@ -423,7 +441,7 @@ export const updateProduct = createAsyncThunk('dashboard/updateProduct', async p
   }
 
   const token = getCookie('token')
-  const response = await axios.post('https://test.izocloud.net/api/app/react/products/save', formData, {
+  const response = await axios.post(`https://test.izocloud.net/api/app/react/products/update/${id}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
@@ -447,13 +465,13 @@ const postUpdateProductSlice = createSlice({
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(updateProduct.pending, state => {
+    builder.addCase(postUpdateProduct.pending, state => {
       state.status = 'loading'
       state.loading = true
       state.success = false
       state.error = false
     })
-    builder.addCase(updateProduct.fulfilled, (state, action) => {
+    builder.addCase(postUpdateProduct.fulfilled, (state, action) => {
       state.loading = false
       state.success = true
       state.error = false
@@ -461,13 +479,13 @@ const postUpdateProductSlice = createSlice({
       console.log('fulfilled from update Product product ', action)
       notify('Product Updated successfully', 'success')
     })
-    builder.addCase(updateProduct.rejected, (state, action) => {
+    builder.addCase(postUpdateProduct.rejected, (state, action) => {
       state.loading = false
       state.success = false
       state.error = true
       state.status = 'failed'
       console.log('rejected from update Product product ', action)
-      notify('Product Updated', 'error')
+      notify('Product not Updated ', 'error')
     })
   }
 })
