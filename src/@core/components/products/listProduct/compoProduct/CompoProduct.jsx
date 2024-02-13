@@ -1,4 +1,4 @@
-import { Box, Divider, CardHeader, FormControl, Chip, Grid, FormHelperText } from '@mui/material'
+import { Box, Divider, CardHeader, FormControl, Grid, FormHelperText } from '@mui/material'
 
 // ** formik
 import { FieldArray, Form } from 'formik'
@@ -7,7 +7,7 @@ import CustomInputField from '../productVariable/components/CustomInputField'
 
 const CompoProduct = ({ initialValues, setFieldValue, handleChange }) => {
   return (
-    <Box>
+    <Box sx={{ width: '100%' }}>
       <Form>
         <FieldArray name='product_compo'>
           {() => (
@@ -45,17 +45,15 @@ const CompoProduct = ({ initialValues, setFieldValue, handleChange }) => {
                           remove={remove}
                           setFieldValue={setFieldValue}
                         />
+
                         <Divider
                           sx={{
                             mb: 2
                           }}
                         />
-                        <Grid container spacing={2}>
-                          <Grid item xs={6} md={12} sm={12}>
+                        <Grid container spacing={3}>
+                          <Grid item xs={12} md={6} sm={12} lg={6}>
                             <FormControl fullWidth>
-                              <Divider variant='middle' sx={{ mb: 2 }}>
-                                <Chip label='Profit Margin' />
-                              </Divider>
                               <CustomInputField
                                 label={'Margin %'}
                                 name={`product_compo.${productIndex}.profit_percent`}
@@ -75,11 +73,8 @@ const CompoProduct = ({ initialValues, setFieldValue, handleChange }) => {
                               />
                             </FormControl>
                           </Grid>
-                          <Grid item xs={6} md={12} sm={12}>
+                          <Grid item xs={12} md={6} sm={12} lg={6}>
                             <FormControl fullWidth>
-                              <Divider variant='middle' sx={{ mb: 2 }}>
-                                <Chip label='Default Selling Price' />
-                              </Divider>
                               <CustomInputField
                                 label={'Default Sale Price'}
                                 name={`product_compo.${productIndex}.selling_price_inc_tax`}

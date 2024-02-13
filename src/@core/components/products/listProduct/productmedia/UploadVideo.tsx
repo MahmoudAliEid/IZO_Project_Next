@@ -139,11 +139,15 @@ const UploadVideo = ({ video,setFieldValue }: Props) => {
       <ListItem
         sx={{
           display: 'flex',
-          flexDirection: ['row', 'row', 'row'],
+          flexDirection:'column',
           justifyContent: 'space-between'
         }}
       >
-        <div className='file-details'>
+        <div className='file-details'  style={{
+          display: 'flex',
+          flexDirection:'column',
+          justifyContent: 'space-between'
+        }}>
 
           <div className='file-preview'>
             <video width="200" height="200" controls src={video as string} />

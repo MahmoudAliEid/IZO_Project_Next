@@ -18,12 +18,12 @@ import {
   MenuItem,
   Tooltip,
   Dialog,
-  Box,
   FormControl,
   InputLabel,
   Select,
   Typography,
-  TableFooter
+  TableFooter,
+  Grid
 } from '@mui/material'
 
 // ** Icon Imports
@@ -114,64 +114,69 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
       field: 'quantity',
       headerName: 'Quantity',
       align: 'center',
-      flex: 0.35,
+      flex: 0.45,
       minWidth: 210,
       renderCell: params => (
-        <Box sx={{ display: 'flex', gap: 3 }}>
-          <CustomInputField
-            name={`product_compo.${productIndex}.rows.${params.idx}.quantity`}
-            value={params.quantity}
-            onChange={e => {
-              handleChange(e)
-              const newValue = Number(e.target.value) * Number(params.purchase_price_exc) * Number(params.unit_quantity)
-              //update total amount when quantity changes
-              console.log('value from quantity', e.target.value, params.purchase_price_exc, params.unit_quantity)
-              setFieldValue(
-                `product_compo.${productIndex}.rows.${params.idx}.total_amount`,
-                Number(newValue).toFixed(2)
-              )
-            }}
-          />
-          <FormControl fullWidth>
-            <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
-            <Select
-              value={params.unit}
-              name={`product_compo.${productIndex}.rows.${params.idx}.unit`}
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4} sm={12} lg={4}>
+            <CustomInputField
+              name={`product_compo.${productIndex}.rows.${params.idx}.quantity`}
+              value={params.quantity}
               onChange={e => {
                 handleChange(e)
-
-                // set value of unit_quantity to unit_quantity
-                setFieldValue(
-                  `product_compo.${productIndex}.rows.${params.idx}.unit_quantity`,
-                  rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
-                )
-                // when unit takes a unit_quantity , update total amount
-
+                const newValue =
+                  Number(e.target.value) * Number(params.purchase_price_exc) * Number(params.unit_quantity)
+                //update total amount when quantity changes
+                console.log('value from quantity', e.target.value, params.purchase_price_exc, params.unit_quantity)
                 setFieldValue(
                   `product_compo.${productIndex}.rows.${params.idx}.total_amount`,
-                  Number(
-                    params.purchase_price_exc *
-                      params.quantity *
-                      rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
-                  ).toFixed(2)
+                  Number(newValue).toFixed(2)
                 )
               }}
-              id='demo-simple-select'
-              label='Unit'
-              fullWidth
-            >
-              {rows[params.idx].all_unit && rows[params.idx].all_unit.length > 0 ? (
-                rows[params.idx].all_unit.map((unit, idx) => (
-                  <MenuItem key={idx} value={unit.id}>
-                    {unit.value}
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem value={''}>No Units</MenuItem>
-              )}
-            </Select>
-          </FormControl>
-        </Box>
+            />
+          </Grid>
+          <Grid item xs={12} md={8} sm={12} lg={8}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
+              <Select
+                value={params.unit}
+                name={`product_compo.${productIndex}.rows.${params.idx}.unit`}
+                onChange={e => {
+                  handleChange(e)
+
+                  // set value of unit_quantity to unit_quantity
+                  setFieldValue(
+                    `product_compo.${productIndex}.rows.${params.idx}.unit_quantity`,
+                    rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
+                  )
+                  // when unit takes a unit_quantity , update total amount
+
+                  setFieldValue(
+                    `product_compo.${productIndex}.rows.${params.idx}.total_amount`,
+                    Number(
+                      params.purchase_price_exc *
+                        params.quantity *
+                        rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
+                    ).toFixed(2)
+                  )
+                }}
+                id='demo-simple-select'
+                label='Unit'
+                fullWidth
+              >
+                {rows[params.idx].all_unit && rows[params.idx].all_unit.length > 0 ? (
+                  rows[params.idx].all_unit.map((unit, idx) => (
+                    <MenuItem key={idx} value={unit.id}>
+                      {unit.value}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value={''}>No Units</MenuItem>
+                )}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
       )
     },
     {
@@ -303,7 +308,7 @@ const CompoTable = ({ rows, productIndex, values, handleChange, remove, setField
       />
 
       <>
-        <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
           <Table stickyHeader stickyFooter aria-label='sticky table'>
             <TableHead>
               <TableRow>

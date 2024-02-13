@@ -44,8 +44,10 @@ const ProductInfo = ({
   handleBlur,
   handleChange,
   setFieldValue,
-  updatingProductData
+  updatingProductData,
+  isEdit
 }) => {
+  // ** for long description
   const contentDataState = ContentState.createFromBlockArray(convertFromHTML(initialValues.long_description))
   const editorDataState = EditorState.createWithContent(contentDataState)
 
@@ -78,19 +80,7 @@ const ProductInfo = ({
   const [editorState, setEditorState] = useState(editorDataState)
   const [editorState2, setEditorState2] = useState(editorDataState2)
 
-  // Editor
-  // const contentBlock = htmlToDraft(initialValues.short_description)
-  // let editorState
-  // if (contentBlock) {
-  //   const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks)
-  //   editorState = EditorState.createWithContent(contentState)
-  // } else {
-  //   editorState = EditorState.createEmpty()
-  // }
-
   // ** Selectors
-
-  // const productData = useSelector(state => state.getCreateProduct?.data?.value)
   const units = useSelector(state => state.getCreateProduct?.data?.value?.units)
   const sub_units = useSelector(state => state.getCreateProduct?.data?.value?.sub_units)
   const warranties = useSelector(state => state.getCreateProduct?.data?.value?.warranties)
@@ -100,31 +90,47 @@ const ProductInfo = ({
   const business_locations = useSelector(state => state.getCreateProduct?.data?.value?.business_locations)
   const barcode_type = useSelector(state => state.getCreateProduct?.data?.value?.barcode_type)
 
-  // const { warranties, units, sub_units, brands, categories, sub_categories, business_locations, barcode_type } =
-  //   productData
-
   // ** Hook
   const dispatch = useDispatch()
 
   // ** set descriptions when change
-
   useEffect(() => {
-    if (updatingProductData.long_description) {
+    if (updatingProductData.long_description && isEdit) {
       const contentDataState = ContentState.createFromBlockArray(convertFromHTML(updatingProductData.long_description))
       const editorDataState = EditorState.createWithContent(contentDataState)
       setEditorState(editorDataState)
+    } else {
+      // If long_description is empty, set editorState to an empty string
+      setEditorState(EditorState.createEmpty())
     }
-  }, [updatingProductData.long_description])
+
+    // Cleanup function to clear editorState when component unmounts
+    return () => {
+      setEditorState(EditorState.createEmpty())
+    }
+  }, [updatingProductData.long_description, isEdit])
 
   useEffect(() => {
-    if (updatingProductData.short_description) {
+    let editorDataState2 = null
+
+    if (updatingProductData.short_description && isEdit) {
       const contentDataState2 = ContentState.createFromBlockArray(
         convertFromHTML(updatingProductData.short_description)
       )
-      const editorDataState2 = EditorState.createWithContent(contentDataState2)
+      editorDataState2 = EditorState.createWithContent(contentDataState2)
+      setEditorState2(editorDataState2)
+    } else {
+      // If short_description is empty, set editorState2 to an empty string
+      editorDataState2 = EditorState.createEmpty()
       setEditorState2(editorDataState2)
     }
-  }, [updatingProductData.short_description])
+
+    // Cleanup function to clear editorState2 when component unmounts
+    return () => {
+      editorDataState2 = EditorState.createEmpty()
+      setEditorState2(editorDataState2)
+    }
+  }, [updatingProductData.short_description, isEdit])
 
   useEffect(() => {
     const filteredSubCategories = subCategoriesData.filter(
@@ -226,7 +232,7 @@ const ProductInfo = ({
   console.log('updated data', updatingProductData)
 
   return (
-    <Grid container spacing={12} justifyContent={'center'} alignContent={'center'} alignItems={'center'}>
+    <Grid container spacing={12} justifyContent={'center'} alignContent={'center'} alignItems={'center'} padding={3}>
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <FormControl fullWidth>
           <TextField
@@ -305,8 +311,8 @@ const ProductInfo = ({
       <Grid
         item
         xs={12} // Adjusted to take full width in small screens
-        lg={initialValues.product_type === 'single' ? 6 : 12}
-        md={initialValues.product_type === 'single' ? 6 : 12}
+        lg={6}
+        md={6}
         sm={12}
       >
         <FormControl fullWidth>
@@ -361,82 +367,78 @@ const ProductInfo = ({
         </FormControl>
       </Grid>
 
-      {initialValues.product_type === 'single' ? (
-        <Grid item xs={12} lg={6} md={6} sm={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={9} md={10} lg={10}>
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
-                <Select
-                  value={initialValues.sub_unit_id}
-                  onChange={handleChange}
-                  multiple
-                  name='sub_unit_id'
-                  id='demo-simple-select'
-                  label='Sub Unit'
-                  fullWidth
-                  renderValue={selected =>
-                    filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map(value => (
-                          <Chip
-                            key={value}
-                            label={filteredSubUnitsData.find(subUnit => subUnit.id === value)?.name || null}
-                            onDelete={() => {
-                              const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== value)
-                              setFieldValue('sub_unit_id', updatedSubUnitIds)
-                              setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== value))
-                            }}
-                          />
-                        ))}
-                      </Box>
-                    ) : null
-                  }
-                  onBlur={handleBlur}
-                  disabled={filteredSubUnitsData && filteredSubUnitsData.length ? false : true}
-                  error={touched.sub_unit_id && !!errors.sub_unit_id}
-                  helperText={touched.sub_unit_id && errors.sub_unit_id ? String(errors.sub_unit_id) : ''}
-                >
-                  {initialValues.sub_unit_id.length >= 2 && (
-                    <MenuItem value='' disabled>
-                      <em>You can select only up to two sub units</em>
-                    </MenuItem>
-                  )}
-                  {filteredSubUnitsData.map(subUnit => (
-                    <MenuItem
-                      key={subUnit.id}
-                      value={subUnit.id}
-                      disabled={
-                        initialValues.sub_unit_id.length >= 2 && !initialValues.sub_unit_id.includes(subUnit.id)
-                      }
-                    >
-                      {subUnit.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={3} md={2} lg={2} justifyContent={'center'}>
-              <Button
-                onClick={handleSubUnitOnClick}
-                sx={{ textAlign: 'center', height: '100%', width: '100%' }}
-                color='primary'
-                variant='contained'
-                disabled={initialValues.sub_unit_id.length >= 2}
+      <Grid item xs={12} lg={6} md={6} sm={12}>
+        <Grid container spacing={2}>
+          <Grid item xs={9} md={10} lg={10}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
+              <Select
+                value={initialValues.sub_unit_id}
+                onChange={handleChange}
+                multiple
+                name='sub_unit_id'
+                id='demo-simple-select'
+                label='Sub Unit'
+                fullWidth
+                renderValue={selected =>
+                  filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map(value => (
+                        <Chip
+                          key={value}
+                          label={filteredSubUnitsData.find(subUnit => subUnit.id === value)?.name || null}
+                          onDelete={() => {
+                            const updatedSubUnitIds = initialValues.sub_unit_id.filter(item => item !== value)
+                            setFieldValue('sub_unit_id', updatedSubUnitIds)
+                            setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== value))
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  ) : null
+                }
+                onBlur={handleBlur}
+                disabled={filteredSubUnitsData && filteredSubUnitsData.length ? false : true}
+                error={touched.sub_unit_id && !!errors.sub_unit_id}
+                helperText={touched.sub_unit_id && errors.sub_unit_id ? String(errors.sub_unit_id) : ''}
               >
-                <AddCircleOutline />
-              </Button>
-            </Grid>
-            <FormControl>
-              <FormHelperText>
-                {filteredSubUnitsData && filteredSubUnitsData.length
-                  ? 'Sub Unit is limited to two units'
-                  : 'No sub Units'}
-              </FormHelperText>
+                {initialValues.sub_unit_id.length >= 2 && (
+                  <MenuItem value='' disabled>
+                    <em>You can select only up to two sub units</em>
+                  </MenuItem>
+                )}
+                {filteredSubUnitsData.map(subUnit => (
+                  <MenuItem
+                    key={subUnit.id}
+                    value={subUnit.id}
+                    disabled={initialValues.sub_unit_id.length >= 2 && !initialValues.sub_unit_id.includes(subUnit.id)}
+                  >
+                    {subUnit.name}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
           </Grid>
+          <Grid item xs={3} md={2} lg={2} justifyContent={'center'}>
+            <Button
+              onClick={handleSubUnitOnClick}
+              sx={{ textAlign: 'center', height: '100%', width: '100%' }}
+              color='primary'
+              variant='contained'
+              disabled={initialValues.sub_unit_id.length >= 2}
+            >
+              <AddCircleOutline />
+            </Button>
+          </Grid>
+          <FormControl>
+            <FormHelperText>
+              {filteredSubUnitsData && filteredSubUnitsData.length
+                ? 'Sub Unit is limited to two units'
+                : 'No sub Units'}
+            </FormHelperText>
+          </FormControl>
         </Grid>
-      ) : null}
+      </Grid>
 
       <Grid item xs={12} lg={6} md={6} sm={12}>
         <Grid container spacing={2}>

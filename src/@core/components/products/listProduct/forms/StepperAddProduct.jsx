@@ -638,7 +638,18 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
         positionDetailsValue: updatingProductData.positionDetailsValue || prevState.positionDetailsValue,
         tax: updatingProductData.tax || prevState.tax,
         tax_id: updatingProductData.tax_id || prevState.tax_id,
-        tableData: updatingProductData.tableData || prevState.tableData,
+        tableData:
+          updatingProductData.tableData.map(item => {
+            return {
+              id: item.id,
+              value: item.value,
+              single_dpp: item.single_dpp,
+              single_dpp_in_tax: item.single_dpp_in_tax,
+              profit_percent: item.profit_percent,
+              single_dsp: item.single_dsp,
+              single_dsp_inc_tax: item.single_dsp_inc_tax
+            }
+          }) || prevState.tableData,
         tableDataChildOne: updatingProductData.tableDataChildOne || prevState.tableDataChildOne,
         tableDataChildTwo: updatingProductData.tableDataChildTwo || prevState.tableDataChildTwo,
         product_variation: updatingProductData.product_variation || prevState.product_variation,
@@ -705,6 +716,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
               handleChange={handleChange}
               setFieldValue={setFieldValue}
               updatingProductData={updatingProductData || []}
+              isEdit={isEdit}
             />
           </Fragment>
         )
@@ -776,6 +788,8 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   // ** Submit
   const handleSubmitForm = (values, { resetForm }) => {
     // ** Test
+
+    toast.success('Form Submitted 🎉')
     console.log(values, 'from submit Product 🐱‍🏍')
     if (isEdit && itemId) {
       console.log('from stepper isEdit & itemId ☢☢', isEdit, itemId)
@@ -798,10 +812,19 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     if (activeStep === steps.length) {
       return (
         <>
-          <Grid container xs={12} mb={5} justifyContent={'center'}>
-            <Grid item xs={12} alignContent={'center'} justifyContent={'center'}>
+          <Grid
+            container
+            spacing={2}
+            justifyContent={'center'}
+            alignContent={'center'}
+            alignItems={'center'}
+            padding={3}
+          >
+            <Grid item xs={12} sx={{ margin: 'auto' }}>
               <Typography align='center'>All steps are completed! 🎉</Typography>
-              <Box sx={{ mt: 4, display: 'flex' }}>
+            </Grid>
+            <Grid item xs={12} sx={{ margin: 'auto', mt: 4 }}>
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
                 <Button size='large' variant='contained' onClick={handleReset}>
                   Reset
                 </Button>
@@ -809,6 +832,14 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
             </Grid>
           </Grid>
         </>
+        // <Fragment>
+        //   <Typography>All steps are completed!</Typography>
+        //   <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+        //     <Button size='large' variant='contained' onClick={handleReset}>
+        //       Reset
+        //     </Button>
+        //   </Box>
+        // </Fragment>
       )
     } else {
       return (
@@ -820,9 +851,9 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
         >
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
             <form>
-              <Grid container spacing={5} mt={5}>
-                <Grid item xs={12} mb={5}>
-                  <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
+              <Grid container mt={5}>
+                <Grid item xs={12} mb={5} sx={{ px: 3 }}>
+                  <Typography variant='body1' sx={{ fontWeight: 600, color: 'text.primary' }}>
                     {steps[activeStep].title}
                   </Typography>
                   <Typography variant='caption' component='p'>
@@ -841,7 +872,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
                   })}
                 </Grid>
 
-                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', p: 3 }}>
                   <Button
                     variant='outlined'
                     color='secondary'
@@ -857,6 +888,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
                       color='primary'
                       sx={{ fontSize: { sx: '0.5rem', md: '1rem' } }}
                       onClick={() => handleSubmitForm(values, { resetForm })}
+                      type='submit'
                     >
                       {isEdit ? 'Update Product' : 'Add Product'}
                     </Button>
@@ -866,7 +898,10 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
                       size='large'
                       variant='contained'
                       color='primary'
-                      onClick={handleNext}
+                      onClick={e => {
+                        e.preventDefault()
+                        handleNext()
+                      }}
                     >
                       Next
                     </Button>
@@ -881,7 +916,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   }
 
   return (
-    <Card sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
+    <Card sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}>
       <LoadingAnimation
         open={openLoading}
         onClose={() => setOpenLoading(false)}
@@ -957,8 +992,9 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
         sx={{
           overflowY: 'auto',
           overflowX: 'hidden',
-          gridColumn: 'span 9',
-          padding: '2rem'
+          padding: '0 !important'
+          // gridColumn: 'span 9'
+          // padding: '2rem'
         }}
       >
         {renderContent()}

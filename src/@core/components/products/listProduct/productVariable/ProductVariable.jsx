@@ -10,7 +10,7 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
-    <Box padding={2}>
+    <Box>
       <Form>
         <FieldArray name='product_variation'>
           {({ push, remove }) => (

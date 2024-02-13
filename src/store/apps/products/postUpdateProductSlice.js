@@ -79,7 +79,7 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
   if (product.product_type === 'single') {
     if (product.tableData && product.tableData.length > 0) {
       formData.append(
-        'product_price_1',
+        'table_price_1',
         JSON.stringify(
           product.tableData.map(item => {
             return {

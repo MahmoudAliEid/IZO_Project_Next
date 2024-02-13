@@ -165,7 +165,7 @@ const ProductAdditionalInfo = ({ initialValues, errors, touched, handleBlur, han
   }
 
   return (
-    <Grid container spacing={6}>
+    <Grid container spacing={6} padding={3}>
       <Grid item xs={12}>
         <Grid container spacing={2}>
           <Grid item xs={3} md={2} lg={2}>

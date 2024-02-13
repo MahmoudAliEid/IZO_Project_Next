@@ -7,7 +7,6 @@ import {
   Grid,
   Card,
   CardContent,
-  CardHeader,
   Box,
   Divider,
   Typography,
@@ -36,6 +35,7 @@ import TableAverage from './TableAverage'
 //** Third part */
 import ReactHtmlParser from 'react-html-parser'
 import CustomTableView from './CustomTableView'
+import Header from '../Header'
 
 // Styled Grid component
 // const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -112,7 +112,7 @@ const ProductView = ({ open, setOpen, id }) => {
   return (
     <Dialog open={open} onClose={handleCancel} scroll='body' fullWidth maxWidth='lg' fullScreen>
       <Card>
-        <CardHeader title='Product Details' />
+        <Header title={productInfo?.name || ''} handleClose={handleCancel} divider={false} />
 
         <KeenSliderWrapper>
           <Grid container className='match-height'>
