@@ -651,21 +651,21 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
             <p>Exc. tax:</p>
             <ProductPriceCell
               name={`tableDataChildTwo.${params.idx}.single_dsp`}
-              value={params.row.single_dsp}
+              value={params.single_dsp}
               onChange={e => {
                 handleChange(e)
                 const newSingleDsp = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
 
                 // setFieldValue(
-                //   `tableDataChildTwo.${params.row.idx}.single_dpp`,
-                //   (newSingleDsp / (1 + initialValues.tableDataChildTwo[params.row.idx].profit_percent / 100)).toFixed(2)
+                //   `tableDataChildTwo.${params.idx}.single_dpp`,
+                //   (newSingleDsp / (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100)).toFixed(2)
                 // )
                 // setFieldValue(
-                //   `tableDataChildTwo.${params.row.idx}.single_dpp_in_tax`,
+                //   `tableDataChildTwo.${params.idx}.single_dpp_in_tax`,
                 //   (
                 //     newSingleDsp /
-                //     (1 + initialValues.tableDataChildTwo[params.row.idx].profit_percent / 100) /
+                //     (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100) /
                 //     taxValue
                 //   ).toFixed(2)
                 // )
