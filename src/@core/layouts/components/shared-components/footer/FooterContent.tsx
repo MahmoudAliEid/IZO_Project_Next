@@ -28,7 +28,7 @@ const FooterContent = () => {
       </Typography>
 
       <Typography  variant='body2' sx={{ mr: 2  }}>
-        Made with ❤️ by <Box sx={{ color: theme.palette.primary.main}}> Mahmoud Ali & Ibrahem Sai</Box>
+        Made with ❤️ by <span style={{ color: theme.palette.primary.main}}> Mahmoud Ali & Ibrahem Sai</span>
       </Typography>
 
 
