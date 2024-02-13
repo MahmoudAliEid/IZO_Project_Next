@@ -916,7 +916,9 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
   }
 
   return (
-    <Card sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}>
+    <Card
+      sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
+    >
       <LoadingAnimation
         open={openLoading}
         onClose={() => setOpenLoading(false)}
@@ -992,7 +994,10 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
         sx={{
           overflowY: 'auto',
           overflowX: 'hidden',
-          padding: '0 !important'
+          padding: '0 !important',
+          height: '100%',
+          width: '100%'
+
           // gridColumn: 'span 9'
           // padding: '2rem'
         }}

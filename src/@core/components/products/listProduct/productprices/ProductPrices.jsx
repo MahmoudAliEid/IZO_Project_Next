@@ -279,7 +279,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 textTransform: 'capitalize'
               }}
             >
-              {params.row.value.replace(/_/g, ' ')}
+              {params.value.replace(/_/g, ' ')}
             </p>
           </Box>
         </div>
@@ -302,28 +302,26 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Exc. tax:</p>
             <ProductPriceCell
-              name={`tableDataChildOne.${params.row.id - 1}.single_dpp`}
-              value={params.row.single_dpp}
+              name={`tableDataChildOne.${params.idx}.single_dpp`}
+              value={params.single_dpp}
               onChange={e => {
                 handleChange(e)
                 const newSingleDpp = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dpp_in_tax`,
+                  `tableDataChildOne.${params.idx}.single_dpp_in_tax`,
                   Number(newSingleDpp * taxValue).toFixed(2)
                 )
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp`,
-                  Number(
-                    newSingleDpp * (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
-                  ).toFixed(2)
+                  `tableDataChildOne.${params.idx}.single_dsp`,
+                  Number(newSingleDpp * (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100)).toFixed(
+                    2
+                  )
                 )
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildOne.${params.idx}.single_dsp_inc_tax`,
                   Number(
-                    newSingleDpp *
-                      taxValue *
-                      (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
+                    newSingleDpp * taxValue * (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -332,27 +330,27 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Inc. tax: </p>
             <ProductPriceCell
-              name={`tableDataChildOne.${params.row.id - 1}.single_dpp_in_tax`}
-              value={params.row.single_dpp_in_tax}
+              name={`tableDataChildOne.${params.idx}.single_dpp_in_tax`}
+              value={params.single_dpp_in_tax}
               onChange={e => {
                 handleChange(e)
                 const newSingleDppInTax = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dpp`,
+                  `tableDataChildOne.${params.idx}.single_dpp`,
                   Number(newSingleDppInTax / taxValue).toFixed(2)
                 )
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp`,
+                  `tableDataChildOne.${params.idx}.single_dsp`,
                   Number(
                     (newSingleDppInTax / taxValue) *
-                      (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
+                      (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildOne.${params.idx}.single_dsp_inc_tax`,
                   Number(
-                    newSingleDppInTax * (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)
+                    newSingleDppInTax * (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -382,26 +380,24 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               flexDirection: 'column'
             }}
           >
-            <p>Margin: {params.row.profit_percent}%</p>
+            <p>Margin: {params.profit_percent}%</p>
             <ProductPriceCell
-              name={`tableDataChildOne.${params.row.id - 1}.profit_percent`}
-              value={params.row.profit_percent}
+              name={`tableDataChildOne.${params.idx}.profit_percent`}
+              value={params.profit_percent}
               onChange={e => {
                 handleChange(e)
                 const newProfitPercent = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp`,
-                  Number(
-                    initialValues.tableDataChildOne[params.row.id - 1].single_dpp * (1 + newProfitPercent / 100)
-                  ).toFixed(2)
+                  `tableDataChildOne.${params.idx}.single_dsp`,
+                  Number(initialValues.tableDataChildOne[params.idx].single_dpp * (1 + newProfitPercent / 100)).toFixed(
+                    2
+                  )
                 )
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildOne.${params.idx}.single_dsp_inc_tax`,
                   Number(
-                    initialValues.tableDataChildOne[params.row.id - 1].single_dpp *
-                      taxValue *
-                      (1 + newProfitPercent / 100)
+                    initialValues.tableDataChildOne[params.idx].single_dpp * taxValue * (1 + newProfitPercent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -427,27 +423,27 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Exc. tax:</p>
             <ProductPriceCell
-              name={`tableDataChildOne.${params.row.id - 1}.single_dsp`}
-              value={params.row.single_dsp}
+              name={`tableDataChildOne.${params.idx}.single_dsp`}
+              value={params.single_dsp}
               onChange={e => {
                 handleChange(e)
                 const newSingleDsp = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
 
                 // setFieldValue(
-                //   `tableDataChildOne.${params.row.id - 1}.single_dpp`,
-                //   (newSingleDsp / (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)).toFixed(2)
+                //   `tableDataChildOne.${params.idx}.single_dpp`,
+                //   (newSingleDsp / (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100)).toFixed(2)
                 // )
                 // setFieldValue(
-                //   `tableDataChildOne.${params.row.id - 1}.single_dpp_in_tax`,
+                //   `tableDataChildOne.${params.idx}.single_dpp_in_tax`,
                 //   (
                 //     newSingleDsp /
-                //     (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100) /
+                //     (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100) /
                 //     taxValue
                 //   ).toFixed(2)
                 // )
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildOne.${params.idx}.single_dsp_inc_tax`,
                   Number(newSingleDsp * taxValue).toFixed(2)
                 )
               }}
@@ -456,29 +452,29 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Inc. tax: </p>
             <ProductPriceCell
-              name={`tableDataChildOne.${params.row.id - 1}.single_dsp_inc_tax`}
-              value={params.row.single_dsp_inc_tax}
+              name={`tableDataChildOne.${params.idx}.single_dsp_inc_tax`}
+              value={params.single_dsp_inc_tax}
               onChange={e => {
                 handleChange(e)
                 const newSingleDspIncTax = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
 
                 // setFieldValue(
-                //   `tableDataChildOne.${params.row.id - 1}.single_dpp`,
+                //   `tableDataChildOne.${params.idx}.single_dpp`,
                 //   (
                 //     newSingleDspIncTax /
-                //     (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100) /
+                //     (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100) /
                 //     taxValue
                 //   ).toFixed(2)
                 // )
                 // setFieldValue(
-                //   `tableDataChildOne.${params.row.id - 1}.single_dpp_in_tax`,
-                //   (newSingleDspIncTax / (1 + initialValues.tableDataChildOne[params.row.id - 1].profit_percent / 100)).toFixed(
+                //   `tableDataChildOne.${params.idx}.single_dpp_in_tax`,
+                //   (newSingleDspIncTax / (1 + initialValues.tableDataChildOne[params.idx].profit_percent / 100)).toFixed(
                 //     2
                 //   )
                 // )
                 setFieldValue(
-                  `tableDataChildOne.${params.row.id - 1}.single_dsp`,
+                  `tableDataChildOne.${params.idx}.single_dsp`,
                   Number(newSingleDspIncTax / taxValue).toFixed(2)
                 )
               }}
@@ -510,7 +506,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 textTransform: 'capitalize'
               }}
             >
-              {params.row.value.replace(/_/g, ' ')}
+              {params.value.replace(/_/g, ' ')}
             </p>
           </Box>
         </div>
@@ -533,28 +529,26 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Exc. tax:</p>
             <ProductPriceCell
-              name={`tableDataChildTwo.${params.row.id - 1}.single_dpp`}
-              value={params.row.single_dpp}
+              name={`tableDataChildTwo.${params.idx}.single_dpp`}
+              value={params.single_dpp}
               onChange={e => {
                 handleChange(e)
                 const newSingleDpp = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dpp_in_tax`,
+                  `tableDataChildTwo.${params.idx}.single_dpp_in_tax`,
                   Number(newSingleDpp * taxValue).toFixed(2)
                 )
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
-                  Number(
-                    newSingleDpp * (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
-                  ).toFixed(2)
+                  `tableDataChildTwo.${params.idx}.single_dsp`,
+                  Number(newSingleDpp * (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100)).toFixed(
+                    2
+                  )
                 )
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildTwo.${params.idx}.single_dsp_inc_tax`,
                   Number(
-                    newSingleDpp *
-                      taxValue *
-                      (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
+                    newSingleDpp * taxValue * (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -563,27 +557,27 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Inc. tax: </p>
             <ProductPriceCell
-              name={`tableDataChildTwo.${params.row.id - 1}.single_dpp_in_tax`}
-              value={params.row.single_dpp_in_tax}
+              name={`tableDataChildTwo.${params.idx}.single_dpp_in_tax`}
+              value={params.single_dpp_in_tax}
               onChange={e => {
                 handleChange(e)
                 const newSingleDppInTax = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dpp`,
+                  `tableDataChildTwo.${params.idx}.single_dpp`,
                   Number(newSingleDppInTax / taxValue).toFixed(2)
                 )
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
+                  `tableDataChildTwo.${params.idx}.single_dsp`,
                   Number(
                     (newSingleDppInTax / taxValue) *
-                      (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
+                      (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100)
                   ).toFixed(2)
                 )
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildTwo.${params.idx}.single_dsp_inc_tax`,
                   Number(
-                    newSingleDppInTax * (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)
+                    newSingleDppInTax * (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -613,26 +607,24 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
               flexDirection: 'column'
             }}
           >
-            <p>Margin: {params.row.profit_percent}%</p>
+            <p>Margin: {params.profit_percent}%</p>
             <ProductPriceCell
-              name={`tableDataChildTwo.${params.row.id - 1}.profit_percent`}
-              value={params.row.profit_percent}
+              name={`tableDataChildTwo.${params.idx}.profit_percent`}
+              value={params.profit_percent}
               onChange={e => {
                 handleChange(e)
                 const newProfitPercent = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
-                  Number(
-                    initialValues.tableDataChildTwo[params.row.id - 1].single_dpp * (1 + newProfitPercent / 100)
-                  ).toFixed(2)
+                  `tableDataChildTwo.${params.idx}.single_dsp`,
+                  Number(initialValues.tableDataChildTwo[params.idx].single_dpp * (1 + newProfitPercent / 100)).toFixed(
+                    2
+                  )
                 )
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildTwo.${params.idx}.single_dsp_inc_tax`,
                   Number(
-                    initialValues.tableDataChildTwo[params.row.id - 1].single_dpp *
-                      taxValue *
-                      (1 + newProfitPercent / 100)
+                    initialValues.tableDataChildTwo[params.idx].single_dpp * taxValue * (1 + newProfitPercent / 100)
                   ).toFixed(2)
                 )
               }}
@@ -658,7 +650,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Exc. tax:</p>
             <ProductPriceCell
-              name={`tableDataChildTwo.${params.row.id - 1}.single_dsp`}
+              name={`tableDataChildTwo.${params.idx}.single_dsp`}
               value={params.row.single_dsp}
               onChange={e => {
                 handleChange(e)
@@ -666,19 +658,19 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
                 const taxValue = 1 + initialValues.tax
 
                 // setFieldValue(
-                //   `tableDataChildTwo.${params.row.id - 1}.single_dpp`,
-                //   (newSingleDsp / (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)).toFixed(2)
+                //   `tableDataChildTwo.${params.row.idx}.single_dpp`,
+                //   (newSingleDsp / (1 + initialValues.tableDataChildTwo[params.row.idx].profit_percent / 100)).toFixed(2)
                 // )
                 // setFieldValue(
-                //   `tableDataChildTwo.${params.row.id - 1}.single_dpp_in_tax`,
+                //   `tableDataChildTwo.${params.row.idx}.single_dpp_in_tax`,
                 //   (
                 //     newSingleDsp /
-                //     (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100) /
+                //     (1 + initialValues.tableDataChildTwo[params.row.idx].profit_percent / 100) /
                 //     taxValue
                 //   ).toFixed(2)
                 // )
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`,
+                  `tableDataChildTwo.${params.idx}.single_dsp_inc_tax`,
                   Number(newSingleDsp * taxValue).toFixed(2)
                 )
               }}
@@ -687,29 +679,29 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
           <Box>
             <p>Inc. tax: </p>
             <ProductPriceCell
-              name={`tableDataChildTwo.${params.row.id - 1}.single_dsp_inc_tax`}
-              value={params.row.single_dsp_inc_tax}
+              name={`tableDataChildTwo.${params.idx}.single_dsp_inc_tax`}
+              value={params.single_dsp_inc_tax}
               onChange={e => {
                 handleChange(e)
                 const newSingleDspIncTax = parseFloat(e.target.value)
                 const taxValue = 1 + initialValues.tax
 
                 // setFieldValue(
-                //   `tableDataChildTwo.${params.row.id - 1}.single_dpp`,
+                //   `tableDataChildTwo.${params.idx}.single_dpp`,
                 //   (
                 //     newSingleDspIncTax /
-                //     (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100) /
+                //     (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100) /
                 //     taxValue
                 //   ).toFixed(2)
                 // )
                 // setFieldValue(
-                //   `tableDataChildTwo.${params.row.id - 1}.single_dpp_in_tax`,
-                //   (newSingleDspIncTax / (1 + initialValues.tableDataChildTwo[params.row.id - 1].profit_percent / 100)).toFixed(
+                //   `tableDataChildTwo.${params.idx}.single_dpp_in_tax`,
+                //   (newSingleDspIncTax / (1 + initialValues.tableDataChildTwo[params.idx].profit_percent / 100)).toFixed(
                 //     2
                 //   )
                 // )
                 setFieldValue(
-                  `tableDataChildTwo.${params.row.id - 1}.single_dsp`,
+                  `tableDataChildTwo.${params.idx}.single_dsp`,
                   Number(newSingleDspIncTax / taxValue).toFixed(2)
                 )
               }}
@@ -926,16 +918,7 @@ const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChang
         {initialValues.product_type === 'single' && (
           <Box>
             <FieldArray name='tableData'>
-              {() => (
-                // <DataGrid
-                //   autoHeight
-                //   columns={columns}
-                //   rowHeight={120}
-                //   rows={initialValues.tableData}
-                //   pagination={false}
-                // />
-                <CustomTableSingle columns={columns} rows={initialValues.tableData} />
-              )}
+              {() => <CustomTableSingle columns={columns} rows={initialValues.tableData} />}
             </FieldArray>
             {subUnitsIds.length > 0 && (
               <Button
