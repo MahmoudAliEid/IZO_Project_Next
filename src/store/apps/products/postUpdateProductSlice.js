@@ -480,7 +480,7 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
       // **DO SOMETHING
       //TODO Define the Structure of the old variation  prices (Table) to send it to the backend
 
-      formData.append('product_variation_edit ', JSON.stringify(oldVariationPrices))
+      formData.append('product_variation_edit', JSON.stringify(oldVariationPrices))
 
       // oldVariationPrices.map(item =>
       //   formData.append(`product_variation_edit[${item.table_id}]`, {
