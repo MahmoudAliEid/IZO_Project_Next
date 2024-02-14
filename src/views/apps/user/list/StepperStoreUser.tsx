@@ -86,7 +86,7 @@ type RequirementsType = {
 
 const steps = [
   {
-    icon: 'bx:font',
+    icon: 'bx:user-circle',
     title: 'Personal Information',
     subtitle: 'Manage Personal Information'
   },
@@ -97,7 +97,7 @@ const steps = [
   },
   {
     icon: 'bx:user-check',
-    title: 'Rols and Permissions',
+    title: 'Roles and Permissions',
     subtitle: 'Manage Roles and Permissions'
   },
   {
@@ -156,6 +156,16 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   },
   '& .MuiStepLabel-label.Mui-active .step-title': {
     color: theme.palette.primary.main
+  }
+}))
+
+const StepperHeaderContainer = styled(CardContent)(({ theme }) => ({
+  borderRight: `1px solid ${theme.palette.divider}`,
+  gridColumn: 'span 3',
+
+  [theme.breakpoints.down('md')]: {
+    borderRight: 0,
+    borderBottom: `1px solid ${theme.palette.divider}`
   }
 }))
 
@@ -259,7 +269,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
     }
   }, [data])
 
-  // ===================== hande part for edit user ===========================
+  // ===================== handle part for edit user ===========================
   // ===========================================================================
   const token = getCookie('token')
   const url = getCookie('apiUrl')
@@ -374,7 +384,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
     switch (step) {
       case 0:
         return (
-          <Fragment key={step}>
+          <Fragment key={step} >
+
             <Grid item lg={12} sm={6}>
               <FormControl fullWidth variant='outlined'>
                 <InputLabel id='prefix-label'>Prefix</InputLabel>
@@ -453,7 +464,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 }
                 sx={{ gridColumn: 'span 6' }}
               />
-            </Grid>
+              </Grid>
+
           </Fragment>
         )
       case 1:
@@ -466,6 +478,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 gap: 3,
                 mb: 2,
                 width: '100%'
+
               }}
             >
               <FormControl fullWidth sx={{ mb: 6 }}>
@@ -540,7 +553,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   </Select>
                 </FormControl>
                 <FormControl fullWidth sx={{ mb: 6 }}>
-                  <InputLabel id='demo-simple-select-standard-label'> cost_center </InputLabel>
+                  <InputLabel id='demo-simple-select-standard-label'> Cost Center </InputLabel>
                   <Select
                     fullWidth
                     labelId='demo-simple-select-standard-label'
@@ -549,7 +562,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     error={!!touched.prefix && !!errors.prefix}
-                    label=' cost_center'
+                    label=' Cost Center '
                   >
                     {Object.keys(Requirements).length === 0
                       ? null
@@ -735,7 +748,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 />
               </Box>
               <FormControl fullWidth sx={{ mb: 6 }}>
-                <InputLabel id='demo-simple-select-standard-label'>Select roles </InputLabel>
+                <InputLabel id='demo-simple-select-standard-label'>Select Roles </InputLabel>
                 <Select
                   fullWidth
                   labelId='demo-simple-select-standard-label'
@@ -842,7 +855,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 )}
 
                 <FormControl fullWidth>
-                  <InputLabel id='demo-simple-select-standard-label'>Select location </InputLabel>
+                  <InputLabel id='demo-simple-select-standard-label'>Select Location </InputLabel>
                   <Select
                     fullWidth
                     labelId='demo-simple-select-standard-label'
@@ -889,23 +902,23 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 name='salesCommission'
                 value={values.salesCommission}
                 onChange={handleChange}
-                label='Sales Commission Precentage (%)'
+                label='Sales Commission Percentage (%)'
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='sales commission precentage (%)'
+                placeholder='Sales Commission Percentage (%)'
               />
               {/*
-                  max sales discount precentage (%) FIELD INPUT
+                  max sales discount percentage (%) FIELD INPUT
                 */}
               <Field
                 as={TextField}
                 name='maxSalesDiscount'
-                label='Max Sales Discount Precentage (%)'
+                label='Max Sales Discount Percentage (%)'
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='max sales discount precentage (%)'
+                placeholder='Max Sales Discount Percentage (%)'
                 value={values.maxSalesDiscount}
                 onChange={handleChange}
               />
@@ -968,7 +981,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 */}
 
               <FormControlLabel
-                label='Allow selected contacts'
+                label='Allow Selected Contacts'
                 control={
                   <Checkbox
                     checked={values.allowSlctdContacts}
@@ -987,7 +1000,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 */}
               {values.allowSlctdContacts ? (
                 <FormControl>
-                  <InputLabel id='demo-multiple-chip-label'>selected contacts</InputLabel>
+                  <InputLabel id='demo-multiple-chip-label'>Selected Contacts</InputLabel>
                   <Select
                     labelId='demo-multiple-chip-label'
                     id='demo-multiple-chip'
@@ -1067,7 +1080,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     values.dateOfBirth = date
 
                   }}
-                  placeholderText='Click to select a date'
+                  placeholderText='Click to select a Date'
                   customInput={<CustomInput label='Date of Birth' />}
                 />
               </DatePickerWrapper>
@@ -1077,7 +1090,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 */}
 
               <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-standard-label'>Select gender </InputLabel>
+                <InputLabel id='demo-simple-select-standard-label'>Select Gender </InputLabel>
                 <Select
                   fullWidth
                   labelId='demo-simple-select-standard-label'
@@ -1103,7 +1116,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 */}
 
               <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-standard-label'>Select marital </InputLabel>
+                <InputLabel id='demo-simple-select-standard-label'>Select Marital </InputLabel>
                 <Select
                   fullWidth
                   labelId='demo-simple-select-standard-label'
@@ -1127,7 +1140,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   filed Blood Group
                 */}
               <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-standard-label'>Select blood group </InputLabel>
+                <InputLabel id='demo-simple-select-standard-label'>Select Blood Group </InputLabel>
                 <Select
                   fullWidth
                   labelId='demo-simple-select-standard-label'
@@ -1156,7 +1169,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='mobile number'
+                placeholder='Mobile Number'
                 value={values.mobileNumber}
                 onChange={handleChange}
               />
@@ -1171,7 +1184,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='alternative mobile number'
+                placeholder='Alternative Mobile Number'
                 value={values.alternativeMobileNumber}
                 onChange={handleChange}
               />
@@ -1186,7 +1199,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='family contact number'
+                placeholder='Family Contact Number'
                 value={values.familyContactNumber}
                 onChange={handleChange}
               />
@@ -1201,7 +1214,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='facebook link'
+                placeholder='Facebook Link'
                 value={values.facebookLink}
                 onChange={handleChange}
               />
@@ -1213,11 +1226,11 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               <Field
                 as={TextField}
                 name='twitterLink'
-                label='Twitter Link'
+                label='X Link'
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='twitter link'
+                placeholder='X link'
                 value={values.twitterLink}
                 onChange={handleChange}
               />
@@ -1232,7 +1245,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='social media 1'
+                placeholder='Social Media 1'
                 value={values.socialMedia1}
                 onChange={handleChange}
               />
@@ -1247,7 +1260,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='social media 2'
+                placeholder='Social Media 2'
                 value={values.socialMedia2}
                 onChange={handleChange}
               />
@@ -1262,7 +1275,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='custom field 1'
+                placeholder='Custom Field 1'
                 value={values.customField1}
                 onChange={handleChange}
               />
@@ -1277,7 +1290,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='custom field 2'
+                placeholder='Custom Field 2'
                 value={values.customField2}
                 onChange={handleChange}
               />
@@ -1292,7 +1305,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='custom field 3'
+                placeholder='Custom Field 3'
                 value={values.customField3}
                 onChange={handleChange}
               />
@@ -1308,7 +1321,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='custom field 4'
+                placeholder='Custom Field 4'
                 value={values.customField4}
                 onChange={handleChange}
               />
@@ -1323,7 +1336,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='guardian name'
+                placeholder='Guardian Name'
                 value={values.guardianName}
                 onChange={handleChange}
               />
@@ -1338,7 +1351,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='id proof name'
+                placeholder='ID Proof Name'
                 value={values.idProofName}
                 onChange={handleChange}
               />
@@ -1353,7 +1366,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='id proof number'
+                placeholder='ID Proof Number'
                 value={values.idProofNumber}
                 onChange={handleChange}
               />
@@ -1369,7 +1382,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='permanent address'
+                placeholder='Permanent Address'
                 value={values.permanentAddress}
                 onChange={handleChange}
               />
@@ -1385,7 +1398,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='current address'
+                placeholder='Current Address'
                 value={values.currentAddress}
                 onChange={handleChange}
               />
@@ -1413,11 +1426,11 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               <Field
                 as={TextField}
                 name='holderName'
-                label='Acount Holder Name'
+                label='Account Holder Name'
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='acount holder name'
+                placeholder='Account Holder Name'
                 value={values.holderName}
                 onChange={handleChange}
               />
@@ -1432,7 +1445,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='account name'
+                placeholder='Account Number'
                 value={values.accountNumber}
                 onChange={handleChange}
               />
@@ -1448,7 +1461,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='bank name'
+                placeholder='Bank Name'
                 value={values.bankName}
                 onChange={handleChange}
               />
@@ -1463,7 +1476,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='bank identifier code'
+                placeholder='Bank Identifier Code'
                 value={values.bankIdentifierCode}
                 onChange={handleChange}
               />
@@ -1479,7 +1492,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='bank branch name'
+                placeholder='Bank Branch Name'
                 value={values.bankBranchName}
                 onChange={handleChange}
               />
@@ -1494,7 +1507,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
-                placeholder='tax payer id'
+                placeholder='Tax Payer Id'
                 value={values.taxPayerId}
                 onChange={handleChange}
               />
@@ -1534,7 +1547,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               <Field as={TextField}
                 name="designation"
                 label="Designation" variant="outlined" fullWidth margin="normal"
-                placeholder="designation"
+                placeholder="Designation"
                 value={values.designation}
                 onChange={handleChange}
                 sx={{ gridColumn: 'span 6' }}
@@ -1554,6 +1567,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
     }
   }
 
+  //========================Validation Schema=================
   const validationSchema = Yup.object().shape({
     prefix: Yup.string(),
     firstName: Yup.string().required('First name is required'),
@@ -1561,8 +1575,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
     email: Yup.string().email('Invalid email address').required('Email is required')
   })
 
+  //========================Submit=================
   const { handleSubmitData } = useSubmitUser();
-
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     // Handle form submission logic here
 
@@ -1580,16 +1594,31 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
     resetForm()
   }
 
+
+//========================Render Content=================
   const renderContent = () => {
     if (activeStep === steps.length) {
       return (
-        <>
-          <Typography align="center">All steps are completed! 🎉</Typography>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button size='large' variant='contained' onClick={handleReset}>
-              Reset
-            </Button>
-          </Box>
+       <>
+          <Grid
+            container
+            spacing={2}
+            justifyContent={'center'}
+            alignContent={'center'}
+            alignItems={'center'}
+            padding={3}
+          >
+            <Grid item xs={12} sx={{ margin: 'auto' }}>
+              <Typography align='center'>All steps are completed! 🎉</Typography>
+            </Grid>
+            <Grid item xs={12} sx={{ margin: 'auto', mt: 4 }}>
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <Button size='large' variant='contained' onClick={handleReset}>
+                  Reset
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
         </>
       )
     } else {
@@ -1598,7 +1627,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
         >
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
             <form >
-              <Grid container spacing={5} mt={5}>
+              <Grid container spacing={5} mt={5} sx={{paddingLeft:6}}>
                 <Grid item xs={12} mb={5}>
                   <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
                     {steps[activeStep].title}
@@ -1655,33 +1684,39 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
   return (
     <Card
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        gap: 3,
-        height: '600px',
-      }}
+      // sx={{
+      //   display: 'grid',
+      //   gridTemplateColumns: 'repeat(12, 1fr)',
+      //   gap: 3,
+      //   height: '600px',
+      // }}
+      sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
     >
-      <CardContent
-        sx={{
-          overflowY: 'auto',
-          gridColumn: 'span 3',
-          borderRight: theme => `1px solid ${theme.palette.divider}`,
-        }}
+
+      <StepperHeaderContainer
+        //  sx={{
+        //   overflowY: 'auto',
+        //   gridColumn: 'span 3',
+        //   borderRight: theme => `1px solid ${theme.palette.divider}`,
+        // }}
       >
-        <StepperWrapper>
+
+        <StepperWrapper sx={{ height: '100%' }}>
           <Stepper
             activeStep={activeStep}
-            connector={<Icon icon='bx:chevron-down' width='20px' height='20px' />}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '2rem',
+            orientation='vertical'
+            // connector={<Icon icon='bx:chevron-down' width='20px' height='20px' />}
+            // sx={{
+            //   display: 'flex',
+            //   flexDirection: 'column',
+            //   alignItems: 'center',
+            //   justifyContent: 'center',
+            //   flexWrap: 'wrap',
+            //   gap: '2rem',
 
-            }}
+            // }}
+            connector={<></>}
+            sx={{ height: '100%', minWidth: '15rem' }}
           >
             {steps.map((step, index) => {
               return (
@@ -1700,6 +1735,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
+                        padding: '1rem 0'
                       }}
 
                       onClick={() => {
@@ -1717,6 +1753,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                           })
                         }}
                       >
+                        <Icon icon={step.icon}/>
                       </CustomAvatar>
                       <div
                         style={{
@@ -1738,13 +1775,16 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
             })}
           </Stepper>
         </StepperWrapper>
-      </CardContent>
+        </StepperHeaderContainer>
+
       <CardContent
         sx={{
           overflowY: 'auto',
           overflowX: 'hidden',
           gridColumn: 'span 9',
-          padding: '2rem',
+          // padding: '1rem',
+          height: '100%',
+          width: '100%'
 
         }}
       >{renderContent()}</CardContent>

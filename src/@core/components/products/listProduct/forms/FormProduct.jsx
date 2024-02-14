@@ -5,7 +5,7 @@ import { Fragment } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import StepperAddProduct from './StepperAddProduct'
-import Header from '../Header'
+import CustomHeader from '../../../customDialogHeader/CustomHeader'
 
 const FormProduct = ({ isEdit, open, toggle, itemId }) => {
   const handleClose = () => {
@@ -23,7 +23,7 @@ const FormProduct = ({ isEdit, open, toggle, itemId }) => {
         onClose={handleClose}
         aria-labelledby='max-width-dialog-title'
       >
-        <Header title={isEdit ? `Update Product ` : `Add Product `} handleClose={handleClose} />
+        <CustomHeader title={isEdit ? `Update Product ` : `Add Product `} handleClose={handleClose} />
         <DialogContent
           sx={{
             padding: '0 !important'

@@ -4,7 +4,7 @@ import { useState } from 'react'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-const Header = ({ title, handleClose, divider }) => {
+const CustomHeader = ({ title, handleClose, divider }) => {
   const [hover, setHover] = useState(false)
 
   return (
@@ -55,4 +55,4 @@ const Header = ({ title, handleClose, divider }) => {
   )
 }
 
-export default Header
+export default CustomHeader

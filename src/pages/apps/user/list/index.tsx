@@ -226,6 +226,14 @@ const RowOptions = ({ id }: { id: number | string }) => {
 
 const columns: GridColDef[] = [
   {
+    flex: 0.1,
+    minWidth: 90,
+    sortable: false,
+    field: 'actions',
+    headerName: 'Actions',
+    renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
+  },
+  {
     flex: 0.25,
     minWidth: 240,
     field: 'name',
@@ -301,14 +309,7 @@ const columns: GridColDef[] = [
   },
 
 
-  {
-    flex: 0.1,
-    minWidth: 90,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
-  }
+
 ]
 
 type DataType = {

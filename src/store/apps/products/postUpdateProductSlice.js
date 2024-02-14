@@ -65,13 +65,13 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
     }
   }
 
-  if (product?.productImage && typeof product?.productImage !== 'string') {
+  if (product?.productImage && typeof product?.productImage !== 'string' && product?.productImage > 0) {
     formData.append('image', (product.productImage && product?.productImage[0]) || '')
   }
-  if (product?.productbrochure && typeof product?.productbrochure !== 'string') {
+  if (product?.productbrochure && typeof product?.productbrochure !== 'string' && product?.productbrochure > 0) {
     formData.append('bruchore', (product.productbrochure && product?.productbrochure[0]) || '')
   }
-  if (product?.productvideo && typeof product?.productvideo !== 'string') {
+  if (product?.productvideo && typeof product?.productvideo !== 'string' && product?.productvideo > 0) {
     formData.append('video', (product.productvideo && product?.productvideo[0]) || '')
   }
 
@@ -430,9 +430,11 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
 
   if (product.product_variation.length > 0) {
     product.product_variation.map((item, parentIndex) => {
-      item.variations.map((item, index) => {
-        formData.append(`variation_images_${parentIndex}_${index}`, item.image[0])
-      })
+      if (item.variations.length > 0 && Array.isArray(item.variations[parentIndex].image)) {
+        item.variations.map((item, index) => {
+          formData.append(`variation_images_${parentIndex}_${index}`, item.image[0])
+        })
+      }
     })
   }
 

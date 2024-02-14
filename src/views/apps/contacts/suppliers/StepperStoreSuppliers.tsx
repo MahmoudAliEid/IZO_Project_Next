@@ -59,7 +59,7 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 const steps = [
   {
-    icon: 'bx:font',
+    icon: 'bx:user-circle',
     title: 'Personal Information',
     subtitle: 'Manage Personal Information'
   },
@@ -69,7 +69,7 @@ const steps = [
     subtitle: 'Provide Additional Information'
   },
   {
-    icon: 'bx:info-circle',
+    icon: 'bx:wrench',
     title: 'Custom Field',
     subtitle: 'Provide Additional Information'
   }
@@ -108,6 +108,16 @@ const Step = styled(MuiStep)<StepProps>(({ theme }) => ({
   },
   '& .MuiStepLabel-label.Mui-active .step-title': {
     color: theme.palette.primary.main
+  }
+}))
+
+const StepperHeaderContainer = styled(CardContent)(({ theme }) => ({
+  borderRight: `1px solid ${theme.palette.divider}`,
+  gridColumn: 'span 3',
+
+  [theme.breakpoints.down('md')]: {
+    borderRight: 0,
+    borderBottom: `1px solid ${theme.palette.divider}`
   }
 }))
 
@@ -190,7 +200,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
     dispatch(fetchCreateContactData(contact))
   }, [dispatch, contact])
 
-  // ** States
+
 
    //@ts-ignore
   const data = useSelector((state: { createUser: { contactCreateSlice: any } }) => state.contactCreateSlice?.data)
@@ -222,7 +232,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
     setActiveStep(0)
   }
 
-  const getStepContent = ({ values, errors, touched, handleBlur, handleChange, step }: any) => {
+  const getStepContent = ({ values, errors, touched, handleBlur, handleChange, setFieldValue,step }: any) => {
     switch (step) {
       case 0:
         return (
@@ -238,7 +248,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
               }}
             >
               <Grid item lg={6} md={6} sm={12} xs={12}>
-                {
+
                   <FormControl fullWidth>
                     <InputLabel id='demo-simple-select-standard-label'>Contact type </InputLabel>
                     <Select
@@ -257,7 +267,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                       ))}
                     </Select>
                   </FormControl>
-                }
+
               </Grid>
 
               <Grid
@@ -270,17 +280,20 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   mb: 2
                 }}
               >
-                {/* form input for Business Name */}
+                <FormControl fullWidth>
+                  {/* form input for Business Name */}
+
                 <Field
                   as={TextField}
                   name='supplier_business_name'
                   label='Business Name'
-                  variant='outlined'
-                  fullWidth
+                    variant='outlined'
+                    fullWidth
                   margin='normal'
                   required
                   sx={{ gridColumn: 'span 6' }}
-                />
+                  />
+                </FormControl>
               </Grid>
             </div>
 
@@ -412,22 +425,26 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   fullWidth
                   margin='normal'
                   required
+                  sx={{ gridColumn: 'span 6' }}
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
                 <DatePickerWrapper>
                   <DatePicker
                     selected={values.dob}
                     id='basic-input'
                     onChange={(date: any) => {
                       values.dob = date
+                      setFieldValue('dob', date)
 
                     }}
                     placeholderText='Click to select a date'
                     customInput={<CustomInput label='Date of Birth' />}
                   />
-                </DatePickerWrapper>
+                  </DatePickerWrapper>
+                  </FormControl>
               </Grid>
             </div>
           </Fragment>
@@ -436,7 +453,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
         return (
           <Fragment key={step}>
             {/* Tax number input  */}
-            <Grid item lg={4} xs={12} sm={6}>
+            <Grid item lg={6} xs={12} sm={6} md={6}>
               <Field
                 as={TextField}
                 name='tax_number'
@@ -449,7 +466,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item lg={4} xs={12} sm={6}>
+            <Grid item lg={6} xs={12} sm={6} md={6}>
               {/* opening Balance input */}
               <Field
                 as={TextField}
@@ -464,38 +481,33 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 type='number'
               />
             </Grid>
+
+
+
             <Grid
               item
-              lg={4}
               xs={12}
-              sm={6}
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%'
-              }}
             >
-              {/* pay term input with pay term type */}
-              <Field
-                as={TextField}
-                name='pay_term_number'
-                label='Pay Term'
-                variant='outlined'
+              <Grid container spacing={3}>
+                <Grid item  xs={3} md={2} lg={2}>
+
+                <FormControl fullWidth>
+                  <TextField
+                    label='Pay Term '
+                    variant='outlined'
+                    fullWidth
+
+                    placeholder='pay term'
+                    value={values.pay_term_number}
+                    onChange={handleChange}
+                    type='number'
+                    />
+                    </FormControl>
+
+                </Grid>
+                <Grid item  xs={9} md={10} lg={10}>
+                    <FormControl
                 fullWidth
-                margin='normal'
-                placeholder='pay term'
-                value={values.pay_term_number}
-                onChange={handleChange}
-                type='number'
-              />
-              {/* select pay term type */}
-              <FormControl
-                fullWidth
-                sx={{
-                  mt: 2
-                }}
               >
                 <InputLabel id='demo-simple-select-standard-label'>Select pay term type </InputLabel>
                 <Select
@@ -521,10 +533,13 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   ))}
                 </Select>
               </FormControl>
+                  </Grid>
+              </Grid>
             </Grid>
 
             {/*  filed for address line 1 and 2 */}
             <Grid item lg={6} xs={12} sm={12}>
+
               <Field
                 as={TextField}
                 name='address_line_1'
@@ -695,6 +710,8 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
     }
   }
 
+  // ======================== Validation Schema ==============================
+
   const validationSchema = Yup.object().shape({
     type: Yup.string().required('Type is required'),
     supplier_business_name: Yup.string().required('Supplier business name is required'),
@@ -863,16 +880,28 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
 
   const renderContent = () => {
     if (activeStep === steps.length) {
-      return (
-        <>
-          <Typography align='center'>All steps are completed! 🎉</Typography>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button size='large' variant='contained' onClick={handleReset}>
-              Reset
-            </Button>
-          </Box>
-        </>
-      )
+       return(<>
+          <Grid
+            container
+            spacing={2}
+            justifyContent={'center'}
+            alignContent={'center'}
+            alignItems={'center'}
+            padding={3}
+          >
+            <Grid item xs={12} sx={{ margin: 'auto' }}>
+              <Typography align='center'>All steps are completed! 🎉</Typography>
+            </Grid>
+            <Grid item xs={12} sx={{ margin: 'auto', mt: 4 }}>
+              <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <Button size='large' variant='contained' onClick={handleReset}>
+                  Reset
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </>)
+
     } else {
       return (
         <Formik
@@ -938,32 +967,17 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
 
   return (
     <Card
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        gap: 3,
-        height: '600px'
-      }}
+        sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
     >
-      <CardContent
-        sx={{
-          overflowY: 'auto',
-          gridColumn: 'span 3',
-          borderRight: theme => `1px solid ${theme.palette.divider}`
-        }}
-      >
-        <StepperWrapper>
+        <StepperHeaderContainer>
+        <StepperWrapper >
           <Stepper
             activeStep={activeStep}
-            connector={<Icon icon='bx:chevron-down' width='20px' height='20px' />}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '2rem'
-            }}
+            connector={<></>}
+
+            orientation='vertical'
+            sx={{ height: '100%', minWidth: '15rem' }}
+
           >
             {steps.map((step, index) => {
               return (
@@ -976,13 +990,16 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   <StepLabel StepIconComponent={StepperCustomDot}>
                     <div
                       className='step-label'
+
                       style={{
                         cursor: 'pointer',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: '100%'
+                        width: '100%',
+                        height: '100%',
+                        padding: '2rem 0'
                       }}
                       onClick={() => {
                         setActiveStep(index)
@@ -998,7 +1015,9 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                             boxShadow: theme => `0 0.1875rem 0.375rem 0 ${hexToRGBA(theme.palette.primary.main, 0.4)}`
                           })
                         }}
-                      ></CustomAvatar>
+                      >
+                         <Icon icon={step.icon} />
+                      </CustomAvatar>
                       <div
                         style={{
                           display: 'flex',
@@ -1019,13 +1038,17 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
             })}
           </Stepper>
         </StepperWrapper>
-      </CardContent>
+        </StepperHeaderContainer>
+
       <CardContent
         sx={{
           overflowY: 'auto',
           overflowX: 'hidden',
           gridColumn: 'span 9',
-          padding: '2rem'
+          padding: '2rem',
+
+          height: '100%',
+          width: '100%'
         }}
       >
         {renderContent()}
