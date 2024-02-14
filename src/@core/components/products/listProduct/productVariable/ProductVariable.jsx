@@ -67,6 +67,7 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
                             onClick={() => {
                               pushVariation({
                                 sub_sku: '',
+                                type: '',
                                 variation_value_id: '',
                                 value: '',
                                 default_purchase_price: 0,
@@ -113,9 +114,11 @@ const ProductVariable = ({ initialValues, setFieldValue, handleChange }) => {
                     push({
                       id: initialValues.product_variation.length + 1,
                       variation_template_id: '',
+                      type: '',
                       variations: [
                         {
                           sub_sku: '',
+                          type: '',
                           variation_value_id: '',
                           value: '',
                           default_purchase_price: 0,

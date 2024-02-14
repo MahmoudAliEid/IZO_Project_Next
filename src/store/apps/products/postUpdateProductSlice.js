@@ -423,16 +423,17 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
     }
   }
 
-  // ** Variable Product Price
-  if (product.product_type === 'variable') {
-    formData.append('product_variation', JSON.stringify(product.product_variation))
-  }
+  // // ** Variable Product Price
+  // if (product.product_type === 'variable') {
+  //   formData.append('product_variation', JSON.stringify(product.product_variation))
+  // }
 
   if (product.product_variation.length > 0) {
     product.product_variation.map((item, parentIndex) => {
-      if (item.variations.length > 0 && Array.isArray(item.variations[parentIndex].image)) {
+      if (item.variations.length > 0) {
         item.variations.map((item, index) => {
-          formData.append(`variation_images_${parentIndex}_${index}`, item.image[0])
+          if (Array.isArray(item.image) && item.image.length > 0)
+            formData.append(`variation_images_${parentIndex}_${index}`, item.image[0])
         })
       }
     })
@@ -441,6 +442,359 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
   if (product.product_type === 'combo') {
     formData.append('product_compo', JSON.stringify(product.product_compo))
   }
+
+  //TODO=================Variable Product Price & its Variations===================
+
+  // ** Old Variation Prices
+  //! the main problem is that the old variation prices  (old)=>edit ( new)=>normal
+  // ! so we need to compare the old and new variation prices and then update the data by the type
+  // ! if the type is old then we need to update the data by the type old=>edit to value (product_variation_edit)  else  type === ''
+  // ! then send data to value (product_variation)
+
+  // const prodcut = [
+  //   {
+  //     id: 1, name: 'John', row: [
+  //       { id: 1, name: 'John', type: 'old' },
+  //       { id: 1, name: 'John', type: 'old' },
+  //     ]
+  //   },
+  //   {
+  //     id: 2, name: 'Doe', row: [
+  //       { id: 1, name: 'Doe', type: 'old' },
+  //       { id: 2, name: 'Doe', type: '' },
+  //     ]
+  //   }
+
+  // ]
+
+  // product[0].id , product[1].row[1].type
+
+  // Only for the variable product
+  if (product.product_type === 'variable') {
+    // ** First filter the old variation prices
+    const oldVariationPrices = product.product_variation.filter(item => item.type === 'old')
+    const newVariationPrices = product.product_variation.filter(item => item.type === '')
+
+    // ** Then append the old variation prices to the formData
+    if (oldVariationPrices.length > 0) {
+      // **DO SOMETHING
+      //TODO Define the Structure of the old variation  prices (Table) to send it to the backend
+
+      formData.append('product_variation_edit ', JSON.stringify(oldVariationPrices))
+
+      // oldVariationPrices.map(item =>
+      //   formData.append(`product_variation_edit[${item.table_id}]`, {
+      //     ...item,
+      //     variations: item.variations.filter(item => item.type === ''),
+      //     [`variations_edit[${item.variations.filter(item => item.type === 'old')}]`]: item.variations.filter(
+      //       item => item.type === 'old'
+      //     )
+      //   })
+      // )
+    }
+
+    if (newVariationPrices.length > 0) {
+      // **DO SOMETHING
+      //TODO Define the Structure of the new variation prices (Table) to send it to the backend
+      formData.append('product_variation', JSON.stringify(newVariationPrices))
+    }
+  }
+
+  // // const Data = [
+  //   {
+  //     table_id: 222,
+  //     type: 'old',
+  //     variation_template_id: 38,
+  //     variations: [
+  //       {
+  //         rows_id: 217,
+  //         type: 'old',
+  //         variation_value_id: 186,
+  //         value: 'Mahmoud Ali-Mahmoud',
+  //         sub_sku: '12',
+  //         default_purchase_price: 100,
+  //         dpp_inc_tax: 105,
+  //         profit_percent: 25,
+  //         default_sell_price: 125,
+  //         sell_price_inc_tax: 131.25,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 218,
+  //         type: 'old',
+  //         variation_value_id: 187,
+  //         value: 'Mahmoud Ali-Ali',
+  //         sub_sku: '131e',
+  //         default_purchase_price: 200,
+  //         dpp_inc_tax: 210,
+  //         profit_percent: 25,
+  //         default_sell_price: 250,
+  //         sell_price_inc_tax: 262.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 236,
+  //         type: 'old',
+  //         variation_value_id: 226,
+  //         value: 'Mahmoud Ali-Mahmoud Ali-Mahmoud',
+  //         sub_sku: '12',
+  //         default_purchase_price: 1000,
+  //         dpp_inc_tax: 1050,
+  //         profit_percent: 25,
+  //         default_sell_price: 1250,
+  //         sell_price_inc_tax: 1312.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 237,
+  //         type: 'old',
+  //         variation_value_id: 227,
+  //         value: 'Mahmoud Ali-Mahmoud Ali-Ali',
+  //         sub_sku: '131e',
+  //         default_purchase_price: 200,
+  //         dpp_inc_tax: 210,
+  //         profit_percent: 25,
+  //         default_sell_price: 250,
+  //         sell_price_inc_tax: 262.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 241,
+  //         type: 'old',
+  //         variation_value_id: 226,
+  //         value: 'Mahmoud Ali-Mahmoud Ali-Mahmoud',
+  //         sub_sku: '12',
+  //         default_purchase_price: 1000,
+  //         dpp_inc_tax: 1050,
+  //         profit_percent: 25,
+  //         default_sell_price: 1250,
+  //         sell_price_inc_tax: 1312.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 242,
+  //         type: 'old',
+  //         variation_value_id: 227,
+  //         value: 'Mahmoud Ali-Mahmoud Ali-Ali',
+  //         sub_sku: '131e',
+  //         default_purchase_price: 2000,
+  //         dpp_inc_tax: 2100,
+  //         profit_percent: 25,
+  //         default_sell_price: 2500,
+  //         sell_price_inc_tax: 2625,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 243,
+  //         type: 'old',
+  //         variation_value_id: 231,
+  //         value: 'Mahmoud Ali-Mahmoud Ali-Mahmoud Ali-Mahmoud',
+  //         sub_sku: '12',
+  //         default_purchase_price: 100000,
+  //         dpp_inc_tax: 105000,
+  //         profit_percent: 25,
+  //         default_sell_price: 125000,
+  //         sell_price_inc_tax: 131250,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 244,
+  //         type: 'old',
+  //         variation_value_id: 232,
+  //         value: 'Mahmoud Ali-Mahmoud Ali-Mahmoud Ali-Ali',
+  //         sub_sku: '131e',
+  //         default_purchase_price: 210,
+  //         dpp_inc_tax: 220.5,
+  //         profit_percent: 25,
+  //         default_sell_price: 262.5,
+  //         sell_price_inc_tax: 275.63,
+  //         image: ''
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     table_id: 222,
+  //     type: 'old',
+  //     variation_template_id: 36,
+  //     variations: [
+  //       {
+  //         rows_id: 219,
+  //         type: 'old',
+  //         variation_value_id: 165,
+  //         value: 'One Piece-Lofy',
+  //         sub_sku: 'eq43',
+  //         default_purchase_price: 100,
+  //         dpp_inc_tax: 105,
+  //         profit_percent: 35,
+  //         default_sell_price: 135,
+  //         sell_price_inc_tax: 141.75,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 220,
+  //         type: 'old',
+  //         variation_value_id: 166,
+  //         value: 'One Piece-Zoro',
+  //         sub_sku: '123d',
+  //         default_purchase_price: 200,
+  //         dpp_inc_tax: 210,
+  //         profit_percent: 35,
+  //         default_sell_price: 270,
+  //         sell_price_inc_tax: 283.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 221,
+  //         type: 'old',
+  //         variation_value_id: 208,
+  //         value: 'One Piece-new Row',
+  //         sub_sku: '34er',
+  //         default_purchase_price: 300,
+  //         dpp_inc_tax: 315,
+  //         profit_percent: 35,
+  //         default_sell_price: 405,
+  //         sell_price_inc_tax: 425.25,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 238,
+  //         type: 'old',
+  //         variation_value_id: 228,
+  //         value: 'One Piece-One Piece-Lofy',
+  //         sub_sku: 'eq43',
+  //         default_purchase_price: 100,
+  //         dpp_inc_tax: 105,
+  //         profit_percent: 35,
+  //         default_sell_price: 135,
+  //         sell_price_inc_tax: 141.75,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 239,
+  //         type: 'old',
+  //         variation_value_id: 229,
+  //         value: 'One Piece-One Piece-Zoro',
+  //         sub_sku: '123d',
+  //         default_purchase_price: 200,
+  //         dpp_inc_tax: 210,
+  //         profit_percent: 35,
+  //         default_sell_price: 270,
+  //         sell_price_inc_tax: 283.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 240,
+  //         type: 'old',
+  //         variation_value_id: 230,
+  //         value: 'One Piece-One Piece-new Row',
+  //         sub_sku: '34er',
+  //         default_purchase_price: 300,
+  //         dpp_inc_tax: 315,
+  //         profit_percent: 35,
+  //         default_sell_price: 405,
+  //         sell_price_inc_tax: 425.25,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 245,
+  //         type: '',
+  //         variation_value_id: 228,
+  //         value: 'One Piece-One Piece-Lofy',
+  //         sub_sku: 'eq43',
+  //         default_purchase_price: 100,
+  //         dpp_inc_tax: 105,
+  //         profit_percent: 35,
+  //         default_sell_price: 135,
+  //         sell_price_inc_tax: 141.75,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 246,
+  //         type: 'old',
+  //         variation_value_id: 229,
+  //         value: 'One Piece-One Piece-Zoro',
+  //         sub_sku: '123d',
+  //         default_purchase_price: 200,
+  //         dpp_inc_tax: 210,
+  //         profit_percent: 35,
+  //         default_sell_price: 270,
+  //         sell_price_inc_tax: 283.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 247,
+  //         type: 'old',
+  //         variation_value_id: 230,
+  //         value: 'One Piece-One Piece-new Row',
+  //         sub_sku: '34er',
+  //         default_purchase_price: 300,
+  //         dpp_inc_tax: 315,
+  //         profit_percent: 35,
+  //         default_sell_price: 405,
+  //         sell_price_inc_tax: 425.25,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 248,
+  //         type: 'old',
+  //         variation_value_id: 233,
+  //         value: 'One Piece-One Piece-One Piece-Lofy',
+  //         sub_sku: 'eq43',
+  //         default_purchase_price: 100,
+  //         dpp_inc_tax: 105,
+  //         profit_percent: 35,
+  //         default_sell_price: 135,
+  //         sell_price_inc_tax: 141.75,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 249,
+  //         type: 'old',
+  //         variation_value_id: 234,
+  //         value: 'One Piece-One Piece-One Piece-Zoro',
+  //         sub_sku: '123d',
+  //         default_purchase_price: 200,
+  //         dpp_inc_tax: 210,
+  //         profit_percent: 35,
+  //         default_sell_price: 270,
+  //         sell_price_inc_tax: 283.5,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 250,
+  //         type: 'old',
+  //         variation_value_id: 235,
+  //         value: 'One Piece-One Piece-One Piece-new Row',
+  //         sub_sku: '34er',
+  //         default_purchase_price: 300,
+  //         dpp_inc_tax: 315,
+  //         profit_percent: 35,
+  //         default_sell_price: 405,
+  //         sell_price_inc_tax: 425.25,
+  //         image: ''
+  //       },
+  //       {
+  //         rows_id: 251,
+  //         type: 'old',
+  //         variation_value_id: 236,
+  //         value: 'One Piece-new v',
+  //         sub_sku: '1212112',
+  //         default_purchase_price: 400,
+  //         dpp_inc_tax: 420,
+  //         profit_percent: 10,
+  //         default_sell_price: 440,
+  //         sell_price_inc_tax: 462,
+  //         image: ''
+  //       }
+  //     ]
+  //   }
+  // ]
+
+  // let users = {
+  //   90: { id: 1, name: 'John' }
+  // }
+
+  // Accessing the user with index '90'
 
   const token = getCookie('token')
   const response = await axios.post(`https://test.izocloud.net/api/app/react/products/update/${id}`, formData, {

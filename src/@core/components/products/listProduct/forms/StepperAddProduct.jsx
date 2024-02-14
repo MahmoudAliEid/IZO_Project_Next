@@ -456,10 +456,12 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     product_variation: [
       {
         id: 1,
+        type: '',
         variation_template_id: '',
         variations: [
           {
             sub_sku: '',
+            type: '',
             variation_value_id: null,
             value: '',
             default_purchase_price: 0,
@@ -793,7 +795,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
     console.log(values, 'from submit Product 🐱‍🏍')
     if (isEdit && itemId) {
       console.log('from stepper isEdit & itemId ☢☢', isEdit, itemId)
-      dispatch(postUpdateProduct({ newProduct: values, id: itemId })).then(() => {
+      dispatch(postUpdateProduct({ oldProduct: updatingProductData, newProduct: values, id: itemId })).then(() => {
         dispatch(fetchProducts({ token }))
       })
       setActiveStep(activeStep + 1)

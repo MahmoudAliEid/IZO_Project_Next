@@ -1690,7 +1690,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
       //   gap: 3,
       //   height: '600px',
       // }}
-      sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
+      sx={{ display: 'flex',  height: '600px', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
     >
 
       <StepperHeaderContainer
@@ -1716,7 +1716,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
             // }}
             connector={<></>}
-            sx={{ height: '100%', minWidth: '15rem' }}
+            sx={{ height: '600px', minWidth: '15rem' ,overflowY:"scroll"}}
           >
             {steps.map((step, index) => {
               return (
@@ -1779,11 +1779,11 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
       <CardContent
         sx={{
-          overflowY: 'auto',
+          // overflowY: 'auto',
           overflowX: 'hidden',
           gridColumn: 'span 9',
           // padding: '1rem',
-          height: '100%',
+          minHeight: '600px',
           width: '100%'
 
         }}

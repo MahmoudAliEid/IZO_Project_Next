@@ -321,6 +321,7 @@ const TableVariationVariable = ({ rows, productIndex, values, handleChange, push
         filteredVariationChildSecond.map(item => {
           return {
             sub_sku: '',
+            type: '',
             variation_value_id: item.id,
             value: item.name,
             default_purchase_price: 0,
