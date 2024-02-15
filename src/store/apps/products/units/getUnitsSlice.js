@@ -16,11 +16,11 @@ const initialState = {
   error: null
 }
 
-export const fetchUnits = createAsyncThunk('dashboard/fetchUnits', async token => {
+export const fetchUnits = createAsyncThunk('dashboard/fetchUnits', async payload => {
   const url = getCookie('apiUrl')
-  console.log(token, url)
+  const { token } = payload
 
-  const response = await axios.get(`https://test.izocloud.net/api/app/react/units/all`, {
+  const response = await axios.get(`${url}/app/react/units/all`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`
     }

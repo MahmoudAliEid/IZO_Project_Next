@@ -789,13 +789,11 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
 
   // ** Submit
   const handleSubmitForm = (values, { resetForm }) => {
-    // ** Test
-
     toast.success('Form Submitted 🎉')
     console.log(values, 'from submit Product 🐱‍🏍')
     if (isEdit && itemId) {
       console.log('from stepper isEdit & itemId ☢☢', isEdit, itemId)
-      dispatch(postUpdateProduct({ oldProduct: updatingProductData, newProduct: values, id: itemId })).then(() => {
+      dispatch(postUpdateProduct({ newProduct: values, id: itemId })).then(() => {
         dispatch(fetchProducts({ token }))
       })
       setActiveStep(activeStep + 1)

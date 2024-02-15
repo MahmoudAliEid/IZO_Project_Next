@@ -118,6 +118,7 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
 
     }
     resetForm();
+    toggle();
 
   }
 

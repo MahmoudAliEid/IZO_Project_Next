@@ -105,6 +105,7 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
     setOpenLottie(true)
 
 
+
     resetForm();
 
   }
@@ -232,7 +233,10 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
                   <Button variant='outlined' color='secondary' onClick={toggle}>
                     Cancel
                   </Button>
-                  <Button variant='contained' onClick={() => handleSubmitForm(values, { resetForm })}>
+                  <Button variant='contained' onClick={() => {
+                    handleSubmitForm(values, { resetForm })
+                    toggle()
+                  }}>
                     {isEdit ? `Update` : `Add`}
                   </Button>
 

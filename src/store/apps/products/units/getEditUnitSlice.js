@@ -17,8 +17,9 @@ const initialState = {
 export const fetchEditUnit = createAsyncThunk('dashboard/fetchEditUnit', async payload => {
   const { itemId } = payload
   const token = getCookie('token')
+  const url = getCookie('apiUrl')
 
-  const response = await axios.get(`https://test.izocloud.net/api/app/react/units/edit/${itemId}`, {
+  const response = await axios.get(`${url}/app/react/units/edit/${itemId}`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`
     }

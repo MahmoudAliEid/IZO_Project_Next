@@ -78,7 +78,7 @@ const RowOptions = ({ id, data, setData }) => {
 
     dispatch(deleteUnit({ id, token }))
       .then(() => {
-        dispatch(fetchUnits(token, url))
+        dispatch(fetchUnits({ token, url }))
 
         handleRowOptionsClose()
       })
@@ -368,7 +368,7 @@ const Units = () => {
 
   useEffect(() => {
     if (token && url) {
-      dispatch(fetchUnits(token, url))
+      dispatch(fetchUnits({ token, url }))
 
       // dispatch(fetchCreateVariations(token, url))
     }

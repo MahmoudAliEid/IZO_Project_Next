@@ -4,6 +4,7 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const useThemeColor = () => {
   const [themeColor, setThemeColor] = useState(hexToRGBA('#ec6608', 0.5))
+  const [mainColor, setMainColor] = useState('#ec6608')
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -14,6 +15,7 @@ const useThemeColor = () => {
       if (newLocalThemeColor !== undefined) {
         if (newLocalThemeColor !== themeColor) {
           setThemeColor(hexToRGBA(newLocalThemeColor, 0.5))
+          setMainColor(newLocalThemeColor)
         }
       }
     }, 1000) // Check every second
@@ -22,7 +24,7 @@ const useThemeColor = () => {
     return () => clearInterval(intervalId)
   }, [themeColor]) // Add themeColor as a dependency
 
-  return { themeColor }
+  return { themeColor, mainColor }
 }
 
 export default useThemeColor

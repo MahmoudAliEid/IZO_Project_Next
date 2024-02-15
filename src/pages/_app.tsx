@@ -20,6 +20,7 @@ import { CacheProvider } from '@emotion/react'
 import type { EmotionCache } from '@emotion/cache'
 import { Global, css } from '@emotion/react'
 
+
 import { useTheme } from '@mui/material/styles'
 import useThemeColor from 'src/@core/utils/useThemeColor'
 
@@ -114,7 +115,7 @@ if (themeConfig.routingLoader) {
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   const theme = useTheme();
-  const { themeColor}=useThemeColor();
+  const { themeColor,mainColor}=useThemeColor();
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
@@ -158,6 +159,25 @@ const App = (props: ExtendedAppProps) => {
                 -webkit-box-shadow: 0 0 0px 1000px ${themeColor} inset !important;
                 transition: background-color 5000s ease-in-out 0s;
               }
+
+              /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 10px; /* Width of the scrollbar */
+      border-radius: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1; /* Color of the track */
+    }
+    ::-webkit-scrollbar-thumb {
+       background: ${mainColor}; /* Color of the scroll thumb on hover */
+
+       border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+
+       background: ${mainColor}; /* Color of the scroll thumb */
+    }
 
 
           `}
