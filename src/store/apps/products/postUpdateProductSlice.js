@@ -482,6 +482,14 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
 
       formData.append('product_variation_edit', JSON.stringify(oldVariationPrices))
 
+      oldVariationPrices.map(item, parentIndex => {
+        item.variations
+          .filter(item => item.type === 'old')
+          .map((item, index) => {
+            formData.append(`edit_variation_images_${parentIndex}_${index}`, item.image[0])
+          })
+      })
+
       // oldVariationPrices.map(item =>
       //   formData.append(`product_variation_edit[${item.table_id}]`, {
       //     ...item,
@@ -499,6 +507,14 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
       formData.append('product_variation', JSON.stringify(newVariationPrices))
     }
   }
+
+  // if (product.product_variation.length > 0) {
+  //   product.product_variation.map((item, parentIndex) => {
+  //     item.variations.map((item, index) => {
+  //       formData.append(`variation_images_${parentIndex}_${index}`, item.image[0])
+  //     })
+  //   })
+  // }
 
   // // const Data = [
   //   {
