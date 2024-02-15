@@ -482,7 +482,7 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
 
       formData.append('product_variation_edit', JSON.stringify(oldVariationPrices))
 
-      oldVariationPrices.map(item, parentIndex => {
+      oldVariationPrices.map((item, parentIndex) => {
         item.variations
           .filter(item => item.type === 'old')
           .map((item, index) => {
