@@ -85,7 +85,7 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
   const handleSubmit = async (values, { resetForm }) => {
     // Handle form submission logic here
 
-    dispatch(postCreateCategory({ ...values, image, itemId: catId }))
+    dispatch(postCreateCategory({ userData: { ...values, image } }))
       .then(() => {
         dispatch(fetchCategories({ token, url }))
         dispatch(fetchCategoriesTree())

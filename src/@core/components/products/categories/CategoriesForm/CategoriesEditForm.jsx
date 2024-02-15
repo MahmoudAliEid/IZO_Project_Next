@@ -94,7 +94,7 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
     // Handle form submission logic here
 
     if (itemId) {
-      dispatch(postEditCategory({ ...values, image, itemId: catId }))
+      dispatch(postEditCategory({ userData: { ...values, image }, itemId: catId }))
         .then(() => {
           dispatch(fetchCategories({ token, url }))
           dispatch(fetchCategoriesTree())

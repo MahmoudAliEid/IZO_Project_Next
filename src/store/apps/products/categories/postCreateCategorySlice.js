@@ -4,9 +4,10 @@ import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
 
 // Async Thunk Action for storing user
-export const postCreateCategory = createAsyncThunk('dashboard/postCreateCategory', async userData => {
+export const postCreateCategory = createAsyncThunk('dashboard/postCreateCategory', async payload => {
   const token = getCookie('token')
   const url = getCookie('apiUrl')
+  const { userData } = payload
 
   console.log(token, '===> token Post create Category slice')
 
