@@ -142,23 +142,26 @@ const SearchAndSelect = ({
             setFieldValue(`product_compo.${productIndex}.search_product`, newValue.text)
             setFieldValue(`product_compo.${productIndex}.p_id`, newValue.product_id)
             setProductId(newValue.product_id)
-
-            const matchingOptions = searchInfo.filter(item => item.product_id === newValue.product_id)
-            if (matchingOptions.length > 1) {
-              setOpen(true)
-              matchingOptions.forEach(item =>
-                push({
-                  name: item.text,
-                  composition_variation_id: item.variation_id,
-                  quantity: 1,
-                  unit: item.unit,
-                  purchase_price_exc: item.purchase_price,
-                  total_amount: 1 * item.purchase_price,
-                  all_unit: item.all_unit,
-                  initial: false,
-                  unit_quantity: 1
-                })
+            if (newValue.variation_id === 0) {
+              const matchingOptions = searchInfo.filter(
+                item => item.product_id === newValue.product_id && item.variation_id !== 0
               )
+              if (matchingOptions.length > 1) {
+                setOpen(true)
+                matchingOptions.forEach(item =>
+                  push({
+                    name: item.text,
+                    composition_variation_id: item.variation_id,
+                    quantity: 1,
+                    unit: item.unit,
+                    purchase_price_exc: item.purchase_price,
+                    total_amount: 1 * item.purchase_price,
+                    all_unit: item.all_unit,
+                    initial: false,
+                    unit_quantity: 1
+                  })
+                )
+              }
             } else {
               setOpen(true)
               push({

@@ -109,10 +109,12 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
     <Dialog
       scroll='body'
       open={open}
+      fullWidth={true}
+      maxWidth='lg'
       onClose={handleClose}
       aria-labelledby='customer-group-edit'
       sx={{
-        '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] },
+        '& .MuiPaper-root': { width: '100%', p: [2, 10] },
         '& .MuiDialogTitle-root + .MuiDialogContent-root': { pt: theme => `${theme.spacing(2)} !important` }
       }}
       aria-describedby='customer-group-edit-description'
@@ -277,7 +279,7 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
                   </FormControl>
                 </Grid>
               </Grid>
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', mt: 3 }}>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
                   Cancel
                 </Button>
