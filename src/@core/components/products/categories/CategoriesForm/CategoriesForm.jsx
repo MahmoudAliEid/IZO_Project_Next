@@ -15,8 +15,7 @@ import {
   InputLabel
 } from '@mui/material'
 
-// import { useDispatch } from 'react-redux'
-import useSubmitUser from 'src/hooks/useSubmitUser'
+import { getCookie } from 'cookies-next'
 
 // import MainLoading from 'src/@core/components/mainLoading/MainLoading'
 
@@ -34,6 +33,8 @@ import { useSelector, useDispatch } from 'react-redux'
 const CategoriesForm = ({ type, open, setOpen, setData }) => {
   const [image, setImage] = useState('')
   const [checkBox, setCheckBox] = useState(false)
+  const token = getCookie('token')
+  const url = getCookie('apiUrl')
 
   // const [isLoading, setIsLoading] = useState(false)
   const [categories, setCategories] = useState([])
@@ -70,9 +71,6 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
     dispatch(fetchCreateCategory())
   }, [dispatch])
 
-  // const dispatch = useDispatch()
-  const { handleSubmitData } = useSubmitUser()
-
   const handleCheckBoxChange = () => {
     setCheckBox(prev => !prev)
   }
@@ -86,13 +84,15 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
 
   const handleSubmit = async (values, { resetForm }) => {
     // Handle form submission logic here
-    console.log({ ...values, image }, 'Values form  add Category')
 
-    console.log('Add btn clicked')
-
-    await handleSubmitData(postCreateCategory, fetchCategories, { ...values, image }).then(() => {
-      dispatch(fetchCategoriesTree())
-    })
+    dispatch(postCreateCategory({ ...values, image, itemId: catId }))
+      .then(() => {
+        dispatch(fetchCategories({ token, url }))
+        dispatch(fetchCategoriesTree())
+      })
+      .catch(error => {
+        console.error('There is an Error try again later!', error)
+      })
 
     setImage('')
     setOpen(false)

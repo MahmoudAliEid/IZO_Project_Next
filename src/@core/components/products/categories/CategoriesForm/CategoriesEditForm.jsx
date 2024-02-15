@@ -16,9 +16,10 @@ import {
 } from '@mui/material'
 
 // import { useDispatch } from 'react-redux'
-import useSubmitUser from 'src/hooks/useSubmitUser'
 
 // import { useTheme } from '@mui/material/styles'
+
+import { getCookie } from 'cookies-next'
 
 import { Formik } from 'formik'
 import UploadImage from 'src/@core/components/globalUpload/UploadImage'
@@ -31,6 +32,8 @@ import { fetchCategoriesTree } from 'src/store/apps/products/categories/getCateg
 import { useSelector, useDispatch } from 'react-redux'
 
 const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
+  const token = getCookie('token')
+  const url = getCookie('apiUrl')
   const [image, setImage] = useState('')
   const [checkBox, setCheckBox] = useState(false)
   const [categories, setCategories] = useState([])
@@ -76,9 +79,6 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
     dispatch(fetchEditCategory({ itemId: catId }))
   }, [dispatch, catId])
 
-  // const dispatch = useDispatch()
-  const { handleSubmitData } = useSubmitUser()
-
   const handleCheckBoxChange = () => {
     setCheckBox(prev => !prev)
   }
@@ -92,13 +92,18 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
 
   const handleSubmit = async (values, { resetForm }) => {
     // Handle form submission logic here
-    console.log({ ...values, image }, 'Values form  edit Category')
 
-    console.log('Add btn clicked')
+    if (itemId) {
+      dispatch(postEditCategory({ ...values, image, itemId: catId }))
+        .then(() => {
+          dispatch(fetchCategories({ token, url }))
+          dispatch(fetchCategoriesTree())
+        })
+        .catch(error => {
+          console.error('There is an Error try again later!', error)
+        })
+    }
 
-    await handleSubmitData(postEditCategory, fetchCategories, { ...values, image }, catId).then(() => {
-      dispatch(fetchCategoriesTree())
-    })
     setImage('')
     setOpen(false)
     setCheckBox(false)
