@@ -90,8 +90,9 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
 
     console.log('Add btn clicked')
 
-    await handleSubmitData(postCreateCategory, fetchCategories, { ...values, image })
-    dispatch(fetchCategoriesTree())
+    await handleSubmitData(postCreateCategory, fetchCategories, { ...values, image }).then(() => {
+      dispatch(fetchCategoriesTree())
+    })
 
     setImage('')
     setOpen(false)
@@ -286,11 +287,11 @@ const CategoriesForm = ({ type, open, setOpen, setData }) => {
                   </FormControl>
                 </Grid>
               </Grid>
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                <Button size='large' type='submit' variant='contained'>
                   Add
                 </Button>
               </Box>

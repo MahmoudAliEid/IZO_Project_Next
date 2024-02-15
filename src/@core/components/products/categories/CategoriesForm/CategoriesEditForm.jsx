@@ -96,8 +96,9 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
 
     console.log('Add btn clicked')
 
-    await handleSubmitData(postEditCategory, fetchCategories, { ...values, image }, catId)
-    dispatch(fetchCategoriesTree())
+    await handleSubmitData(postEditCategory, fetchCategories, { ...values, image }, catId).then(() => {
+      dispatch(fetchCategoriesTree())
+    })
     setImage('')
     setOpen(false)
     setCheckBox(false)
@@ -118,6 +119,8 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
     >
       <DialogTitle
         id='customer-group-edit'
+        maxWidth='md'
+        fullWidth={true}
         sx={{
           textAlign: 'center',
           fontSize: '1.5rem !important',
@@ -274,11 +277,11 @@ const CategoriesEditForm = ({ type, open, setOpen, catId }) => {
                   </FormControl>
                 </Grid>
               </Grid>
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
                 <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                <Button size='large' type='submit' variant='contained'>
                   Update
                 </Button>
               </Box>
