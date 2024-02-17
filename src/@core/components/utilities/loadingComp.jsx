@@ -1,17 +1,16 @@
 import React, { Fragment, useEffect } from 'react'
 import Lottie from 'lottie-react'
-import errorAnimation from '/src/animation/errorAnimation.json'
 import successAnimation from '/src/animation/successAnimation.json'
-import loadingAnimation2 from '/src/animation/loading.json'
-import { Dialog, DialogContent } from '@mui/material'
+import errorA from '/src/animation/errorA.json'
+import { Dialog, DialogContent, Grid } from '@mui/material'
 import { Typography } from '@mui/material'
 import Image from 'next/image'
 import { useTheme } from '@mui/material/styles'
+import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
+import { Box } from '@mui/system'
 
 const LoadingAnimation = ({ open, onClose, statusType }) => {
   const theme = useTheme()
-
-  console.log(statusType, '===> statusType')
 
   useEffect(() => {
     if (statusType.success || statusType.error) {
@@ -21,44 +20,63 @@ const LoadingAnimation = ({ open, onClose, statusType }) => {
 
   return (
     <Fragment>
-      <Dialog open={open} onClose={onClose} maxWidth='xs' fullWidth scroll='body'>
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth='xs' scroll='body'>
         <DialogContent
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
             width: '100%',
+            pt: 0,
             height: '100%'
           }}
         >
-          <Image src={`/izoLogo/izo-logo-${theme.palette.mode}.png`} alt='Logo' width={120} height={120} />
+          <Image src={`/izoLogo/izo-logo-${theme.palette.mode}.png`} alt='Logo' width={60} height={60} />
 
-          <Lottie
-            animationData={
-              statusType.loading
-                ? loadingAnimation2
-                : statusType.success
-                ? successAnimation
-                : statusType.error
-                ? errorAnimation
-                : null
-            }
-            style={{
-              width: '250px',
-              height: '200px'
-            }}
-          />
+          <Box>
+            <Grid>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column'
+                }}
+              >
+                {statusType.loading ? (
+                  <Box>
+                    <ProgressCustomization />
+                  </Box>
+                ) : statusType.success ? (
+                  <Lottie
+                    animationData={successAnimation}
+                    style={{
+                      width: '60px',
+                      height: '60px'
+                    }}
+                  />
+                ) : statusType.error ? (
+                  <Lottie
+                    animationData={errorA}
+                    style={{
+                      padding: 0,
+                      margin: 0,
+                      width: '60px',
+                      height: '60px'
+                    }}
+                  />
+                ) : null}
 
-          <Typography variant='h4' sx={{ mt: 2, py: 2 }}>
-            {statusType.loading ? (
-              <span>Loading...</span>
-            ) : statusType.success ? (
-              <span>Success 🎉✨</span>
-            ) : statusType.error ? (
-              <span>Error ❌</span>
-            ) : null}
-          </Typography>
+                <Typography variant='body6'>
+                  {statusType.loading ? (
+                    <span>Loading...</span>
+                  ) : statusType.success ? (
+                    <span>Success 🎉✨</span>
+                  ) : statusType.error ? (
+                    <span>Error ❌</span>
+                  ) : null}
+                </Typography>
+              </Box>
+            </Grid>
+          </Box>
         </DialogContent>
       </Dialog>
     </Fragment>

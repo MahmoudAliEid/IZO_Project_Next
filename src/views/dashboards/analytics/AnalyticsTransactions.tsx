@@ -71,10 +71,11 @@ type DataAccounts = {
   ]
   ,
   title: string
+  currency: string
 
 }
 
-const AnalyticsTransactions = ({ UserData, title }: DataAccounts) => {
+const AnalyticsTransactions = ({ UserData, title ,currency }: DataAccounts) => {
   return (
     <Card style={{ width: "100%", height: "100%" }}>
       <CardHeader
@@ -118,7 +119,7 @@ const AnalyticsTransactions = ({ UserData, title }: DataAccounts) => {
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography sx={{ mr: 3, fontWeight: 500 }}>{item.amount}</Typography>
-                    <Typography sx={{ color: 'text.disabled' }}>AED</Typography>
+                    <Typography sx={{ color: 'text.disabled' }}>{currency }</Typography>
                   </Box>
                 </Box>
               </Box>

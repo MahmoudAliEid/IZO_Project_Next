@@ -114,7 +114,7 @@ const StepperHeaderContainer = styled(CardContent)(({ theme }) => ({
   }
 }))
 
-const StepperAddProduct = ({ isEdit, itemId }) => {
+const StepperAddProduct = ({ isEdit, itemId, handleClose }) => {
   // select names
   const names = useSelector(state => state.getCreateProduct.data?.value?.product_price)
 
@@ -732,6 +732,7 @@ const StepperAddProduct = ({ isEdit, itemId }) => {
               handleBlur={handleBlur}
               handleChange={handleChange}
               setFieldValue={setFieldValue}
+              handleClose={handleClose}
             />
           </Fragment>
         )

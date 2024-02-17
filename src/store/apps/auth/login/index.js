@@ -12,6 +12,8 @@ const initialState = {
   apiUrl: '',
   imgUrl: '',
   userName: '',
+  currency_id: '',
+  currency_code: '',
   authorization: {},
   error: null
 }
@@ -50,6 +52,8 @@ export const loginSlice = createSlice({
         state.userName = action.payload.authorization?.user?.first_name
         state.apiUrl = action.payload?.api_url
         state.authorization = action.payload?.authorization
+        state.currency_id = action.payload?.currency.id
+        state.currency_code = action.payload?.currency.code
 
         // Ensure that authorization and token exist before assigning
         if (action.payload.authorization) {
@@ -80,6 +84,16 @@ export const loginSlice = createSlice({
           setCookie('apiUrl', action.payload?.api_url)
         } else {
           setCookie('apiUrl', null)
+        }
+        if (action.payload?.currency.id) {
+          setCookie('currency_id', action.payload?.currency.id)
+        } else {
+          setCookie('currency_id', null)
+        }
+        if (action.payload?.currency.code) {
+          setCookie('currency_code', action.payload?.currency.code)
+        } else {
+          setCookie('currency_code', null)
         }
         notify('Login Successfully', 'success')
 

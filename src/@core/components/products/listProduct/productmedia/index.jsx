@@ -20,7 +20,7 @@ import UploadVideo from './UploadVideo'
 //   color: theme.palette.primary.main
 // }))
 
-const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
+const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue, handleClose }) => {
   const theme = useTheme()
 
   return (
@@ -54,6 +54,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
                 handleBlur={handleBlur}
                 handleChange={handleChange}
                 setFieldValue={setFieldValue}
+                handleClose={handleClose}
               />
             </CardContent>
           </Card>

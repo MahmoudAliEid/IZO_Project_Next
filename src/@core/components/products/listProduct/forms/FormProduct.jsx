@@ -29,7 +29,7 @@ const FormProduct = ({ isEdit, open, toggle, itemId }) => {
             padding: '0 !important'
           }}
         >
-          {<StepperAddProduct isEdit={isEdit} itemId={itemId} />}
+          {<StepperAddProduct isEdit={isEdit} itemId={itemId} handleClose={handleClose} />}
         </DialogContent>
       </Dialog>
     </Fragment>

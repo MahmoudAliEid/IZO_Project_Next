@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 
+
+
 // import ProgressCircularColors from 'src/views/components/progress/ProgressCircularColors'
 
 // ** Icon Import
@@ -26,11 +28,15 @@ const series = [{ data: [30, 58, 35, 53, 50, 68] }]
 type ProfitType = {
   profitData: {
     Profit: number,
+
   }
+  currency: string
 }
-const AnalyticsProfitReport = ({ profitData }: ProfitType) => {
+const AnalyticsProfitReport = ({ profitData ,currency }: ProfitType) => {
   // ** Hook
   const theme = useTheme()
+
+
 
   const options: ApexOptions = {
     chart: {
@@ -121,7 +127,7 @@ const AnalyticsProfitReport = ({ profitData }: ProfitType) => {
                 68.2%
               </Typography>
             </Box> */}
-            {profitData ? <Typography variant='h6'>{Math.floor(profitData.Profit)} AED</Typography> : <ProgressCustomization />}
+            {profitData ? (<Typography variant='h6'> {`${Math.floor(profitData.Profit)} ${currency}`}</Typography>) : <ProgressCustomization />}
 
           </div>
         </Box>

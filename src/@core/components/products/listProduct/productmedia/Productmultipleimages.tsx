@@ -1,6 +1,6 @@
 
 // ** React Imports
-import { Fragment} from 'react'
+import { Fragment ,useState} from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -14,6 +14,11 @@ import { FormikErrors, FormikTouched } from 'formik'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import { getCookie } from 'cookies-next'
+
+// **  notify
+import notify from 'src/utils/notify'
+
 
 // ** Link Next
 import Link from 'next/link'
@@ -22,6 +27,11 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { useDropzone } from 'react-dropzone'
 
+// ** Import global alert
+ import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
+import axios from 'axios'
+
+
 interface FileProp {
   name: string
   type: string
@@ -29,12 +39,23 @@ interface FileProp {
 }
 
 interface Props {
-  image: string | File[]|any[]
+  image: string | File[] | any[] |[
+  {
+    oldImages: [
+      {
+        id: number ,
+        value:string
+      }
+    ]
+  }
+  ]
   errors: FormikErrors<any> // replace 'any' with the actual type of your form values
   touched: FormikTouched<any> // replace 'any' with the actual type of your form values
   handleBlur: (field: string) => void
   handleChange: (e: React.ChangeEvent<any>) => void // replace 'any' with the actual type of your event
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
+  handleClose: () => void
+
 }
 
 // Styled component for the upload image inside the dropzone area
@@ -62,8 +83,14 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 const Productmultipleimages: React.FC<Props> = ({
 image,
-  setFieldValue
+  setFieldValue,
+  handleClose
 }) => {
+
+  // ** States
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
+
+  const url=getCookie('apiUrl')
 
 
   // ** Hooks
@@ -110,8 +137,80 @@ image,
 
   }
 
+  // ** Function to render old images
+  const renderOldImages = () => {
+    if (image.length > 0 && image[0]?.oldImages && image[0].oldImages.length > 0) {
+      return (
+        <List>
+          {image[0].oldImages.map((file:{id:number,value:string}) => (
+            <ListItem
+              sx={{
+                display: 'flex',
+                flexDirection: ['row', 'row', 'row'],
+                justifyContent: 'space-between'
+              }}
+              key={file.id}
+            >
+
+              <div className='file-details'>
+                <div className='file-preview'>{
+                  //@ts-ignore
+                  renderFilePreview(file.value)
+                }</div>
+                <div>
+                  <Typography className='file-name'>The Image</Typography>
+                </div>
+              </div>
+              <IconButton onClick={() => {
+                console.log(file.id)
+                setOpenDeleteAlert(true)
+              }}>
+                <Icon icon='bx:x' fontSize={20} />
+              </IconButton>
+
+              {openDeleteAlert &&
+                <DeleteGlobalAlert
+                name={'Product Image'}
+                open={openDeleteAlert}
+                close={() => {
+                setOpenDeleteAlert(false)
+                }
+                }
+                mainHandleDelete={
+                  async () => {
+                    const axiosInstance = axios.create({
+                    headers: {
+                      Authorization: `Bearer ${getCookie('token')}`,
+                      "Content-Type": "application/json"
+                      }
+                    })
+                    await axiosInstance.post(`${url}/app/react/products/delete-media/${file.id}`).then((res) => {
+                      if (res.status === 200) {
+                        notify('Product Image Deleted Successfully', 'success')
+                        setTimeout(() => {
+                          setOpenDeleteAlert(false)
+                          handleClose()
+                        }, 2000)
+                      }
+                    })
+              }
+            }
+
+
+
+          />}
+
+            </ListItem>
+
+          ))}
+
+        </List>
+      )
+    }
+  }
+
   const fileList =
-    Array.isArray(image) && image.length > 0 ? (
+    Array.isArray(image) && image.length > 0 && !image[0]?.oldImages? (
       image.map(file => (
         <ListItem
           sx={{
@@ -143,27 +242,9 @@ image,
           </IconButton>
         </ListItem>
       ))
-    ) : (
-      <ListItem
-        sx={{
-          display: 'flex',
-          flexDirection: ['row', 'row', 'row'],
-          justifyContent: 'space-between'
-        }}
-      >
-        <div className='file-details'>
-          <div>
-            <Typography className='file-name'>The Image:</Typography>
-          </div>
-          <div className='file-preview'>
-            <img width={38} height={38} alt={'preview-img'} src={image as string} />
-          </div>
-        </div>
-        <IconButton onClick={() => setFieldValue('productmultipleimages',[])}>
-          <Icon icon='bx:x' fontSize={20} />
-        </IconButton>
-      </ListItem>
-    )
+    ) : renderOldImages()
+
+
 
   const handleRemoveAllFiles = () => {
     setFieldValue(
@@ -194,11 +275,20 @@ image,
       {image.length ? (
         <Fragment>
           <List>{fileList}</List>
-          <div className='buttons'>
+          {
+            image.length > 0 && !image[0]?.oldImages && (
+              <div className='buttons'>
+                <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
+                  Remove All
+                </Button>
+              </div>
+            )
+          }
+          {/* <div className='buttons'>
             <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
               Remove All
             </Button>
-          </div>
+          </div> */}
         </Fragment>
       ) : null}
     </Fragment>

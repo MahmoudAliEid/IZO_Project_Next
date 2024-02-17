@@ -64,7 +64,7 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
     formData.append('image', (product.productImage && product?.productImage[0]) || '')
   }
   if (product?.productbrochure && typeof product?.productbrochure !== 'string' && product?.productbrochure > 0) {
-    formData.append('bruchore', (product.productbrochure && product?.productbrochure[0]) || '')
+    formData.append('brochure', (product.productbrochure && product?.productbrochure[0]) || '')
   }
   if (product?.productvideo && typeof product?.productvideo !== 'string' && product?.productvideo > 0) {
     formData.append('video', (product.productvideo && product?.productvideo[0]) || '')

@@ -72,7 +72,7 @@ export const saveProduct = createAsyncThunk('dashboard/createProduct', async pay
   }
 
   formData.append('image', (product.productImage && product?.productImage[0]) || '')
-  formData.append('bruchore', (product.productbrochure && product?.productbrochure[0]) || '')
+  formData.append('brochure', (product.productbrochure && product?.productbrochure[0]) || '')
   formData.append('video', (product.productvideo && product?.productvideo[0]) || '')
 
   // ** Single Product Price

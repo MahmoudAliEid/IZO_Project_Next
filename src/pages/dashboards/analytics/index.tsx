@@ -28,6 +28,9 @@ import AnalyticsOrderStatistics from 'src/views/dashboards/analytics/AnalyticsOr
 import AnalyticsActivityTimeline from 'src/views/dashboards/analytics/AnalyticsActivityTimeline'
 import RatingComponent from '../../../utils/RatingComponent.jsx'
 
+// ** next cookies
+import { getCookie } from 'cookies-next'
+
 
 
 // ** Styled Component Import
@@ -45,6 +48,9 @@ const AnalyticsDashboard = () => {
   const [layout, setLayout] = useState(defaultLayout);
   const [showRating, setShowRating] = useState(false);
   const { dataAnalytics } = useFetch(typeofData)
+
+  //@ts-ignore
+  const currency=getCookie("currency_code")
 
 
   // create function to handle change typeofData
@@ -118,7 +124,7 @@ const AnalyticsDashboard = () => {
           </div>
           <div key="7" >
             {/* @ts-ignore */}
-            <AnalyticsProfitReport profitData={dataAnalytics?.Profit} />
+            <AnalyticsProfitReport profitData={dataAnalytics?.Profit} currency={currency} />
           </div>
           <div key="8"  >
             <AnalyticsOrderStatistics />
@@ -128,7 +134,7 @@ const AnalyticsDashboard = () => {
           </div>
           <div key="10"  >
             {/* @ts-ignore */}
-            <AnalyticsTransactions UserData={dataAnalytics?.Accounts.cash} title="Cash" />
+            <AnalyticsTransactions UserData={dataAnalytics?.Accounts.cash} title="Cash" currency={currency} />
           </div>
           <div key="11"  >
             <AnalyticsActivityTimeline />
