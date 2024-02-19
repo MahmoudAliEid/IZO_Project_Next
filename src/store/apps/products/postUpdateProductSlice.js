@@ -60,13 +60,13 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
     }
   }
 
-  if (product?.productImage && typeof product?.productImage !== 'string' && product?.productImage > 0) {
+  if (product?.productImage && product?.productImage.length > 0) {
     formData.append('image', (product.productImage && product?.productImage[0]) || '')
   }
-  if (product?.productbrochure && typeof product?.productbrochure !== 'string' && product?.productbrochure > 0) {
+  if (product?.productbrochure && product?.productbrochure.length > 0) {
     formData.append('brochure', (product.productbrochure && product?.productbrochure[0]) || '')
   }
-  if (product?.productvideo && typeof product?.productvideo !== 'string' && product?.productvideo > 0) {
+  if (product?.productvideo && product?.productvideo.length > 0) {
     formData.append('video', (product.productvideo && product?.productvideo[0]) || '')
   }
 
