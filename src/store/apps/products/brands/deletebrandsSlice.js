@@ -24,8 +24,6 @@ export const deleteBrand = createAsyncThunk('brands/delete', async payload => {
     throw new Error('Network response was not ok')
   }
 
-  // console.log(response.data, 'this is my response form brand')
-
   return response.data
 })
 

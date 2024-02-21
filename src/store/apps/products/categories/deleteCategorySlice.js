@@ -43,14 +43,12 @@ const deleteCategorySlice = createSlice({
         state.error = null
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
         notify(action.payload.message, 'success')
         notify('Successfully Deleted', 'success')
       })
       .addCase(deleteCategory.rejected, (state, action) => {
-        console.log('rejected action from delete', action)
         state.loading = false
         state.error = action.error.message
         notify(action.payload.message, 'error')

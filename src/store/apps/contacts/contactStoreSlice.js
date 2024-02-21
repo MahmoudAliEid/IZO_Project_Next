@@ -7,8 +7,9 @@ import { fetchCreateContactData } from './contactCreateSlice'
 // Initial state
 const initialState = {
   contact: {},
-  status: 'idle',
-  error: null
+  loading: false,
+  error: false,
+  success: false
 }
 
 const formatDate = dateString => {
@@ -16,7 +17,6 @@ const formatDate = dateString => {
   let day = ('0' + date.getDate()).slice(-2)
   let month = ('0' + (date.getMonth() + 1)).slice(-2)
   let year = date.getFullYear()
-  console.log(year + '-' + month + '-' + day, '🔥🔥🔥🔥🔥🔥🔥🔥🔥')
 
   return year + '-' + month + '-' + day
 }
@@ -24,7 +24,7 @@ const formatDate = dateString => {
 // Async thunk action
 export const saveNewContact = createAsyncThunk('contactStore/saveNewContact', async (contact, { rejectWithValue }) => {
   const token = getCookie('token')
-  console.log(contact, 'contact from contactStoreSlice')
+  const url = getCookie('apiUrl')
   try {
     // change date of object contact
     const newContact = {
@@ -32,9 +32,7 @@ export const saveNewContact = createAsyncThunk('contactStore/saveNewContact', as
       dob: formatDate(contact.dob)
     }
 
-    console.log(newContact, 'newContact from contactStoreSlice ✨✨')
-
-    const response = await axios.post('https://test.izocloud.net/api/app/react/contact/save', newContact, {
+    const response = await axios.post(`${url}/app/react/contact/save`, newContact, {
       headers: {
         Authorization: 'Bearer ' + `${token}`,
         'Content-Type': 'multipart/form-data'
@@ -50,7 +48,6 @@ export const saveNewContact = createAsyncThunk('contactStore/saveNewContact', as
     }
 
     updateContactCreateSlice(contact)
-    console.log(response.data, 'response.data from contactStoreSlice')
 
     return response.data
   } catch (error) {
@@ -66,16 +63,21 @@ export const contactStoreSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(saveNewContact.pending, state => {
-        state.status = 'loading'
+        state.loading = true
+        state.error = false
+        state.success = false
       })
       .addCase(saveNewContact.fulfilled, (state, action) => {
-        state.status = 'succeeded'
+        state.loading = false
+        state.success = true
+        state.error = false
         state.contact = action.payload
         notify('Contact created successfully', 'success')
       })
-      .addCase(saveNewContact.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message
+      .addCase(saveNewContact.rejected, state => {
+        state.loading = false
+        state.success = false
+        state.error = true
         notify('There is an Error try again later', 'error')
       })
   }

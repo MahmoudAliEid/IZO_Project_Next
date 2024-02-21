@@ -17,11 +17,10 @@ const initialState = {
 export const fetchViewStockProduct = createAsyncThunk('dashboard/fetchViewStockProduct', async payload => {
   const { id } = payload
   const token = getCookie('token')
-
-  console.log(token, id, 'from product view stock slice🤞')
+  const url = getCookie('apiUrl')
 
   try {
-    const response = await axios.get(`https://test.izocloud.net/api/app/react/products/view-stock/${id}`, {
+    const response = await axios.get(`${url}/app/react/products/view-stock/${id}`, {
       headers: {
         Authorization: 'Bearer ' + `${token}`
       }
@@ -43,13 +42,11 @@ const getViewStockSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchViewStockProduct.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchViewStockProduct.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -57,7 +54,6 @@ const getViewStockSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchViewStockProduct.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

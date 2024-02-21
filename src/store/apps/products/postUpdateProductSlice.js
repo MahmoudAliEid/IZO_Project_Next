@@ -469,7 +469,8 @@ export const postUpdateProduct = createAsyncThunk('dashboard/updateProduct', asy
   }
 
   const token = getCookie('token')
-  const response = await axios.post(`https://test.izocloud.net/api/app/react/products/update/${id}`, formData, {
+  const url = getCookie('apiUrl')
+  const response = await axios.post(`${url}/app/react/products/update/${id}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
@@ -502,15 +503,14 @@ const postUpdateProductSlice = createSlice({
       state.success = true
       state.error = false
       state.status = 'succeeded'
-      console.log('fulfilled from update Product product ', action)
+      state.data = action.payload
       notify('Product Updated successfully', 'success')
     })
-    builder.addCase(postUpdateProduct.rejected, (state, action) => {
+    builder.addCase(postUpdateProduct.rejected, state => {
       state.loading = false
       state.success = false
       state.error = true
       state.status = 'failed'
-      console.log('rejected from update Product product ', action)
       notify('Product not Updated ', 'error')
     })
   }

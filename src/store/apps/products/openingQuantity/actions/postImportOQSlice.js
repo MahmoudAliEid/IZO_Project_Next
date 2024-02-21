@@ -9,31 +9,19 @@ export const postImportOQ = createAsyncThunk('dashboard/postImportOQ', async pay
   const url = getCookie('apiUrl')
   const { data } = payload
 
-  console.log(token, '===> token Post import opening quantity slice')
-  console.log(data, '===> data Post import opening quantity slice')
-  console.log(url, '===> url Post import opening quantity slice')
-  console.log(data.file[0], '===> data.file[0] Post import opening quantity slice')
   if (token !== undefined && token !== null && data !== undefined && data !== null) {
     const formData = new FormData()
 
     formData.append('products_csv', data.file[0])
-
-    console.log(formData, data, '===> formData, data add sale Price group slice')
 
     const headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
 
-    const response = await axios.post(
-      'https://test.izocloud.net/api/app/react/opening-quantity/import-file',
-      formData,
-      {
-        headers // Pass the headers to the Axios request
-      }
-    )
-
-    console.log(response, '===> from import opening quantity slice ')
+    const response = await axios.post(`${url}/app/react/opening-quantity/import-file`, formData, {
+      headers // Pass the headers to the Axios request
+    })
 
     return response.data
   }
@@ -59,13 +47,11 @@ const postImportOQSlice = createSlice({
         state.loading = false
         state.data = action.payload
         state.error = null
-        console.log(action.payload.message, 'form import opening quantity')
         notify('Done Successfully', 'success')
       })
       .addCase(postImportOQ.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
-        console.log('Unknown error occurred  :', action.payload)
         notify('Their is an Error', 'error')
       })
   }

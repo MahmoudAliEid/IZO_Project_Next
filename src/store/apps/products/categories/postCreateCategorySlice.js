@@ -9,8 +9,6 @@ export const postCreateCategory = createAsyncThunk('dashboard/postCreateCategory
   const url = getCookie('apiUrl')
   const { userData } = payload
 
-  console.log(token, '===> token Post create Category slice')
-
   if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
     const formData = new FormData()
     formData.append('name', userData.name || '')
@@ -20,8 +18,6 @@ export const postCreateCategory = createAsyncThunk('dashboard/postCreateCategory
     formData.append('description', userData.description || '')
     formData.append('slug', userData.slug || '')
     formData.append('image', userData.image[0] || '')
-
-    console.log(formData, userData, '===> formData, userData Category add slice')
 
     formData.append('short_code', userData.short_code)
 
@@ -43,7 +39,8 @@ const postCreateCategorySlice = createSlice({
   name: 'postCreateCategory',
   initialState: {
     loading: false,
-    error: null,
+    error: false,
+    success: false,
     data: []
   },
   reducers: {},
@@ -51,20 +48,22 @@ const postCreateCategorySlice = createSlice({
     builder
       .addCase(postCreateCategory.pending, state => {
         state.loading = true
-        state.error = null
+        state.error = false
+        state.success = false
         state.data = []
       })
       .addCase(postCreateCategory.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
-        state.error = null
-        console.log(action.payload)
+        state.error = false
+        state.success = true
         notify(action.payload.message, 'success')
       })
       .addCase(postCreateCategory.rejected, (state, action) => {
         state.loading = false
+        state.success = false
+        state.error = true
         state.error = action.payload
-        console.log(action.payload)
         notify('Their is an Error try again later', 'error')
       })
   }

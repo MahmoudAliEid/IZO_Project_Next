@@ -7,7 +7,6 @@ import notify from 'src/utils/notify'
 export const postEditVariations = createAsyncThunk('dashboard/postEditVariations', async payload => {
   const token = getCookie('token') // Get the token inside the async function
   const { id, userData, oldList } = payload
-  console.log(token, id, userData, oldList, '===> token, id,userData,oldList, Post Edit variations slice')
 
   if (
     token !== undefined &&
@@ -26,7 +25,6 @@ export const postEditVariations = createAsyncThunk('dashboard/postEditVariations
     if (userData.items && Array.isArray(userData.items)) {
       userData.items.forEach(item => {
         formData.append('items[]', item)
-        console.log(item, 'item form new items variations')
       })
     }
 
@@ -40,13 +38,6 @@ export const postEditVariations = createAsyncThunk('dashboard/postEditVariations
       formData.append(`old_items`, [])
     }
 
-    console.log(
-      formData,
-      userData,
-      arrOfOldVariations,
-      '===> formData, userData ,arrOfOldVariations variations Edit slice'
-    )
-
     const headers = {
       Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
       'Content-Type': ' multipart/form-data'
@@ -55,8 +46,6 @@ export const postEditVariations = createAsyncThunk('dashboard/postEditVariations
     const response = await axios.post(`https://test.izocloud.net/api/app/react/variations/update/${id}`, formData, {
       headers // Pass the headers to the Axios request
     })
-
-    console.log(response, '===> from post Edit variations slice ')
 
     return response.data
   }
@@ -67,7 +56,8 @@ const postEditVariationsSlice = createSlice({
   name: 'postEditVariations',
   initialState: {
     loading: false,
-    error: null,
+    error: false,
+    success: false,
     data: []
   },
   reducers: {},
@@ -75,24 +65,26 @@ const postEditVariationsSlice = createSlice({
     builder
       .addCase(postEditVariations.pending, state => {
         state.loading = true
-        state.error = null
+        state.error = false
+        state.success = false
         state.data = []
       })
       .addCase(postEditVariations.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
-        state.error = null
-        console.log(action.payload)
+        state.error = false
+        state.success = true
+
         notify('Variations Updated successfully', 'success')
       })
       .addCase(postEditVariations.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
+        state.success = false
+        state.error = true
         if (action.payload && action.payload.message) {
-          console.log(action.payload.message, 'form update variation')
           notify(action.payload.message, 'error')
         } else {
-          console.log('Unknown error occurred in form Update variation:', action.payload)
           notify('An unknown error occurred', 'error')
         }
       })

@@ -17,8 +17,9 @@ const initialState = {
 export const fetchEditCategory = createAsyncThunk('dashboard/fetchEditCategory', async payload => {
   const { itemId } = payload
   const token = getCookie('token')
+  const url = getCookie('apiUrl')
   try {
-    const response = await axios.get(`https://test.izocloud.net/api/app/react/category/edit/${itemId}`, {
+    const response = await axios.get(`${url}/app/react/category/edit/${itemId}`, {
       headers: {
         Authorization: 'Bearer ' + `${token}`
       }
@@ -40,13 +41,11 @@ const getEditCategorySlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchEditCategory.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchEditCategory.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -54,7 +53,6 @@ const getEditCategorySlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchEditCategory.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

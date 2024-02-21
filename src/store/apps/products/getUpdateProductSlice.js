@@ -19,8 +19,6 @@ export const fetchUpdateProduct = createAsyncThunk('dashboard/fetchUpdateProduct
   const token = getCookie('token')
   const url = getCookie('apiUrl')
 
-  console.log('itemId ☕☕', id)
-
   const response = await axios.get(`${url}/app/react/products/edit/${id}`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`
@@ -40,13 +38,11 @@ const getUpdateProductSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchUpdateProduct.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchUpdateProduct.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -54,7 +50,6 @@ const getUpdateProductSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchUpdateProduct.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

@@ -15,7 +15,7 @@ const initialState = {
 
 export const fetchIzoUsers = createAsyncThunk('dashboard/fetchIzoUsers', async payload => {
   const { token, url } = payload
-  console.log(token)
+
   try {
     const response = await axios.get(`${url}/app/react/users`, {
       headers: {
@@ -39,13 +39,11 @@ const izoUsersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchIzoUsers.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchIzoUsers.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -53,7 +51,6 @@ const izoUsersSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchIzoUsers.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

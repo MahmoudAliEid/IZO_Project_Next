@@ -34,7 +34,6 @@ export const loginFirstTimeSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loginFirstTime.fulfilled, (state, action) => {
-        console.log('from login first time  action', action)
         state.data = action.payload
         state.statusCode = action.payload.status
         state.message = action.payload.message

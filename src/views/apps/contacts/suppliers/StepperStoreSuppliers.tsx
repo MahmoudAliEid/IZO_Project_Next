@@ -17,13 +17,13 @@ import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import MuiStep, { StepProps } from '@mui/material/Step'
-import InputAdornment from '@mui/material/InputAdornment'
+// import InputAdornment from '@mui/material/InputAdornment'
 import Select from '@mui/material/Select'
 import { Formik, Field} from 'formik'
 import * as Yup from 'yup'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
-import PublicIcon from '@mui/icons-material/Public'
-import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
+// import LocationOnIcon from '@mui/icons-material/LocationOn'
+// import PublicIcon from '@mui/icons-material/Public'
+// import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice'
 import { fetchViewContact } from 'src/store/apps/contacts/getViewContactSlice'
 
 // ** Third Party Imports
@@ -56,6 +56,9 @@ import { updateContact } from 'src/store/apps/contacts/contactUpdateSlice'
 import DatePicker from 'react-datepicker'
 import CustomInput from './PickersCustomInput'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
+import { fetchSuppliers } from 'src/store/apps/contacts/getSuppliersSlice'
+import { fetchCustomers } from 'src/store/apps/contacts/getCustomersSlice'
 
 const steps = [
   {
@@ -123,11 +126,11 @@ const StepperHeaderContainer = styled(CardContent)(({ theme }) => ({
 
 
 
-const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
+const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
+  const [openLoading, setOpenLoading] = useState(false)
 
-  console.log( isView,' is view');
 
   useEffect(() => {
     const token = getCookie('token')
@@ -237,16 +240,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
       case 0:
         return (
           <Fragment key={step}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '100%',
-                gap: '1.2rem',
-                padding: '0 1.2rem'
-              }}
-            >
+           <Grid container spacing={5} justifyContent={'center'} alignContent={'center'} margin={'auto'}>
               <Grid item lg={6} md={6} sm={12} xs={12}>
 
                   <FormControl fullWidth>
@@ -258,7 +252,8 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                       value={values.type}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      label='Contact type'
+                    label='Contact type'
+
                     >
                       {ContactType.map((item: any) => (
                         <MenuItem value={item.name} key={item.id}>
@@ -269,6 +264,28 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   </FormControl>
 
               </Grid>
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+              <FormControl fullWidth variant='outlined'>
+                <InputLabel id='prefix-label'>Prefix</InputLabel>
+                <Select
+                  labelId='prefix-label'
+                  id='prefix'
+                  name='prefix'
+                  value={values.prefix}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={!!touched.prefix && !!errors.prefix}
+                    label='Prefix'
+
+                  required
+                >
+                  <MenuItem value=''>None</MenuItem>
+                  <MenuItem value='Mr.'>Mr.</MenuItem>
+                  <MenuItem value='Mrs.'>Mrs.</MenuItem>
+                  <MenuItem value='Ms.'>Ms.</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
               <Grid
                 item
@@ -276,9 +293,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 md={6}
                 sm={12}
                 xs={12}
-                sx={{
-                  mb: 2
-                }}
+
               >
                 <FormControl fullWidth>
                   {/* form input for Business Name */}
@@ -295,31 +310,11 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   />
                 </FormControl>
               </Grid>
-            </div>
 
-            <Grid item lg={12} md={12} sm={12} xs={12}>
-              <FormControl fullWidth variant='outlined'>
-                <InputLabel id='prefix-label'>Prefix</InputLabel>
-                <Select
-                  labelId='prefix-label'
-                  id='prefix'
-                  name='prefix'
-                  value={values.prefix}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.prefix && !!errors.prefix}
-                  label='Prefix'
-                  required
-                >
-                  <MenuItem value=''>None</MenuItem>
-                  <MenuItem value='Mr.'>Mr.</MenuItem>
-                  <MenuItem value='Mrs.'>Mrs.</MenuItem>
-                  <MenuItem value='Ms.'>Ms.</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
 
-            <Grid item lg={4} xs={12} sm={6}>
+
+
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
                 as={TextField}
                 name='first_name'
@@ -332,7 +327,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
               />
             </Grid>
 
-            <Grid item lg={4} xs={12} sm={6}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
                 as={TextField}
                 name='middle_name'
@@ -344,7 +339,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 sx={{ gridColumn: 'span 6' }}
               />
             </Grid>
-            <Grid item lg={4} xs={12} sm={6}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
                 as={TextField}
                 name='last_name'
@@ -357,7 +352,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
               />
             </Grid>
 
-            <Grid item lg={4} xs={12} sm={6}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
                 as={TextField}
                 name='mobile'
@@ -376,7 +371,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
             {/*
                     filed alternative mobile number
                   */}
-            <Grid item lg={4} xs={12} sm={6}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
                 as={TextField}
                 name='alternate_number'
@@ -392,7 +387,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
             </Grid>
 
             {/* Landline number*/}
-            <Grid item lg={4} xs={12} sm={6}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
                 as={TextField}
                 name='landline'
@@ -402,21 +397,13 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 margin='normal'
                 placeholder='family contact number'
                 value={values.landline}
-                onChange={handleChange}
+                  onChange={handleChange}
+                   type='number'
               />
             </Grid>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                gap: '1rem',
-                padding: '0 1.2rem'
-              }}
-            >
-              <Grid item xs={12} sm={6}>
+
+              <Grid item lg={6} md={6} sm={12} xs={12}>
                 <Field
                   as={TextField}
                   name='email'
@@ -425,11 +412,12 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   fullWidth
                   margin='normal'
                   required
+                  type='email'
                   sx={{ gridColumn: 'span 6' }}
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item sm={12} xs={12}>
                 <FormControl fullWidth>
                 <DatePickerWrapper>
                   <DatePicker
@@ -446,14 +434,16 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   </DatePickerWrapper>
                   </FormControl>
               </Grid>
-            </div>
+
+               </Grid>
           </Fragment>
         )
       case 1:
         return (
           <Fragment key={step}>
             {/* Tax number input  */}
-            <Grid item lg={6} xs={12} sm={6} md={6}>
+            <Grid container spacing={3} justifyContent={'center'} alignContent={'center'} alignItems={'center'} margin={'auto'}>
+            <Grid item lg={6} xs={12} sm={12} md={6}>
               <Field
                 as={TextField}
                 name='tax_number'
@@ -466,7 +456,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item lg={6} xs={12} sm={6} md={6}>
+            <Grid item lg={6} xs={12} sm={12} md={6}>
               {/* opening Balance input */}
               <Field
                 as={TextField}
@@ -481,31 +471,29 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 type='number'
               />
             </Grid>
-
-
-
             <Grid
               item
               xs={12}
             >
               <Grid container spacing={3}>
-                <Grid item  xs={3} md={2} lg={2}>
+                <Grid item  xs={3} md={2} lg={2} sm={6}>
 
                 <FormControl fullWidth>
                   <TextField
                     label='Pay Term '
                     variant='outlined'
                     fullWidth
-
-                    placeholder='pay term'
+                    placeholder='Pay Term'
                     value={values.pay_term_number}
                     onChange={handleChange}
-                    type='number'
-                    />
+                        type='number'
+                        name='pay_term_number'
+                      />
+
                     </FormControl>
 
                 </Grid>
-                <Grid item  xs={9} md={10} lg={10}>
+                <Grid item  xs={9} md={10} lg={10} sm={6}>
                     <FormControl
                 fullWidth
               >
@@ -538,7 +526,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
             </Grid>
 
             {/*  filed for address line 1 and 2 */}
-            <Grid item lg={6} xs={12} sm={12}>
+            <Grid item lg={6} xs={12} sm={12} md={6}>
 
               <Field
                 as={TextField}
@@ -550,16 +538,10 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 placeholder='address line 1'
                 value={values.address_line_1}
                 onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <LocationOnIcon />
-                    </InputAdornment>
-                  )
-                }}
+
               />
             </Grid>
-            <Grid item lg={6} xs={12} sm={12}>
+            <Grid item lg={6} xs={12} sm={12} md={6}>
               <Field
                 as={TextField}
                 name='address_line_2'
@@ -570,17 +552,12 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 placeholder='address line 2'
                 value={values.address_line_2}
                 onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <LocationOnIcon />
-                    </InputAdornment>
-                  )
-                }}
+
               />
-            </Grid>
-            <Grid container spacing={3} px={6}>
-              <Grid item xs={3}>
+              </Grid>
+
+
+              <Grid item lg={6} xs={12} sm={12} md={6}>
                 {/* filed for city */}
                 <Field
                   as={TextField}
@@ -592,16 +569,10 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   placeholder='city'
                   value={values.city}
                   onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <LocationOnIcon />
-                      </InputAdornment>
-                    )
-                  }}
+
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item lg={6} xs={12} sm={12} md={6}>
                 {/*  filed for state */}
                 <Field
                   as={TextField}
@@ -613,16 +584,10 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   placeholder='state'
                   value={values.state}
                   onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <LocationOnIcon />
-                      </InputAdornment>
-                    )
-                  }}
+
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item lg={6} xs={12} sm={12} md={6}>
                 {/* filed for country */}
                 <Field
                   as={TextField}
@@ -634,16 +599,10 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   placeholder='country'
                   value={values.country}
                   onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <PublicIcon />
-                      </InputAdornment>
-                    )
-                  }}
+
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item lg={6} xs={12} sm={12} md={6}>
                 {/* filed for zip code */}
                 <Field
                   as={TextField}
@@ -655,24 +614,21 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   placeholder='zip code'
                   value={values.zip_code}
                   onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <LocalPostOfficeIcon />
-                      </InputAdornment>
-                    )
-                  }}
+
                   type='number'
                 />
               </Grid>
-            </Grid>
+
+              </Grid>
+
           </Fragment>
         )
       case 2:
         return (
           <Fragment key={step}>
+            <Grid container spacing={3} justifyContent={'center'} alignContent={'center'} alignItems={'center'} margin={'auto'}>
             {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
-              <Grid item xs={3} key={num}>
+              <Grid item lg={6} xs={12} sm={12} md={6} key={num}>
                 <Field
                   as={TextField}
                   name={`custom_field${num}`}
@@ -688,7 +644,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
             ))}
 
             {/* Shipping Address input */}
-            <Grid item lg={12} xs={12} sm={12}>
+            <Grid item  xs={12} >
               <Field
                 as={TextField}
                 name='shipping_address'
@@ -700,7 +656,8 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                 value={values.shipping_address}
                 onChange={handleChange}
               />
-            </Grid>
+              </Grid>
+              </Grid>
           </Fragment>
         )
       case 3:
@@ -720,7 +677,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
     middle_name: Yup.string(),
     last_name: Yup.string().required('Last name is required'),
     tax_number: Yup.string().required('Tax number is required'),
-    pay_term_number: Yup.string(),
+
     pay_term_type: Yup.string(),
     mobile: Yup.string().required('Mobile number is required'),
     landline: Yup.string().required('Landline is required'),
@@ -763,6 +720,8 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
 
  //@ts-ignore
   const contactEditData = useSelector((state: { contactEditSlice: { data: any } }) => state.contactEditSlice?.contact)
+  const saveStatus = useSelector((state: { contactStoreSlice: { status: string } }) => state.contactStoreSlice)
+  const editStatus = useSelector((state: { contactUpdateSlice: { status: string } }) => state.contactUpdateSlice)
 
   useEffect(() => {
     if (
@@ -859,23 +818,41 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     if (!isEdit) {
        //@ts-ignore
-      dispatch(saveNewContact(values))
-    } else {
-      dispatch(
-
-         //@ts-ignore
-        updateContact({ updateData: values, id: itemId })).then(() => {
-
+      dispatch(saveNewContact(values)).then(() => {
+        if (contact === 'supplier') {
+          //@ts-ignore
+          dispatch(fetchSuppliers(token, url))
+        } else {
+          //@ts-ignore
+           dispatch(fetchCustomers(token, url))
+        }
          //@ts-ignore
         dispatch(fetchViewContact({ token, id: itemId }))
 
-      }
-      )
+      })
+    } else {
+      dispatch(
+        //@ts-ignore
+        updateContact({ updateData: values, id: itemId })
+      ).then(() => {
+         if (contact === 'supplier') {
+          //@ts-ignore
+           dispatch(fetchSuppliers(token, url))
+        } else {
+          //@ts-ignore
+       dispatch(fetchCustomers(token, url))
+        }
+         //@ts-ignore
+        dispatch(fetchViewContact({ token, id: itemId }))
+
+      })
+
 
       // activeStep === steps.length - 1 ? toast.success('Form Submitted') : null
-      setActiveStep(activeStep + 1)
-      resetForm()
     }
+    setActiveStep(activeStep + 1)
+    resetForm()
+    setOpenLoading(true)
   }
 
   const renderContent = () => {
@@ -910,7 +887,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
           onSubmit={handleSubmitForm}
           enableReinitialize={true}
         >
-          {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
+          {({ values, errors, touched, handleBlur, handleChange, setFieldValue,resetForm}) => (
             <form>
               <Grid container spacing={5} mt={5}>
                 <Grid item xs={12} mb={5}>
@@ -932,7 +909,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                   step: activeStep
                 })}
 
-                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Button
                     size='large'
                     variant='outlined'
@@ -949,7 +926,7 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
                       color='primary'
                       onClick={() => handleSubmitForm(values, { resetForm })}
                     >
-                      {isEdit ? 'Update User' : 'Create User'}
+                      {isEdit ? 'Update' : 'Create'}
                     </Button>
                   ) : (
                     <Button size='large' variant='contained' color='primary' onClick={handleNext}>
@@ -969,6 +946,11 @@ const StepperStoreSuppliers = ({ isView, isEdit, itemId, contact }: any) => {
     <Card
         sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
     >
+       <LoadingAnimation
+        open={openLoading}
+        onClose={() => setOpenLoading(false)}
+        statusType={isEdit ? editStatus : saveStatus}
+      />
         <StepperHeaderContainer>
         <StepperWrapper >
           <Stepper

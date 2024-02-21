@@ -58,6 +58,7 @@ import { CardStatsHorizontalProps } from 'src/@core/components/card-statistics/t
 
 // ** Custom Table Components Imports
 import DialogAddUser from 'src/views/apps/user/list/DialogAddUser'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
@@ -123,6 +124,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
   // const [dataFetched, setDataFetched] = useState(false);
   const [editUserOpen, setEditUserOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openAlertDelete,setOpenAlertDelete]=useState<boolean>(false)
 
   const rowOptionsOpen = Boolean(anchorEl);
 
@@ -207,7 +209,7 @@ const RowOptions = ({ id }: { id: number | string }) => {
           <Icon icon='bx:pencil' fontSize={20} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem onClick={()=>setOpenAlertDelete(true)} sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='bx:trash-alt' fontSize={20} />
           Delete
         </MenuItem>
@@ -218,6 +220,9 @@ const RowOptions = ({ id }: { id: number | string }) => {
       }
       {
         editUserOpen && <DialogAddUser open={editUserOpen} toggle={handleEdit} isEdit={true} itemId={id} />
+      }
+      {
+        openAlertDelete && <DeleteGlobalAlert name={'User'} open={openAlertDelete} close={()=>setOpenAlertDelete(false)} mainHandleDelete={handleDelete}/>
       }
 
     </>

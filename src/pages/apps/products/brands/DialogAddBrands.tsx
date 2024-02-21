@@ -21,18 +21,12 @@ import UploadImage from 'src/@core/components/globalUpload/UploadImage'
 import { FormControlLabel } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { fetchCreateProduct } from 'src/store/apps/products/listProducts/getCreateProductSlice'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 
 
 const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }: any) => {
 
-
-  console.log(isEdit, "isEdit for edit");
-
-  console.log(open, "open for edit");
-  console.log(toggle, "toggle for edit");
-
-  // console.log(itemId, "itemId for edit");
-
+  const [openLoading, setOpenLoading] = useState(false)
   const dispatch = useDispatch()
   const [image, setImage] = useState('')
   const [initialValues, setInitialValues] = useState<any>({
@@ -41,6 +35,12 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
     use_for_repair: 0,
 
   })
+
+  const saveStatus = useSelector((state: { storebrandSlice: { status: any } }) => state.storebrandSlice);
+  const editStatus = useSelector((state: { updatebrandSlice: { status: any } }) => state.updatebrandSlice);
+
+
+
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
@@ -81,21 +81,24 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
   }, [brandDetailsResponse, isEdit])
 
 
-  const storeBrandResponse = useSelector((state: { storebrandSlice: { data: any } }) => state.storebrandSlice.data);
+  // const storeBrandResponse = useSelector((state: { storebrandSlice: { data: any } }) => state.storebrandSlice.data);
 
   useEffect(() => {
-    if (storeBrandResponse.status === 200) {
+
        //@ts-ignore
       dispatch(fetchAllBrands());
-    }
+
   }
-    , [storeBrandResponse, dispatch])
+    , [ dispatch])
 
   const handleSubmitForm = (values: Record<string, any>, { resetForm }: { resetForm: () => void }) => {
     console.log(values, "values for submit");
     if (isEdit && itemId) {
       //@ts-ignore
-      dispatch(updateBrand({ updateData: { ...values, image }, id: itemId }))
+      dispatch(updateBrand({ updateData: { ...values, image }, id: itemId })).then(() => {
+        //@ts-ignore
+        dispatch(fetchAllBrands())
+      })
 
     }
     else {
@@ -105,6 +108,8 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
          //@ts-ignore
         dispatch(storeBrand({ ...values, image })).then(() => {
           //@ts-ignore
+          dispatch(fetchAllBrands())
+          //@ts-ignore
           dispatch(fetchCreateProduct()).then(() => {
             setNewBrand(true)
           })
@@ -113,20 +118,25 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
 
       } else {
           //@ts-ignore
-        dispatch(storeBrand({ ...values, image }));
+        dispatch(storeBrand({ ...values, image })).then(() => {
+          //@ts-ignore
+          dispatch(fetchAllBrands())
+        }
+        )
       }
 
     }
     resetForm();
-    toggle();
+    setOpenLoading(true);
+    // toggle();
 
   }
 
 
-  const updateBrandResponse = useSelector((state: { updatebrandSlice: { data: any } }) => state.updatebrandSlice.data);
+  const updateBrandResponse = useSelector((state: { updatebrandSlice: { success: any } }) => state.updatebrandSlice);
 
   useEffect(() => {
-    if (updateBrandResponse.status === 200) {
+    if (updateBrandResponse.success === true) {
       // console.log(updateBrandResponse, "updateBrandResponse for edit 🔥🔥");
  //@ts-ignore
       dispatch(fetchAllBrands());
@@ -140,6 +150,9 @@ const DialogAddBrands = ({ isCustom, open, toggle, isEdit, itemId, setNewBrand }
 
   return (
     <Fragment>
+       {openLoading && (
+        <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={isEdit?editStatus:saveStatus} />
+      )}
       <Dialog
         open={open}
         onClose={toggle}

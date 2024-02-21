@@ -10,38 +10,27 @@ const token = getCookie('token')
 export const postEditCustomerGroup = createAsyncThunk('dashboard/postEditCustomerGroup', async payload => {
   const { userData, itemId } = payload
 
-  console.log(userData, itemId, '===> userData  & itemId from postEditCustomerGroup ')
-  try {
-    console.log(token, itemId, '===> token & id from postEditCustomerGroup slice')
-    if (
-      token !== undefined &&
-      token !== null &&
-      userData !== undefined &&
-      userData !== null &&
-      itemId !== null &&
-      itemId !== undefined
-    ) {
-      const headers = {
-        Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
-        'Content-Type': 'application/json'
-      }
-
-      const dataToJSON = JSON.stringify(userData)
-
-      const response = await axios.post(
-        `https://test.izocloud.net/api/app/react/customer-group/update/${itemId}`,
-        dataToJSON,
-        {
-          headers // Pass the headers to the Axios request
-        }
-      )
-
-      console.log(response, '===>  from postEditCustomerGroup')
-
-      return response.data
+  if (
+    token !== undefined &&
+    token !== null &&
+    userData !== undefined &&
+    userData !== null &&
+    itemId !== null &&
+    itemId !== undefined
+  ) {
+    const headers = {
+      Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
+      'Content-Type': 'application/json'
     }
-  } catch (error) {
-    console.log('Error form postEditCustomerGroup', error)
+
+    const dataToJSON = JSON.stringify(userData)
+    const url = getCookie('apiUrl')
+
+    const response = await axios.post(`${url}/app/react/customer-group/update/${itemId}`, dataToJSON, {
+      headers // Pass the headers to the Axios request
+    })
+
+    return response.data
   }
 })
 
@@ -50,7 +39,8 @@ const postEditCustomerGroupSlice = createSlice({
   name: 'postEditCustomerGroup',
   initialState: {
     loading: false,
-    error: null,
+    error: false,
+    success: false,
     data: []
   },
   reducers: {},
@@ -58,18 +48,21 @@ const postEditCustomerGroupSlice = createSlice({
     builder
       .addCase(postEditCustomerGroup.pending, state => {
         state.loading = true
-        state.error = null
-        state.data = null
+        state.error = false
+        state.success = false
+        state.data = []
       })
       .addCase(postEditCustomerGroup.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
-        state.error = null
+        state.error = false
+        state.success = true
         notify('Updated successfully', 'success')
       })
-      .addCase(postEditCustomerGroup.rejected, (state, action) => {
+      .addCase(postEditCustomerGroup.rejected, state => {
         state.loading = false
-        state.error = action.payload
+        state.error = true
+        state.success = false
         notify('There is an error try again later', 'error')
       })
   }

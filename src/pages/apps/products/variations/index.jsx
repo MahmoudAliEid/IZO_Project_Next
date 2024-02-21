@@ -306,7 +306,7 @@ const Variations = () => {
   const [url, setUrl] = useState('')
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-
+  const [openLoading, setOpenLoading] = useState(false)
   const [data, setData] = useState(null)
   const [dataForm, setDataForm] = useState(null)
   const title = 'Variations List'
@@ -325,8 +325,10 @@ const Variations = () => {
 
   useEffect(() => {
     setData(store)
+  }, [store])
+  useEffect(() => {
     setDataForm(storeAddFormData)
-  }, [store, storeAddFormData])
+  }, [storeAddFormData])
 
   // ** Cookies
   useEffect(() => {
@@ -365,11 +367,10 @@ const Variations = () => {
 
   const handleSubmit = (values, { resetForm }) => {
     // Handle form submission logic here
-    console.log(values, 'form  add variations')
-    console.log('Add btn clicked')
     handleSubmitData(postAddVariations, fetchVariations, values)
-    setOpen(false)
+    // setOpen(false)
     resetForm()
+    setOpenLoading(true)
 
     setData(prev => {
       return [
@@ -384,11 +385,6 @@ const Variations = () => {
       ]
     })
   }
-  console.log(data, 'data form add')
-
-  // const onchangeHandle = event => {
-  //   setValueToShow(event.target.value)
-  // }
 
   return (
     <Grid container spacing={6}>
@@ -454,7 +450,16 @@ const Variations = () => {
           </Box>
         </Card>
       </Grid>
-      {dataForm && <VariationsForm type={'Add'} open={open} setOpen={setOpen} handleSubmit={handleSubmit} />}
+      {dataForm && (
+        <VariationsForm
+          type={'Add'}
+          open={open}
+          setOpen={setOpen}
+          handleSubmit={handleSubmit}
+          openLoading={openLoading}
+          setOpenLoading={setOpenLoading}
+        />
+      )}
     </Grid>
   )
 }

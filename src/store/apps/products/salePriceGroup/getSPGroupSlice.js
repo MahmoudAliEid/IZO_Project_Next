@@ -18,7 +18,6 @@ const initialState = {
 
 export const fetchSPGroup = createAsyncThunk('dashboard/fetchSPGroup', async token => {
   const url = getCookie('apiUrl')
-  console.log(token, url, '===> fetchSPGroup 🤖')
 
   const response = await axios.get(`${url}/app/react/sales-price-group/all`, {
     headers: {
@@ -39,13 +38,11 @@ const getSPGroup = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchSPGroup.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchSPGroup.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -53,7 +50,6 @@ const getSPGroup = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchSPGroup.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

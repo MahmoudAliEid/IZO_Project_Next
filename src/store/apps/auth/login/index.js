@@ -45,7 +45,6 @@ export const loginSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(login.fulfilled, (state, action) => {
-        console.log('from login fulfilled', state)
         state.data = action.payload
         state.login_first_time = action.payload.login_first_time
         state.imgUrl = action.payload.authorization?.user?.profile_photo_url
@@ -103,13 +102,11 @@ export const loginSlice = createSlice({
         // }, 2000)
       })
       .addCase(login.pending, state => {
-        console.log('from login pending', state)
         state.status = 'pending'
       })
       .addCase(login.rejected, state => {
-        console.log('from login rejected', state)
         state.status = 'rejected'
-        notify('User Name or Password is wrong', 'error')
+        notify(' Error, check and try again', 'error')
       })
   }
 })

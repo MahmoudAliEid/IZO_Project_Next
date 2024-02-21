@@ -51,9 +51,12 @@ import { storeUser } from 'src/store/apps/izoUsers/storeUserSlice.js'
 import { fetchEditUsers } from 'src/store/apps/izoUsers/editUsersSlice';
 import { postEditUser } from 'src/store/apps/izoUsers/postEditUserSlice';
 
+// ** loading Component
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
+
 
 // icons
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
+// import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 
 // Date Picker Imports
 import DatePicker from 'react-datepicker'
@@ -61,6 +64,7 @@ import CustomInput from './PickersCustomInput'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { getCookie } from 'cookies-next'
 import { convertDateFormat } from 'src/@core/layouts/utils';
+import { FormHelperText, IconButton, InputAdornment } from '@mui/material'
 
 // interface State {
 //   password: string
@@ -174,6 +178,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
   // console.log(isEdit, '====> isEdit from stepper');
 
   console.log(isEdit, '====> isEdit from stepper');
+  const [openLoading, setOpenLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
 
   const [initialValues, setInitialValues] = useState<any>({
@@ -260,6 +267,13 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
   }, [dispatch])
 
   const data = useSelector((state: { createUser: { data: any } }) => state.createUser.data)
+
+  //** status */
+
+  //@ts-ignore
+  const statusOfSave = useSelector(state => state.storeUser)
+  //@ts-ignore
+  const statusOfEdit=useSelector(state=>state.postEditUser)
 
   // console.log(data, '====> data')
 
@@ -386,7 +400,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
         return (
           <Fragment key={step} >
 
-            <Grid item lg={12} sm={6}>
+            <Grid item xs={12}>
               <FormControl fullWidth variant='outlined'>
                 <InputLabel id='prefix-label'>Prefix</InputLabel>
                 <Select
@@ -416,9 +430,17 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 variant='outlined'
                 fullWidth
                 margin='normal'
+
                 required
                 sx={{ gridColumn: 'span 6' }}
               />
+              {
+                errors.firstName && touched.firstName && (
+                  <FormHelperText error id='component-helper-firstName'>
+                    {errors.firstName && touched.firstName ? (errors.firstName) : ''}
+                  </FormHelperText>
+                )
+              }
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -432,10 +454,24 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 required
                 sx={{ gridColumn: 'span 6' }}
               />
+              {
+                errors.lastName && touched.lastName && (
+                  <FormHelperText error id='component-helper-lastName'>
+                    {errors.lastName && touched.lastName ? (errors.lastName) : ''}
+                  </FormHelperText>
+                )
+              }
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <Field as={TextField} name='email' label='E-mail' variant='outlined' fullWidth margin='normal' required />
+              {
+                errors.email && touched.email && (
+                  <FormHelperText error id='component-helper-email'>
+                    {errors.email && touched.email ? (errors.email) : ''}
+                  </FormHelperText>
+                )
+              }
             </Grid>
             <Grid
               item
@@ -464,6 +500,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 }
                 sx={{ gridColumn: 'span 6' }}
               />
+
               </Grid>
 
           </Fragment>
@@ -471,18 +508,12 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
       case 1:
         return (
           <Fragment key={step}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 3,
-                mb: 2,
-                width: '100%'
 
-              }}
-            >
-              <FormControl fullWidth sx={{ mb: 6 }}>
-                <InputLabel id='demo-simple-select-standard-label'>Acount Cash </InputLabel>
+            <Grid container spacing={5}>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
+
+              <FormControl fullWidth >
+                <InputLabel id='demo-simple-select-standard-label'>Account Cash </InputLabel>
                 <Select
                   fullWidth
                   labelId='demo-simple-select-standard-label'
@@ -491,8 +522,10 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={!!touched.prefix && !!errors.prefix}
-                  label='Acount Cash'
-                >
+                  label='Account Cash'
+                  >
+                    <MenuItem value=''>None</MenuItem>
+
                   {Object.keys(Requirements).length === 0
                     ? null
                     : Requirements.accounts.map((item: any) => (
@@ -502,7 +535,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     ))}
                 </Select>
               </FormControl>
-              <FormControl fullWidth sx={{ mb: 6 }}>
+              </Grid>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
+              <FormControl fullWidth >
                 <InputLabel id='demo-simple-select-standard-label'>Visa Account </InputLabel>
                 <Select
                   fullWidth
@@ -513,7 +548,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   onBlur={handleBlur}
                   error={!!touched.prefix && !!errors.prefix}
                   label='Visa Account'
-                >
+                  >
+                     <MenuItem value=''>None</MenuItem>
                   {Object.keys(Requirements).length === 0
                     ? null
                     : Requirements.accounts.map((item: any) => (
@@ -523,15 +559,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     ))}
                 </Select>
               </FormControl>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
-                }}
-              >
-                <FormControl fullWidth sx={{ mb: 6 }}>
+              </Grid>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
+                <FormControl fullWidth >
                   <InputLabel id='demo-simple-select-standard-label'> agents </InputLabel>
                   <Select
                     fullWidth
@@ -543,6 +573,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     error={!!touched.prefix && !!errors.prefix}
                     label=' agents'
                   >
+                     <MenuItem value=''>None</MenuItem>
                     {Object.keys(Requirements).length === 0
                       ? null
                       : Requirements.agents.map((item: any) => (
@@ -552,7 +583,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       ))}
                   </Select>
                 </FormControl>
-                <FormControl fullWidth sx={{ mb: 6 }}>
+              </Grid>
+               <Grid item xs={12} md={6} lg={6} sm={12}>
+                  <FormControl fullWidth >
                   <InputLabel id='demo-simple-select-standard-label'> Cost Center </InputLabel>
                   <Select
                     fullWidth
@@ -564,6 +597,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     error={!!touched.prefix && !!errors.prefix}
                     label=' Cost Center '
                   >
+                     <MenuItem value=''>None</MenuItem>
                     {Object.keys(Requirements).length === 0
                       ? null
                       : Requirements.cost_center.map((item: any) => (
@@ -573,16 +607,10 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       ))}
                   </Select>
                 </FormControl>
-              </Box>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
-                }}
-              >
-                <FormControl fullWidth sx={{ mb: 6 }}>
+              </Grid>
+
+               <Grid item xs={12} md={6} lg={6} sm={12}>
+                  <FormControl fullWidth >
                   <InputLabel id='demo-simple-select-standard-label'> Warehouse name </InputLabel>
                   <Select
                     fullWidth
@@ -594,6 +622,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     error={!!touched.prefix && !!errors.prefix}
                     label='Warehouse name'
                   >
+                     <MenuItem value=''>None</MenuItem>
                     {Object.keys(Requirements).length === 0
                       ? null
                       : Requirements.warehouse.map((item: any) => (
@@ -603,8 +632,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       ))}
                   </Select>
                 </FormControl>
-
-                <FormControl fullWidth sx={{ mb: 6 }}>
+              </Grid>
+               <Grid item xs={12} md={6} lg={6} sm={12}>
+                <FormControl fullWidth >
                   <InputLabel id='demo-simple-select-standard-label'>User Pattern </InputLabel>
                   <Select
                     fullWidth
@@ -616,6 +646,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     error={!!touched.prefix && !!errors.prefix}
                     label='User Pattern'
                   >
+                     <MenuItem value=''>None</MenuItem>
                     {Object.keys(Requirements).length === 0
                       ? null
                       : Requirements.patterns.map((item: any) => (
@@ -625,14 +656,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       ))}
                   </Select>
                 </FormControl>
-              </Box>
-              {/*
-                  drop down for ProductPrice
-                */}
-
-              {
-
-                <FormControl fullWidth sx={{ mb: 6 }}>
+              </Grid>
+                 <Grid item xs={12} md={6} lg={6} sm={12}>
+                <FormControl fullWidth >
                   <InputLabel id='demo-simple-select-standard-label'>Product Price </InputLabel>
                   <Select
                     fullWidth
@@ -644,6 +670,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     error={!!touched.prefix && !!errors.prefix}
                     label='Product Price'
                   >
+                    <MenuItem value=''>None</MenuItem>
                     {Object.keys(Requirements).length === 0
                       ? null
                       : Requirements.ProductPrice.map((item: any) => (
@@ -653,12 +680,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       ))}
                   </Select>
                 </FormControl>
-
-              }
-              {/*
-                  drop down for taxes
-                */}
-              <FormControl fullWidth sx={{ mb: 6 }}>
+              </Grid>
+                <Grid item xs={12} md={6} lg={6} sm={12}>
+                <FormControl fullWidth >
                 <InputLabel id='demo-simple-select-standard-label'>Taxes </InputLabel>
                 <Select
                   fullWidth
@@ -669,7 +693,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   onBlur={handleBlur}
                   error={!!touched.prefix && !!errors.prefix}
                   label='Taxes'
-                >
+                  >
+                  <MenuItem value=''>None</MenuItem>
                   {Object.keys(Requirements).length === 0
                     ? null
                     : Requirements.taxes.map((item: any) => (
@@ -679,18 +704,18 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     ))}
                 </Select>
               </FormControl>
-            </Box>
+              </Grid>
+           </Grid>
           </Fragment>
         )
       case 2:
         return (
           <Fragment key={step}>
-            <Box
-              sx={{
-                width: '100%'
-              }}
-            >
-              {/* check box  */}
+
+              <Grid container spacing={5}>
+
+               <Grid item xs={12} md={6} lg={6} sm={12}>
+
               <FormControlLabel
                 label='allow login'
                 control={
@@ -706,48 +731,131 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 }
                 required
               />
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 3,
-                  mb: 2,
-                  width: '100%'
-                }}
-              >
-                <Field
-                  as={TextField}
+              </Grid>
+               <Grid item xs={12} md={6} lg={6} sm={12}>
+                <FormControlLabel
+                    label='All Locations'
+                    control={
+                      <Checkbox
+                        checked={values.allLocations}
+                        onChange={handleChange}
+                        name='allLocations'
+                        color='primary'
+                        onClick={() => {
+                          values.allLocations = !values.allLocations
+                        }}
+                      />
+                    }
+                  />
+              </Grid>
+
+              <Grid item xs={12} >
+
+
+                <FormControl
+                  fullWidth >
+                <TextField
                   name='username'
                   label='Username'
                   variant='outlined'
-                  fullWidth
-                  margin='normal'
+                    fullWidth
+                    error={!!touched.username && !!errors.username}
+                    onBlur={handleBlur}
+                  value={values.username}
+                  onChange={handleChange}
                   required
                 />
-                <TextField
+                </FormControl>
+                {
+                  errors.username && touched.username && (
+                    <FormHelperText error id='component-helper-username'>
+                      {errors.username && touched.username ? (errors.username) : ''}
+                    </FormHelperText>
+                  )
+                }
+
+
+
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={6} sm={12}>
+                <FormControl
+                  fullWidth >
+                  <InputLabel id='password-label'>Password</InputLabel>
+
+                <OutlinedInput
                   label='Password'
-                  type='password'
-                  variant='outlined'
+                  type={showPassword ? 'text' : 'password'}
+
                   fullWidth
-                  margin='normal'
+                    error={!!touched.password && !!errors.password}
+                    onBlur={handleBlur}
                   value={values.password}
                   name='password'
-                  onChange={handleChange}
+                    onChange={handleChange}
+                    endAdornment={
+                              <InputAdornment position='end'>
+                                <IconButton
+                                  edge='end'
+                                  onMouseDown={e => e.preventDefault()}
+                                  onClick={() => setShowPassword(!showPassword)}
+                                >
+                                  <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                                </IconButton>
+                              </InputAdornment>
+                            }
                   required
                 />
-                <TextField
+                </FormControl>
+                {errors.password && touched.password && (
+                  <FormHelperText error id='component-helper-password'>
+                    {errors.password && touched.password ? (errors.password) : ''}
+                  </FormHelperText>
+                )
+
+                  }
+
+              </Grid>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
+
+                 <FormControl
+                  fullWidth >
+                  <InputLabel id='confirm-password-label'>Confirm Password</InputLabel>
+
+                  <OutlinedInput
                   label='Confirm Password'
-                  type='password'
-                  variant='outlined'
+                  type={showConfirmPassword ? 'text' : 'password'}
+
                   fullWidth
-                  margin='normal'
+                    error={!!touched.confirmPassword && !!errors.confirmPassword}
+                    onBlur={handleBlur}
                   value={values.confirmPassword}
                   name='confirmPassword'
-                  onChange={handleChange}
+                    onChange={handleChange}
+                      endAdornment={
+                              <InputAdornment position='end'>
+                                <IconButton
+                                  edge='end'
+                                  onMouseDown={e => e.preventDefault()}
+                                  onClick={() => setShowConfirmPassword(!showPassword)}
+                                >
+                                  <Icon icon={showConfirmPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} />
+                                </IconButton>
+                              </InputAdornment>
+                            }
                   required
-                />
-              </Box>
-              <FormControl fullWidth sx={{ mb: 6 }}>
+                  />
+                  {
+                            errors.confirmPassword && touched.confirmPassword && (
+                              <FormHelperText error id='component-helper-confirm'>
+                                {errors.confirmPassword && touched.confirmPassword ? (errors.confirmPassword) : ''}
+                              </FormHelperText>
+                            )
+                           }
+                  </FormControl>
+              </Grid>
+               <Grid item xs={12} md={6} lg={6} sm={12}>
+                 <FormControl fullWidth >
                 <InputLabel id='demo-simple-select-standard-label'>Select Roles </InputLabel>
                 <Select
                   fullWidth
@@ -770,37 +878,39 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     ))}
                 </Select>
               </FormControl>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 3,
-                  mb: 2
-                }}
-              >
-                <Typography variant='body1' gutterBottom component='div'>
-                  Access Location <PriorityHighIcon />
-                </Typography>
+              </Grid>
 
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <FormControlLabel
-                    label='All Locations'
-                    control={
-                      <Checkbox
-                        checked={values.allLocations}
-                        onChange={handleChange}
-                        name='allLocations'
-                        color='primary'
-                        onClick={() => {
-                          values.allLocations = !values.allLocations
-                        }}
-                      />
-                    }
-                  />
-                </Box>
 
-                {values.allLocations ? null : (
-                  <FormControl>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
+                 <FormControl fullWidth>
+                  <InputLabel id='demo-simple-select-standard-label'>Select Location </InputLabel>
+                  <Select
+                    fullWidth
+                    labelId='demo-simple-select-standard-label'
+                    name='business_id'
+                    value={values.business_id}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={!!touched.prefix && !!errors.prefix}
+                    label='Select Location'
+                    sx={{
+                      height: '100%'
+                    }}
+                  >
+                    {Object.keys(Requirements).length === 0
+                      ? null
+                      : Requirements.BusinessLocation.map((item: any) => (
+                        <MenuItem value={item.id} key={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+                 </Grid>
+         {values.allLocations ? null : (
+                 <Grid item xs={12} >
+                  <FormControl
+                  fullWidth>
                     <InputLabel id='demo-multiple-chip-label'>Location Permissions</InputLabel>
                     <Select
                       labelId='demo-multiple-chip-label'
@@ -852,52 +962,18 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       ))}
                     </Select>
                   </FormControl>
-                )}
-
-                <FormControl fullWidth>
-                  <InputLabel id='demo-simple-select-standard-label'>Select Location </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId='demo-simple-select-standard-label'
-                    name='business_id'
-                    value={values.business_id}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!touched.prefix && !!errors.prefix}
-                    label='Select Location'
-                    sx={{
-                      height: '100%'
-                    }}
-                  >
-                    {Object.keys(Requirements).length === 0
-                      ? null
-                      : Requirements.BusinessLocation.map((item: any) => (
-                        <MenuItem value={item.id} key={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Box>
+                  </Grid>
+              )}
+            </Grid>
           </Fragment>
         )
       case 3:
         return (
           <Fragment key={step}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 3,
-                mb: 2,
-                width: '100%'
-              }}
-            >
-              {/*
-                    sales commission precentage (%) FIELD INPUT
-                  */}
-              <Field
+
+              <Grid container spacing={5}>
+                 <Grid item xs={12} md={6} lg={6} sm={12}>
+                 <Field
                 as={TextField}
                 name='salesCommission'
                 value={values.salesCommission}
@@ -908,10 +984,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 margin='normal'
                 placeholder='Sales Commission Percentage (%)'
               />
-              {/*
-                  max sales discount percentage (%) FIELD INPUT
-                */}
-              <Field
+              </Grid>
+                 <Grid item xs={12} md={6} lg={6} sm={12}>
+                 <Field
                 as={TextField}
                 name='maxSalesDiscount'
                 label='Max Sales Discount Percentage (%)'
@@ -922,8 +997,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 value={values.maxSalesDiscount}
                 onChange={handleChange}
               />
-
-              <FormControl>
+              </Grid>
+                 <Grid item xs={12} md={6} lg={6} sm={12}>
+                   <FormControl fullWidth>
                 <InputLabel id='demo-multiple-chip-label'>List Patterns</InputLabel>
                 <Select
                   labelId='demo-multiple-chip-label'
@@ -975,12 +1051,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   ))}
                 </Select>
               </FormControl>
-
-              {/*
-                  check box for allow selected contacts
-                */}
-
-              <FormControlLabel
+              </Grid>
+                 <Grid item xs={12} md={6} lg={6} sm={12}>
+                 <FormControlLabel
                 label='Allow Selected Contacts'
                 control={
                   <Checkbox
@@ -994,12 +1067,13 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   />
                 }
               />
+              </Grid>
 
-              {/*
-                  filed selected contacts if allow selected contacts is true
-                */}
+
+
               {values.allowSlctdContacts ? (
-                <FormControl>
+                 <Grid item xs={12} >
+                <FormControl fullWidth>
                   <InputLabel id='demo-multiple-chip-label'>Selected Contacts</InputLabel>
                   <Select
                     labelId='demo-multiple-chip-label'
@@ -1050,9 +1124,11 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl>
+                    </FormControl>
+                    </Grid>
               ) : null}
-            </Box>
+              </Grid>
+
           </Fragment>
         )
       case 4:
@@ -1061,7 +1137,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateColumns: ['1fr', '1fr', 'repeat(3, 1fr)'],
+                flexDirection: ['column', 'column', 'row'],
                 gap: 3,
                 mb: 2,
                 justifyContent: 'center',
@@ -1072,18 +1149,24 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               {/*
                 filed date of birth using date picker
                   */}
+              <FormControl fullWidth>
+
               <DatePickerWrapper>
                 <DatePicker
-                  selected={values.dateOfBirth}
-                  id='basic-input'
+                    selected={values.dateOfBirth}
+                    name='dateOfBirth'
+                    id='basic-input'
+
                   onChange={(date: any) => {
                     values.dateOfBirth = date
+                    setFieldValue('dateOfBirth',date)
 
                   }}
                   placeholderText='Click to select a Date'
                   customInput={<CustomInput label='Date of Birth' />}
                 />
               </DatePickerWrapper>
+              </FormControl>
 
               {/*
                   drop down for Gender
@@ -1411,7 +1494,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateColumns: ['1fr', '1fr', 'repeat(3, 1fr)'], // For small screens, it's one column; for larger screens, it's three columns
+                flexDirection: ['column', 'column', 'row'], // For small screens, items are in a column; for larger screens, they're in a row
                 gap: 3,
                 mb: 2,
                 justifyContent: 'center',
@@ -1520,7 +1604,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(12, 1fr)',
+               gridTemplateColumns: ['1fr', 'repeat(12, 1fr)'],
                 gap: 3,
                 mb: 2,
                 justifyContent: 'center',
@@ -1571,8 +1655,12 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
   const validationSchema = Yup.object().shape({
     prefix: Yup.string(),
     firstName: Yup.string().required('First name is required'),
+    username: Yup.string().required('Username is required'),
     lastName: Yup.string().required('Last name is required'),
-    email: Yup.string().email('Invalid email address').required('Email is required')
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+     password: Yup.string().required('The password is required'),
+    confirmPassword: Yup.string().oneOf([Yup.ref('password'), ''], 'Passwords must match').required('The confirm password is required'),
+
   })
 
   //========================Submit=================
@@ -1588,9 +1676,10 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
       handleSubmitData(storeUser, fetchIzoUsers, values);
 
     }
-
+    setOpenLoading(true)
     // activeStep === steps.length - 1 ? toast.success('Form Submitted') : null
     setActiveStep(activeStep + 1)
+
     resetForm()
   }
 
@@ -1650,7 +1739,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Button
-                    size='large'
+                    size='medium'
                     variant='outlined'
                     color='secondary'
                     disabled={activeStep === 0}
@@ -1661,15 +1750,15 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   {
                     activeStep === steps.length - 1 ?
                       <Button
-                        size='large'
+                        size={'medium'}
                         variant='contained'
                         color='primary'
                         onClick={() => handleSubmitForm(values, { resetForm })}
                       >
-                        {isEdit ? "Update User" : "Create User"}
+                        {isEdit ? "Update" : "Create"}
                       </Button>
                       :
-                      <Button size='large' variant='contained' color='primary' onClick={handleNext}>
+                      <Button size={'medium'} variant='contained' color='primary' onClick={handleNext}>
                         Next
                       </Button>
                   }
@@ -1684,14 +1773,14 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
   return (
     <Card
-      // sx={{
-      //   display: 'grid',
-      //   gridTemplateColumns: 'repeat(12, 1fr)',
-      //   gap: 3,
-      //   height: '600px',
-      // }}
-      sx={{ display: 'flex',  height: '600px', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
+      sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
+
     >
+       <LoadingAnimation
+        open={openLoading}
+        onClose={() => setOpenLoading(false)}
+        statusType={isEdit ? statusOfEdit : statusOfSave}
+      />
 
       <StepperHeaderContainer
         //  sx={{
@@ -1716,7 +1805,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
             // }}
             connector={<></>}
-            sx={{ height: '600px', minWidth: '15rem' ,overflowY:"scroll"}}
+            sx={{ height: '100%', minWidth: '15rem' }}
           >
             {steps.map((step, index) => {
               return (
@@ -1779,12 +1868,14 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
       <CardContent
         sx={{
-          // overflowY: 'auto',
+          overflowY: 'auto',
           overflowX: 'hidden',
           gridColumn: 'span 9',
           // padding: '1rem',
-          minHeight: '600px',
+          // minHeight: '600px',
+          height: '100%',
           width: '100%'
+
 
         }}
       >{renderContent()}</CardContent>

@@ -8,8 +8,6 @@ const token = getCookie('token')
 
 // Async Thunk Action for storing user
 export const storeUser = createAsyncThunk('user/storeUser', async (userData, { rejectWithValue }) => {
-  console.log(userData, '===> userData from storeUser')
-
   // this function is used format the data to be sent to the server like this 1992-09-10
   const formatDate = (userData, key) => {
     if (userData[key] !== undefined && userData[key] !== null) {
@@ -27,7 +25,6 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
 
   const convertToStringArray = arr => {
     const newArr = JSON.stringify(arr).replace(/\d+/g, s => `"${s}"`)
-    console.log(newArr, '===> newArr from convertToStringArray')
 
     return newArr
   }
@@ -100,22 +97,19 @@ export const storeUser = createAsyncThunk('user/storeUser', async (userData, { r
   formData.append('bank_details[tax_payer_id]', userData.taxPayerId || '')
   formData.append('user_tax_id', userData.taxesItem || '')
 
-  let object = Object.fromEntries(formData)
-  console.log(object, '===> formData from as object 👀')
-
-  console.log(formData, 'formData from  add  user slice')
   try {
-    console.log(token, '===> token from STORE USER')
+    const url = getCookie('apiUrl')
+
     if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
       const headers = {
         Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
         'Content-Type': 'application/json'
       }
 
-      const response = await axios.post('https://test.izocloud.net/api/app/react/users/store', formData, {
+      const response = await axios.post(`${url}/app/react/users/store`, formData, {
         headers // Pass the headers to the Axios request
       })
-      console.log(response, '===>  from STORE USER')
+
       if (response.status === 200) {
         notify('user created successfully', 'success')
       }
@@ -132,7 +126,8 @@ const storeUserSlice = createSlice({
   name: 'user',
   initialState: {
     loading: false,
-    error: null,
+    error: false,
+    success: false,
     data: null
   },
   reducers: {},
@@ -140,15 +135,20 @@ const storeUserSlice = createSlice({
     builder
       .addCase(storeUser.pending, state => {
         state.loading = true
-        state.error = null
+        state.error = false
+        state.success = false
         state.data = null
       })
       .addCase(storeUser.fulfilled, (state, action) => {
         state.loading = false
+        state.error = false
+        state.success = true
         state.data = action.payload
       })
       .addCase(storeUser.rejected, (state, action) => {
         state.loading = false
+        state.error = true
+        state.success = false
         state.error = action.payload
         notify('There is an Error try again later', 'error')
       })

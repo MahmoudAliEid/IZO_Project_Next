@@ -10,8 +10,6 @@ export const fetchAllBrands = createAsyncThunk('brands/fetchAll', async () => {
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
   })
 
-  // console.log(response.data.value, '===> response from fetchAllBrands 🙌🙌')
-
   return response.data.value
 })
 

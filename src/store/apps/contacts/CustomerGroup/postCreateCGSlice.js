@@ -8,26 +8,20 @@ const token = getCookie('token')
 
 // Async Thunk Action for storing user
 export const postAddCustomerGroup = createAsyncThunk('dashboard/postAddCustomerGroup', async userData => {
-  try {
-    console.log(userData, '===> userData  create customer group  ')
-    console.log(token, '===> token Post create customer group slice')
-    if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
-      const headers = {
-        Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
-        'Content-Type': 'application/json'
-      }
-      const JSONData = JSON.stringify(userData)
-
-      const response = await axios.post(`https://test.izocloud.net/api/app/react/customer-group/save`, JSONData, {
-        headers // Pass the headers to the Axios request
-      })
-
-      console.log(response, '===>  from post create customer group')
-
-      return response.data
+  const url = getCookie('apiUrl')
+  console.log(userData, 'userData 🍕🍕🍕🍕')
+  if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
+    const headers = {
+      Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
+      'Content-Type': 'application/json'
     }
-  } catch (error) {
-    console.log('Error form create customer group', error)
+    const JSONData = JSON.stringify(userData)
+
+    const response = await axios.post(`${url}/app/react/customer-group/save`, JSONData, {
+      headers // Pass the headers to the Axios request
+    })
+
+    return response.data
   }
 })
 
@@ -36,7 +30,8 @@ const postAddCustomerGroupSlice = createSlice({
   name: 'postAddCustomerGroup',
   initialState: {
     loading: false,
-    error: null,
+    error: false,
+    success: false,
     data: []
   },
   reducers: {},
@@ -44,18 +39,21 @@ const postAddCustomerGroupSlice = createSlice({
     builder
       .addCase(postAddCustomerGroup.pending, state => {
         state.loading = true
-        state.error = null
-        state.data = null
+        state.error = false
+        state.success = false
+        state.data = []
       })
       .addCase(postAddCustomerGroup.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
-        state.error = null
+        state.error = false
+        state.success = true
         notify('Customer Group Added successfully', 'success')
       })
-      .addCase(postAddCustomerGroup.rejected, (state, action) => {
+      .addCase(postAddCustomerGroup.rejected, state => {
         state.loading = false
-        state.error = action.payload
+        state.success = false
+        state.error = true
         notify('There is an error try again later', 'error')
       })
   }

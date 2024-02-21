@@ -15,7 +15,7 @@ const initialState = {
 export const fetchEditCustomerGroup = createAsyncThunk('dashboard/fetchEditCustomerGroup', async payload => {
   try {
     const { token, url, itemId } = payload
-    console.log(token, url, itemId, 'from editCustomer Group Slice.js')
+
     if (token && url && itemId) {
       const config = {
         headers: {
@@ -24,7 +24,6 @@ export const fetchEditCustomerGroup = createAsyncThunk('dashboard/fetchEditCusto
       }
 
       const response = await axios.get(`${url}/app/react/customer-group/edit/${itemId}`, config)
-      console.log(response, 'from editCustomer Group Slice.js')
 
       const data = response.data
 
@@ -43,18 +42,15 @@ const getEditCustomerGroupSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchEditCustomerGroup.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
       })
       .addCase(fetchEditCustomerGroup.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.error = null
       })
       .addCase(fetchEditCustomerGroup.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.error = action.error.message

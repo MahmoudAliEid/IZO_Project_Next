@@ -17,7 +17,6 @@ export const deleteUnit = createAsyncThunk('dashboard/deleteUnit', async payload
   const { id, token } = payload
   const url = getCookie('apiUrl')
 
-  console.log('payload from delete', payload)
   const response = await axios.post(
     `${url}/app/react/units/del/${id}`,
     {}, // pass an empty object as the second argument if no data is being sent in the request body

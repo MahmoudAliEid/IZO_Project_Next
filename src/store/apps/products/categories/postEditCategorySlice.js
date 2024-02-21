@@ -10,8 +10,6 @@ export const postEditCategory = createAsyncThunk('dashboard/postEditCategory', a
 
   const { userData, itemId } = payload
 
-  console.log(token, '===> token Post create Category slice')
-
   if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
     const formData = new FormData()
     formData.append('name', userData.name || '')
@@ -30,8 +28,6 @@ export const postEditCategory = createAsyncThunk('dashboard/postEditCategory', a
       formData.append('image', userData.image || '')
     }
 
-    console.log(formData, userData, '===> formData, userData Category add slice')
-
     formData.append('short_code', userData.short_code)
 
     const headers = {
@@ -43,8 +39,6 @@ export const postEditCategory = createAsyncThunk('dashboard/postEditCategory', a
       headers // Pass the headers to the Axios request
     })
 
-    console.log(response, '===> from post category slice ')
-
     return response.data
   }
 })
@@ -54,7 +48,8 @@ const postEditCategorySlice = createSlice({
   name: 'postEditCategory',
   initialState: {
     loading: false,
-    error: null,
+    error: false,
+    success: false,
     data: []
   },
   reducers: {},
@@ -62,22 +57,23 @@ const postEditCategorySlice = createSlice({
     builder
       .addCase(postEditCategory.pending, state => {
         state.loading = true
-        state.error = null
+        state.error = false
+        state.success = false
         state.data = []
       })
       .addCase(postEditCategory.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
-        state.error = null
-        console.log(action.payload)
+        state.error = false
+        state.success = true
+
         notify(action.payload.message, 'success')
       })
-      .addCase(postEditCategory.rejected, (state, action) => {
+      .addCase(postEditCategory.rejected, state => {
         state.loading = false
-        state.error = action.payload
-        console.log(action.payload)
-        notify(action.error.message, 'error')
-        notify(action.payload.message, 'error')
+        state.error = true
+        state.success = false
+        notify('Their is an Error try again later', 'error')
       })
   }
 })

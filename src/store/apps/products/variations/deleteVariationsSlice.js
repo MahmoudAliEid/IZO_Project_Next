@@ -25,9 +25,10 @@ const axiosInstance = axios.create({
 
 // Define an async thunk for deleting a user
 export const deleteVariations = createAsyncThunk('dashboard/deleteVariations', async payload => {
+  const url = getCookie('apiUrl')
   try {
     const { id } = payload
-    const response = await axiosInstance.post(`https://test.izocloud.net/api/app/react/variations/del/${id}`)
+    const response = await axiosInstance.post(`${url}/app/react/variations/del/${id}`)
     const data = response.data
     notify('Variation successfully deleted.', 'success')
 
@@ -50,12 +51,10 @@ const deleteVariationsSlice = createSlice({
         state.error = null
       })
       .addCase(deleteVariations.fulfilled, (state, action) => {
-        console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
       })
       .addCase(deleteVariations.rejected, (state, action) => {
-        console.log('rejected action from delete', action)
         state.loading = false
         state.error = action.error.message
       })

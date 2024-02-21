@@ -60,7 +60,10 @@ const RowOptions = ({ id }) => {
     console.log(id, "id for delete 🙌🙌🙌🙌🙌");
 
     //@ts-ignore
-    dispatch(deleteBrand(id));
+    dispatch(deleteBrand(id)).then(() => {
+      //@ts-ignore
+      dispatch(fetchAllBrands())
+    })
 
     //@ts-ignore
      dispatch(fetchAllBrands());

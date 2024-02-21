@@ -17,8 +17,9 @@ const initialState = {
 export const fetchEditVariations = createAsyncThunk('dashboard/fetchEditVariations', async payload => {
   const { itemId } = payload
   const token = getCookie('token')
+  const url = getCookie('apiUrl')
   try {
-    const response = await axios.get(`https://test.izocloud.net/api/app/react/variations/edit/${itemId}`, {
+    const response = await axios.get(`${url}/app/react/variations/edit/${itemId}`, {
       headers: {
         Authorization: 'Bearer ' + `${token}`
       }
@@ -40,13 +41,11 @@ const editVariationsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchEditVariations.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchEditVariations.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -54,7 +53,6 @@ const editVariationsSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchEditVariations.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

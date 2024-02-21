@@ -24,13 +24,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchEditCustomerGroup } from 'src/store/apps/contacts/CustomerGroup/getEditCGSlice'
 
 import useSubmitUser from 'src/hooks/useSubmitUser'
+import LoadingAnimation from '../../utilities/loadingComp'
 
 const DialogEdit = ({ openEdit, setOpenEdit, itemId }) => {
   const dataEdit = useSelector(state => state?.getEditCustomerGroup?.data?.value)
 
   const [data, setData] = useState()
+  const [openLoading, setOpenLoading] = useState(false)
   const [valueToShow, setValueToShow] = useState(dataEdit?.value?.info?.price_calculation_type || 'selling_price_group')
   const { handleSubmitData } = useSubmitUser()
+  const editStatus = useSelector(state => state?.postEditCustomerGroup)
 
   //**Hooks
   const dispatch = useDispatch()
@@ -55,9 +58,11 @@ const DialogEdit = ({ openEdit, setOpenEdit, itemId }) => {
   }, [dispatch, token, url, itemId])
 
   const handleEditClose = () => setOpenEdit(false)
-  const handleSubmit = values => {
+  const handleSubmit = (values, { resetForm }) => {
     handleSubmitData(postEditCustomerGroup, fetchCustomerGroup, values, itemId)
-    setOpenEdit(false)
+
+    setOpenLoading(true)
+    resetForm()
   }
 
   const onchangeHandle = event => {
@@ -86,7 +91,7 @@ const DialogEdit = ({ openEdit, setOpenEdit, itemId }) => {
             pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
           }}
         >
-          Add Customer Group Information
+          Updating Customer Group Information
         </DialogTitle>
         {data && (
           <DialogContent
@@ -152,7 +157,7 @@ const DialogEdit = ({ openEdit, setOpenEdit, itemId }) => {
                         <FormControl fullWidth>
                           <InputLabel id='customer-group-selling-price-group-id-label'>Sale Price Group</InputLabel>
                           <Select
-                            label='Price Calculation Type'
+                            label='Sale Price Group'
                             value={values?.selling_price_group_id}
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -174,8 +179,8 @@ const DialogEdit = ({ openEdit, setOpenEdit, itemId }) => {
                       )}
                     </Grid>
                   </Grid>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
-                    <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, flexDirection: 'row-reverse' }}>
+                    <Button size='large' type='submit' variant='contained' sx={{ mr: 3, ml: 3 }}>
                       Update
                     </Button>
                     <Button size='large' variant='outlined' color='secondary' onClick={handleEditClose}>
@@ -186,6 +191,9 @@ const DialogEdit = ({ openEdit, setOpenEdit, itemId }) => {
               )}
             </Formik>
           </DialogContent>
+        )}
+        {openLoading && (
+          <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={editStatus} />
         )}
       </Dialog>
     </>

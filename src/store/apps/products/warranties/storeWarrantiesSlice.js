@@ -12,8 +12,6 @@ export const storeWarranty = createAsyncThunk('warranties/storeWarranty', async 
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     })
 
-    // console.log(response.data, '===> response from storeWarranty 🙌🙌')
-
     return response.data
   } catch (err) {
     return rejectWithValue(err.response.data)
@@ -45,8 +43,6 @@ export const warrantySlice = createSlice({
         state.error = true
         state.success = false
         state.status = action.payload.status
-
-        // console.log(action.payload.status, '===> action.payload.status')
         notify('There is an error try again later', 'error')
       })
   }

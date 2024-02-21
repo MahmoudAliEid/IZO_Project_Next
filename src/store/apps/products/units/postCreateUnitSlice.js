@@ -67,7 +67,6 @@ const postAddUnitSlice = createSlice({
         state.success = false
         state.error = action.payload
         if (action.payload && action.payload.message) {
-          console.log(action.payload.message, 'form add unit')
           notify(action.payload.message, 'error')
         } else {
           notify('Their is an Error', 'error')

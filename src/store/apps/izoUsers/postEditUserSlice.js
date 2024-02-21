@@ -10,8 +10,6 @@ const token = getCookie('token')
 export const postEditUser = createAsyncThunk('user/postEditUser', async payload => {
   const { userData, itemId } = payload
 
-  console.log(userData, itemId, '===> userData  & itemId from post Edit User ')
-
   // this function is used format the data to be sent to the server like this 1992-09-10
   const formatDate = (userData, key) => {
     if (userData[key] !== undefined && userData[key] !== null) {
@@ -29,7 +27,6 @@ export const postEditUser = createAsyncThunk('user/postEditUser', async payload 
 
   const convertToStringArray = arr => {
     const newArr = JSON.stringify(arr).replace(/\d+/g, s => `"${s}"`)
-    console.log(newArr, '===> newArr from convertToStringArray')
 
     return newArr
   }
@@ -98,27 +95,22 @@ export const postEditUser = createAsyncThunk('user/postEditUser', async payload 
   formData.append('bank_details[tax_payer_id]', userData.taxPayerId || '')
   formData.append('user_tax_id', userData.taxesItem || '')
 
-  let object = Object.fromEntries(formData)
-  console.log(object, '===> formData from as object 👀')
-
   try {
-    console.log(token, itemId, '===> token & id from EDIT USER slice')
+    const url = getCookie('apiUrl')
     if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
       const headers = {
         Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
         'Content-Type': 'application/json'
       }
 
-      const response = await axios.post(`https://test.izocloud.net/api/app/react/users/update/${itemId}`, formData, {
+      const response = await axios.post(`${url}/app/react/users/update/${itemId}`, formData, {
         headers // Pass the headers to the Axios request
       })
-
-      console.log(response, '===>  from EDIT  USER')
 
       return response.data
     }
   } catch (error) {
-    console.log('Error form update user', error)
+    notify('There is an error try again later', 'error')
   }
 })
 
@@ -127,7 +119,8 @@ const postEditUserSlice = createSlice({
   name: 'PostEditUser',
   initialState: {
     loading: false,
-    error: null,
+    error: false,
+    success: false,
     data: []
   },
   reducers: {},
@@ -135,18 +128,22 @@ const postEditUserSlice = createSlice({
     builder
       .addCase(postEditUser.pending, state => {
         state.loading = true
-        state.error = null
+        state.error = false
+        state.success = false
         state.data = null
       })
       .addCase(postEditUser.fulfilled, (state, action) => {
         state.loading = false
+        state.success = true
         state.data = action.payload
-        state.error = null
+        state.error = false
         notify('user edit successfully', 'success')
       })
-      .addCase(postEditUser.rejected, (state, action) => {
+      .addCase(postEditUser.rejected, state => {
         state.loading = false
-        state.error = action.payload
+        state.error = true
+        state.success = false
+
         notify('There is an error try again later', 'error')
       })
   }

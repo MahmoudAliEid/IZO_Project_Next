@@ -1,6 +1,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
 
 // Define the initial state
@@ -13,10 +14,10 @@ const initialState = {
 // Define an async thunk for deleting a user
 export const changeStatusSPGroup = createAsyncThunk('dashboard/changeStatusSPGroup', async payload => {
   const { id, token } = payload
+  const url = getCookie('apiUrl')
 
-  console.log('payload from delete', payload)
   const response = await axios.post(
-    `https://test.izocloud.net/api/app/react/sales-price-group/active/${id}`,
+    `${url}/app/react/sales-price-group/active/${id}`,
     {}, // pass an empty object as the second argument if no data is being sent in the request body
     {
       headers: {
@@ -42,13 +43,11 @@ const postChangeStatusSPGroupSlice = createSlice({
         state.error = null
       })
       .addCase(changeStatusSPGroup.fulfilled, (state, action) => {
-        console.log('payload action from delete', action)
         notify('Status Changed Successfully.', 'success')
         state.data = action.payload
         state.loading = false
       })
       .addCase(changeStatusSPGroup.rejected, (state, action) => {
-        console.log('rejected action from delete', action)
         notify('There was an error try again later!', 'error')
         state.loading = false
         state.error = action.error.message

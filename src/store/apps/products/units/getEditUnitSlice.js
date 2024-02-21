@@ -38,13 +38,11 @@ const getEditUnitSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchEditUnit.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchEditUnit.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -52,7 +50,6 @@ const getEditUnitSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchEditUnit.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

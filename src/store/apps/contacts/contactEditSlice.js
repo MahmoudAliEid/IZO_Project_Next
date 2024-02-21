@@ -14,8 +14,9 @@ export const fetchContactData = createAsyncThunk(
   'contactEdit/fetchContactData',
   async (contactId, { rejectWithValue }) => {
     const token = getCookie('token')
+    const url = getCookie('apiUrl')
     try {
-      const response = await axios.get(`https://test.izocloud.net/api/app/react/contact/edit/${contactId.itemId}`, {
+      const response = await axios.get(`${url}/app/react/contact/edit/${contactId.itemId}`, {
         headers: {
           Authorization: 'Bearer ' + `${token}`
         }

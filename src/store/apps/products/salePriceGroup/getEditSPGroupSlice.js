@@ -17,8 +17,9 @@ const initialState = {
 export const fetchEditSPGroup = createAsyncThunk('dashboard/fetchEditSPGroup', async payload => {
   const { itemId } = payload
   const token = getCookie('token')
+  const url = getCookie('apiUrl')
 
-  const response = await axios.get(`https://test.izocloud.net/api/app/react/sales-price-group/edit/${itemId}`, {
+  const response = await axios.get(`${url}/app/react/sales-price-group/edit/${itemId}`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`
     }
@@ -37,13 +38,11 @@ const getEditSPGroupSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchEditSPGroup.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchEditSPGroup.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -51,7 +50,6 @@ const getEditSPGroupSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchEditSPGroup.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

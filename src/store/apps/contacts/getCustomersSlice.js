@@ -3,6 +3,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
@@ -14,9 +15,9 @@ const initialState = {
 }
 
 export const fetchCustomers = createAsyncThunk('dashboard/fetchCustomers', async token => {
-  console.log(token)
   try {
-    const response = await axios.get('https://test.izocloud.net/api/app/react/contact/customer', {
+    const url = getCookie('apiUrl')
+    const response = await axios.get(`${url}/app/react/contact/customer`, {
       headers: {
         Authorization: 'Bearer ' + `${token}`
       }
@@ -38,13 +39,11 @@ const customersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchCustomers.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchCustomers.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -52,7 +51,6 @@ const customersSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchCustomers.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

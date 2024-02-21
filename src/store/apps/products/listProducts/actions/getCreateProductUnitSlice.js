@@ -19,16 +19,13 @@ export const fetchCreateProductUnit = createAsyncThunk('dashboard/fetchCreatePro
   const token = getCookie('token')
   const url = getCookie('apiUrl')
 
-  console.log(`'Create Product' , URL: ${url} 🎇 and Token: ${token} 🐰`)
-
-  const response = await axios.get(`https://test.izocloud.net/api/app/react/products/unit/create`, {
+  const response = await axios.get(`${url}/app/react/products/unit/create`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`
     }
   })
 
   const data = response.data
-  console.log(data, 'from get create product')
 
   return data
 })
@@ -41,13 +38,11 @@ const getCreateProductUnitSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchCreateProductUnit.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchCreateProductUnit.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -55,7 +50,6 @@ const getCreateProductUnitSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchCreateProductUnit.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

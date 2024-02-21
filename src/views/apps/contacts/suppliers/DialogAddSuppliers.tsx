@@ -48,7 +48,7 @@ const DialogAddSuppliers = ({ isView, open, toggle, isEdit, itemId, contact }: a
         <CustomHeader
           title={isEdit ? `Edit ${contact}` : `Add New ${contact}`}
           handleClose={handleClose}
-          divider
+          divider={false}
         />
         <DialogContent
           sx={{

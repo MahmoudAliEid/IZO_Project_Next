@@ -27,8 +27,6 @@ export const fetchCreateUsers = createAsyncThunk('users/fetchCreateUsers', async
 
       const response = await axios.get(`${url}/app/react/users/create`, config)
 
-      // console.log(response, '===> response')
-
       const data = response.data
 
       return data
@@ -46,18 +44,15 @@ const createUsersSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchCreateUsers.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
       })
       .addCase(fetchCreateUsers.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.error = null
       })
       .addCase(fetchCreateUsers.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.error = action.error.message

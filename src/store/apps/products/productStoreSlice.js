@@ -7,25 +7,6 @@ import notify from 'src/utils/notify'
 export const saveProduct = createAsyncThunk('dashboard/createProduct', async payload => {
   const { product } = payload
 
-  const jsonData = [
-    { id: 1, value: [{ rack: 'jk' }, { row: 'mn,' }, { position: 'njuy' }] },
-    { id: 2, value: [{ rack: 'j' }, { row: 'mloi' }, { position: 'nmklo' }] },
-    { id: 3, value: [{ rack: 'yui8' }, { row: 'nh56' }, { position: 'njhg' }] },
-    { id: 4, value: [{ rack: 'omnj' }, { row: '8990' }, { position: 'mkjser' }] },
-    { id: 5, value: [{ rack: 'uio' }, { row: 'bgh' }, { position: 'nbhj' }] }
-  ]
-
-  for (let i = 0; i < jsonData.length; i++) {
-    for (let j = 0; j < jsonData[i].value.length; j++) {
-      console.log('json data 🥰🥰🥰', jsonData[i].value[j].rack)
-    }
-  }
-  console.log('test racks id 👀👁', jsonData[0].id)
-  console.log('test racks rack 🤣', jsonData[0].value[0].rack)
-
-  console.log('show more value💦 ', product.show_more_price)
-  console.log('my fav per 🎇✨✨', product.my_fav_per)
-
   const formData = new FormData()
   formData.append('my_fav_per', product.my_fav_per || '')
   formData.append('name', product.name || '')
@@ -383,7 +364,6 @@ export const saveProduct = createAsyncThunk('dashboard/createProduct', async pay
     product.product_variation.map((item, parentIndex) => {
       item.variations.map((item, index) => {
         formData.append(`variation_images_${parentIndex}_${index}`, item.image[0])
-        console.log(`variation_images_${parentIndex}_${index} 😛😛😛😛`, item.image[0])
       })
     })
   }
@@ -392,34 +372,14 @@ export const saveProduct = createAsyncThunk('dashboard/createProduct', async pay
     formData.append('product_compo', JSON.stringify(product.product_compo))
   }
 
-  // if (product.positionDetailsValue && product.positionDetailsValue?.length > 0) {
-  //   for (let i = 0; i < product.positionDetailsValue.length; i++) {
-  //     const id = product.positionDetailsValue[i].id
-  //     if (product.positionDetailsValue[i].value.length > 0) {
-  //       for (let j = 0; j < product.positionDetailsValue[i].value.length; j++) {
-  //         console.log(`product_racks`, [{ [id]: [product.positionDetailsValue[i].values[j]] }])
-  //       }
-  //     }
-  //   }
-  // }
-
-  // console.log(
-  //   'product form data racks positions 🥰🥰🥰',
-  //   product.positionDetailsValue.map((item, index) => ({
-  //     [product.positionDetailsValue[index].id]: [item.value.map(item => item)]
-  //   }))
-  // )
-  console.log('product form data racks positions 🥰🥰🥰', JSON.stringify(product.positionDetailsValue))
-
   const token = getCookie('token')
-  const response = await axios.post('https://test.izocloud.net/api/app/react/products/save', formData, {
+  const url = getCookie('apiUrl')
+  const response = await axios.post(`${url}/app/react/products/save`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
   })
-
-  console.log(response.data, '===> response from saveProduct 🙌🙌')
 
   return response.data
 })
@@ -447,15 +407,14 @@ const productStoreSlice = createSlice({
       state.success = true
       state.error = false
       state.status = 'succeeded'
-      console.log('fulfilled from store product ', action)
+      state.data = action.payload
       notify('Product saved successfully', 'success')
     })
-    builder.addCase(saveProduct.rejected, (state, action) => {
+    builder.addCase(saveProduct.rejected, state => {
       state.loading = false
       state.success = false
       state.error = true
       state.status = 'failed'
-      console.log('rejected from store product ', action)
       notify('Product not saved', 'error')
     })
   }

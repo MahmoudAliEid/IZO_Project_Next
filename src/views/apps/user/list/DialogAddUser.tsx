@@ -63,7 +63,7 @@ const DialogAddUser = ({ open, toggle, isEdit, itemId }: any) => {
         <CustomHeader
           title={isEdit ? 'Edit User' : 'Add User'}
           handleClose={handleClose}
-          divider
+          divider={false}
         />
         <DialogContent
           sx={{

@@ -32,11 +32,13 @@ import { fetchUnits } from 'src/store/apps/products/units/getUnitsSlice'
 import { fetchCreateUnit } from 'src/store/apps/products/units/getCreateUnitSlice'
 import { fetchEditUnit } from 'src/store/apps/products/units/getEditUnitSlice'
 import { useSelector, useDispatch } from 'react-redux'
+import LoadingAnimation from '../../utilities/loadingComp'
 
 const UnitsForm = ({ type, open, setOpen, itemId }) => {
   // ** State
 
   const [units, setUnits] = useState([])
+  const [openLoading, setOpenLoading] = useState(false)
   const [unitsEdit, setUnitsEdit] = useState({})
   const [initialValues, setInitialValues] = useState({
     name: '',
@@ -54,8 +56,8 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
   const unitData = useSelector(state => state.getCreateUnit?.data?.value.units)
   const dataEditInfo = useSelector(state => state.getEditUnit?.data?.value.info[0])
   const dataEditUnits = useSelector(state => state.getEditUnit?.data?.value.units)
-
-  console.log(dataEditInfo, 'info of unit')
+  const saveStatus = useSelector(state => state?.postCreateUnit)
+  const editStatus = useSelector(state => state?.postEditUnit)
 
   // ** Hook
   const dispatch = useDispatch()
@@ -120,201 +122,215 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
     // Handle form submission logic here
     console.log(values, 'Values form  add Category')
 
-    console.log('Add btn clicked')
     if (type === 'Add') {
       await handleSubmitData(postAddUnit, fetchUnits, values)
     } else if (type === 'Edit' && itemId) {
-      await handleSubmitData(postEditUnit, fetchUnits, values, itemId)
+      setOpenLoading(true)
+      await handleSubmitData(postEditUnit, fetchUnits, values, itemId).then(() => {
+        setOpenLoading(true)
+      })
     }
 
     dispatch(fetchCreateUnit(token))
-    setOpen(false)
+
     resetForm()
+    setOpenLoading(true)
+    console.log('Add btn clicked')
   }
 
-  console.log(units, 'units')
-
   return (
-    <Dialog
-      scroll='body'
-      open={open}
-      onClose={handleClose}
-      fullWidth={true}
-      maxWidth='md'
-      aria-labelledby='unit-edit-add'
-      sx={{
-        '& .MuiPaper-root': { width: '100%', maxWidth: 750, p: [2, 10] },
-        '& .MuiDialogTitle-root + .MuiDialogContent-root': { pt: theme => `${theme.spacing(2)} !important` }
-      }}
-      aria-describedby='unit-edit-add-description'
-    >
-      {/* {isLoading ? <MainLoading name={'Add'} open={isLoading} /> : null} */}
-      <DialogTitle
-        id='unit-edit-add'
+    <>
+      <Dialog
+        scroll='body'
+        open={open}
+        onClose={handleClose}
+        fullWidth={true}
+        maxWidth='md'
+        aria-labelledby='unit-edit-add'
         sx={{
-          textAlign: 'center',
-          fontSize: '1.5rem !important',
-          px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-          pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+          '& .MuiPaper-root': { width: '100%', maxWidth: 750, p: [2, 10] },
+          '& .MuiDialogTitle-root + .MuiDialogContent-root': { pt: theme => `${theme.spacing(2)} !important` }
         }}
+        aria-describedby='unit-edit-add-description'
       >
-        {type} Unit Information
-      </DialogTitle>
-      <DialogContent
-        sx={{
-          pb: theme => `${theme.spacing(8)} !important`,
-          px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`]
-        }}
-      >
-        <DialogContentText variant='body2' id='unit-edit-add-description' sx={{ textAlign: 'center', mb: 7 }}>
-          Unit details will receive a privacy audit.
-        </DialogContentText>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-          enableReinitialize={true}
+        <DialogTitle
+          id='unit-edit-add'
+          sx={{
+            textAlign: 'center',
+            fontSize: '1.5rem !important',
+            px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+            pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+          }}
         >
-          {({ handleChange, handleBlur, setFieldValue, handleSubmit, values, touched, errors }) => (
-            <form onSubmit={handleSubmit}>
-              <Grid container spacing={6}>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <TextField
-                      fullWidth
-                      label='Unit Name'
-                      value={values.name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      name='name'
-                      error={touched.name && !!errors.name}
-                      helperText={touched.name && errors.name ? String(errors.name) : ''}
-                      required
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <TextField
-                      fullWidth
-                      label='Short name'
-                      value={values.short_name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      name='short_name'
-                      error={touched.short_name && !!errors.short_name}
-                      helperText={touched.short_name && errors.short_name ? String(errors.short_name) : ''}
-                      required
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel id='demo-simple-select-standard-label'>Allow Decimal</InputLabel>
-                    <Select
-                      fullWidth
-                      labelId='demo-simple-select-standard-label'
-                      name='allow_decimal'
-                      value={values.allow_decimal}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      label='Allow Decimal'
-                    >
-                      <MenuItem value={0}>No</MenuItem>
-                      <MenuItem value={1}>Yes</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <FormControlLabel
-                      label='Add as Multiple of other Unit'
-                      sx={{
-                        '& .MuiFormControlLabel-label': {
-                          fontSize: '0.875rem',
-                          color: 'text.secondary'
-                        }
-                      }}
-                      control={
-                        <Checkbox
-                          checked={values.multiple_unit}
-                          color='primary'
-                          onChange={() => {
-                            setFieldValue('multiple_unit', !values.multiple_unit)
-                          }}
-                        />
-                      }
-                    />
-                  </FormControl>
-                </Grid>
-                {values.multiple_unit ? (
+          {type} Unit Information
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            pb: theme => `${theme.spacing(8)} !important`,
+            px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`]
+          }}
+        >
+          <DialogContentText variant='body2' id='unit-edit-add-description' sx={{ textAlign: 'center', mb: 7 }}>
+            Unit details will receive a privacy audit.
+          </DialogContentText>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+            enableReinitialize={true}
+          >
+            {({ handleChange, handleBlur, setFieldValue, handleSubmit, values, touched, errors }) => (
+              <form onSubmit={handleSubmit}>
+                <Grid container spacing={6}>
                   <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={4} sx={{ textAlign: 'center', justifyContent: 'center', alignContent: 'center' }}>
-                        {/* <Typography variant='body' color='primary'>
+                    <FormControl fullWidth>
+                      <TextField
+                        fullWidth
+                        label='Unit Name'
+                        value={values.name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        name='name'
+                        error={touched.name && !!errors.name}
+                        helperText={touched.name && errors.name ? String(errors.name) : ''}
+                        required
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <TextField
+                        fullWidth
+                        label='Short name'
+                        value={values.short_name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        name='short_name'
+                        error={touched.short_name && !!errors.short_name}
+                        helperText={touched.short_name && errors.short_name ? String(errors.short_name) : ''}
+                        required
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputLabel id='demo-simple-select-standard-label'>Allow Decimal</InputLabel>
+                      <Select
+                        fullWidth
+                        labelId='demo-simple-select-standard-label'
+                        name='allow_decimal'
+                        value={values.allow_decimal}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        label='Allow Decimal'
+                      >
+                        <MenuItem value={0}>No</MenuItem>
+                        <MenuItem value={1}>Yes</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <FormControlLabel
+                        label='Add as Multiple of other Unit'
+                        sx={{
+                          '& .MuiFormControlLabel-label': {
+                            fontSize: '0.875rem',
+                            color: 'text.secondary'
+                          }
+                        }}
+                        control={
+                          <Checkbox
+                            checked={values.multiple_unit}
+                            color='primary'
+                            onChange={() => {
+                              setFieldValue('multiple_unit', !values.multiple_unit)
+                            }}
+                          />
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                  {values.multiple_unit ? (
+                    <Grid item xs={12}>
+                      <Grid container spacing={2}>
+                        <Grid
+                          item
+                          xs={4}
+                          sx={{ textAlign: 'center', justifyContent: 'center', alignContent: 'center' }}
+                        >
+                          {/* <Typography variant='body' color='primary'>
                           1 {values.name ? values.name : 'Unit'} =
                         </Typography> */}
-                        <TextField
-                          fullWidth
-                          multiline
-                          color='primary'
-                          value={`1 ${values.name ? values.name : 'Unit'} =`}
-                          disabled={true}
-                        />
-                      </Grid>
-                      <Grid item xs={4}>
-                        <FormControl fullWidth>
                           <TextField
                             fullWidth
                             multiline
-                            label='Times Base Unit'
-                            name='sub_qty'
-                            value={values.sub_qty}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            color='primary'
+                            value={`1 ${values.name ? values.name : 'Unit'} =`}
+                            disabled={true}
                           />
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <FormControl fullWidth>
-                          <InputLabel id='demo-simple-select-standard-label'>Base Unit</InputLabel>
-                          <Select
-                            fullWidth
-                            labelId='demo-simple-select-standard-label'
-                            name='parent_unit'
-                            value={values.parent_unit}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            label='Base Unit'
-                          >
-                            <MenuItem value={null}>Null</MenuItem>
-                            {!units || units.length === 0
-                              ? null
-                              : units.map(item => (
-                                  <MenuItem value={item.id} key={item.id}>
-                                    {item.name}
-                                  </MenuItem>
-                                ))}
-                          </Select>
-                        </FormControl>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <FormControl fullWidth>
+                            <TextField
+                              fullWidth
+                              multiline
+                              label='Times Base Unit'
+                              name='sub_qty'
+                              value={values.sub_qty}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            />
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <FormControl fullWidth>
+                            <InputLabel id='demo-simple-select-standard-label'>Base Unit</InputLabel>
+                            <Select
+                              fullWidth
+                              labelId='demo-simple-select-standard-label'
+                              name='parent_unit'
+                              value={values.parent_unit}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              label='Base Unit'
+                            >
+                              <MenuItem value={null}>Null</MenuItem>
+                              {!units || units.length === 0
+                                ? null
+                                : units.map(item => (
+                                    <MenuItem value={item.id} key={item.id}>
+                                      {item.name}
+                                    </MenuItem>
+                                  ))}
+                            </Select>
+                          </FormControl>
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                ) : null}
-              </Grid>
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 5, justifyContent: 'flex-end' }}>
-                <Button size='large' variant='outlined' sx={{ mr: 3 }} color='secondary' onClick={handleClose}>
-                  Cancel
-                </Button>
-                <Button size='large' type='submit' variant='contained'>
-                  {type}
-                </Button>
-              </Box>
-            </form>
-          )}
-        </Formik>
-      </DialogContent>
-    </Dialog>
+                  ) : null}
+                </Grid>
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 5, justifyContent: 'flex-end' }}>
+                  <Button size='large' variant='outlined' sx={{ mr: 3 }} color='secondary' onClick={handleClose}>
+                    Cancel
+                  </Button>
+                  <Button size='large' type='submit' variant='contained'>
+                    {type}
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </DialogContent>
+      </Dialog>
+      {openLoading && (
+        <LoadingAnimation
+          open={openLoading}
+          onClose={() => setOpenLoading(false)}
+          statusType={type === 'Edit' ? editStatus : saveStatus}
+        />
+      )}
+    </>
   )
 }
 

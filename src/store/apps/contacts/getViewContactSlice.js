@@ -3,6 +3,7 @@
 // dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
@@ -41,11 +42,11 @@ export const fetchViewContact = createAsyncThunk('dashboard/fetchViewContact', a
   }
   const start_date = convertDateFormat(startDate)
   const end_date = convertDateFormat(endDate)
-  console.log(start_date, end_date)
-  console.log(token, id, 'from contact view slice')
+
   try {
+    const url = getCookie('apiUrl')
     const response = await axios.get(
-      `https://test.izocloud.net/api/app/react/contact/view/${id}?start_date=${start_date}&end_date=${end_date}`,
+      `${url}/app/react/contact/view/${id}?start_date=${start_date}&end_date=${end_date}`,
       {
         headers: {
           Authorization: 'Bearer ' + `${token}`
@@ -69,13 +70,11 @@ const getViewContactSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchViewContact.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchViewContact.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -83,7 +82,6 @@ const getViewContactSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchViewContact.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

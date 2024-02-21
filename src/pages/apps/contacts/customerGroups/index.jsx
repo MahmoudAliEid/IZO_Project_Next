@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
-import useSubmitUser from 'src/hooks/useSubmitUser'
+// import useSubmitUser from 'src/hooks/useSubmitUser'
 import DialogEdit from 'src/@core/components/customerGroups/dialogEdit'
-import { postAddCustomerGroup } from 'src/store/apps/contacts/CustomerGroup/postCreateCGSlice'
+// import { postAddCustomerGroup } from 'src/store/apps/contacts/CustomerGroup/postCreateCGSlice'
 import { postDeleteCustomerGroup } from 'src/store/apps/contacts/CustomerGroup/postDeleteCGSlice'
 
 // import { postDeleteUser } from 'src/store/apps/izoUsers/deleteUserSlice'
@@ -20,24 +20,24 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import Card from '@mui/material/Card'
-import Dialog from '@mui/material/Dialog'
-import Select from '@mui/material/Select'
+// import Dialog from '@mui/material/Dialog'
+// import Select from '@mui/material/Select'
 
-// import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
-import InputLabel from '@mui/material/InputLabel'
-import DialogTitle from '@mui/material/DialogTitle'
-import FormControl from '@mui/material/FormControl'
-import DialogContent from '@mui/material/DialogContent'
+// // import Switch from '@mui/material/Switch'
+// import TextField from '@mui/material/TextField'
+// import InputLabel from '@mui/material/InputLabel'
+// import DialogTitle from '@mui/material/DialogTitle'
+// import FormControl from '@mui/material/FormControl'
+// import DialogContent from '@mui/material/DialogContent'
 
 // import DialogActions from '@mui/material/DialogActions'
 // import InputAdornment from '@mui/material/InputAdornment'
 // import FormControlLabel from '@mui/material/FormControlLabel'
-import DialogContentText from '@mui/material/DialogContentText'
-import { Formik } from 'formik'
+// import DialogContentText from '@mui/material/DialogContentText'
+// import { Formik } from 'formik'
 
 // import { styled } from '@mui/material/styles'
-import * as Yup from 'yup'
+// import * as Yup from 'yup'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
@@ -72,6 +72,9 @@ import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Third Party Components
 import axios from 'axios'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
+import DialogAddCG from 'src/@core/components/customerGroups/dialogAdd'
 
 // ** Types Imports
 // import { RootState, AppDispatch } from 'src/store'
@@ -135,6 +138,7 @@ const RowOptions = ({ id }) => {
   // ** State
   const [editCustomerGroupOpen, setEditCustomerGroupOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -211,7 +215,13 @@ const RowOptions = ({ id }) => {
           <Icon icon='bx:pencil' fontSize={20} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem
+          onClick={() => {
+            setOpenDeleteAlert(true)
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
           <Icon icon='bx:trash-alt' fontSize={20} />
           Delete
         </MenuItem>
@@ -219,11 +229,27 @@ const RowOptions = ({ id }) => {
       {editCustomerGroupOpen && (
         <DialogEdit openEdit={editCustomerGroupOpen} setOpenEdit={setEditCustomerGroupOpen} itemId={id} />
       )}
+      {openDeleteAlert && (
+        <DeleteGlobalAlert
+          open={openDeleteAlert}
+          close={() => setOpenDeleteAlert(!openDeleteAlert)}
+          mainHandleDelete={handleDelete}
+          name='Customer Group'
+        />
+      )}
     </>
   )
 }
 
 const columns = [
+  {
+    flex: 0.1,
+    minWidth: 90,
+    sortable: false,
+    field: 'actions',
+    headerName: 'Actions',
+    renderCell: ({ row }) => <RowOptions id={row.id} />
+  },
   {
     flex: 0.25,
     minWidth: 360,
@@ -270,43 +296,35 @@ const columns = [
         </Typography>
       )
     }
-  },
-
-  {
-    flex: 0.1,
-    minWidth: 90,
-    sortable: false,
-    field: 'actions',
-    headerName: 'Actions',
-    renderCell: ({ row }) => <RowOptions id={row.id} />
   }
 ]
 
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  amount: Yup.string().required('amount is required'),
-  rice_calculation_type: Yup.string().required('Price Calculation Type is required'),
-  selling_price_group_id: Yup.string().required('Sale Price Group is required')
-})
+// const validationSchema = Yup.object().shape({
+//   name: Yup.string().required('Name is required'),
+//   amount: Yup.string().required('amount is required'),
+//   rice_calculation_type: Yup.string().required('Price Calculation Type is required'),
+//   selling_price_group_id: Yup.string().required('Sale Price Group is required')
+// })
 
 const CustomerGroups = () => {
   // ** State
 
   const [openAdd, setOpenAdd] = useState(false)
+  const [openLoading, setOpenLoading] = useState(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-  const [valueToShow, setValueToShow] = useState('percentage')
-  const formInputData = {
-    name: '',
-    amount: null,
-    price_calculation_type: 'percentage',
-    selling_price_group_id: null
-  }
+  // const [valueToShow, setValueToShow] = useState('percentage')
+  // const formInputData = {
+  //   name: '',
+  //   amount: null,
+  //   price_calculation_type: 'percentage',
+  //   selling_price_group_id: null
+  // }
   const [data, setData] = useState(null)
-  const [dataForm, setDataForm] = useState(null)
+  // const [dataForm, setDataForm] = useState(null)
   const title = 'Customer Groups List'
 
   const escapeRegExp = value => {
@@ -315,15 +333,15 @@ const CustomerGroups = () => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  const { handleSubmitData } = useSubmitUser()
+  // const { handleSubmitData } = useSubmitUser()
 
   const store = useSelector(state => state.getCustomerGroup?.data?.value)
-  const storeAddFormData = useSelector(state => state.getCreateCustomerGroup?.data?.value)
+  // const storeAddFormData = useSelector(state => state.getCreateCustomerGroup?.data?.value)
+  const saveStatus = useSelector(state => state?.postCreateCustomerGroup)
 
   useEffect(() => {
     setData(store)
-    setDataForm(storeAddFormData)
-  }, [store, storeAddFormData])
+  }, [store])
 
   // ** Cookies
   useEffect(() => {
@@ -361,25 +379,26 @@ const CustomerGroups = () => {
     }
   }
 
-  const handleSubmit = (values, { resetForm }) => {
-    // Handle form submission logic here
-    console.log(values, 'form  add customer group')
-    console.log('Add btn clicked')
-    handleSubmitData(postAddCustomerGroup, fetchCustomerGroup, values)
+  // const handleSubmit = (values, { resetForm }) => {
+  //   // Handle form submission logic here
+  //   console.log(values, 'form  add customer group')
+  //   console.log('Add btn clicked')
+  //   handleSubmitData(postAddCustomerGroup, fetchCustomerGroup, values)
+  //   resetForm()
+  //   setOpenLoading(true)
+  // }
 
-    resetForm()
-  }
+  // const onchangeHandle = event => {
+  //   setValueToShow(event.target.value)
+  // }
 
-  const onchangeHandle = event => {
-    setValueToShow(event.target.value)
-  }
-
-  console.log(valueToShow)
+  // console.log(valueToShow)
 
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
+          <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={saveStatus} />
           <CardHeader title={title} />
           <Divider sx={{ m: '0 !important' }} />
           <Box
@@ -440,7 +459,7 @@ const CustomerGroups = () => {
           </Box>
         </Card>
       </Grid>
-      {dataForm && (
+      {/* {dataForm && (
         <Dialog
           scroll='body'
           open={openAdd}
@@ -478,14 +497,14 @@ const CustomerGroups = () => {
               onSubmit={handleSubmit}
               enableReinitialize={true}
             >
-              {({ values, handleBlur, handleChange, handleSubmit }) => (
-                <form onSubmit={handleSubmit}>
+              {({ values, handleBlur, handleChange, handleSubmit, resetForm }) => (
+                <form>
                   <Grid container spacing={6}>
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
                         label='Customer Group Name'
-                        value={values.name}
+                        value={values.name || ''}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         name='name'
@@ -553,8 +572,18 @@ const CustomerGroups = () => {
                       )}
                     </Grid>
                   </Grid>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
-                    <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, flexDirection: 'row-reverse' }}>
+                    <Button
+                      size='large'
+                      type='submit'
+                      variant='contained'
+                      sx={{ mr: 3, ml: 3 }}
+                      onClick={e => {
+                        e.preventDefault()
+                        handleSubmit(values, { resetForm })
+                        setOpenLoading(true)
+                      }}
+                    >
                       Add
                     </Button>
                     <Button size='large' variant='outlined' color='secondary' onClick={handleAddClose}>
@@ -566,7 +595,8 @@ const CustomerGroups = () => {
             </Formik>
           </DialogContent>
         </Dialog>
-      )}
+      )} */}
+      {openAdd && <DialogAddCG openAdd={openAdd} handleAddClose={handleAddClose} />}
     </Grid>
   )
 }

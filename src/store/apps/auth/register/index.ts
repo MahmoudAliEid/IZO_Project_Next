@@ -62,7 +62,6 @@ const registerSlice = createSlice({
       state.data = action.payload
       state.status = 'success'
       state.register = true
-      console.log('from reducer register action:', action)
       notify('Registered Successfully you can login in Now 🎉', 'success')
     })
     builder.addCase(register.pending, state => {

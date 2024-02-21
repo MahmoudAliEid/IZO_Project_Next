@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
-import { postDeleteUser } from 'src/store/apps/izoUsers/deleteUserSlice'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -52,6 +51,8 @@ import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Third Party Components
 import axios from 'axios'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
+import { postDeleteContact } from 'src/store/apps/contacts/deleteContactSlice'
 
 // ** Types Imports
 // import { RootState, AppDispatch } from 'src/store'
@@ -116,6 +117,7 @@ const RowOptions = ({ id, type }) => {
   // ** State
   const [editUserOpen, setEditUserOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -140,16 +142,13 @@ const RowOptions = ({ id, type }) => {
       return
     }
 
-    dispatch(postDeleteUser({ id }))
+    dispatch(postDeleteContact({ id, url }))
       .then(() => {
-        dispatch(fetchIzoUsers({ token, url }))
-        console.log('User deleted id, token, url', id, token, url)
+        dispatch(fetchCustomers(token, url))
+
         handleRowOptionsClose()
       })
-      .catch(error => {
-        console.error('Error deleting user:', error)
-
-        // Handle the error as needed
+      .catch(() => {
         handleRowOptionsClose()
       })
   }
@@ -197,7 +196,13 @@ const RowOptions = ({ id, type }) => {
           <Icon icon='bx:pencil' fontSize={20} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem
+          onClick={() => {
+            setOpenDeleteAlert(true)
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
           <Icon icon='bx:trash-alt' fontSize={20} />
           Delete
         </MenuItem>
@@ -221,6 +226,14 @@ const RowOptions = ({ id, type }) => {
       {editUserOpen && (
         <DialogAddSuppliers open={editUserOpen} toggle={handleEdit} isEdit={true} itemId={id} contact='customer' />
       )}
+      {openDeleteAlert && (
+        <DeleteGlobalAlert
+          open={openDeleteAlert}
+          close={() => setOpenDeleteAlert(!openDeleteAlert)}
+          mainHandleDelete={handleDelete}
+          name={type.charAt(0).toUpperCase() + type.slice(1)}
+        />
+      )}
     </>
   )
 }
@@ -234,19 +247,7 @@ const columns = [
     headerName: 'Actions',
     renderCell: ({ row }) => <RowOptions id={row.id} type={row.type} />
   },
-  {
-    flex: 0.25,
-    minWidth: 180,
-    field: 'contact_id',
-    headerName: 'Contact ID',
-    renderCell: ({ row }) => {
-      return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.contact_id ? row.contact_id : 'No ID available'}
-        </Typography>
-      )
-    }
-  },
+
   {
     flex: 0.25,
     minWidth: 360,

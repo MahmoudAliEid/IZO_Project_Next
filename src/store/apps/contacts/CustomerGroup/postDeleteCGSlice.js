@@ -8,14 +8,12 @@ import { getCookie } from 'cookies-next'
 const initialState = {
   data: [],
   loading: false,
-  error: null
+  error: false,
+  success: false
 }
 
 const token = getCookie('token')
 
-// const apiUrl = getCookie('apiUrl')
-
-// Create an Axios instance with common headers
 const axiosInstance = axios.create({
   headers: {
     Authorization: `Bearer ${token}`,
@@ -25,17 +23,12 @@ const axiosInstance = axios.create({
 
 // Define an async thunk for deleting a user
 export const postDeleteCustomerGroup = createAsyncThunk('dashboard/postDeleteCustomerGroup', async payload => {
-  try {
-    const { id } = payload
-    const response = await axiosInstance.post(`https://test.izocloud.net/api/app/react/customer-group/del/${id}`)
-    const data = response.data
-    notify('The Customer Group deleted ', 'success')
+  const { id } = payload
+  const url = getCookie('apiUrl')
+  const response = await axiosInstance.post(`${url}/app/react/customer-group/del/${id}`)
+  const data = response.data
 
-    return data
-  } catch (error) {
-    notify('There was an error, try again later!', 'error')
-    throw error
-  }
+  return data
 })
 
 // Create a Redux slice
@@ -47,17 +40,22 @@ const deleteCustomerGroupSlice = createSlice({
     builder
       .addCase(postDeleteCustomerGroup.pending, state => {
         state.loading = true
-        state.error = null
+        state.error = false
+        state.success = false
+        state.data = []
       })
       .addCase(postDeleteCustomerGroup.fulfilled, (state, action) => {
-        console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
+        state.error = false
+        state.success = true
+        notify('Customer Group Deleted Successfully', 'success')
       })
-      .addCase(postDeleteCustomerGroup.rejected, (state, action) => {
-        console.log('rejected action from delete', action)
+      .addCase(postDeleteCustomerGroup.rejected, state => {
+        notify('There is an Error', 'error')
         state.loading = false
-        state.error = action.error.message
+        state.success = false
+        state.error = true
       })
   }
 })

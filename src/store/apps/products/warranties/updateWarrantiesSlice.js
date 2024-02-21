@@ -12,7 +12,6 @@ export const updateWarranty = createAsyncThunk('warranties/updateWarranty', asyn
     const response = await axios.post(`${url}/app/react/warranties/update/${id}`, updateData, {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     })
-    console.log(response.data, '===> response from updateWarranty 🙌🙌')
 
     return response.data
   } catch (err) {
@@ -34,14 +33,14 @@ export const warrantyUpdateSlice = createSlice({
         state.loading = false
         state.success = true
         state.entity = action.payload
-        console.log(action.payload, '===> action.payload')
+
         notify('Warranty successfully updated.', 'success')
       })
       .addCase(updateWarranty.rejected, (state, action) => {
         state.loading = false
         state.error = true
         state.error = action.payload
-        console.log(action.payload, '===> action.payload')
+
         notify('There is an error try again later', 'error')
       })
   }

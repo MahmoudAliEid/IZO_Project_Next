@@ -3,9 +3,9 @@ import { getCookie } from 'cookies-next'
 
 // Async thunk for fetching brand details
 export const fetchBrandDetails = createAsyncThunk('brandDetails/fetch', async payload => {
-  console.log(payload, '===> payload from fetchBrandDetails')
   const token = getCookie('token')
-  const response = await fetch('https://test.izocloud.net/api/app/react/brands/edit/' + payload, {
+  const url = getCookie('apiUrl')
+  const response = await fetch(`${url}/app/react/brands/edit/` + payload, {
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
   })
 
@@ -14,8 +14,6 @@ export const fetchBrandDetails = createAsyncThunk('brandDetails/fetch', async pa
   }
 
   const data = await response.json()
-
-  console.log(data, '===> response from fetchBrandDetails')
 
   return data
 })

@@ -19,7 +19,6 @@ const initialState = {
 export const fetchProducts = createAsyncThunk('dashboard/fetchProducts', async payload => {
   const url = getCookie('apiUrl')
   const { token, query } = payload
-  console.log(token, url, query, 'token, url, query form fetchProducts')
 
   if (query) {
     const response = await axios.get(`${url}${query}`, {
@@ -52,13 +51,11 @@ const getProductsSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchProducts.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -66,7 +63,6 @@ const getProductsSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchProducts.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

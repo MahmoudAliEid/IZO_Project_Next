@@ -6,12 +6,7 @@ import axios from 'axios'
 export const updateBrand = createAsyncThunk('brands/update', async brand => {
   const { updateData, id } = brand
   const token = getCookie('token')
-  console.log('🌶 BRAND UPDATE DATA 🌶', updateData)
-  console.log('🌶 BRAND UPDATE ID 🌶', id)
-  console.log('😎 image from updateBrandSlice', updateData.image)
-
-  //   type of image
-  console.log('🌶 type of image 🌶', typeof updateData.image)
+  const url = getCookie('apiUrl')
   const formData = new FormData()
   formData.append('name', updateData.name)
   formData.append('description', updateData.description)
@@ -24,38 +19,39 @@ export const updateBrand = createAsyncThunk('brands/update', async brand => {
     formData.append('image', updateData.image[0])
   }
 
-  // print the formData as an object
-  // console.log(Object.fromEntries(formData))
-
-  const response = await axios.post(`https://test.izocloud.net/api/app/react/brands/update/${id}`, formData, {
+  const response = await axios.post(`${url}/app/react/brands/update/${id}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
   })
 
-  // console.log('��� response from updateBrandSlice', response)
-  // console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀')
-
   return response.data
 })
 
 const updateBrandSlice = createSlice({
   name: 'brands',
-  initialState: { data: [], loading: 'idle', status: 'idle', error: null },
+  initialState: { data: [], loading: false, error: false, success: false },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(updateBrand.pending, state => {
-      state.loading = 'loading'
+      state.loading = true
+      state.error = false
+      state.success = false
+      state.data = null
     })
     builder.addCase(updateBrand.fulfilled, (state, action) => {
-      state.loading = 'idle'
       state.data = action.payload
-      console.log(action.payload, '===> action.payload from updateBrand')
+      state.loading = false
+      state.error = false
+      state.success = true
       notify('Brand updated successfully', 'success')
     })
     builder.addCase(updateBrand.rejected, state => {
-      state.loading = 'failed'
+      state.loading = false
+      state.error = true
+      state.success = false
+      notify('There is an error try again later', 'error')
     })
   }
 })

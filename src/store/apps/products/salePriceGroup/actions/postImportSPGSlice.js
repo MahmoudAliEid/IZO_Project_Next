@@ -9,27 +9,19 @@ export const postImportSPGroup = createAsyncThunk('dashboard/postImportSPGroup',
   const url = getCookie('apiUrl')
   const { data } = payload
 
-  console.log(token, '===> token Post import Sale Price Group slice')
-  console.log(data, '===> data Post import Sale Price Group slice')
-  console.log(url, '===> url Post import Sale Price Group slice')
-  console.log(data.file[0], '===> the file form Post import Sale Price Group slice')
   if (token !== undefined && token !== null && data !== undefined && data !== null) {
     const formData = new FormData()
 
     formData.append('product_group_prices', data.file[0])
-
-    console.log(formData, data, '===> formData, data add sale Price group slice')
 
     const headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data'
     }
 
-    const response = await axios.post('https://test.izocloud.net/api/app/react/sales-price-group/import', formData, {
+    const response = await axios.post(`${url}/app/react/sales-price-group/import`, formData, {
       headers // Pass the headers to the Axios request
     })
-
-    console.log(response, '===> from import Sale Price group slice ')
 
     return response.data
   }
@@ -55,13 +47,13 @@ const postImportSPGSlice = createSlice({
         state.loading = false
         state.data = action.payload
         state.error = null
-        console.log(action.payload.message, 'form import Sale Price group ')
+
         notify('Done Successfully', 'success')
       })
       .addCase(postImportSPGroup.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
-        console.log('Unknown error occurred  :', action.payload)
+
         notify('Their is an Error', 'error')
       })
   }

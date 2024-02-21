@@ -5,18 +5,19 @@ import notify from 'src/utils/notify'
 
 const initialState = {
   data: null,
-  status: 'idle',
-  error: null
+  loading: false,
+  error: false,
+  success: false
 }
 
 export const updateContact = createAsyncThunk('contactUpdate/updateContact', async (payload, { rejectWithValue }) => {
   const { updateData, id } = payload
-  console.log(updateData, 'updateData from contactUpdateSlice 👀')
-  console.log(id, 'id from contactUpdateSlice 👍')
+
   try {
     // rest of your code
     const token = getCookie('token')
-    const response = await axios.post(`https://test.izocloud.net/api/app/react/contact/update/${id}`, updateData, {
+    const url = getCookie('apiUrl')
+    const response = await axios.post(`${url}/app/react/contact/update/${id}`, updateData, {
       headers: {
         Authorization: 'Bearer ' + `${token}`,
         'Content-Type': 'multipart/form-data'
@@ -36,16 +37,22 @@ const contactUpdateSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(updateContact.pending, state => {
-        state.status = 'loading'
+        state.loading = true
+        state.error = false
+        state.success = false
+        state.data = null
       })
       .addCase(updateContact.fulfilled, (state, action) => {
-        state.status = 'succeeded'
+        state.loading = false
+        state.success = true
+        state.error = false
         state.data = action.payload
         notify('Contact updated successfully', 'success')
       })
-      .addCase(updateContact.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message
+      .addCase(updateContact.rejected, state => {
+        state.loading = false
+        state.error = true
+        state.success = false
         notify('There is an Error try again later', 'error')
       })
   }

@@ -13,9 +13,6 @@ const initialState = {
 
 const token = getCookie('token')
 
-// const apiUrl = getCookie('apiUrl')
-
-// Create an Axios instance with common headers
 const axiosInstance = axios.create({
   headers: {
     Authorization: `Bearer ${token}`,
@@ -25,17 +22,11 @@ const axiosInstance = axios.create({
 
 // Define an async thunk for deleting a user
 export const postDeleteContact = createAsyncThunk('dashboard/postDeleteContact', async payload => {
-  try {
-    const { id, url } = payload
-    const response = await axiosInstance.post(`${url}/app/react/contact/del/${id}`)
-    const data = response.data
-    notify('The contact has been deleted successfully', 'success')
+  const { id, url } = payload
+  const response = await axiosInstance.post(`${url}/app/react/contact/del/${id}`)
+  const data = response.data
 
-    return data
-  } catch (error) {
-    notify('There was an error, try again later!', 'error')
-    throw error
-  }
+  return data
 })
 
 // Create a Redux slice
@@ -50,12 +41,12 @@ const deleteContactSlice = createSlice({
         state.error = null
       })
       .addCase(postDeleteContact.fulfilled, (state, action) => {
-        console.log('payload action from delete', action)
         state.data = action.payload
         state.loading = false
+        notify('The contact has been deleted successfully', 'success')
       })
       .addCase(postDeleteContact.rejected, (state, action) => {
-        console.log('rejected action from delete', action)
+        notify('There was an error, try again later!', 'error')
         state.loading = false
         state.error = action.error.message
       })

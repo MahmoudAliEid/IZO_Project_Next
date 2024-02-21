@@ -55,7 +55,7 @@ const postEditUnitSlice = createSlice({
         state.success = true
         state.error = false
         state.data = action.payload
-        console.log(action.payload)
+
         notify(action.payload.message, 'success')
       })
       .addCase(postEditUnit.rejected, (state, action) => {

@@ -15,15 +15,14 @@ const initialState = {
 export const fetchViewUser = createAsyncThunk('Users/fetchViewUser', async payload => {
   try {
     const { token, url, id } = payload
-    console.log(token, url, id, 'from fetchViewUser.js')
+
     if (token && url && id) {
       const config = {
         headers: {
           Authorization: `Bearer ${token}` // Send the token as a Bearer Token in the header
         }
       }
-      const response = await axios.get(`https://test.izocloud.net/api/app/react/users/view/${id}`, config)
-      console.log(response, 'from editUsersSlice.js')
+      const response = await axios.get(`${url}/app/react/users/view/${id}`, config)
 
       const data = response.data
 
@@ -42,18 +41,15 @@ const viewUserSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchViewUser.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
       })
       .addCase(fetchViewUser.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.error = null
       })
       .addCase(fetchViewUser.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.error = action.error.message

@@ -41,13 +41,11 @@ const getCategoriesTreeSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchCategoriesTree.pending, state => {
-        console.log('pending')
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
       .addCase(fetchCategoriesTree.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload)
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
@@ -55,7 +53,6 @@ const getCategoriesTreeSlice = createSlice({
         state.msg = action.payload.msg
       })
       .addCase(fetchCategoriesTree.rejected, (state, action) => {
-        console.log('action.error', action.error)
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'

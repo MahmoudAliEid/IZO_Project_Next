@@ -16,6 +16,7 @@ import { fetchEditVariations } from 'src/store/apps/products/variations/getEditV
 import { useDispatch, useSelector } from 'react-redux'
 import VariationsTable from './VariationsTable'
 import useSubmitEdit from 'src/hooks/useSubmitEdit'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 
 // import { getCookie } from 'cookies-next'
 
@@ -27,10 +28,12 @@ const VariationFormEdit = ({ type, open, setOpen, itemId, mainData, setMainData 
   const [currValue, setCurrValue] = useState('')
   const [vName, setVName] = useState('')
   const [data, setData] = useState({})
-  const dataEdit = useSelector(state => state?.getEditVariations?.data?.value[0])
   const [oldListData, setOldListData] = useState([])
+  const [openLoading, setOpenLoading] = useState(false)
 
-  // const [testData,setTestData]=useState('')
+  // ** Selectors
+  const dataEdit = useSelector(state => state?.getEditVariations?.data?.value[0])
+  const editStatus = useSelector(state => state.postEditVariations)
 
   const formInputData = {
     name: vName,
@@ -90,30 +93,13 @@ const VariationFormEdit = ({ type, open, setOpen, itemId, mainData, setMainData 
     }
   }
 
-  // const cookieDataString = getCookie('oldVariations')
-  // const cookieData = cookieDataString ? JSON.parse(cookieDataString) : []
-
-  // const CookieData = cookieData ?? []
-
-  // console.log(`cookies old Variations: ${typeof CookieData}`)
-
-  // const mainData = CookieData => {
-  //   const arrOfObjects = []
-  //   for (const object of CookieData) {
-  //     arrOfObjects.push(object)
-  //   }
-
-  //   return arrOfObjects
-  // }
-
-  // const MainDataArray = mainData(CookieData)
-
   const handleSubmit = (values, { resetForm }) => {
     console.log(values, 'values from Edit variations')
     console.log(itemId, 'from submit Edit variations')
     handleSubmitEdit(values, itemId, oldListData)
-    setOpen(false)
+    // setOpen(false)
     resetForm()
+    setOpenLoading(true)
 
     // Function to find and update an object by id
     function updateObjectById(arr, id, updatedData) {
@@ -141,107 +127,112 @@ const VariationFormEdit = ({ type, open, setOpen, itemId, mainData, setMainData 
   }
 
   return (
-    <Dialog
-      scroll='body'
-      open={open}
-      onClose={handleClose}
-      aria-labelledby='customer-group-edit'
-      sx={{
-        '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] },
-        '& .MuiDialogTitle-root + .MuiDialogContent-root': { pt: theme => `${theme.spacing(2)} !important` }
-      }}
-      aria-describedby='customer-group-edit-description'
-    >
-      <DialogTitle
-        id='customer-group-edit'
+    <>
+      <Dialog
+        scroll='body'
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='customer-group-edit'
         sx={{
-          textAlign: 'center',
-          fontSize: '1.5rem !important',
-          px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
-          pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+          '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] },
+          '& .MuiDialogTitle-root + .MuiDialogContent-root': { pt: theme => `${theme.spacing(2)} !important` }
         }}
+        aria-describedby='customer-group-edit-description'
       >
-        {type} Variation Information
-      </DialogTitle>
-      <DialogContent
-        sx={{
-          pb: theme => `${theme.spacing(8)} !important`,
-          px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`]
-        }}
-      >
-        <DialogContentText variant='body2' id='customer-group-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
-          Variations details will receive a privacy audit.
-        </DialogContentText>
-        <Formik initialValues={formInputData} onSubmit={handleSubmit} enableReinitialize={true}>
-          {({ handleBlur, handleSubmit }) => (
-            <form onSubmit={handleSubmit}>
-              <Grid container spacing={6}>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <TextField
-                      fullWidth
-                      label='Variation Name'
-                      value={vName}
-                      onChange={e => {
-                        setVName(e.target.value)
-                      }}
-                      onBlur={handleBlur}
-                      name='name'
-                      required
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <TextField
-                      fullWidth
-                      label='Add Variation Values'
-                      helperText='Press space to add'
-                      value={currValue}
-                      onChange={event => handleChangeTwo(event)}
-                      onKeyDown={handleKeyUp}
-                      name='items'
-                      InputProps={{
-                        endAdornment: (
-                          <Grid container spacing={6}>
-                            <Grid item sx={12}>
-                              {listValues &&
-                                listValues.map((item, index) => (
-                                  <Chip
-                                    sx={{ margin: '5px' }}
-                                    size='small'
-                                    onDelete={() => handleDelete(item, index)}
-                                    label={item}
-                                    key={index}
-                                  />
-                                ))}
+        <DialogTitle
+          id='customer-group-edit'
+          sx={{
+            textAlign: 'center',
+            fontSize: '1.5rem !important',
+            px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`],
+            pt: theme => [`${theme.spacing(8)} !important`, `${theme.spacing(12.5)} !important`]
+          }}
+        >
+          {type} Variation Information
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            pb: theme => `${theme.spacing(8)} !important`,
+            px: theme => [`${theme.spacing(5)} !important`, `${theme.spacing(15)} !important`]
+          }}
+        >
+          <DialogContentText variant='body2' id='customer-group-edit-description' sx={{ textAlign: 'center', mb: 7 }}>
+            Variations details will receive a privacy audit.
+          </DialogContentText>
+          <Formik initialValues={formInputData} onSubmit={handleSubmit} enableReinitialize={true}>
+            {({ handleBlur, handleSubmit }) => (
+              <form onSubmit={handleSubmit}>
+                <Grid container spacing={6}>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <TextField
+                        fullWidth
+                        label='Variation Name'
+                        value={vName}
+                        onChange={e => {
+                          setVName(e.target.value)
+                        }}
+                        onBlur={handleBlur}
+                        name='name'
+                        required
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <TextField
+                        fullWidth
+                        label='Add Variation Values'
+                        helperText='Press space to add'
+                        value={currValue}
+                        onChange={event => handleChangeTwo(event)}
+                        onKeyDown={handleKeyUp}
+                        name='items'
+                        InputProps={{
+                          endAdornment: (
+                            <Grid container spacing={6}>
+                              <Grid item sx={12}>
+                                {listValues &&
+                                  listValues.map((item, index) => (
+                                    <Chip
+                                      sx={{ margin: '5px' }}
+                                      size='small'
+                                      onDelete={() => handleDelete(item, index)}
+                                      label={item}
+                                      key={index}
+                                    />
+                                  ))}
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        )
-                      }}
-                    />
-                  </FormControl>
+                          )
+                        }}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item sx={12}>
+                    <VariationsTable itemId={itemId} oldListData={oldListData} setOldListData={setOldListData} />
+                  </Grid>
                 </Grid>
-                <Grid item sx={12}>
-                  <VariationsTable itemId={itemId} oldListData={oldListData} setOldListData={setOldListData} />
-                </Grid>
-              </Grid>
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
-                <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
-                  Cancel
-                </Button>
-                <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-                  Update
-                </Button>
-              </Box>
-            </form>
-          )}
-        </Formik>
-        {/* <Grid container spacing={6}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, flexDirection: 'row-reverse' }}>
+                  <Button size='large' type='submit' variant='contained' sx={{ ml: 3 }}>
+                    Update
+                  </Button>
+                  <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
+                    Cancel
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+          {/* <Grid container spacing={6}>
           <VariationsTable data={data?.list} />
         </Grid> */}
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+      {openLoading && (
+        <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={editStatus} />
+      )}
+    </>
   )
 }
 

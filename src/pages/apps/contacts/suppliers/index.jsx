@@ -59,6 +59,7 @@ import { getInitials } from 'src/@core/utils/get-initials'
 // import TableHeader from 'src/views/apps/user/list/TableHeader'
 import { postDeleteContact } from 'src/store/apps/contacts/deleteContactSlice'
 import DialogAddSuppliers from 'src/views/apps/contacts/suppliers/DialogAddSuppliers'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 
 // ** Vars
 // const userRoleObj = {
@@ -110,6 +111,7 @@ const RowOptions = ({ id, type }) => {
   // ** State
   const [editUserOpen, setEditUserOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -191,7 +193,13 @@ const RowOptions = ({ id, type }) => {
           <Icon icon='bx:pencil' fontSize={20} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+        <MenuItem
+          onClick={() => {
+            setOpenDeleteAlert(true)
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
           <Icon icon='bx:trash-alt' fontSize={20} />
           Delete
         </MenuItem>
@@ -215,6 +223,14 @@ const RowOptions = ({ id, type }) => {
       {editUserOpen && (
         <DialogAddSuppliers open={editUserOpen} toggle={handleEdit} isEdit={true} contact='supplier' itemId={id} />
       )}
+      {openDeleteAlert && (
+        <DeleteGlobalAlert
+          open={openDeleteAlert}
+          close={() => setOpenDeleteAlert(!openDeleteAlert)}
+          mainHandleDelete={handleDelete}
+          name={type.charAt(0).toUpperCase() + type.slice(1)}
+        />
+      )}
     </Fragment>
   )
 }
@@ -228,19 +244,7 @@ const columns = [
     headerName: 'Actions',
     renderCell: ({ row }) => <RowOptions id={row.id} type={row.type} />
   },
-  {
-    flex: 0.25,
-    minWidth: 180,
-    field: 'contact_id',
-    headerName: 'Contact ID',
-    renderCell: ({ row }) => {
-      return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.contact_id ? row.contact_id : 'No ID available'}
-        </Typography>
-      )
-    }
-  },
+
   {
     flex: 0.25,
     minWidth: 360,
