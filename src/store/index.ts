@@ -83,6 +83,7 @@ import productStoreSlice from './apps/products/productStoreSlice'
 import getSearchProductCompo from './apps/products/listProducts/search/getSearchProductCompo'
 import getUpdateProductSlice from './apps/products/getUpdateProductSlice'
 import postUpdateProductSlice from './apps/products/postUpdateProductSlice'
+import postDeleteCGSlice from './apps/contacts/CustomerGroup/postDeleteCGSlice'
 
 export const store = configureStore({
   reducer: {
@@ -109,6 +110,7 @@ export const store = configureStore({
     getCustomerGroup: getCustomerGroupSlice,
     getCreateCustomerGroup: getCreateCGSlice,
     postCreateCustomerGroup: postCreateCGSlice,
+    postDeleteCustomerGroup: postDeleteCGSlice,
     getEditCustomerGroup: getEditCGSlice,
     postEditCustomerGroup: postEditCGSlice,
     getViewContact: getViewContactSlice,

@@ -27,11 +27,9 @@ export const postDeleteUser = createAsyncThunk('dashboard/postDeleteUser', async
     const { id } = payload
     const response = await axiosInstance.post(`${url}/app/react/users/del/${id}`)
     const data = response.data
-    notify('The User has been deleted successfully', 'success')
 
     return data
   } catch (error) {
-    notify('There was an error, try again later!', 'error')
     throw error
   }
 })

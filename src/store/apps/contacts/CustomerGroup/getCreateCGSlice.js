@@ -14,12 +14,13 @@ const initialState = {
   error: null
 }
 
-export const fetchCreateCustomerGroup = createAsyncThunk('dashboard/fetchCreateCustomerGroup', async token => {
+export const fetchCreateCustomerGroup = createAsyncThunk('dashboard/fetchCreateCustomerGroup', async () => {
   try {
     const url = getCookie('apiUrl')
+    const cookieToken = getCookie('token')
     const response = await axios.get(`${url}/app/react/customer-group/create`, {
       headers: {
-        Authorization: 'Bearer ' + `${token}`
+        Authorization: 'Bearer ' + `${cookieToken}`
       }
     })
 

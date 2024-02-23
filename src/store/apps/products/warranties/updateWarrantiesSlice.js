@@ -28,10 +28,13 @@ export const warrantyUpdateSlice = createSlice({
     builder
       .addCase(updateWarranty.pending, state => {
         state.loading = true
+        state.success = false
+        state.error = false
       })
       .addCase(updateWarranty.fulfilled, (state, action) => {
         state.loading = false
         state.success = true
+        state.error = false
         state.entity = action.payload
 
         notify('Warranty successfully updated.', 'success')
@@ -39,6 +42,7 @@ export const warrantyUpdateSlice = createSlice({
       .addCase(updateWarranty.rejected, (state, action) => {
         state.loading = false
         state.error = true
+        state.success = false
         state.error = action.payload
 
         notify('There is an error try again later', 'error')

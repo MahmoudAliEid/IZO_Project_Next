@@ -4,25 +4,23 @@ import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import notify from 'src/utils/notify'
 
-const token = getCookie('token')
-
 // Async Thunk Action for storing user
 export const postAddCustomerGroup = createAsyncThunk('dashboard/postAddCustomerGroup', async userData => {
   const url = getCookie('apiUrl')
-  console.log(userData, 'userData 🍕🍕🍕🍕')
-  if (token !== undefined && token !== null && userData !== undefined && userData !== null) {
-    const headers = {
-      Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
-      'Content-Type': 'application/json'
-    }
-    const JSONData = JSON.stringify(userData)
 
-    const response = await axios.post(`${url}/app/react/customer-group/save`, JSONData, {
-      headers // Pass the headers to the Axios request
-    })
+  const token = getCookie('token')
 
-    return response.data
+  const headers = {
+    Authorization: `Bearer ${token}`, // Include the token in the 'Authorization' header
+    'Content-Type': 'application/json'
   }
+  const JSONData = JSON.stringify(userData)
+
+  const response = await axios.post(`${url}/app/react/customer-group/save`, JSONData, {
+    headers // Pass the headers to the Axios request
+  })
+
+  return response.data
 })
 
 // Define the user slice

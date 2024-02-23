@@ -16,8 +16,9 @@ const initialState = {
   error: null
 }
 
-export const fetchSPGroup = createAsyncThunk('dashboard/fetchSPGroup', async token => {
+export const fetchSPGroup = createAsyncThunk('dashboard/fetchSPGroup', async () => {
   const url = getCookie('apiUrl')
+  const token = getCookie('token')
 
   const response = await axios.get(`${url}/app/react/sales-price-group/all`, {
     headers: {

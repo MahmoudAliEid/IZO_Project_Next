@@ -35,7 +35,7 @@ import Card from '@mui/material/Card'
 // import * as Yup from 'yup'
 import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
+// import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 
 import { DataGrid } from '@mui/x-data-grid'
@@ -51,6 +51,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Third Party Components
 import axios from 'axios'
+import { FormControl, TextField } from '@mui/material'
 
 const RowOptions = ({ idRow, itemId, row }) => {
   // ** Hooks
@@ -152,26 +153,36 @@ const columns = [
   {
     flex: 0.25,
     minWidth: 120,
-    field: 'id',
-    headerName: 'ID',
-    renderCell: ({ row }) => {
-      return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.id ? row.id : 'Not available'}
-        </Typography>
-      )
-    }
-  },
-  {
-    flex: 0.25,
-    minWidth: 120,
+    minHeight: 80,
     field: 'name',
     headerName: 'Name',
     renderCell: ({ row }) => {
       return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.name ? row.name : 'Not available'}
-        </Typography>
+        // <Typography noWrap sx={{ color: 'text.secondary' }}>
+        //   {row.name ? row.name : 'Not available'}
+        // </Typography>
+        <FormControl fullWidth sx={{ my: 3 }}>
+          <TextField
+            id='outlined-basic'
+            fullWidth
+            label='Name'
+            variant='outlined'
+            value={row.name ? row.name : 'Not available'}
+            //on change i want to update the value of the name by its id and the value of the input
+            // by those row.setOldListData(filter on it) row.oldListData (update it)
+            onChange={e => {
+              row.setOldListData(
+                row.oldListData.map(item => {
+                  if (item.id === row.id) {
+                    return { ...item, name: e.target.value }
+                  }
+
+                  return item
+                })
+              )
+            }}
+          />
+        </FormControl>
       )
     }
   },
@@ -277,6 +288,7 @@ const VariationsTable = ({ itemId, oldListData, setOldListData }) => {
         {rowsWithId ? (
           <DataGrid
             autoHeight
+            rowHeight={70}
             columns={columns}
             disableRowSelectionOnClick
             pageSizeOptions={[10, 25, 50]}

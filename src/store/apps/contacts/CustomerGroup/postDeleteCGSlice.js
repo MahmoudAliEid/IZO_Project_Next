@@ -12,17 +12,16 @@ const initialState = {
   success: false
 }
 
-const token = getCookie('token')
-
-const axiosInstance = axios.create({
-  headers: {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-})
-
 // Define an async thunk for deleting a user
 export const postDeleteCustomerGroup = createAsyncThunk('dashboard/postDeleteCustomerGroup', async payload => {
+  const token = getCookie('token')
+
+  const axiosInstance = axios.create({
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
   const { id } = payload
   const url = getCookie('apiUrl')
   const response = await axiosInstance.post(`${url}/app/react/customer-group/del/${id}`)
@@ -49,13 +48,13 @@ const deleteCustomerGroupSlice = createSlice({
         state.loading = false
         state.error = false
         state.success = true
-        notify('Customer Group Deleted Successfully', 'success')
+        notify('Deleted Successfully', 'success')
       })
       .addCase(postDeleteCustomerGroup.rejected, state => {
-        notify('There is an Error', 'error')
         state.loading = false
         state.success = false
         state.error = true
+        notify('There is an Error', 'error')
       })
   }
 })

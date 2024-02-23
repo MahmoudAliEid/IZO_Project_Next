@@ -141,7 +141,7 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
     <Fragment>
       <LoadingAnimation open={openLottie}
         onClose={() => setOpenLottie(false)}
-        statusType={isEdit?updateWarrantiesMain:storeWarrantiesResponseStatus} />
+        statusType={isEdit? updateWarrantiesMain : storeWarrantiesResponseStatus} />
       <Dialog
         open={open}
         onClose={toggle}
@@ -235,7 +235,7 @@ const DialogAddWarranties = ({ open, toggle, isEdit, itemId }: any) => {
                   </Button>
                   <Button variant='contained' onClick={() => {
                     handleSubmitForm(values, { resetForm })
-                    toggle()
+
                   }}>
                     {isEdit ? `Update` : `Add`}
                   </Button>

@@ -16,9 +16,9 @@ const initialState = {
   error: null
 }
 
-export const fetchCreateSPGroup = createAsyncThunk('dashboard/fetchCreateSPGroup', async token => {
+export const fetchCreateSPGroup = createAsyncThunk('dashboard/fetchCreateSPGroup', async () => {
   const url = getCookie('apiUrl')
-
+  const token = getCookie('token')
   const response = await axios.get(`${url}/app/react/sales-price-group/create`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`

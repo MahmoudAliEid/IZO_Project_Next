@@ -130,7 +130,7 @@ const initialValues = {
   allLocations: false,
   location_permissions: [],
   business_id: "",
-  salesCommission: '',
+  salesCommission: 0,
   maxSalesDiscount: '',
   dateOfBirth: new Date(),
   bloodGroup: '',

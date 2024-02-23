@@ -11,18 +11,18 @@ const initialState = {
   error: null
 }
 
-const token = getCookie('token')
-
-const axiosInstance = axios.create({
-  headers: {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-})
-
 // Define an async thunk for deleting a user
 export const postDeleteContact = createAsyncThunk('dashboard/postDeleteContact', async payload => {
   const { id, url } = payload
+  const token = getCookie('token')
+
+  const axiosInstance = axios.create({
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
+
   const response = await axiosInstance.post(`${url}/app/react/contact/del/${id}`)
   const data = response.data
 
