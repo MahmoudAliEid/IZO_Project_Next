@@ -33,6 +33,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import CustomRoles from './CustomRoles'
 
 interface CardDataType {
   title: string
@@ -206,6 +207,7 @@ const RolesCards = () => {
   return (
     <Grid container spacing={6} className='match-height'>
       {renderCards()}
+      <CustomRoles/>
       <Grid item xs={12} sm={6} lg={4}>
         <Card
           sx={{ cursor: 'pointer' }}
@@ -244,7 +246,7 @@ const RolesCards = () => {
             </Grid>
           </Grid>
         </Card>
-      </Grid>
+      C</Grid>
       <Dialog fullWidth maxWidth='md' scroll='body' onClose={handleClose} open={open}>
         <DialogTitle
           sx={{

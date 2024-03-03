@@ -15,7 +15,7 @@ const token = getCookie('token')
 // Define an async thunk to fetch data from the API
 export const fetchUsers = createAsyncThunk('users/fetchData', async () => {
   try {
-    const response = await axios.get(`https://test.izocloud.net/api/app/react/get-user`, {
+    const response = await axios.get(`https://test.izocloud.com/api/app/react/get-user`, {
       headers: {
         Authorization: 'Bearer ' + `${token}`
       }

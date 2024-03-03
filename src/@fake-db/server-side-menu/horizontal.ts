@@ -23,16 +23,55 @@ const navigation: HorizontalNavItemsType = [
         icon: 'bx:analyse',
         title: 'eCommerce',
         path: '/dashboards/ecommerce'
+      }
+    ]
+  },
+  {
+    icon: 'fa-solid:users',
+    title: 'Users & Permissions',
+    children: [
+      {
+        title: 'List',
+        path: '/apps/user/list'
       },
       {
-        icon: 'bx:analyse',
-        title: 'Sales',
-        path: '/dashboards/sales'
+        title: 'View',
+        children: [
+          {
+            title: 'Account',
+            path: '/apps/user/view/account'
+          },
+          {
+            title: 'Security',
+            path: '/apps/user/view/security'
+          },
+          {
+            title: 'Billing & Plans',
+            path: '/apps/user/view/billing-plan'
+          },
+          {
+            title: 'Notifications',
+            path: '/apps/user/view/notification'
+          },
+          {
+            title: 'Connection',
+            path: '/apps/user/view/connection'
+          }
+        ]
       },
       {
-        icon: 'bx:analyse',
-        title: 'Purchases',
-        path: '/dashboards/purchases'
+        title: 'Roles & Permissions',
+        icon: 'bx:check-shield',
+        children: [
+          {
+            title: 'Roles',
+            path: '/apps/roles'
+          },
+          {
+            title: 'Permissions',
+            path: '/apps/permissions'
+          }
+        ]
       }
     ]
   },
@@ -40,79 +79,6 @@ const navigation: HorizontalNavItemsType = [
     icon: 'bx:customize',
     title: 'Apps',
     children: [
-      {
-        title: 'Email',
-        icon: 'bx:envelope',
-        path: '/apps/email'
-      },
-      {
-        title: 'Chat',
-        icon: 'bx:message',
-        path: '/apps/chat'
-      },
-      {
-        title: 'Calendar',
-        icon: 'bx:calendar',
-        path: '/apps/calendar'
-      },
-      {
-        title: 'Invoice',
-        icon: 'bx:food-menu',
-        children: [
-          {
-            title: 'List',
-            path: '/apps/invoice/list'
-          },
-          {
-            title: 'Preview',
-            path: '/apps/invoice/preview'
-          },
-          {
-            title: 'Edit',
-            path: '/apps/invoice/edit'
-          },
-          {
-            title: 'Add',
-            path: '/apps/invoice/add'
-          }
-        ]
-      },
-
-      {
-        title: 'User',
-        icon: 'bx:user',
-        children: [
-          {
-            title: 'List',
-            path: '/apps/user/list'
-          },
-          {
-            title: 'View',
-            children: [
-              {
-                title: 'Account',
-                path: '/apps/user/view/account'
-              },
-              {
-                title: 'Security',
-                path: '/apps/user/view/security'
-              },
-              {
-                title: 'Billing & Plans',
-                path: '/apps/user/view/billing-plan'
-              },
-              {
-                title: 'Notifications',
-                path: '/apps/user/view/notification'
-              },
-              {
-                title: 'Connection',
-                path: '/apps/user/view/connection'
-              }
-            ]
-          }
-        ]
-      },
       {
         title: 'Contacts',
         icon: 'bxs:contact',
@@ -186,6 +152,158 @@ const navigation: HorizontalNavItemsType = [
         ]
       },
       {
+        title: 'Purchase',
+        icon: 'bx:purchase-tag-alt',
+        children: [
+          {
+            title: 'List Purchases',
+            path: '/apps/purchase/list'
+          },
+          {
+            title: 'List Purchase Return',
+            path: '/apps/purchase/return'
+          },
+          {
+            title: 'Map',
+            path: '/apps/purchase/map'
+          }
+        ]
+      },
+      {
+        title: 'Sales',
+        icon: 'bx:purchase-tag',
+        children: [
+          {
+            title: 'All Sales',
+            path: '/apps/sales/list'
+          },
+          {
+            title: 'List Approved Quotations',
+            path: '/apps/sales/approved-quotations'
+          },
+          {
+            title: 'List Sales Return',
+            path: '/apps/sales/return'
+          },
+          {
+            title: 'Sales Commission Agents',
+            path: '/apps/sales/commission-agents'
+          },
+          {
+            title: 'Import Sales',
+            path: '/apps/sales/import-sales'
+          },
+          {
+            title: 'Quotations Terms',
+            path: '/apps/sales/quotations-terms'
+          }
+        ]
+      },
+      {
+        title: 'Vouchers',
+        icon: 'basil:edit-solid',
+        children: [
+          {
+            title: 'List Vouchers',
+            path: '/apps/vouchers/list'
+          },
+          {
+            title: 'Receipt Voucher',
+            path: '/apps/vouchers/receipt-voucher'
+          },
+          {
+            title: 'Journal Voucher List',
+            path: '/apps/vouchers/journal-voucher'
+          },
+          {
+            title: 'Expense Voucher',
+            path: '/apps/vouchers/expense-voucher'
+          }
+        ]
+      },
+      {
+        title: 'Cheques',
+        icon: 'icon-park-solid:bank-card-one',
+        children: [
+          { title: 'List Cheques', path: '/apps/cheques/list' },
+          {
+            title: 'Add Cheque In',
+            path: '/apps/cheques/add-cheque-in'
+          },
+          {
+            title: 'Add Cheque Out',
+            path: '/apps/cheques/add-cheque-out'
+          },
+          {
+            title: 'Contact Bank',
+            path: '/apps/cheques/contact-bank'
+          }
+        ]
+      },
+      {
+        title: 'Warehouse',
+        icon: 'ic:round-warehouse',
+        children: [
+          {
+            title: 'List Warehouse',
+            path: '/apps/warehouse/list'
+          },
+          {
+            title: 'Warehouse Movement',
+            path: '/apps/warehouse/movement'
+          },
+          {
+            title: 'Received',
+            path: '/apps/warehouse/received'
+          },
+          {
+            title: 'Delivered',
+            path: '/apps/warehouse/delivered'
+          },
+          {
+            title: 'Warehouse Transfer',
+            path: '/apps/warehouse/transfer'
+          }
+        ]
+      },
+      {
+        title: 'Email',
+        icon: 'bx:envelope',
+        path: '/apps/email'
+      },
+      {
+        title: 'Chat',
+        icon: 'bx:message',
+        path: '/apps/chat'
+      },
+      {
+        title: 'Calendar',
+        icon: 'bx:calendar',
+        path: '/apps/calendar'
+      },
+      {
+        title: 'Invoice',
+        icon: 'bx:food-menu',
+        children: [
+          {
+            title: 'List',
+            path: '/apps/invoice/list'
+          },
+          {
+            title: 'Preview',
+            path: '/apps/invoice/preview'
+          },
+          {
+            title: 'Edit',
+            path: '/apps/invoice/edit'
+          },
+          {
+            title: 'Add',
+            path: '/apps/invoice/add'
+          }
+        ]
+      },
+      {
         title: 'Roles & Permissions',
         icon: 'bx:check-shield',
         children: [
@@ -198,6 +316,136 @@ const navigation: HorizontalNavItemsType = [
             path: '/apps/permissions'
           }
         ]
+      }
+    ]
+  },
+  {
+    title: 'Cash & Bank',
+    icon: 'bx:money',
+    children: [
+      {
+        title: 'Cash List',
+        icon: 'ic:sharp-money',
+        path: '/apps/cash/list'
+      },
+      {
+        title: 'Bank List',
+        icon: 'fa:bank',
+        path: '/apps/cash/list'
+      }
+    ]
+  },
+  {
+    title: 'Reports & Accounts',
+    icon: 'bx:bar-chart-square',
+    children: [
+      {
+        title: 'Accounts',
+        icon: 'ic:round-account-balance',
+        children: [
+          {
+            title: 'List Accounts',
+            path: '/apps/accounts/list'
+          },
+          {
+            title: 'Balance Sheet',
+            path: '/apps/accounts/balance-sheet'
+          },
+          {
+            title: 'Trial Balance',
+            path: '/apps/accounts/trial-balance'
+          },
+          {
+            title: 'Cash Flow',
+            path: '/apps/accounts/cash-flow'
+          },
+          {
+            title: 'Payment Account Report',
+            path: '/apps/accounts/payment-account-report'
+          },
+          {
+            title: 'List Entries',
+            path: '/apps/accounts/list-entries'
+          },
+          {
+            title: 'Cost Center',
+            path: '/apps/accounts/cost-center'
+          }
+        ]
+      },
+      {
+        title: 'Reports', // Add "Report Sections" sub-menu
+        icon: 'ic:round-report',
+        children: [
+          { title: 'Profit/Loss Report', path: '/apps/reports/profit-loss' },
+          { title: 'Product Sales Day', path: '/apps/reports/product-sales-day' },
+          { title: 'Purchase & Sale', path: '/apps/reports/purchase-sale' },
+          { title: 'Tax Report', path: '/apps/reports/tax' },
+          { title: 'Supplier & Customer Report', path: '/apps/reports/supplier-customer' },
+          { title: 'Customer Groups Report', path: '/apps/reports/customer-groups' },
+          { title: 'Inventory Report', path: '/apps/reports/inventory' },
+          { title: 'Stock Expiry Report', path: '/apps/reports/stock-expiry' },
+          { title: 'Stock Adjustment Report', path: '/apps/reports/stock-adjustment' },
+          { title: 'Trending Products', path: '/apps/reports/trending-products' },
+          { title: 'Items Report', path: '/apps/reports/items' },
+          { title: 'Product Purchase Report', path: '/apps/reports/product-purchase' },
+          { title: 'Product Sell Report', path: '/apps/reports/product-sell' },
+          { title: 'Purchase Payment Report', path: '/apps/reports/purchase-payment' },
+          { title: 'Sell Payment Report', path: '/apps/reports/sell-payment' },
+          { title: 'Report Setting', path: '/apps/reports/settings' }, // For configuration options
+          { title: 'Expense Report', path: '/apps/reports/expense' },
+          { title: 'Register Report', path: '/apps/reports/register' },
+          { title: 'Sales Representative Report', path: '/apps/reports/sales-rep' },
+          { title: 'Activity Log', path: '/apps/reports/activity-log' }
+        ]
+      },
+      {
+        title: 'Patterns',
+        icon: 'eos-icons:patterns',
+        children: [
+          {
+            title: 'Business Locations',
+            path: '/apps/patterns/business-locations'
+          },
+          {
+            title: 'Define Patterns',
+            path: '/apps/patterns/define-patterns'
+          },
+          {
+            title: 'System Account',
+            path: '/apps/patterns/system-account'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Settings',
+    icon: 'bx:slider-alt',
+    children: [
+      {
+        title: 'Business Settings',
+        path: '/apps/settings/business-settings'
+      },
+      {
+        title: 'Invoice Settings',
+        path: '/apps/settings/invoice-settings'
+      },
+      {
+        title: 'Barcode Settings',
+        path: '/apps/settings/barcode-settings'
+      },
+      {
+        title: 'Receipt Printers',
+        path: '/apps/settings/receipt-printers'
+      },
+      {
+        title: 'Tax Rates',
+        path: '/apps/settings/tax-rates'
+      },
+      {
+        title: 'Types of Service',
+        path: '/apps/settings/types-of-service'
       }
     ]
   },

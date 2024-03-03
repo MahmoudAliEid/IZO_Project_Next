@@ -37,7 +37,7 @@ const initialStateDate: RegisterState = {
 export const register = createAsyncThunk('feature/register', async (registerData: RegisterData) => {
   try {
     const response: AxiosResponse<any> = await axios.post(
-      'https://test.izocloud.net/api/app/react/register',
+      'https://test.izocloud.com/api/app/react/register',
       registerData,
       {
         headers: {

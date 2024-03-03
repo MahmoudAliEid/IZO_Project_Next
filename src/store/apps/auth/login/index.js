@@ -21,7 +21,7 @@ const initialState = {
 // Define an async thunk action to handle login
 export const login = createAsyncThunk('feature/login', async loginData => {
   try {
-    const response = await axios.post('https://test.izocloud.net/api/app/react/login', loginData, {
+    const response = await axios.post('https://test.izocloud.com/api/app/react/login', loginData, {
       headers: {
         'Content-Type': 'application/json'
       }

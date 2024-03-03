@@ -74,6 +74,7 @@ const defaultSuggestionsData: DefaultSuggestionsType[] = [
         icon: 'bx:cart',
         suggestion: 'eCommerce',
         link: '/dashboards/ecommerce'
+
       },
       {
         icon: 'bx:group',

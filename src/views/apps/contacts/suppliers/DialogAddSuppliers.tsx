@@ -44,7 +44,7 @@ const DialogAddSuppliers = ({ isView, open, toggle, isEdit, itemId, contact }: a
 
   return (
     <Fragment>
-      <Dialog open={open} scroll='body' maxWidth='lg' fullWidth={true} onClose={handleClose} aria-labelledby='max-width-dialog-title'>
+      <Dialog open={open}  maxWidth='lg' sx={{height:'100vh'}} fullWidth={true} onClose={handleClose} aria-labelledby='max-width-dialog-title'>
         <CustomHeader
           title={isEdit ? `Edit ${contact}` : `Add New ${contact}`}
           handleClose={handleClose}

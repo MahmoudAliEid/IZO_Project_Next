@@ -67,8 +67,18 @@ const steps = [
     subtitle: 'Manage Personal Information'
   },
   {
+    icon: 'bx:user-circle',
+    title: 'Personal Information 2',
+    subtitle: 'Manage Personal Information'
+  },
+  {
     icon: 'bx:info-circle',
     title: 'More Information',
+    subtitle: 'Provide Additional Information'
+  },
+  {
+    icon: 'bx:info-circle',
+    title: 'More Information 2',
     subtitle: 'Provide Additional Information'
   },
   {
@@ -240,7 +250,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
       case 0:
         return (
           <Fragment key={step}>
-           <Grid container spacing={5} justifyContent={'center'} alignContent={'center'} margin={'auto'}>
+           <Grid container spacing={3} justifyContent={'center'}  margin={'auto'} >
               <Grid item lg={6} md={6} sm={12} xs={12}>
 
                   <FormControl fullWidth>
@@ -352,6 +362,15 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
               />
             </Grid>
 
+
+               </Grid>
+          </Fragment>
+        )
+      case 1:
+        return (
+          <Fragment key={step}>
+           <Grid container spacing={3} justifyContent={'center'}  margin={'auto'} >
+
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
                 as={TextField}
@@ -438,11 +457,11 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                </Grid>
           </Fragment>
         )
-      case 1:
+      case 2:
         return (
           <Fragment key={step}>
             {/* Tax number input  */}
-            <Grid container spacing={3} justifyContent={'center'} alignContent={'center'} alignItems={'center'} margin={'auto'}>
+            <Grid container spacing={3} justifyContent={'center'} alignItems={'center'} margin={'auto'} height={'100%'} >
             <Grid item lg={6} xs={12} sm={12} md={6}>
               <Field
                 as={TextField}
@@ -557,6 +576,17 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
               </Grid>
 
 
+
+
+              </Grid>
+
+          </Fragment>
+        )
+      case 3:
+        return (
+          <Box sx={{height:"100%"}} key={step} >
+            {/* Tax number input  */}
+            <Grid container spacing={3} justifyContent={'center'} alignItems={'center'} margin={'auto'}  >
               <Grid item lg={6} xs={12} sm={12} md={6}>
                 {/* filed for city */}
                 <Field
@@ -618,15 +648,13 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   type='number'
                 />
               </Grid>
-
               </Grid>
-
-          </Fragment>
+          </Box>
         )
-      case 2:
+      case 4:
         return (
           <Fragment key={step}>
-            <Grid container spacing={3} justifyContent={'center'} alignContent={'center'} alignItems={'center'} margin={'auto'}>
+            <Grid container spacing={3} justifyContent={'center'} alignContent={'center'} alignItems={'center'} margin={'auto'}  sx={{height:'100vh'}}>
             {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
               <Grid item lg={6} xs={12} sm={12} md={6} key={num}>
                 <Field
@@ -660,8 +688,13 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
               </Grid>
           </Fragment>
         )
-      case 3:
-        return <Fragment key={step}></Fragment>
+      case 5:
+        return <Fragment key={step}>
+          <Grid container spacing={2} sx={{ height: '100vh' }} justifyContent={'center'} alignContent={'center'} alignItems={'center'}>
+
+          </Grid>
+
+        </Fragment>
       default:
         return 'Unknown Step'
     }
@@ -864,7 +897,8 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
             justifyContent={'center'}
             alignContent={'center'}
             alignItems={'center'}
-            padding={3}
+           padding={3}
+            sx={{height:'100vh'}}
           >
             <Grid item xs={12} sx={{ margin: 'auto' }}>
               <Typography align='center'>All steps are completed! 🎉</Typography>
@@ -889,7 +923,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
         >
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue,resetForm}) => (
             <form>
-              <Grid container spacing={5} mt={5}>
+              <Grid container spacing={5} mt={5} sx={{height:'100%' }}>
                 <Grid item xs={12} mb={5}>
                   <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
                     {steps[activeStep].title}
@@ -898,6 +932,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                     {steps[activeStep].subtitle}
                   </Typography>
                 </Grid>
+
 
                 {getStepContent({
                   values,
@@ -909,7 +944,9 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   step: activeStep
                 })}
 
-               <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+
+
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between'}}>
                   <Button
                     size='large'
                     variant='outlined'
@@ -946,7 +983,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
     <Card
         sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: { xs: 'column', md: 'row', lg: 'row' } }}
     >
-       <LoadingAnimation
+      <LoadingAnimation
         open={openLoading}
         onClose={() => setOpenLoading(false)}
         statusType={isEdit ? editStatus : saveStatus}
@@ -956,23 +993,20 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
           <Stepper
             activeStep={activeStep}
             connector={<></>}
-
             orientation='vertical'
             sx={{ height: '100%', minWidth: '15rem' }}
-
           >
             {steps.map((step, index) => {
               return (
                 <Step
                   key={index}
                   sx={{
-                    padding: '0px !important'
+                    padding: '0px !important',
                   }}
                 >
                   <StepLabel StepIconComponent={StepperCustomDot}>
                     <div
                       className='step-label'
-
                       style={{
                         cursor: 'pointer',
                         display: 'flex',
@@ -980,7 +1014,6 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
-                        height: '100%',
                         padding: '2rem 0'
                       }}
                       onClick={() => {
@@ -998,7 +1031,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                           })
                         }}
                       >
-                         <Icon icon={step.icon} />
+                        <Icon icon={step.icon} />
                       </CustomAvatar>
                       <div
                         style={{

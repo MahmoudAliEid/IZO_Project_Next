@@ -650,7 +650,7 @@ const Suppliers = () => {
   const [url, setUrl] = useState('')
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-  const title = 'Suppliers List-Manage your Suppliers'
+  const title = 'Suppliers List'
 
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -745,11 +745,9 @@ const Suppliers = () => {
       </Grid> */}
       <Grid item xs={12}>
         <Card>
-          <CardHeader title={title} />
-          <Divider sx={{ m: '0 !important' }} />
           <Box
             sx={{
-              p: 6,
+              px: 6,
               gap: 4,
               display: 'flex',
               flexWrap: 'wrap',
@@ -757,12 +755,16 @@ const Suppliers = () => {
               justifyContent: 'space-between'
             }}
           >
+            <Box>
+              <CardHeader title={title} />
+            </Box>
             <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
               <Button startIcon={<AddCircleOutlineIcon />} onClick={toggleAddSuppliersDrawer} variant='contained'>
                 Add
               </Button>
             </Box>
           </Box>
+          <Divider sx={{ mb: 2 }} />
           <Box>
             {data ? (
               <>
