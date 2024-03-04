@@ -65,6 +65,7 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { getCookie } from 'cookies-next'
 import { convertDateFormat } from 'src/@core/layouts/utils';
 import { FormHelperText, IconButton, InputAdornment } from '@mui/material'
+import GlobalScroll from 'src/@core/components/global-scroll/GlobalScroll'
 
 // interface State {
 //   password: string
@@ -399,6 +400,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
       case 0:
         return (
           <Fragment key={step} >
+            <Grid container spacing={3} sx={{p:10}}>
 
             <Grid item xs={12}>
               <FormControl fullWidth variant='outlined'>
@@ -422,17 +424,15 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} >
               <Field
                 as={TextField}
                 name='firstName'
                 label='First Name'
                 variant='outlined'
                 fullWidth
-                margin='normal'
-
                 required
-                sx={{ gridColumn: 'span 6' }}
+                sx={{ gridColumn: 'span 6' ,m:0 }}
               />
               {
                 errors.firstName && touched.firstName && (
@@ -443,16 +443,16 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               }
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} >
               <Field
                 as={TextField}
                 name='lastName'
                 label='Last Name'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                 sx={{ gridColumn: 'span 6' ,m:0 }}
                 required
-                sx={{ gridColumn: 'span 6' }}
+
               />
               {
                 errors.lastName && touched.lastName && (
@@ -463,8 +463,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               }
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <Field as={TextField} name='email' label='E-mail' variant='outlined' fullWidth margin='normal' required />
+            <Grid item xs={12} >
+              <Field as={TextField} name='email' label='E-mail' variant='outlined' fullWidth  sx={{ gridColumn: 'span 6' ,m:0 }} required />
               {
                 errors.email && touched.email && (
                   <FormHelperText error id='component-helper-email'>
@@ -476,7 +476,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
             <Grid
               item
               xs={12}
-              sm={6}
+
               sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -502,6 +502,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
               />
 
               </Grid>
+            </Grid>
+
 
           </Fragment>
         )
@@ -714,7 +716,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
 
               <Grid container spacing={5}>
 
-               <Grid item xs={12} md={6} lg={6} sm={12}>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
 
               <FormControlLabel
                 label='allow login'
@@ -732,7 +734,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                 required
               />
               </Grid>
-               <Grid item xs={12} md={6} lg={6} sm={12}>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
                 <FormControlLabel
                     label='All Locations'
                     control={
@@ -854,7 +856,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                            }
                   </FormControl>
               </Grid>
-               <Grid item xs={12} md={6} lg={6} sm={12}>
+              <Grid item xs={12} md={6} lg={6} sm={12}>
                  <FormControl fullWidth >
                 <InputLabel id='demo-simple-select-standard-label'>Select Roles </InputLabel>
                 <Select
@@ -906,9 +908,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                       ))}
                   </Select>
                 </FormControl>
-                 </Grid>
-         {values.allLocations ? null : (
-                 <Grid item xs={12} >
+                  </Grid>
+                  {values.allLocations ? null : (
+                  <Grid item xs={12} >
                   <FormControl
                   fullWidth>
                     <InputLabel id='demo-multiple-chip-label'>Location Permissions</InputLabel>
@@ -1725,7 +1727,7 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     {steps[activeStep].subtitle}
                   </Typography>
                 </Grid>
-
+                <GlobalScroll>
                 {getStepContent({
                   values,
                   errors,
@@ -1736,6 +1738,8 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                   step: activeStep
 
                 })}
+                </GlobalScroll>
+
 
                 <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Button

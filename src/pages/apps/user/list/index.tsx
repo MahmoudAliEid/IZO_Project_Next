@@ -424,9 +424,6 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
       </Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title={title} />
-
-          <Divider sx={{ m: '0 !important' }} />
           <Box
               sx={{
                 p: 6,
@@ -437,12 +434,15 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
                 justifyContent: 'space-between'
               }}
             >
-              <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '200px' }}>
+          <CardHeader title={title} />
+
+              <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', mb: 2  }}>
                 <Button fullWidth startIcon={<AddCircleOutlineIcon />} onClick={toggleAddUserDrawer} variant='contained'>
                   Add
                 </Button>
               </Box>
             </Box>
+          <Divider sx={{ mb:2 }} />
 
           <Box >
             {data ? <DataGrid

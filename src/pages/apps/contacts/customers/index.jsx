@@ -619,7 +619,7 @@ const Customers = () => {
   const [url, setUrl] = useState('')
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-  const title = 'Customers List-Manage your Customers'
+  const title = 'Customers List'
 
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -713,8 +713,6 @@ const Customers = () => {
       </Grid> */}
       <Grid item xs={12}>
         <Card>
-          <CardHeader title={title} />
-          <Divider sx={{ m: '0 !important' }} />
           <Box
             sx={{
               p: 6,
@@ -725,12 +723,14 @@ const Customers = () => {
               justifyContent: 'space-between'
             }}
           >
-            <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+            <CardHeader title={title} />
+            <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
               <Button startIcon={<AddCircleOutlineIcon />} onClick={toggleAddCustomerDrawer} variant='contained'>
                 Add
               </Button>
             </Box>
           </Box>
+          <Divider sx={{ mb: 2 }} />
           <Box>
             {data ? (
               <DataGrid

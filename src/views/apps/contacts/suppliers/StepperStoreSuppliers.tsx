@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Stepper from '@mui/material/Stepper'
 import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
+import { styled,useTheme } from '@mui/material/styles'
 import StepLabel from '@mui/material/StepLabel'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -142,6 +142,9 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
   const [openLoading, setOpenLoading] = useState(false)
 
 
+  //** Theme */
+  const theme=useTheme()
+
   useEffect(() => {
     const token = getCookie('token')
     const url = getCookie('apiUrl')
@@ -250,7 +253,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
       case 0:
         return (
           <Fragment key={step}>
-           <Grid container spacing={3} justifyContent={'center'}  margin={'auto'} >
+           <Grid container spacing={3} justifyContent={'center'}  margin={'auto '} sx={{p:10,}}  >
               <Grid item lg={6} md={6} sm={12} xs={12}>
 
                   <FormControl fullWidth>
@@ -314,9 +317,9 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   label='Business Name'
                     variant='outlined'
                     fullWidth
-                  margin='normal'
+                  sx={{margin:0,p:0, gridColumn: 'span 6' }}
                   required
-                  sx={{ gridColumn: 'span 6' }}
+
                   />
                 </FormControl>
               </Grid>
@@ -331,9 +334,9 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='First Name'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0, gridColumn: 'span 6'}}
                 required
-                sx={{ gridColumn: 'span 6' }}
+
               />
             </Grid>
 
@@ -344,9 +347,9 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Middle Name'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0 , gridColumn: 'span 6'}}
                 required
-                sx={{ gridColumn: 'span 6' }}
+
               />
             </Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -356,9 +359,9 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Last Name'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0, gridColumn: 'span 6'}}
                 required
-                sx={{ gridColumn: 'span 6' }}
+
               />
             </Grid>
 
@@ -369,7 +372,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
       case 1:
         return (
           <Fragment key={step}>
-           <Grid container spacing={3} justifyContent={'center'}  margin={'auto'} >
+           <Grid container spacing={3} justifyContent={'center'}  margin={'auto'} sx={{p:10,}} >
 
             <Grid item lg={6} md={6} sm={12} xs={12}>
               <Field
@@ -378,7 +381,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Mobile Number'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0}}
                 placeholder='mobile number'
                 value={values.mobile}
                 onChange={handleChange}
@@ -397,7 +400,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Alternative Mobile Number'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0}}
                 placeholder='alternative mobile number'
                 value={values.alternate_number}
                 onChange={handleChange}
@@ -413,7 +416,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Landline Number'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0}}
                 placeholder='family contact number'
                 value={values.landline}
                   onChange={handleChange}
@@ -429,10 +432,10 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   label='E-mail'
                   variant='outlined'
                   fullWidth
-                  margin='normal'
+                  sx={{margin:0,p:0, gridColumn: 'span 6'}}
                   required
                   type='email'
-                  sx={{ gridColumn: 'span 6' }}
+
                 />
               </Grid>
 
@@ -461,7 +464,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
         return (
           <Fragment key={step}>
             {/* Tax number input  */}
-            <Grid container spacing={3} justifyContent={'center'} alignItems={'center'} margin={'auto'} height={'100%'} >
+            <Grid container spacing={3} justifyContent={'center'} alignItems={'center'} margin={'auto'} height={'100%'} sx={{p:10,}} >
             <Grid item lg={6} xs={12} sm={12} md={6}>
               <Field
                 as={TextField}
@@ -469,7 +472,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Tax Number'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0}}
                 placeholder='tax number'
                 value={values.tax_number}
                 onChange={handleChange}
@@ -483,7 +486,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Opening Balance'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0}}
                 placeholder='opening balance'
                 value={values.opening_balance}
                 onChange={handleChange}
@@ -553,7 +556,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Address Line 1'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0}}
                 placeholder='address line 1'
                 value={values.address_line_1}
                 onChange={handleChange}
@@ -567,7 +570,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Address Line 2'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                sx={{margin:0,p:0}}
                 placeholder='address line 2'
                 value={values.address_line_2}
                 onChange={handleChange}
@@ -584,9 +587,9 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
         )
       case 3:
         return (
-          <Box sx={{height:"100%"}} key={step} >
+          <Fragment key={step} >
             {/* Tax number input  */}
-            <Grid container spacing={3} justifyContent={'center'} alignItems={'center'} margin={'auto'}  >
+            <Grid container spacing={3} justifyContent={'center'} alignItems={'center'} margin={'auto'} sx={{p:10,}}>
               <Grid item lg={6} xs={12} sm={12} md={6}>
                 {/* filed for city */}
                 <Field
@@ -595,7 +598,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   label='City'
                   variant='outlined'
                   fullWidth
-                  margin='normal'
+                  sx={{margin:0,p:0}}
                   placeholder='city'
                   value={values.city}
                   onChange={handleChange}
@@ -610,7 +613,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   label='State'
                   variant='outlined'
                   fullWidth
-                  margin='normal'
+                  sx={{margin:0,p:0}}
                   placeholder='state'
                   value={values.state}
                   onChange={handleChange}
@@ -625,7 +628,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   label='Country'
                   variant='outlined'
                   fullWidth
-                  margin='normal'
+                  sx={{margin:0,p:0}}
                   placeholder='country'
                   value={values.country}
                   onChange={handleChange}
@@ -640,7 +643,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   label='Zip Code'
                   variant='outlined'
                   fullWidth
-                  margin='normal'
+                  sx={{margin:0,p:0}}
                   placeholder='zip code'
                   value={values.zip_code}
                   onChange={handleChange}
@@ -649,21 +652,21 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 />
               </Grid>
               </Grid>
-          </Box>
+          </Fragment>
         )
       case 4:
         return (
           <Fragment key={step}>
-            <Grid container spacing={3} justifyContent={'center'} alignContent={'center'} alignItems={'center'} margin={'auto'}  sx={{height:'100vh'}}>
+            <Grid container spacing={3} justifyContent={'center'} alignContent={'center'} alignItems={'center'} margin={'auto'}  sx={{ p:10,}}>
             {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
-              <Grid item lg={6} xs={12} sm={12} md={6} key={num}>
+              <Grid item lg={6} xs={12} sm={12} md={6} key={num} >
                 <Field
                   as={TextField}
                   name={`custom_field${num}`}
                   label={`Custom Field ${num}`}
                   variant='outlined'
                   fullWidth
-                  margin='normal'
+                  sx={{margin:0,p:0}}
                   placeholder={`custom field ${num}`}
                   value={values[`custom_field${num}`]}
                   onChange={handleChange}
@@ -679,7 +682,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                 label='Shipping Address'
                 variant='outlined'
                 fullWidth
-                margin='normal'
+                 sx={{margin:0,p:0}}
                 placeholder='shipping address'
                 value={values.shipping_address}
                 onChange={handleChange}
@@ -690,7 +693,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
         )
       case 5:
         return <Fragment key={step}>
-          <Grid container spacing={2} sx={{ height: '100vh' }} justifyContent={'center'} alignContent={'center'} alignItems={'center'}>
+          <Grid container spacing={2} sx={{ height: '100vh',p:10, }} justifyContent={'center'} alignContent={'center'} alignItems={'center'}>
 
           </Grid>
 
@@ -933,6 +936,31 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   </Typography>
                 </Grid>
 
+                {/* @ts-ignore */}
+                <Box
+                  sx={{
+                  height: "300px", overflowY: 'scroll', width: "100%",
+                  overflowX: 'hidden',
+                  paddingRight:"5px !important",
+                  scrollbarGutter:"inherit",
+                  '&::-webkit-scrollbar': {
+                  width: '5px',
+                  //  marginLeft: "5px !important",
+                    backgroundColor:"transparent"
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    // boxShadow: 'inset 0 0 5px transparent',
+                    borderRadius: '10px',
+                    backgroundColor:"transparent"
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: `${theme.palette.primary.light}`,
+                    borderRadius: '10px',
+                  },
+                  '&::-webkit-scrollbar-thumb:hover': {
+                    background: `${theme.palette.primary.main}`,
+                  },
+                }}>
 
                 {getStepContent({
                   values,
@@ -943,6 +971,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   setFieldValue,
                   step: activeStep
                 })}
+                </Box>
 
 
 

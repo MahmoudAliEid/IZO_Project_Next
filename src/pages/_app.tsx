@@ -162,12 +162,13 @@ const App = (props: ExtendedAppProps) => {
 
               /* Custom scrollbar styles */
     ::-webkit-scrollbar {
-      width: 10px; /* Width of the scrollbar */
-      border-radius: 10px;
-      height: 10px;
+      width: 8px; /* Width of the scrollbar */
+
+      height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #f1f1f1; /* Color of the track */
+      background: 'transparent'; /* Color of the track */
+       border-radius: 10px;
     }
     ::-webkit-scrollbar-thumb {
        background: ${mainColor}; /* Color of the scroll thumb on hover */

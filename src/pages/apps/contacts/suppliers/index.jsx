@@ -758,7 +758,7 @@ const Suppliers = () => {
             <Box>
               <CardHeader title={title} />
             </Box>
-            <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
               <Button startIcon={<AddCircleOutlineIcon />} onClick={toggleAddSuppliersDrawer} variant='contained'>
                 Add
               </Button>
