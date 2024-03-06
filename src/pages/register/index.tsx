@@ -267,7 +267,6 @@ const Register: React.FC<{ currencies: CurrenciesType }> & {
                   <Grid spacing={2} item xs={12} sx={{ padding: '20px 0' }}>
                     <fieldset style={{ border: '1px solid #ec6608', borderRadius: '10px', padding: '20px' }}>
                       <legend className={styles.gradientText}>Company Details</legend>
-
                       <Box
                         sx={{
                           display: 'flex',

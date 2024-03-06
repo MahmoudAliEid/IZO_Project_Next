@@ -1,13 +1,14 @@
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
-const GlobalScroll = ({ children }) => {
+const GlobalScroll = props => {
   const theme = useTheme()
+  const { height, children } = props
 
   return (
     <Box
       sx={{
-        height: '300px',
+        height: height ? height : '300px',
         overflowY: 'scroll',
         width: '100%',
         overflowX: 'hidden',

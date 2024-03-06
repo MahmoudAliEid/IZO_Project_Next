@@ -1727,7 +1727,9 @@ const StepperStoreUser = ({ isEdit, itemId }: any) => {
                     {steps[activeStep].subtitle}
                   </Typography>
                 </Grid>
-                <GlobalScroll>
+                <GlobalScroll
+
+                >
                 {getStepContent({
                   values,
                   errors,

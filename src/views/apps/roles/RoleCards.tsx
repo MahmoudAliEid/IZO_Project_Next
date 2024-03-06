@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -8,32 +8,33 @@ import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
-import Table from '@mui/material/Table'
+// import Table from '@mui/material/Table'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
-import Dialog from '@mui/material/Dialog'
+// import Dialog from '@mui/material/Dialog'
 import Tooltip from '@mui/material/Tooltip'
-import Checkbox from '@mui/material/Checkbox'
-import TableRow from '@mui/material/TableRow'
+// import Checkbox from '@mui/material/Checkbox'
+// import TableRow from '@mui/material/TableRow'
 import { useTheme } from '@mui/material/styles'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TextField from '@mui/material/TextField'
+// import TableBody from '@mui/material/TableBody'
+// import TableCell from '@mui/material/TableCell'
+// import TableHead from '@mui/material/TableHead'
+// import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import FormControl from '@mui/material/FormControl'
-import DialogTitle from '@mui/material/DialogTitle'
+// import FormControl from '@mui/material/FormControl'
+// import DialogTitle from '@mui/material/DialogTitle'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import CardContent from '@mui/material/CardContent'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import TableContainer from '@mui/material/TableContainer'
-import FormControlLabel from '@mui/material/FormControlLabel'
+// import DialogActions from '@mui/material/DialogActions'
+// import DialogContent from '@mui/material/DialogContent'
+// import TableContainer from '@mui/material/TableContainer'
+// import FormControlLabel from '@mui/material/FormControlLabel'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import CustomRoles from './CustomRoles'
+import RolesDialogForm from './dialogForm/RolesDialogForm'
 
 interface CardDataType {
   title: string
@@ -95,27 +96,24 @@ const cardData: CardDataType[] = [
   }
 ]
 
-const rolesArr: string[] = [
-  'User Management',
-  'Content Management',
-  'Disputes Management',
-  'Database Management',
-  'Financial Management',
-  'Reporting',
-  'API Control',
-  'Repository Management',
-  'Payroll'
-]
+// const rolesArr: string[] = [
+//   'User Management',
+//   'Content Management',
+//   'Disputes Management',
+//   'Database Management',
+//   'Financial Management',
+//   'Reporting',
+//   'API Control',
+//   'Repository Management',
+//   'Payroll'
+// ]
 
 const RolesCards = () => {
   // ** States
   const [open, setOpen] = useState<boolean>(false)
   const [dialogTitle, setDialogTitle] = useState<'Add' | 'Edit'>('Add')
-  const [selectedCheckbox, setSelectedCheckbox] = useState<string[]>([])
-  const [isIndeterminateCheckbox, setIsIndeterminateCheckbox] = useState<boolean>(false)
-
-
-
+  // const [selectedCheckbox, setSelectedCheckbox] = useState<string[]>([])
+  // const [isIndeterminateCheckbox, setIsIndeterminateCheckbox] = useState<boolean>(false)
 
   // ** Hook
   const theme = useTheme()
@@ -125,41 +123,41 @@ const RolesCards = () => {
 
   const handleClose = () => {
     setOpen(false)
-    setSelectedCheckbox([])
-    setIsIndeterminateCheckbox(false)
+    // setSelectedCheckbox([])
+    // setIsIndeterminateCheckbox(false)
   }
 
-  const togglePermission = (id: string) => {
-    const arr = selectedCheckbox
-    if (selectedCheckbox.includes(id)) {
-      arr.splice(arr.indexOf(id), 1)
-      setSelectedCheckbox([...arr])
-    } else {
-      arr.push(id)
-      setSelectedCheckbox([...arr])
-    }
-  }
+  // const togglePermission = (id: string) => {
+  //   const arr = selectedCheckbox
+  //   if (selectedCheckbox.includes(id)) {
+  //     arr.splice(arr.indexOf(id), 1)
+  //     setSelectedCheckbox([...arr])
+  //   } else {
+  //     arr.push(id)
+  //     setSelectedCheckbox([...arr])
+  //   }
+  // }
 
-  const handleSelectAllCheckbox = () => {
-    if (isIndeterminateCheckbox) {
-      setSelectedCheckbox([])
-    } else {
-      rolesArr.forEach(row => {
-        const id = row.toLowerCase().split(' ').join('-')
-        togglePermission(`${id}-read`)
-        togglePermission(`${id}-write`)
-        togglePermission(`${id}-create`)
-      })
-    }
-  }
+  // const handleSelectAllCheckbox = () => {
+  //   if (isIndeterminateCheckbox) {
+  //     setSelectedCheckbox([])
+  //   } else {
+  //     rolesArr.forEach(row => {
+  //       const id = row.toLowerCase().split(' ').join('-')
+  //       togglePermission(`${id}-read`)
+  //       togglePermission(`${id}-write`)
+  //       togglePermission(`${id}-create`)
+  //     })
+  //   }
+  // }
 
-  useEffect(() => {
-    if (selectedCheckbox.length > 0 && selectedCheckbox.length < rolesArr.length * 3) {
-      setIsIndeterminateCheckbox(true)
-    } else {
-      setIsIndeterminateCheckbox(false)
-    }
-  }, [selectedCheckbox])
+  // useEffect(() => {
+  //   if (selectedCheckbox.length > 0 && selectedCheckbox.length < rolesArr.length * 3) {
+  //     setIsIndeterminateCheckbox(true)
+  //   } else {
+  //     setIsIndeterminateCheckbox(false)
+  //   }
+  // }, [selectedCheckbox])
 
   const renderCards = () =>
     cardData.map((item, index: number) => (
@@ -240,6 +238,7 @@ const RolesCards = () => {
                     onClick={() => {
                       handleClickOpen()
                       setDialogTitle('Add')
+
                     }}
                   >
                     Add Role
@@ -250,8 +249,16 @@ const RolesCards = () => {
             </Grid>
           </Grid>
         </Card>
-      C</Grid>
-      <Dialog fullWidth maxWidth='md' scroll='body' onClose={handleClose} open={open}>
+      </Grid>
+      {
+        open && <RolesDialogForm
+          open={open}
+          isEdit={dialogTitle === 'Edit'}
+          itemId={null}
+          toggle={handleClose}
+        />
+      }
+      {/* <Dialog fullWidth maxWidth='md' scroll='body' onClose={handleClose} open={open}>
         <DialogTitle
           sx={{
             textAlign: 'center',
@@ -392,7 +399,7 @@ const RolesCards = () => {
             </Button>
           </Box>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Grid>
   )
 }
