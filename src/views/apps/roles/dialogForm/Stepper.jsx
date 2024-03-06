@@ -444,7 +444,7 @@ const StepperRoles = ({ isEdit }) => {
                       color: `${theme.palette.text.primary} !important`
                     }}
                   >
-                    {values.dashboard.title}
+                    Select All
                   </Typography>
                   <FormControlLabel
                     sx={{ fontSize: '8px !important' }}
@@ -476,7 +476,7 @@ const StepperRoles = ({ isEdit }) => {
                     <>
                       <Grid container spacing={4}>
                         {values.dashboard.permissions.map((permission, childIndex) => (
-                          <Grid item xs={12} md={6} lg={6} sm={12} key={childIndex}>
+                          <Grid item xs={12} md={4} lg={4} sm={12} key={childIndex}>
                             <CustomCheckBox
                               permission={permission}
                               handleChange={handleChange}
@@ -529,7 +529,7 @@ const StepperRoles = ({ isEdit }) => {
                       color: `${theme.palette.text.primary} !important`
                     }}
                   >
-                    {values.users.title}
+                    Select All
                   </Typography>
                   <FormControlLabel
                     sx={{ fontSize: '8px !important' }}
@@ -561,7 +561,7 @@ const StepperRoles = ({ isEdit }) => {
                     <>
                       <Grid container spacing={4}>
                         {values.users.permissions.map((permission, childIndex) => (
-                          <Grid item xs={12} md={6} lg={6} sm={12} key={childIndex}>
+                          <Grid item xs={12} md={4} lg={4} sm={12} key={childIndex}>
                             <CustomCheckBox
                               permission={permission}
                               handleChange={handleChange}
@@ -614,7 +614,7 @@ const StepperRoles = ({ isEdit }) => {
                       color: `${theme.palette.text.primary} !important`
                     }}
                   >
-                    {values.roles.title}
+                    Select All
                   </Typography>
                   <FormControlLabel
                     sx={{ fontSize: '8px !important' }}
@@ -646,7 +646,7 @@ const StepperRoles = ({ isEdit }) => {
                     <>
                       <Grid container spacing={4}>
                         {values.roles.permissions.map((permission, childIndex) => (
-                          <Grid item xs={12} md={6} lg={6} sm={12} key={childIndex}>
+                          <Grid item xs={12} md={4} lg={4} sm={12} key={childIndex}>
                             <CustomCheckBox
                               permission={permission}
                               handleChange={handleChange}
@@ -699,7 +699,7 @@ const StepperRoles = ({ isEdit }) => {
                       color: `${theme.palette.text.primary} !important`
                     }}
                   >
-                    {values.products.title}
+                    Select All
                   </Typography>
                   <FormControlLabel
                     sx={{ fontSize: '8px !important' }}
@@ -731,7 +731,7 @@ const StepperRoles = ({ isEdit }) => {
                     <>
                       <Grid container spacing={4}>
                         {values.products.permissions.map((permission, childIndex) => (
-                          <Grid item xs={12} md={6} lg={6} sm={12} key={childIndex}>
+                          <Grid item xs={12} md={4} lg={4} sm={12} key={childIndex}>
                             <CustomCheckBox
                               permission={permission}
                               handleChange={handleChange}
@@ -784,7 +784,7 @@ const StepperRoles = ({ isEdit }) => {
                       color: `${theme.palette.text.primary} !important`
                     }}
                   >
-                    {values.list_products_page.title}
+                    Select All
                   </Typography>
                   <FormControlLabel
                     sx={{ fontSize: '8px !important' }}
@@ -851,7 +851,7 @@ const StepperRoles = ({ isEdit }) => {
                   {() => (
                     <Grid container spacing={4}>
                       {values.list_products_page.actions.map((action, actionIndex) => (
-                        <Grid item xs={12} md={6} lg={6} sm={12} key={actionIndex}>
+                        <Grid item xs={12} md={4} lg={4} sm={12} key={actionIndex}>
                           <CustomCheckBoxSecond
                             permission={action}
                             handleChange={handleChange}
@@ -891,7 +891,7 @@ const StepperRoles = ({ isEdit }) => {
                   {() => (
                     <Grid container spacing={4}>
                       {values.list_products_page.table.map((table, tableIndex) => (
-                        <Grid item xs={12} md={6} lg={6} sm={12} key={tableIndex}>
+                        <Grid item xs={12} md={4} lg={4} sm={12} key={tableIndex}>
                           <CustomCheckBoxSecond
                             permission={table}
                             handleChange={handleChange}
@@ -1176,7 +1176,7 @@ const StepperRoles = ({ isEdit }) => {
                     paddingLeft: '3px !important',
                     paddingTop: '5px !important',
                     bottom: 0,
-                    gap: 10,
+                    gap: 6,
                     right: 0,
                     padding: 0,
                     width: '100%',
@@ -1194,7 +1194,7 @@ const StepperRoles = ({ isEdit }) => {
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      gap: 40,
+                      gap: 30,
                       pb: 5
                     }}
                   >
@@ -1303,7 +1303,7 @@ const StepperRoles = ({ isEdit }) => {
       <CardContent
         sx={{
           width: '100%',
-
+          mb: '100px',
           overFlowY: 'hidden'
         }}
       >
