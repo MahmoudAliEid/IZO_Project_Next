@@ -46,6 +46,7 @@ import {
 
 import MuiStep from '@mui/material/Step'
 import GlobalScroll from 'src/@core/components/global-scroll/GlobalScroll'
+import CustomRoleSection from './CustomRoleSection'
 
 const steps = [
   {
@@ -208,43 +209,490 @@ const StepperRoles = ({ isEdit }) => {
       permissions: [
         {
           title: 'List Products',
-          checked: false
+          subtitle: 'View all products',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Products',
+                  checked: false
+                }
+              ]
+            },
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
           title: 'Warranties',
-          checked: false
+          subtitle: 'View all warranties',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Warranties',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
-          title: 'Variants',
-          checked: false
+          title: 'Variations',
+          subtitle: 'View all variations',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Variations',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
           title: 'Categories',
-          checked: false
+          subtitle: 'View all categories',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Categories',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
           title: 'Brands',
-          checked: false
+          subtitle: 'View all brands',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Brands',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
           title: 'Import Opening Stock',
-          checked: false
+          subtitle: 'View all import opening stock',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Import Opening Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
           title: 'Add Opening Stock',
-          checked: false
+          subtitle: 'View all add opening stock',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Add Opening Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
           title: 'Import Product',
-          checked: false
+          subtitle: 'View all import product',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Import Product',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         },
         {
           title: 'Sale Price Group',
-          checked: false
+          subtitle: 'View all sale price group',
+          taps: [
+            {
+              title: 'Side Bar',
+              value: 0,
+              section: [
+                {
+                  title: 'List Sale Price Group',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Table',
+              value: 1,
+              section: [
+                {
+                  title: 'Name',
+                  checked: false
+                },
+                {
+                  title: 'SKU',
+                  checked: false
+                },
+                {
+                  title: 'View Stock',
+                  checked: false
+                }
+              ]
+            },
+
+            {
+              title: 'Actions',
+              value: 2,
+              section: [
+                {
+                  title: 'Edit',
+                  checked: false
+                },
+                {
+                  title: 'Delete',
+                  checked: false
+                },
+                {
+                  title: 'View',
+                  checked: false
+                }
+              ]
+            }
+          ]
         }
       ]
     },
-
     list_products_page: {
       title: 'list Products',
       add_button: false,
@@ -397,6 +845,10 @@ const StepperRoles = ({ isEdit }) => {
     if (activeStep === steps.length - 1) {
       toast.success('Form Submitted')
     }
+  }
+
+  const handleSubmitForm = values => {
+    console.log('values of Roles', values)
   }
 
   const getStepContent = ({ activeStep, values, setFieldValue, handleChange }) => {
@@ -669,86 +1121,7 @@ const StepperRoles = ({ isEdit }) => {
       case 4:
         return (
           <Fragment key={activeStep}>
-            <Grid container spacing={2} justifyContent='center'>
-              <Grid
-                item
-                xs={12}
-                sx={{
-                  m: 3,
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                  pl: 0,
-                  border: theme => `1px solid ${theme.palette.divider}`,
-                  borderRadius: theme => `${theme.spacing(2)} !important`
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    pl: 0
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: 600,
-                      pl: 0,
-                      whiteSpace: 'nowrap',
-                      textAlign: 'center',
-                      color: `${theme.palette.text.primary} !important`
-                    }}
-                  >
-                    Select All
-                  </Typography>
-                  <FormControlLabel
-                    sx={{ fontSize: '8px !important' }}
-                    control={
-                      <Field
-                        type='checkbox'
-                        label='Select All'
-                        checkedIcon={<IndeterminateCheckBoxIcon fontSize='medium' />}
-                        as={Checkbox}
-                        name={`products.checked`}
-                        //handle the select all checkbox in its own Permission
-
-                        onChange={e => {
-                          handleChange(e)
-                          // add logic to handle the select all checkbox
-                          const { checked } = e.target
-                          const permissions = values.products.permissions
-
-                          handleSelectAllCheckbox('products', checked, permissions, setFieldValue)
-                        }}
-                      />
-                    }
-                  />
-                </Box>
-                <Divider />
-
-                <FieldArray name={`products.permissions`}>
-                  {() => (
-                    <>
-                      <Grid container spacing={4}>
-                        {values.products.permissions.map((permission, childIndex) => (
-                          <Grid item xs={12} md={4} lg={4} sm={12} key={childIndex}>
-                            <CustomCheckBox
-                              permission={permission}
-                              handleChange={handleChange}
-                              values={values}
-                              setFieldValue={setFieldValue}
-                              name={`products.permissions.${childIndex}.checked`}
-                              nameOfSection='products'
-                              nameOfPermission='permissions'
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </>
-                  )}
-                </FieldArray>
-              </Grid>
-            </Grid>
+            <CustomRoleSection data={initialValues.products} name={'products'} handleChange={handleChange} />
           </Fragment>
         )
       case 5:
@@ -1151,7 +1524,7 @@ const StepperRoles = ({ isEdit }) => {
         <Formik initialValues={initialValues} onSubmit={e => e.preventDefault()}>
           {({ values, setFieldValue, handleChange }) => (
             <Form>
-              <Grid container spacing={5} sx={{ px: 10 }}>
+              <Grid container spacing={5} sx={{ px: 2 }}>
                 <Grid item xs={12}>
                   <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
                     {steps[activeStep].title}
@@ -1182,13 +1555,12 @@ const StepperRoles = ({ isEdit }) => {
                     width: '100%',
                     border: '1px',
                     borderColor: theme => theme.palette.grey[300],
-
                     position: 'absolute',
                     backgroundColor: theme => theme.palette.background.paper
                   }}
                 >
                   <Box
-                    // center it in middel of grid
+                    // center it in middle of grid
                     sx={{
                       width: '100%',
                       display: 'flex',
@@ -1207,20 +1579,19 @@ const StepperRoles = ({ isEdit }) => {
                     >
                       Back
                     </Button>
-                    {activeStep === steps.length - 1 ? (
-                      <Button
-                        size={'medium'}
-                        variant='contained'
-                        color='primary'
-                        onClick={() => handleSubmitForm(values, { resetForm })}
-                      >
-                        {isEdit ? 'Update' : 'Create'}
-                      </Button>
-                    ) : (
-                      <Button size={'medium'} variant='contained' color='primary' onClick={handleNext}>
-                        Next
-                      </Button>
-                    )}
+
+                    <Button
+                      size={'medium'}
+                      variant='contained'
+                      color='primary'
+                      onClick={() => handleSubmitForm(values)}
+                    >
+                      {isEdit ? 'Update' : 'Create'}
+                    </Button>
+
+                    <Button size={'medium'} variant='contained' color='primary' onClick={handleNext}>
+                      Next
+                    </Button>
                   </Box>
                 </Grid>
               </Grid>

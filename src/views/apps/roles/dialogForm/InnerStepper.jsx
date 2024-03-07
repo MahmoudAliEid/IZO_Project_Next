@@ -1,201 +1,140 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
+// import Card from '@mui/material/Card'
+import Step from '@mui/material/Step'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import Stepper from '@mui/material/Stepper'
-import { styled } from '@mui/material/styles'
 import StepLabel from '@mui/material/StepLabel'
+// import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import MuiStep from '@mui/material/Step'
+import StepContent from '@mui/material/StepContent'
 
 // ** Third Party Imports
+import clsx from 'clsx'
 import toast from 'react-hot-toast'
 
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-
 // ** Custom Components Imports
-import StepperCustomDot from './StepperCustomDot'
-import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// ** Util Import
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import StepperCustomDot from 'src/views/forms/form-wizard/StepperCustomDot'
 
 // ** Styled Component
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+import CustomRoleTabs from './CustomRoleTabs'
+import { FieldArray } from 'formik'
 
-const steps = [
-  {
-    icon: 'bx:home',
-    title: 'Account Details',
-    subtitle: 'Enter your Account Details'
-  },
-  {
-    icon: 'bx:user',
-    title: 'Personal Info',
-    subtitle: 'Setup Information'
-  },
-  {
-    icon: 'bx:link',
-    title: 'Social Links',
-    subtitle: 'Add Social Links'
-  }
-]
+// const steps = [
+//   {
+//     title: 'Account Details',
+//     subtitle: 'Enter your Account Details',
+//     description:
+//       'Chocolate cookie lollipop toffee candy canes marzipan liquorice chocolate. Cake gummi bears dessert lollipop apple pie candy. Candy pie sesame snaps lollipop biscuit chocolate cake fruitcake apple pie. Toffee carrot cake biscuit oat cake jujubes fruitcake biscuit gummi bears. Cake carrot cake jujubes sugar plum pastry gummi bears gingerbread icing. Lemon drops pie cake. Halvah marzipan bonbon gingerbread cupcake pastry gummi bears cake jujubes.'
+//   },
+//   {
+//     title: 'Personal Info',
+//     subtitle: 'Setup Information',
+//     description:
+//       'Lemon drops ice cream danish macaroon bear claw cookie. Liquorice ice cream chocolate bar pastry chocolate bar candy. Caramels candy canes marshmallow soufflé biscuit tart fruitcake tiramisu. Gummi bears icing gingerbread pastry bonbon gummies candy canes pastry. Candy canes chocolate chupa chups cake cheesecake apple pie halvah dessert. Chupa chups wafer tootsie roll fruitcake lemon drops cookie donut topping powder.'
+//   },
+//   {
+//     title: 'Social Links',
+//     subtitle: 'Add Social Links',
+//     description:
+//       'Jelly lollipop halvah bear claw jujubes macaroon candy canes. Soufflé halvah lollipop liquorice macaroon powder. Cookie topping pastry oat cake caramels bonbon. Sesame snaps sweet cookie macaroon soufflé pudding. Chocolate donut macaroon muffin donut biscuit marzipan halvah. Bear claw biscuit chocolate cake chupa chups oat cake bear claw cupcake tiramisu apple pie. Carrot cake bear claw marshmallow sweet pudding toffee.'
+//   }
+// ]
 
-const Step = styled(MuiStep)(({ theme }) => ({
-  paddingLeft: theme.spacing(4),
-  paddingRight: theme.spacing(4),
-  '&:first-of-type': {
-    paddingLeft: 0
-  },
-  '&:last-of-type': {
-    paddingRight: 0
-  },
-  '& .MuiStepLabel-iconContainer': {
-    display: 'none'
-  },
-  '& .step-subtitle': {
-    color: `${theme.palette.text.disabled} !important`
-  },
-  '&:not(.Mui-completed)': {
-    '& .step-title': {
-      color: theme.palette.text.secondary
-    },
-    '& + svg': {
-      color: theme.palette.text.disabled
-    }
-  },
-  '&.Mui-completed': {
-    '& .step-title': {
-      color: theme.palette.text.disabled
-    },
-    '& + svg': {
-      color: theme.palette.primary.main
-    }
-  },
-  '& .MuiStepLabel-label.Mui-active .step-title': {
-    color: theme.palette.primary.main
-  }
-}))
-
-const InnerStepper = () => {
+const InnerStepper = ({ steps, mainName, handleChange }) => {
   // ** States
+  const [activeStep, setActiveStep] = useState(0)
 
   // Handle Stepper
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
   const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1)
-    if (activeStep === steps.length - 1) {
-      toast.success('Form Submitted')
-    }
+    setActiveStep(prevActiveStep => {
+      const nextStep = prevActiveStep + 1
+      if (nextStep === steps.length) {
+        toast.success('Completed All Steps!!')
+      }
+
+      return nextStep
+    })
   }
 
-  const getStepContent = step => {
-    switch (step) {
-      case 0:
-        return <Fragment></Fragment>
-      case 1:
-        return <Fragment key={step}></Fragment>
-      case 2:
-        return <Fragment key={step}></Fragment>
-      default:
-        return 'Unknown Step'
-    }
+  const handleReset = () => {
+    setActiveStep(0)
   }
 
-  const renderContent = () => {
-    if (activeStep === steps.length) {
-      return (
-        <>
-          <Typography>All steps are completed!</Typography>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button size='large' variant='contained' onClick={handleReset}>
+  console.log('steps taps', steps[0].taps)
+
+  return (
+    <Box>
+      <CardContent>
+        <StepperWrapper>
+          <FieldArray name={`${mainName}.permissions`}>
+            {() => (
+              <>
+                <Stepper activeStep={activeStep} orientation='vertical'>
+                  {steps.map((step, index) => {
+                    console.log('step🍗🍖', step.taps)
+
+                    return (
+                      <Step key={index} className={clsx({ active: activeStep === index })}>
+                        <StepLabel StepIconComponent={StepperCustomDot}>
+                          <div className='step-label'>
+                            <Typography className='step-number'>{`0${index + 1}`}</Typography>
+                            <div>
+                              <Typography className='step-title'>{step.title}</Typography>
+                              <Typography className='step-subtitle'>{step.subtitle}</Typography>
+                            </div>
+                          </div>
+                        </StepLabel>
+                        <StepContent>
+                          {/* {console.log('step🍗🍖', step.taps)} */}
+                          <CustomRoleTabs
+                            taps={step.taps}
+                            parentIndex={index}
+                            mainName={mainName}
+                            handleChange={handleChange}
+                          />
+
+                          <div className='button-wrapper'>
+                            <Button
+                              size='small'
+                              color='secondary'
+                              variant='outlined'
+                              onClick={handleBack}
+                              disabled={activeStep === 0}
+                            >
+                              Back
+                            </Button>
+                            <Button size='small' variant='contained' onClick={handleNext} sx={{ ml: 4 }}>
+                              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                            </Button>
+                          </div>
+                        </StepContent>
+                      </Step>
+                    )
+                  })}
+                </Stepper>
+              </>
+            )}
+          </FieldArray>
+        </StepperWrapper>
+        {activeStep === steps.length && (
+          <Box sx={{ mt: 2 }}>
+            <Typography>All steps are completed!</Typography>
+            <Button size='small' sx={{ mt: 2 }} variant='contained' onClick={handleReset}>
               Reset
             </Button>
           </Box>
-        </>
-      )
-    } else {
-      return (
-        <Grid container spacing={5}>
-          <Grid item xs={12}>
-            <Typography variant='body2' sx={{ fontWeight: 600, color: 'text.primary' }}>
-              {steps[activeStep].title}
-            </Typography>
-            <Typography variant='caption' component='p'>
-              {steps[activeStep].subtitle}
-            </Typography>
-          </Grid>
-
-          {getStepContent(activeStep)}
-
-          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button size='large' variant='outlined' color='secondary' disabled={activeStep === 0} onClick={handleBack}>
-              Back
-            </Button>
-            <Button size='large' variant='contained' onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
-            </Button>
-          </Grid>
-        </Grid>
-      )
-    }
-  }
-
-  return (
-    <Card>
-      <CardContent>
-        <StepperWrapper>
-          <Stepper activeStep={activeStep} connector={<Icon icon='bx:chevron-right' />}>
-            {steps.map((step, index) => {
-              return (
-                <Step key={index}>
-                  <StepLabel StepIconComponent={StepperCustomDot}>
-                    <div className='step-label'>
-                      <CustomAvatar
-                        variant='rounded'
-                        skin={activeStep === index ? 'filled' : 'light'}
-                        color={activeStep >= index ? 'primary' : 'secondary'}
-                        sx={{
-                          mr: 2.5,
-                          borderRadius: 1,
-                          ...(activeStep === index && {
-                            boxShadow: theme => `0 0.1875rem 0.375rem 0 ${hexToRGBA(theme.palette.primary.main, 0.4)}`
-                          })
-                        }}
-                        onClick={() => {
-                          setActiveStep(index)
-                        }}
-                      >
-                        <Icon icon={step.icon} />
-                      </CustomAvatar>
-                      <div>
-                        <Typography variant='body2' className='step-title'>
-                          {step.title}
-                        </Typography>
-                        <Typography variant='caption' className='step-subtitle'>
-                          {step.subtitle}
-                        </Typography>
-                      </div>
-                    </div>
-                  </StepLabel>
-                </Step>
-              )
-            })}
-          </Stepper>
-        </StepperWrapper>
+        )}
       </CardContent>
-      <Divider sx={{ m: '0 !important' }} />
-      <CardContent>{renderContent()}</CardContent>
-    </Card>
+    </Box>
   )
 }
 
