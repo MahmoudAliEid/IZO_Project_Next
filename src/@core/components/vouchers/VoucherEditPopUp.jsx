@@ -286,25 +286,6 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                 value={values.amount}
                                 onChange={event => {
                                   handleChange(event)
-                                  // setFieldValue(
-                                  //   'table',
-                                  //   voucherData.bill.map(row => ({
-                                  //     id: row.bill_id,
-                                  //     check: row.status === 0 ? true : false,
-                                  //     date: row.date,
-                                  //     reference_no: row.reference_no,
-                                  //     supplier: row.supplier || 'no supplier',
-                                  //     purchase_status: row.invoice_status || 'no purchase status',
-                                  //     payment_status: row.pay_status || 'no payment status',
-                                  //     warehouse_name: row.store,
-                                  //     grand_total: row.final_total,
-                                  //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
-                                  //     payment_due: row.pay_due,
-                                  //     add_by: row.add_by || 'no add by',
-                                  //     payment_id: row.payment_id
-                                  //   }))
-                                  // )
-
                                   setFieldValue('bill_id', [])
                                   setFieldValue('bill_amount', [])
 

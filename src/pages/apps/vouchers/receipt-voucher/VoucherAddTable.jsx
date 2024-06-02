@@ -86,8 +86,8 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
       renderCell: params => (
         <FormControl>
           <Checkbox
-            checked={values.table[params.idx].check}
-            disabled={values.table_total === 0 && !values.table[params.idx].check}
+            checked={values?.table[params.idx].check}
+            disabled={values.table_total === 0 && !values?.table[params.idx].check}
             name={`table.${params.idx}.check`}
             onChange={event => {
               handleChange(event)
@@ -313,7 +313,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
               </TableRow>
             </TableHead>
             <TableBody>
-              {values.table && values.table.length > 1 ? (
+              {Array.isArray(values?.table) && values?.table && values?.table.length > 1 ? (
                 values.table.map((row, idx) => (
                   <TableRow
                     hover

@@ -184,7 +184,7 @@ image,
           </Box>
         </Box>
       </div>
-      {image.length ? (
+      { Array.isArray(image) && image.length ? (
         <Fragment>
           <List>{fileList}</List>
           <div className='buttons'>
