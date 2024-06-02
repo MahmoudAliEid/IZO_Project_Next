@@ -104,7 +104,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                 setFieldValue('bill_id', [...values.bill_id, params.id])
               }
 
-              const amount = total - values.table_total
+              const amount = total - values?.table_total
               if (values.bill_amount.includes(amount)) {
                 // Checkbox is currently checked, uncheck it by removing amount from bill_amount
                 setFieldValue(
@@ -376,7 +376,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             <Typography color={'white'}>Total :</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>{Number(values.amount).toFixed(2) || 0}</Typography>
+            <Typography color={'white'}>{Number(values?.amount).toFixed(2) || 0}</Typography>
           </StyledTableCell>
         </Box>
         <Box
