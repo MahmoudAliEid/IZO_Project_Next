@@ -84,6 +84,14 @@ import getSearchProductCompo from './apps/products/listProducts/search/getSearch
 import getUpdateProductSlice from './apps/products/getUpdateProductSlice'
 import postUpdateProductSlice from './apps/products/postUpdateProductSlice'
 import postDeleteCGSlice from './apps/contacts/CustomerGroup/postDeleteCGSlice'
+// **Vouchers
+import getVouchersSlice from './apps/vouchers/getVouchersSlice'
+import getViewVoucher from './apps/vouchers/getViewVoucher'
+import getCreateReceiptVoucher from './apps/vouchers/getCreateReceiptVoucher'
+import getBillsSlice from './apps/vouchers/Actions/getBillsSlice'
+import postCreateReceiptSlice from './apps/vouchers/postCreateReceiptSlice'
+import getEditReceiptVoucher from './apps/vouchers/getEditReceiptVoucherSlice'
+import postEditReceiptSlice from './apps/vouchers/postEditReceiptSlice'
 
 export const store = configureStore({
   reducer: {
@@ -168,7 +176,14 @@ export const store = configureStore({
     postImportOQ: postImportOQSlice,
     getSearchProductCompo: getSearchProductCompo,
     getUpdateProduct: getUpdateProductSlice,
-    postUpdateProduct: postUpdateProductSlice
+    postUpdateProduct: postUpdateProductSlice,
+    getVouchers: getVouchersSlice,
+    getViewVoucher: getViewVoucher,
+    getCreateReceiptVoucher: getCreateReceiptVoucher,
+    getBills: getBillsSlice,
+    postCreateReceipt: postCreateReceiptSlice,
+    getEditReceiptVoucher: getEditReceiptVoucher,
+    postEditReceipt: postEditReceiptSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

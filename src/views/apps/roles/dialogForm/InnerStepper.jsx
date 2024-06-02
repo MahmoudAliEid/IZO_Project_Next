@@ -69,7 +69,7 @@ const InnerStepper = ({ steps, mainName, handleChange }) => {
     setActiveStep(0)
   }
 
-  console.log('steps taps', steps[0].taps)
+  // console.log('steps taps', steps[0].taps)
 
   return (
     <Box>

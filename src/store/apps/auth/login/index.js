@@ -15,6 +15,7 @@ const initialState = {
   currency_id: '',
   currency_code: '',
   authorization: {},
+
   error: null
 }
 
