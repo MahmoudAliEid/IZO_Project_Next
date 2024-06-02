@@ -15,6 +15,17 @@ const initialState = {
   currency_id: '',
   currency_code: '',
   authorization: {},
+  BusinessName: '',
+  CurrencySymbolPlacement: '',
+  DateFormat: '',
+  DecimalFormat: 0,
+  DefaultProfit: 0,
+  FinancialYearStartMonth: null,
+  StartDate: '',
+  StockAccountingMethod: '',
+  TimeFormat: '',
+  TimeZone: '',
+  TransactionEditDays: 0,
 
   error: null
 }
@@ -54,9 +65,38 @@ export const loginSlice = createSlice({
         state.authorization = action.payload?.authorization
         state.currency_id = action.payload?.currency.id
         state.currency_code = action.payload?.currency.code
+        state.BusinessName = action.payload?.global_data[0]?.global_settings.BusinessName
+        state.CurrencySymbolPlacement = action.payload?.global_data[0]?.global_settings.CurrencySymbolPlacement
+        state.DateFormat = action.payload?.global_data[0]?.global_settings.DateFormat
+        state.DecimalFormat = action.payload?.global_data[0]?.global_settings.DecimalFormat
+        state.DefaultProfit = action.payload?.global_data[0]?.global_settings.DefaultProfit
+        state.FinancialYearStartMonth = action.payload?.global_data[0]?.global_settings.FinancialYearStartMonth
+        state.StartDate = action.payload?.global_data[0]?.global_settings.StartDate
+        state.StockAccountingMethod = action.payload?.global_data[0]?.global_settings.StockAccountingMethod
+        state.TimeFormat = action.payload?.global_data[0]?.global_settings.TimeFormat
+        state.TimeZone = action.payload?.global_data[0]?.global_settings.TimeZone
+        state.TransactionEditDays = action.payload?.global_data[0]?.global_settings.TransactionEditDays
 
-        // Ensure that authorization and token exist before assigning
+        if (
+          action.payload?.global_data &&
+          action.payload?.global_data[0] &&
+          action.payload?.global_data[0]?.global_settings
+        ) {
+          setCookie('BusinessName', action.payload?.global_data[0]?.global_settings.BusinessName)
+          setCookie('CurrencySymbolPlacement', action.payload?.global_data[0]?.global_settings.CurrencySymbolPlacement)
+          setCookie('DateFormat', action.payload?.global_data[0]?.global_settings.DateFormat)
+          setCookie('DecimalFormat', action.payload?.global_data[0]?.global_settings.DecimalFormat)
+          setCookie('DefaultProfit', action.payload?.global_data[0]?.global_settings.DefaultProfit)
+          setCookie('FinancialYearStartMonth', action.payload?.global_data[0]?.global_settings.FinancialYearStartMonth)
+          setCookie('StartDate', action.payload?.global_data[0]?.global_settings.StartDate)
+          setCookie('StockAccountingMethod', action.payload?.global_data[0]?.global_settings.StockAccountingMethod)
+          setCookie('TimeFormat', action.payload?.global_data[0]?.global_settings.TimeFormat)
+          setCookie('TimeZone', action.payload?.global_data[0]?.global_settings.TimeZone)
+          setCookie('TransactionEditDays', action.payload?.global_data[0]?.global_settings.TransactionEditDays)
+        }
+
         if (action.payload.authorization) {
+          // Ensure that authorization and token exist before assigning
           state.userType = action.payload.authorization?.type || ''
           state.token = action.payload.authorization?.token || ''
         }

@@ -32,6 +32,9 @@ import { fetchBills } from 'src/store/apps/vouchers/Actions/getBillsSlice'
 import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 import { fetchVouchers } from 'src/store/apps/vouchers/getVouchersSlice'
 
+// ** next cookies
+import { getCookie } from 'cookies-next'
+
 // const LinkStyled = styled(Box)(({ theme }) => ({
 //   fontWeight: 400,
 //   fontSize: '1rem',
@@ -97,6 +100,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
   // ** Vars
   const { direction } = theme
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
+  const DecimalFormat = getCookie('DecimalFormat')
 
   // ** Get data from store
   const storeData = useSelector(state => state.getEditReceiptVoucher.data?.value)
@@ -188,7 +192,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
             payment_status: row.pay_status || 'no payment status',
             warehouse_name: row.store,
             grand_total: row.final_total,
-            payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
+            payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(DecimalFormat),
             payment_due: row.pay_due,
             add_by: row.add_by || 'no add by',
             status: row.status,
@@ -206,7 +210,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
         accountText: 'Main Box'
       }))
     }
-  }, [storeData])
+  }, [storeData, DecimalFormat])
 
   useEffect(() => {
     if (storeData) {
@@ -292,12 +296,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                   if (values.currency_value !== '' && values.currency_value !== 0) {
                                     setFieldValue(
                                       'amount_currency',
-                                      Number(event.target.value / values.currency_value).toFixed(2)
+                                      Number(event.target.value / values.currency_value).toFixed(DecimalFormat)
                                     )
-                                    // setFieldValue('table_total', Number(event.target.value).toFixed(2))
+                                    // setFieldValue('table_total', Number(event.target.value).toFixed(DecimalFormat))
                                   } else {
-                                    setFieldValue('amount_currency', Number(event.target.value).toFixed(2))
-                                    // setFieldValue('table_total', Number(event.target.value).toFixed(2))
+                                    setFieldValue('amount_currency', Number(event.target.value).toFixed(DecimalFormat))
+                                    // setFieldValue('table_total', Number(event.target.value).toFixed(DecimalFormat))
                                   }
 
                                   // check if the amount is  less than the old amount
@@ -327,8 +331,8 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
 
                                     setFieldValue('bill_id', [])
                                     setFieldValue('bill_amount', [])
-                                    setFieldValue('table_total', Number(event.target.value))
-                                    setFieldValue('remain', Number(event.target.value))
+                                    setFieldValue('table_total', Number(event.target.value).toFixed(DecimalFormat))
+                                    setFieldValue('remain', Number(event.target.value).toFixed(DecimalFormat))
                                     setFieldValue('old_bill_id', [])
                                     setFieldValue('old_bill_amount', [])
                                     setFieldValue('payment_id', [])
@@ -338,11 +342,15 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                   else if (Number(event.target.value) > Number(oldAmount)) {
                                     setFieldValue(
                                       'table_total',
-                                      Number(event.target.value) - Number(oldAmount) + Number(oldRemain)
+                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                        DecimalFormat
+                                      )
                                     )
                                     setFieldValue(
                                       'remain',
-                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(2)
+                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                        DecimalFormat
+                                      )
                                     )
                                     setFieldValue(
                                       'table',
@@ -357,7 +365,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                         warehouse_name: row.store,
                                         grand_total: row.final_total,
                                         status: row.status,
-                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
+                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                          DecimalFormat
+                                        ),
                                         payment_due: row.pay_due,
                                         add_by: row.add_by || 'no add by',
                                         payment_id: row.payment_id
@@ -396,7 +406,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                         warehouse_name: row.store,
                                         grand_total: row.final_total,
                                         status: row.status,
-                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
+                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                          DecimalFormat
+                                        ),
                                         payment_due: row.pay_due,
                                         add_by: row.add_by || 'no add by',
                                         payment_id: row.payment_id
@@ -422,11 +434,15 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                     )
                                     setFieldValue(
                                       'table_total',
-                                      Number(event.target.value) - Number(oldAmount) + Number(oldRemain)
+                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                        DecimalFormat
+                                      )
                                     )
                                     setFieldValue(
                                       'remain',
-                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(2)
+                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                        DecimalFormat
+                                      )
                                     )
                                   }
                                 }}
@@ -458,7 +474,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                           payment_status: row.pay_status || 'no payment status',
                                           warehouse_name: row.store,
                                           grand_total: row.final_total,
-                                          payment: Number(row.final_total) - Number(row.pay_due),
+                                          payment: (Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                            DecimalFormat
+                                          ),
                                           payment_due: row.pay_due,
                                           add_by: row.add_by || 'no add by',
                                           payment_id: row.payment_id
@@ -473,11 +491,11 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                       if (values.currency_value !== '' && values.currency_value !== 0) {
                                         setFieldValue(
                                           'amount',
-                                          Number(amount_currency * values.currency_value).toFixed(2)
+                                          Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
                                         )
                                         // setFieldValue(
                                         //   'table_total',
-                                        //   Number(amount_currency * values.currency_value).toFixed(2)
+                                        //   Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
                                         // )
 
                                         // check if the amount is  less than the old amount
@@ -509,10 +527,16 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                           setFieldValue('bill_amount', [])
                                           setFieldValue(
                                             'amount',
-                                            Number(amount_currency * values.currency_value).toFixed(2)
+                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
                                           )
-                                          setFieldValue('table_total', Number(amount_currency * values.currency_value))
-                                          setFieldValue('remain', Number(amount_currency * values.currency_value))
+                                          setFieldValue(
+                                            'table_total',
+                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                          )
+                                          setFieldValue(
+                                            'remain',
+                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                          )
                                           setFieldValue('old_bill_id', [])
                                           setFieldValue('old_bill_amount', [])
                                           setFieldValue('payment_id', [])
@@ -521,13 +545,15 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                         else if (Number(amount_currency * values.currency_value) > Number(oldAmount)) {
                                           setFieldValue(
                                             'amount',
-                                            Number(amount_currency * values.currency_value).toFixed(2)
+                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
                                           )
                                           setFieldValue(
                                             'table_total',
-                                            Number(amount_currency * values.currency_value) -
+                                            (
+                                              Number(amount_currency * values.currency_value) -
                                               Number(oldAmount) +
                                               Number(oldRemain)
+                                            ).toFixed(DecimalFormat)
                                           )
                                           setFieldValue(
                                             'remain',
@@ -535,7 +561,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                               Number(amount_currency * values.currency_value) -
                                               Number(oldAmount) +
                                               Number(oldRemain)
-                                            ).toFixed(2)
+                                            ).toFixed(DecimalFormat)
                                           )
                                           setFieldValue(
                                             'table',
@@ -550,7 +576,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
+                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                                DecimalFormat
+                                              ),
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
                                               payment_id: row.payment_id
@@ -590,7 +618,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
+                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                                DecimalFormat
+                                              ),
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
                                               payment_id: row.payment_id
@@ -626,12 +656,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                               Number(amount_currency * values.currency_value) -
                                               Number(oldAmount) +
                                               Number(oldRemain)
-                                            ).toFixed(2)
+                                            ).toFixed(DecimalFormat)
                                           )
                                         }
                                       } else {
-                                        setFieldValue('amount', Number(amount_currency).toFixed(2))
-                                        // setFieldValue('table_total', Number(amount_currency).toFixed(2))
+                                        setFieldValue('amount', Number(amount_currency).toFixed(DecimalFormat))
+                                        // setFieldValue('table_total', Number(amount_currency).toFixed(DecimalFormat))
                                         // check if the amount is  less than the old amount
                                         if (
                                           Number(amount_currency) < Number(oldAmount) &&
@@ -659,20 +689,23 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
 
                                           setFieldValue('bill_id', [])
                                           setFieldValue('bill_amount', [])
-                                          setFieldValue('table_total', Number(amount_currency))
-                                          setFieldValue('remain', Number(amount_currency))
+                                          setFieldValue('table_total', Number(amount_currency).toFixed(DecimalFormat))
+                                          setFieldValue('remain', Number(amount_currency).toFixed(DecimalFormat))
                                           setFieldValue('old_bill_id', [])
                                           setFieldValue('old_bill_amount', [])
                                           setFieldValue('payment_id', [])
                                         }
                                         // check if the amount is greater than the old amount
                                         else if (Number(amount_currency) > Number(oldAmount)) {
-                                          setFieldValue('table_total', Number(amount_currency) + Number(oldRemain))
+                                          setFieldValue(
+                                            'table_total',
+                                            (Number(amount_currency) + Number(oldRemain)).toFixed(DecimalFormat)
+                                          )
                                           setFieldValue(
                                             'remain',
                                             (
                                               Number(amount_currency * values.currency_value) + Number(oldRemain)
-                                            ).toFixed(2)
+                                            ).toFixed(DecimalFormat)
                                           )
                                           setFieldValue(
                                             'table',
@@ -687,7 +720,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
+                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                                DecimalFormat
+                                              ),
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
                                               payment_id: row.payment_id
@@ -725,7 +760,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(2),
+                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                                DecimalFormat
+                                              ),
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
                                               payment_id: row.payment_id
@@ -751,11 +788,15 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                           )
                                           setFieldValue(
                                             'table_total',
-                                            Number(amount_currency) - Number(oldAmount) + Number(oldRemain)
+                                            (Number(amount_currency) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                              DecimalFormat
+                                            )
                                           )
                                           setFieldValue(
                                             'remain',
-                                            (Number(amount_currency) - Number(oldAmount) + Number(oldRemain)).toFixed(2)
+                                            (Number(amount_currency) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                              DecimalFormat
+                                            )
                                           )
                                         }
                                       }
@@ -773,12 +814,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                     name='currencies'
                                     label='Currencies'
                                     onChange={event => {
-                                      const currency_value = Number(event.target.value)
+                                      const currency_value = Number(event.target.amount)
                                       handleChange(event)
                                       setFieldValue('currency_value', currency_value)
                                       setFieldValue(
                                         'amount_currency',
-                                        Number(values.amount / currency_value).toFixed(2)
+                                        Number(values.amount / currency_value).toFixed(DecimalFormat)
                                       )
                                     }}
                                     onBlur={handleBlur}
@@ -811,12 +852,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                         if (values.amount_currency !== '' && values.amount_currency !== 0) {
                                           setFieldValue(
                                             'amount',
-                                            Number(currency_value * values.amount_currency).toFixed(2)
+                                            Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
                                           )
 
                                           // setFieldValue(
                                           //   'table_total',
-                                          //   Number(currency_value * values.amount_currency).toFixed(2)
+                                          //   Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
                                           // )
                                           // check if the amount is  less than the old amount
                                           if (
@@ -847,9 +888,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                             setFieldValue('bill_amount', [])
                                             setFieldValue(
                                               'table_total',
-                                              Number(currency_value * values.amount_currency)
+                                              Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
                                             )
-                                            setFieldValue('remain', Number(currency_value * values.amount_currency))
+                                            setFieldValue(
+                                              'remain',
+                                              Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
+                                            )
                                             setFieldValue('old_bill_id', [])
                                             setFieldValue('old_bill_amount', [])
                                             setFieldValue('payment_id', [])
@@ -861,9 +905,11 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                           ) {
                                             setFieldValue(
                                               'table_total',
-                                              Number(currency_value * values.amount_currency) -
+                                              (
+                                                Number(currency_value * values.amount_currency) -
                                                 Number(oldAmount) +
                                                 Number(oldRemain)
+                                              ).toFixed(DecimalFormat)
                                             )
                                             setFieldValue(
                                               'remain',
@@ -871,7 +917,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                                 Number(currency_value * values.amount_currency) -
                                                 Number(oldAmount) +
                                                 Number(oldRemain)
-                                              ).toFixed(2)
+                                              ).toFixed(DecimalFormat)
                                             )
                                             setFieldValue(
                                               'table',
@@ -887,7 +933,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                                 grand_total: row.final_total,
                                                 status: row.status,
                                                 payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                  2
+                                                  DecimalFormat
                                                 ),
                                                 payment_due: row.pay_due,
                                                 add_by: row.add_by || 'no add by',
@@ -930,7 +976,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                                 grand_total: row.final_total,
                                                 status: row.status,
                                                 payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                  2
+                                                  DecimalFormat
                                                 ),
                                                 payment_due: row.pay_due,
                                                 add_by: row.add_by || 'no add by',
@@ -957,9 +1003,11 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                             )
                                             setFieldValue(
                                               'table_total',
-                                              Number(currency_value * values.amount_currency) -
+                                              (
+                                                Number(currency_value * values.amount_currency) -
                                                 Number(oldAmount) +
                                                 Number(oldRemain)
+                                              ).toFixed(DecimalFormat)
                                             )
                                             setFieldValue(
                                               'remain',
@@ -967,21 +1015,21 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                                                 Number(currency_value * values.amount_currency) -
                                                 Number(oldAmount) +
                                                 Number(oldRemain)
-                                              ).toFixed(2)
+                                              ).toFixed(DecimalFormat)
                                             )
                                           }
                                         } else {
-                                          setFieldValue('amount', Number(currency_value).toFixed(2))
-                                          setFieldValue('table_total', Number(currency_value).toFixed(2))
+                                          setFieldValue('amount', Number(currency_value).toFixed(DecimalFormat))
+                                          setFieldValue('table_total', Number(currency_value).toFixed(DecimalFormat))
                                         }
                                       } else {
                                         if (values.amount !== '' && values.amount !== 0 && currency_value !== 0) {
                                           setFieldValue(
                                             'amount_currency',
-                                            Number(values.amount / currency_value).toFixed(2)
+                                            Number(values.amount / currency_value).toFixed(DecimalFormat)
                                           )
                                         } else {
-                                          setFieldValue('amount_currency', Number(values.amount).toFixed(2))
+                                          setFieldValue('amount_currency', Number(values.amount).toFixed(DecimalFormat))
                                         }
                                       }
                                     }}
@@ -1143,7 +1191,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                       </Box>
                       <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
                         <Button type='submit' variant='contained' color='primary'>
-                          Save
+                          Update
                         </Button>
                       </Box>
                     </Form>
