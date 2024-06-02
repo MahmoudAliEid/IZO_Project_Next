@@ -87,80 +87,80 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
         <FormControl>
           <Checkbox
             checked={values?.table[params.idx].check}
-            disabled={values.table_total === 0 && !values?.table[params.idx].check}
+            disabled={values?.table_total === 0 && !values?.table[params.idx].check}
             name={`table.${params.idx}.check`}
             onChange={event => {
               handleChange(event)
               const total = Number(params.grand_total)
 
-              if (values.bill_id.includes(params.id)) {
+              if (values?.bill_id.includes(params.id)) {
                 // Checkbox is currently checked, uncheck it by removing params.id from bill_id
                 setFieldValue(
                   'bill_id',
-                  values.bill_id.filter(id => id !== params.id)
+                  values?.bill_id.filter(id => id !== params.id)
                 )
               } else {
                 // Checkbox is currently unchecked, check it by adding params.id to bill_id
-                setFieldValue('bill_id', [...values.bill_id, params.id])
+                setFieldValue('bill_id', [...values?.bill_id, params.id])
               }
 
               const amount = total - values?.table_total
-              if (values.bill_amount.includes(amount)) {
+              if (values?.bill_amount.includes(amount)) {
                 // Checkbox is currently checked, uncheck it by removing amount from bill_amount
                 setFieldValue(
                   'bill_amount',
-                  values.bill_amount.filter(a => a !== amount)
+                  values?.bill_amount.filter(a => a !== amount)
                 )
               } else {
                 // Checkbox is currently unchecked, check it by adding amount to bill_amount
-                setFieldValue('bill_amount', [...values.bill_amount, amount])
+                setFieldValue('bill_amount', [...values?.bill_amount, amount])
               }
               if (event.target.checked) {
                 // set id to bill id  arr
-                if (total > values.table_total) {
-                  setFieldValue(`table.${params.idx}.payment_due`, total - values.table_total)
-                  setFieldValue(`table.${params.idx}.payment`, total - (total - values.table_total))
-                  setFieldValue('bill_id', [...values.bill_id, params.id])
-                  setFieldValue('bill_amount', [...values.bill_amount, values.table_total])
+                if (total > values?.table_total) {
+                  setFieldValue(`table.${params.idx}.payment_due`, total - values?.table_total)
+                  setFieldValue(`table.${params.idx}.payment`, total - (total - values?.table_total))
+                  setFieldValue('bill_id', [...values?.bill_id, params.id])
+                  setFieldValue('bill_amount', [...values?.bill_amount, values?.table_total])
                   setFieldValue('table_total', 0)
                 } else {
-                  setFieldValue('table_total', values.table_total - total)
-                  setFieldValue('bill_id', [...values.bill_id, params.id])
-                  setFieldValue('bill_amount', [...values.bill_amount, total])
+                  setFieldValue('table_total', values?.table_total - total)
+                  setFieldValue('bill_id', [...values?.bill_id, params.id])
+                  setFieldValue('bill_amount', [...values?.bill_amount, total])
                   setFieldValue(`table.${params.idx}.payment_due`, 0)
                   setFieldValue(`table.${params.idx}.payment`, total)
                 }
               } else {
                 if (Number(params.payment_due) > 0) {
-                  setFieldValue('table_total', values.table_total + (total - Number(params.payment_due)))
+                  setFieldValue('table_total', values?.table_total + (total - Number(params.payment_due)))
                   setFieldValue(`table.${params.idx}.payment_due`, total)
                   setFieldValue(
                     'bill_id',
-                    values.bill_id.filter(id => id !== params.id)
+                    values?.bill_id.filter(id => id !== params.id)
                   )
                   setFieldValue(
                     'bill_amount',
-                    values.bill_amount.filter(a => a !== total - Number(params.payment_due))
+                    values?.bill_amount.filter(a => a !== total - Number(params.payment_due))
                   )
                   setFieldValue(`table.${params.idx}.payment`, params.grand_total - total)
                 } else {
-                  setFieldValue('table_total', values.table_total + total)
+                  setFieldValue('table_total', values?.table_total + total)
                   setFieldValue(`table.${params.idx}.payment_due`, total)
                   setFieldValue(`table.${params.idx}.payment`, params.grand_total - total)
                   setFieldValue(
                     'bill_id',
-                    values.bill_id.filter(id => id !== params.id)
+                    values?.bill_id.filter(id => id !== params.id)
                   )
                   setFieldValue(
                     'bill_amount',
-                    values.bill_amount.filter(a => a !== total)
+                    values?.bill_amount.filter(a => a !== total)
                   )
                 }
                 setFieldValue(`table.${params.idx}.check`, false)
                 setFieldValue(`table.${params.idx}.status`, 1)
                 setFieldValue(
                   `payment_id`,
-                  values.payment_id.filter(row => row !== params.payment_id)
+                  values?.payment_id.filter(row => row !== params.payment_id)
                 )
               }
             }}
@@ -314,7 +314,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             </TableHead>
             <TableBody>
               {Array.isArray(values?.table) && values?.table && values?.table.length > 1 ? (
-                values.table.map((row, idx) => (
+                values?.table.map((row, idx) => (
                   <TableRow
                     hover
                     role='checkbox'
@@ -391,7 +391,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             <Typography color={'white'}>Remain:</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>{values.table_total}</Typography>
+            <Typography color={'white'}>{values?.table_total}</Typography>
           </StyledTableCell>
         </Box>
       </Box>
