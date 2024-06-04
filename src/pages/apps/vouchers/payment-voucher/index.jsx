@@ -20,11 +20,11 @@ import { useTheme } from '@mui/material/styles'
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
-import VoucherAddTable from './VoucherAddTable'
+import VoucherAddTable from '../receipt-voucher/VoucherAddTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCreateRVoucher } from 'src/store/apps/vouchers/getCreateReceiptVoucher'
 import { fetchBills } from 'src/store/apps/vouchers/Actions/getBillsSlice'
-import Attachment from './Attachment'
+import Attachment from '../receipt-voucher/Attachment'
 import { createReceipt } from 'src/store/apps/vouchers/postCreateReceiptSlice'
 
 // ** Cookies
@@ -37,14 +37,14 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
   return <TextField inputRef={ref} {...field} {...meta} {...props} label={label || ''} readOnly={readOnly} />
 })
 
-const ReceiptVoucher = () => {
+const PaymentVoucher = () => {
   const [changeCurrency] = useState(0)
   const [auth] = useState(true)
 
   const [initialValues] = useState({
     currencies: '', //currency_id
     table_total: 0,
-    type: 1,
+    type: 0,
     document_expense: [],
     currency_value: '',
     date: '',
@@ -128,10 +128,10 @@ const ReceiptVoucher = () => {
   }
 
   const fetchDataOnSearchSelect = async id => {
-    dispatch(fetchBills({ id, type: 'receipt' }))
+    dispatch(fetchBills({ id, type: 'payment' }))
   }
 
-  console.log('create voucher data', data)
+  console.log('create payment voucher data', data)
 
   return (
     <Card>
@@ -139,7 +139,7 @@ const ReceiptVoucher = () => {
         <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
       )}
       <Box sx={{ mb: 3 }}>
-        <CardHeader title='Receipt Voucher' />
+        <CardHeader title='Payment Voucher' />
       </Box>
       <Formik
         initialValues={initialValues}
@@ -264,6 +264,7 @@ const ReceiptVoucher = () => {
                           onChange={event => {
                             const currency_value = Number(event.target.value)
                             handleChange(event)
+                            console.log(event)
                             setFieldValue('currency_value', currency_value)
                             setFieldValue(
                               'amount_currency',
@@ -487,4 +488,4 @@ const ReceiptVoucher = () => {
   )
 }
 
-export default ReceiptVoucher
+export default PaymentVoucher

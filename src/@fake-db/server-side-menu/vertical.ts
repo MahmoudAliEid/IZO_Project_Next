@@ -245,6 +245,10 @@ const navigation: VerticalNavItemsType = [
         path: '/apps/vouchers/receipt-voucher'
       },
       {
+        title: 'Payment Voucher',
+        path: '/apps/vouchers/payment-voucher'
+      },
+      {
         title: 'Journal Voucher List',
         path: '/apps/vouchers/journal-voucher'
       },

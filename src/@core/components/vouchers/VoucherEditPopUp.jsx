@@ -53,7 +53,7 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
   return <TextField inputRef={ref} {...field} {...meta} {...props} label={label || ''} readOnly={readOnly} />
 })
 
-const VoucherEditPopUp = ({ open, toggle, itemId }) => {
+const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   // ** States
   const [changeCurrency] = useState(0)
   const [voucherData, setVoucherData] = useState(null)
@@ -64,7 +64,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
   const [initialValues, setInitialValues] = useState({
     currencies: '', //currency_id
     table_total: 0,
-    type: 1,
+    type: type === 'receipt' ? 1 : 0,
     document_expense: [],
     currency_value: '',
     date: '',
@@ -244,7 +244,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
   }
 
   const fetchDataOnSearchSelect = async id => {
-    dispatch(fetchBills({ id, type: 'receipt' }))
+    dispatch(fetchBills({ id, type }))
   }
 
   return (
@@ -260,7 +260,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
         {voucherData ? (
           <Fragment>
             <CustomHeader
-              title={`Receipt Voucher Edit( Ref No: ${voucherData.info[0].ref_no})`}
+              title={`${type.charAt(0).toUpperCase() + type.slice(1)} Voucher Edit( Ref No: ${
+                voucherData.info[0].ref_no
+              })`}
               handleClose={handleClose}
               divider={false}
             />
@@ -270,7 +272,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                   <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={editStatus} />
                 )}
                 <Box sx={{ mb: 3 }}>
-                  <CardHeader title='Receipt Voucher' />
+                  <CardHeader title={`${type.charAt(0).toUpperCase() + type.slice(1)}`} />
                 </Box>
                 <Formik
                   initialValues={initialValues}
@@ -1179,7 +1181,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId }) => {
                           {({ push, remove }) => (
                             <VoucherAddTable
                               push={push}
-                              type='receipt'
+                              type={type}
                               remove={remove}
                               values={values}
                               setFieldValue={setFieldValue}

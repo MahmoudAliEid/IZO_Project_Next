@@ -50,6 +50,8 @@ import { fetchVouchers } from 'src/store/apps/vouchers/getVouchersSlice'
 import VouchersTransactionPopUp from 'src/@core/components/vouchers/VouchersTransactionPopUp'
 import { Button } from '@mui/material'
 import VoucherEditPopUp from 'src/@core/components/vouchers/VoucherEditPopUp'
+import VoucherAttachmentPopUp from 'src/@core/components/vouchers/VoucherAttachmentPopUp'
+import EntryPopUp from 'src/@core/components/vouchers/EntryPopUp'
 
 // const userStatusObj = {
 //   receipt_voucher: { title: 'Receipt Voucher', color: 'success' },
@@ -95,6 +97,8 @@ const RowOptions = ({ id, type }) => {
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
   const [openView, setOpenView] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
+  const [openViewAttachments, setOpenViewAttachments] = useState(false)
+  const [openEntry, setOpenEntry] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -194,6 +198,7 @@ const RowOptions = ({ id, type }) => {
         <MenuItem
           onClick={() => {
             handleRowOptionsClose()
+            setOpenViewAttachments(true)
           }}
           sx={{ '& svg': { mr: 2 } }}
         >
@@ -205,6 +210,7 @@ const RowOptions = ({ id, type }) => {
         <MenuItem
           onClick={() => {
             handleRowOptionsClose()
+            setOpenEntry(true)
           }}
           sx={{ '& svg': { mr: 2 } }}
         >
@@ -233,8 +239,20 @@ const RowOptions = ({ id, type }) => {
         />
       )}
       {openView && <VoucherViewPopUp open={openView} toggle={setOpenView} itemId={id} />}
+      {openViewAttachments && (
+        <VoucherAttachmentPopUp open={openViewAttachments} toggle={setOpenViewAttachments} itemId={id} />
+      )}
 
-      {openEdit && <VoucherEditPopUp open={openEdit} toggle={handleEdit} itemId={id} />}
+      {openEdit && (
+        <VoucherEditPopUp
+          open={openEdit}
+          toggle={handleEdit}
+          itemId={id}
+          type={type === 'Receipt Voucher' ? 'receipt' : 'payment'}
+        />
+      )}
+
+      {openEntry && <EntryPopUp open={openEntry} toggle={setOpenEntry} itemId={id} />}
     </Fragment>
   )
 }
