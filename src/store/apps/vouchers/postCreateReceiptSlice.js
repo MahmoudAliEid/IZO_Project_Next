@@ -44,7 +44,7 @@ export const createReceipt = createAsyncThunk('vouchers/createReceipt', async pa
     })
   }
 
-  formData.append('type', 1)
+  formData.append('type', values.type)
 
   const response = await axios.post(`${url}/app/react/voucher/save`, formData, {
     headers: {

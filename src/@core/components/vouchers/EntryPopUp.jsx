@@ -100,12 +100,12 @@ const EntryPopUp = ({ open, toggle, itemId }) => {
                         </Divider>
                         <CustomTableView
                           dataRows={item.allData}
-                          footer={item}
                           dataColumns={[
                             {
                               field: 'account_id',
                               headerName: 'Account',
-                              align: 'left'
+                              align: 'left',
+                              minWidth: 200
                             },
                             {
                               field: 'operation_date',
@@ -121,7 +121,7 @@ const EntryPopUp = ({ open, toggle, itemId }) => {
                                   {params.type === 'debit'
                                     ? CurrencySymbolPlacement === 'after'
                                       ? `${Number(params.amount).toFixed(decimalFormat)} ${currency_code} `
-                                      : `${currency_code} ${Number(params.amount).toFixed(decimalFormat)}  `
+                                      : `${currency_code} ${Number(params.amount).toFixed(decimalFormat)} `
                                     : ''}
                                 </Typography>
                               )
@@ -135,10 +135,64 @@ const EntryPopUp = ({ open, toggle, itemId }) => {
                                   {params.type === 'credit'
                                     ? CurrencySymbolPlacement === 'after'
                                       ? `${Number(params.amount).toFixed(decimalFormat)} ${currency_code} `
-                                      : `${currency_code} ${Number(params.amount).toFixed(decimalFormat)}  `
+                                      : `${currency_code} ${Number(params.amount).toFixed(decimalFormat)} `
                                     : ''}
                                 </Typography>
                               )
+                            }
+                          ]}
+                          totalDebit={[
+                            {
+                              field: '',
+                              headerName: 'Total Debit',
+                              align: 'left',
+                              minWidth: 270
+                            },
+                            {
+                              field: '',
+                              headerName: '',
+                              align: 'left'
+                            },
+                            {
+                              field: '',
+                              align: 'left',
+                              headerName: `${
+                                CurrencySymbolPlacement === 'after'
+                                  ? `${Number(item.balance.total_debit).toFixed(decimalFormat)} ${currency_code} `
+                                  : `${currency_code} ${Number(item.balance.total_debit).toFixed(decimalFormat)} `
+                              }`
+                            },
+                            {
+                              field: '',
+                              headerName: '',
+                              align: 'left'
+                            }
+                          ]}
+                          totalCredit={[
+                            {
+                              field: '',
+                              headerName: 'Total Credit',
+                              align: 'left',
+                              minWidth: 300
+                            },
+                            {
+                              field: '',
+                              headerName: '',
+                              align: 'left'
+                            },
+                            {
+                              field: '',
+                              align: 'left',
+                              headerName: ``
+                            },
+                            {
+                              field: '',
+                              headerName: `${
+                                CurrencySymbolPlacement === 'after'
+                                  ? `${Number(item.balance.total_credit).toFixed(decimalFormat)} ${currency_code} `
+                                  : `${currency_code} ${Number(item.balance.total_credit).toFixed(decimalFormat)} `
+                              }`,
+                              align: 'left'
                             }
                           ]}
                         />

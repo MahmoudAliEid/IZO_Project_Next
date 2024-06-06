@@ -159,6 +159,14 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                 setFieldValue(`table.${params.idx}.check`, false)
                 setFieldValue(`table.${params.idx}.status`, 1)
                 setFieldValue(
+                  `old_bill_id`,
+                  values?.old_bill_id.filter(row => row !== params.id)
+                )
+                setFieldValue(
+                  `old_bill_amount`,
+                  values?.old_bill_amount.filter(row => row !== params.grand_total)
+                )
+                setFieldValue(
                   `payment_id`,
                   values?.payment_id.filter(row => row !== params.payment_id)
                 )

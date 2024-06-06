@@ -4,7 +4,6 @@ import ProgressCustomization from 'src/views/components/progress/ProgressCircula
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Next Imports
-
 import { getCookie } from 'cookies-next'
 
 // ** MUI Imports
@@ -22,6 +21,7 @@ import { useTheme, styled } from '@mui/material/styles'
 
 // ** Third Party Components
 import { DataGrid } from '@mui/x-data-grid'
+import axios from 'axios'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -141,6 +141,43 @@ const RowOptions = ({ id, type }) => {
     setOpenEdit(!openEdit)
   }
 
+  const handlePrint = id => {
+    // handle export to download file
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    axios({
+      url: `${url}/app/react/voucher/print/${id}`,
+      method: 'GET',
+      headers: headers
+    })
+      .then(response => {
+        if (response.data && response.data.value) {
+          axios({
+            url: response.data.value,
+            method: 'GET',
+            responseType: 'blob' // important
+          })
+            .then(response => {
+              const url = window.URL.createObjectURL(new Blob([response.data]))
+              const link = document.createElement('a')
+              link.href = url
+              link.setAttribute('download', 'voucher.pdf') //or any other extension
+              document.body.appendChild(link)
+              link.click()
+            })
+            .catch(error => {
+              console.error('Error in second axios request:', error)
+            })
+        } else {
+          console.error('Response data or info is undefined:', response)
+        }
+      })
+      .catch(error => {
+        console.error('Error in first axios request:', error)
+      })
+  }
+
   return (
     <Fragment>
       <IconButton size='small' onClick={handleRowOptionsClick}>
@@ -187,6 +224,7 @@ const RowOptions = ({ id, type }) => {
         <MenuItem
           onClick={() => {
             handleRowOptionsClose()
+            handlePrint(id)
           }}
           sx={{ '& svg': { mr: 2 } }}
         >
@@ -262,6 +300,10 @@ const RowOptionsTransactions = ({ row }) => {
   const [openTransaction, setOpenTransaction] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
 
+  const decimalFormat = getCookie('DecimalFormat')
+  const currency_code = getCookie('currency_code')
+  const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+
   const handleTransactionClick = () => {
     setOpenTransaction(true)
   }
@@ -306,7 +348,16 @@ const RowOptionsTransactions = ({ row }) => {
             sx={{ '& svg': { mr: 2 } }}
           >
             <Icon icon='bx:pencil' fontSize={20} />
-            <LinkStyled>{item.transaction_id}</LinkStyled>
+            <LinkStyled>
+              {item.transaction_id}{' '}
+              {` ${
+                item.amount
+                  ? CurrencySymbolPlacement === 'after'
+                    ? `(${Number(item.amount).toFixed(decimalFormat)} ${currency_code} )`
+                    : `(${currency_code} ${Number(item.amount).toFixed(decimalFormat)} )`
+                  : ''
+              }`}
+            </LinkStyled>
           </MenuItem>
         ))}
       </Menu>

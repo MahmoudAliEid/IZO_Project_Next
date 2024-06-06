@@ -8,6 +8,8 @@ import { useTheme } from '@mui/material/styles'
 
 // ** Third Party Components
 import { useKeenSlider, KeenSliderPlugin, KeenSliderInstance } from 'keen-slider/react'
+// ** Link Next
+import Link from 'next/link'
 
 const ThumbnailPlugin = (mainRef: MutableRefObject<KeenSliderInstance | null>): KeenSliderPlugin => {
   return slider => {
@@ -71,12 +73,20 @@ const SwiperThumbnails = ({ images, direction }: { images: [], direction: Direct
     <>
       <Box ref={sliderRef} className='keen-slider' >
         {images && Array.isArray(images)&& images.length>0 && images.map((img, index) => (
-          <Box sx={{ display: 'flex', height: 340 }} key={img + index} className='keen-slider__slide'>
+          <Box sx={{ display: 'flex', height: 340 }} key={img + index} className='keen-slider__slide'
+
+          >
+            <Link href={img}
+              about='image'
+              target='_blank'
+            >
+
             <img style={{
               width: "100%",
               height: "100%",
               objectFit: "cover"
             }} src={img} alt={`swiper ${index + 1}`} />
+              </Link>
           </Box>
         ))
         }
