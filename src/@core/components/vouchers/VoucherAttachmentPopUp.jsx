@@ -32,6 +32,16 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 const VoucherAttachmentPopUp = ({ open, toggle, itemId }) => {
   const [attachment, setAttachment] = useState(null) // Initially setting data as null
+  const [showProgress, setShowProgress] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowProgress(false)
+    }, 60000) // 60000 milliseconds = 1 minute
+
+    // Cleanup function to clear the timer if the component unmounts before the timer finishes
+    return () => clearTimeout(timer)
+  }, []) // Empty dependency array means this effect runs once on mount
 
   const handleClose = () => {
     toggle()
@@ -124,9 +134,7 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId }) => {
                       flexDirection: 'column'
                     }}
                   >
-                    <Box>
-                      <ProgressCustomization />
-                    </Box>
+                    <Box>{showProgress && <ProgressCustomization />}</Box>
                     <Box>
                       <Typography variant='h6'>No Attachments Found...</Typography>
                     </Box>

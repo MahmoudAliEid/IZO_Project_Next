@@ -94,6 +94,7 @@ import getEditReceiptVoucher from './apps/vouchers/getEditReceiptVoucherSlice'
 import postEditReceiptSlice from './apps/vouchers/postEditReceiptSlice'
 import getAttachment from './apps/vouchers/Actions/getAttachment'
 import getViewEntry from './apps/vouchers/Actions/getViewEntry'
+import postDeleteVoucherSlice from './apps/vouchers/postDeleteVoucherSlice'
 
 export const store = configureStore({
   reducer: {
@@ -187,7 +188,8 @@ export const store = configureStore({
     getEditReceiptVoucher: getEditReceiptVoucher,
     postEditReceipt: postEditReceiptSlice,
     getAttachment,
-    getViewEntry
+    getViewEntry,
+    postDeleteVoucher:postDeleteVoucherSlice,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

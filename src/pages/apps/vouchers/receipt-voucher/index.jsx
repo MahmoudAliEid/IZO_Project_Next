@@ -262,13 +262,7 @@ const ReceiptVoucher = () => {
                           name='currencies'
                           label='Currencies'
                           onChange={event => {
-                            const currency_value = Number(event.target.value)
                             handleChange(event)
-                            setFieldValue('currency_value', currency_value)
-                            setFieldValue(
-                              'amount_currency',
-                              Number(values.amount / currency_value).toFixed(decimalFormat)
-                            )
                           }}
                           onBlur={handleBlur}
                           error={Boolean(touched.currencies && errors.currencies)}
@@ -278,7 +272,17 @@ const ReceiptVoucher = () => {
                           </MenuItem>
                           {data.currency.length > 0 &&
                             data.currency.map((item, index) => (
-                              <MenuItem key={index} value={item.id}>
+                              <MenuItem
+                                key={index}
+                                value={item.id}
+                                onClick={() => {
+                                  setFieldValue('currency_value', Number(item.amount).toFixed(decimalFormat))
+                                  setFieldValue(
+                                    'amount_currency',
+                                    Number(values.amount / item.amount).toFixed(decimalFormat)
+                                  )
+                                }}
+                              >
                                 {item.value}
                               </MenuItem>
                             ))}

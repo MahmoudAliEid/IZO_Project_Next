@@ -28,7 +28,6 @@ import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchSuppliers } from 'src/store/apps/contacts/getSuppliersSlice'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
@@ -38,7 +37,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 
 // ** Custom Table Components Imports
-import { postDeleteContact } from 'src/store/apps/contacts/deleteContactSlice'
+import { deleteVoucher } from 'src/store/apps/vouchers/postDeleteVoucherSlice'
 import DialogAddSuppliers from 'src/views/apps/contacts/suppliers/DialogAddSuppliers'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 import CustomDateRange from './CustomDateRange'
@@ -123,9 +122,9 @@ const RowOptions = ({ id, type }) => {
       return
     }
 
-    dispatch(postDeleteContact({ id, url }))
+    dispatch(deleteVoucher({ id }))
       .then(() => {
-        dispatch(fetchSuppliers(token, url))
+        dispatch(fetchVouchers(token, url))
 
         handleRowOptionsClose()
       })

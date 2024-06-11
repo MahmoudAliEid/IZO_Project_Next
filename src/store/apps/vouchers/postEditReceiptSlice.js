@@ -102,7 +102,7 @@ const postEditReceiptSlice = createSlice({
         state.success = true
         state.error = false
         state.data = action.payload
-        notify('Receipt successfully updated.', 'success')
+        notify('Voucher successfully updated.', 'success')
       })
       .addCase(editReceipt.rejected, (state, action) => {
         state.loading = false

@@ -144,7 +144,7 @@ const EntryPopUp = ({ open, toggle, itemId }) => {
                           totalDebit={[
                             {
                               field: '',
-                              headerName: 'Total Debit',
+                              headerName: '',
                               align: 'left',
                               minWidth: 270
                             },
@@ -164,29 +164,6 @@ const EntryPopUp = ({ open, toggle, itemId }) => {
                             },
                             {
                               field: '',
-                              headerName: '',
-                              align: 'left'
-                            }
-                          ]}
-                          totalCredit={[
-                            {
-                              field: '',
-                              headerName: 'Total Credit',
-                              align: 'left',
-                              minWidth: 300
-                            },
-                            {
-                              field: '',
-                              headerName: '',
-                              align: 'left'
-                            },
-                            {
-                              field: '',
-                              align: 'left',
-                              headerName: ``
-                            },
-                            {
-                              field: '',
                               headerName: `${
                                 CurrencySymbolPlacement === 'after'
                                   ? `${Number(item.balance.total_credit).toFixed(decimalFormat)} ${currency_code} `
@@ -195,6 +172,33 @@ const EntryPopUp = ({ open, toggle, itemId }) => {
                               align: 'left'
                             }
                           ]}
+                          // totalCredit={[
+                          //   {
+                          //     field: '',
+                          //     headerName: 'Total Credit',
+                          //     align: 'left',
+                          //     minWidth: 300
+                          //   },
+                          //   {
+                          //     field: '',
+                          //     headerName: '',
+                          //     align: 'left'
+                          //   },
+                          //   {
+                          //     field: '',
+                          //     align: 'left',
+                          //     headerName: ``
+                          //   },
+                          //   {
+                          //     field: '',
+                          //     headerName: `${
+                          //       CurrencySymbolPlacement === 'after'
+                          //         ? `${Number(item.balance.total_credit).toFixed(decimalFormat)} ${currency_code} `
+                          //         : `${currency_code} ${Number(item.balance.total_credit).toFixed(decimalFormat)} `
+                          //     }`,
+                          //     align: 'left'
+                          //   }
+                          // ]}
                         />
                       </Grid>
                     ))

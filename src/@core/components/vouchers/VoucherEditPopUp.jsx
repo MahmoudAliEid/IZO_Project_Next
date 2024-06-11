@@ -205,12 +205,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
           storeData.bill.filter(row => row.payment_id !== '' && row.status === 0).map(row => row.payment_id) || [],
         bill_id: [],
         bill_amount: [],
-        type: storeData.info[0].type || 1,
+        type: type === 'receipt' ? 1 : 0,
         contactText: '111 | Lands',
         accountText: 'Main Box'
       }))
     }
-  }, [storeData, DecimalFormat])
+  }, [storeData, DecimalFormat, type])
 
   useEffect(() => {
     if (storeData) {
@@ -816,13 +816,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                     name='currencies'
                                     label='Currencies'
                                     onChange={event => {
-                                      const currency_value = Number(event.target.amount)
                                       handleChange(event)
-                                      setFieldValue('currency_value', currency_value)
-                                      setFieldValue(
-                                        'amount_currency',
-                                        Number(values.amount / currency_value).toFixed(DecimalFormat)
-                                      )
                                     }}
                                     onBlur={handleBlur}
                                     error={Boolean(touched.currencies && errors.currencies)}
@@ -832,7 +826,17 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                     </MenuItem>
                                     {data.currency.length > 0 &&
                                       data.currency.map((item, index) => (
-                                        <MenuItem key={index} value={item.id}>
+                                        <MenuItem
+                                          key={index}
+                                          value={item.id}
+                                          onClick={() => {
+                                            setFieldValue('currency_value', Number(item.amount).toFixed(decimalFormat))
+                                            setFieldValue(
+                                              'amount_currency',
+                                              Number(values.amount / item.amount).toFixed(decimalFormat)
+                                            )
+                                          }}
+                                        >
                                           {item.value}
                                         </MenuItem>
                                       ))}
