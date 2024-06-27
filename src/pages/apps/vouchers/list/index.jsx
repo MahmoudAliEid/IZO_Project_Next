@@ -289,7 +289,9 @@ const RowOptions = ({ id, type }) => {
         />
       )}
 
-      {openEntry && <EntryPopUp open={openEntry} toggle={setOpenEntry} itemId={id} />}
+      {openEntry && (
+        <EntryPopUp open={openEntry} toggle={setOpenEntry} itemId={id} name={'getViewEntry'} type={'voucher'} />
+      )}
     </Fragment>
   )
 }

@@ -95,6 +95,26 @@ import postEditReceiptSlice from './apps/vouchers/postEditReceiptSlice'
 import getAttachment from './apps/vouchers/Actions/getAttachment'
 import getViewEntry from './apps/vouchers/Actions/getViewEntry'
 import postDeleteVoucherSlice from './apps/vouchers/postDeleteVoucherSlice'
+// ** Cheques
+import getChequesSlice from './apps/Cheques/getChequesSlice'
+import getCreateChequeSlice from './apps/Cheques/getCreateChequesSlice'
+import postCreateChequeSlice from './apps/Cheques/postCreateCheques'
+import getEditChequeSlice from './apps/Cheques/getEditChequesSlice'
+import postEditChequeSlice from './apps/Cheques/postEditChequesSlice'
+import postDeleteChequesSlice from './apps/Cheques/postDeleteChequesSlice'
+import collect from './apps/Cheques/Actions/collect'
+import refund from './apps/Cheques/Actions/refund'
+import getViewChequesSlice from './apps/Cheques/Actions/getViewChequesSlice'
+import getEntryChequesSlice from './apps/Cheques/Actions/getEntryChequesSlice'
+import getBillsChequesSlice from './apps/Cheques/Actions/getBillsChequesSlice'
+import unCollect from './apps/Cheques/Actions/unCollect'
+// ** Contact Bank
+import getContactBankSlice from './apps/Cheques/contactBank/getContactBankSlice'
+import getCreateContactBank from './apps/Cheques/contactBank/getCreateContactBank'
+import getEditContactBank from './apps/Cheques/contactBank/getEditContactBank'
+import postCreateContactBank from './apps/Cheques/contactBank/postCreateContactBank'
+import postEditContactBank from './apps/Cheques/contactBank/postEditContactBank'
+import postDeleteContactBank from './apps/Cheques/contactBank/postDeleteContactBank'
 
 export const store = configureStore({
   reducer: {
@@ -189,7 +209,26 @@ export const store = configureStore({
     postEditReceipt: postEditReceiptSlice,
     getAttachment,
     getViewEntry,
-    postDeleteVoucher:postDeleteVoucherSlice,
+    postDeleteVoucher: postDeleteVoucherSlice,
+    getCheques: getChequesSlice,
+    getCreateCheque: getCreateChequeSlice,
+    postCreateCheque: postCreateChequeSlice,
+    getEditCheque: getEditChequeSlice,
+    postEditCheque: postEditChequeSlice,
+    collect,
+    refund,
+    getViewCheque: getViewChequesSlice,
+    getEntryCheques: getEntryChequesSlice,
+    getBillsCheques: getBillsChequesSlice,
+    unCollect,
+    postDeleteCheques: postDeleteChequesSlice,
+
+    getContactBank: getContactBankSlice,
+    getCreateContactBank: getCreateContactBank,
+    getEditContactBank: getEditContactBank,
+    postCreateContactBank: postCreateContactBank,
+    postEditContactBank: postEditContactBank,
+    postDeleteContactBank: postDeleteContactBank
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

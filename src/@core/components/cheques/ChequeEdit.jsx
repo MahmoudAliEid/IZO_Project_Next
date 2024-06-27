@@ -1,8 +1,6 @@
 import { forwardRef, useState, useEffect, Fragment } from 'react'
 import { Formik, Form, useField, FieldArray } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchEditRVoucher } from 'src/store/apps/vouchers/getEditReceiptVoucherSlice'
-import { editReceipt } from 'src/store/apps/vouchers/postEditReceiptSlice'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
@@ -12,7 +10,6 @@ import { useTheme } from '@mui/material/styles'
 import {
   Grid,
   Box,
-  CardHeader,
   FormControl,
   Select,
   MenuItem,
@@ -27,13 +24,16 @@ import {
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
-import VoucherAddTable from 'src/pages/apps/vouchers/receipt-voucher/VoucherAddTable'
-import { fetchBills } from 'src/store/apps/vouchers/Actions/getBillsSlice'
 import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
-import { fetchVouchers } from 'src/store/apps/vouchers/getVouchersSlice'
 
 // ** next cookies
 import { getCookie } from 'cookies-next'
+
+import { fetchEditCheques } from 'src/store/apps/Cheques/getEditChequesSlice'
+import { editCheques } from 'src/store/apps/Cheques/postEditChequesSlice'
+import { fetchCheques } from 'src/store/apps/Cheques/getChequesSlice'
+import { fetchBillsCheques } from 'src/store/apps/Cheques/Actions/getBillsChequesSlice'
+import ChequesAddTable from 'src/pages/apps/Cheques/add-cheque-in/ChequesAddTable'
 
 // const LinkStyled = styled(Box)(({ theme }) => ({
 //   fontWeight: 400,
@@ -53,10 +53,10 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
   return <TextField inputRef={ref} {...field} {...meta} {...props} label={label || ''} readOnly={readOnly} />
 })
 
-const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
+const ChequeEdit = ({ open, toggle, itemId, type }) => {
   // ** States
   const [changeCurrency] = useState(0)
-  const [voucherData, setVoucherData] = useState(null)
+  const [chequeData, setChequeData] = useState(null)
   const [auth] = useState(true)
   // const [accountText, setAccountText] = useState('')
   // const [contactText, setContactText] = useState('')
@@ -64,7 +64,14 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   const [initialValues, setInitialValues] = useState({
     currencies: '', //currency_id
     table_total: 0,
-    type: type === 'receipt' ? 1 : 0,
+    type: type === 'out' ? 1 : 0,
+    cheque_no: '',
+    cheque_type: type === 'out' ? 1 : 0, // 0 for in 1 for out
+    currencies: '', //currency_id
+
+    bank_id: '',
+    write_date: '',
+    due_date: '',
     document_expense: [],
     currency_value: '',
     date: '',
@@ -87,7 +94,8 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   const [openLoading, setOpenLoading] = useState(false)
   const [data, setData] = useState({
     currency: [],
-    account: [],
+    account_collect: [],
+
     contact: []
   })
 
@@ -103,8 +111,8 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   const DecimalFormat = getCookie('DecimalFormat')
 
   // ** Get data from store
-  const storeData = useSelector(state => state.getEditReceiptVoucher.data?.value)
-  const editStatus = useSelector(state => state.postEditReceipt)
+  const storeData = useSelector(state => state.getEditCheque.data?.value)
+  const editStatus = useSelector(state => state.postEditCheque)
   // const storeBills = useSelector(state => state.getBills.data?.value)
 
   // ** Functions
@@ -161,7 +169,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
 
   useEffect(() => {
     if (itemId) {
-      dispatch(fetchEditRVoucher({ itemId }))
+      dispatch(fetchEditCheques({ itemId }))
     }
   }, [itemId, dispatch])
 
@@ -171,13 +179,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
     if (storeData) {
       setInitialValues(prev => ({
         ...prev,
-        currencies: storeData.info[0].currency_id || prev.currencies,
+        currencies: String(storeData.info[0].currency_id) || '',
+        bank_id: storeData.info[0].contact_bank_id || prev.bank_id,
+        write_date: new Date(storeData.info[0].write_date) || '',
+        due_date: new Date(storeData.info[0].due_date) || '',
+        cheque_no: storeData.info[0].cheque_no || '',
+
         table_total: storeData.remaining || 0,
         date: new Date(storeData.info[0].date),
-        account: storeData.info[0].account_id || '',
+
         contact: storeData.info[0].contact_id || '',
         amount: storeData.info[0].amount || '',
-        amount_currency: storeData.info[0].currency_amount || '',
+        amount_currency: storeData.info[0].amount_in_currency || '',
         currency_value: storeData.info[0].exchange_price || '',
         note: storeData.info[0].text || '',
         attachment: storeData.info[0].attachment || [],
@@ -206,16 +219,10 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
         bill_id: [],
         bill_amount: [],
         type: type === 'receipt' ? 1 : 0,
-        contactText: storeData.info[0].contactText || 'hi IZO',
-        accountText: storeData.info[0].accountText || 'hi IZO'
+        contactText: storeData.info[0].contactText || 'no contact'
       }))
-      console.log(storeData.info[0].contactText, 'contactText form use effect!!!!!!!!!!!11')
-      console.log(
-        data.contact.find(contact => contact.value === storeData.info[0].contactText),
-        'find contact 🤩🤗'
-      )
     }
-  }, [storeData, DecimalFormat, type, data.contact])
+  }, [storeData, DecimalFormat, type])
 
   useEffect(() => {
     if (storeData) {
@@ -226,7 +233,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   }, [storeData])
   useEffect(() => {
     if (storeData) {
-      setVoucherData(storeData)
+      setChequeData(storeData)
     }
   }, [storeData])
 
@@ -237,19 +244,28 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   // }, [storeBills])
 
   const handleSubmitForm = values => {
-    console.log(values, 'values form submit')
+    console.log(values, 'values form submit edit cheque')
 
-    dispatch(editReceipt({ id: itemId, values }))
+    dispatch(editCheques({ id: itemId, values }))
       .then(() => {
         setOpenLoading(true)
       })
       .then(() => {
-        dispatch(fetchVouchers())
+        dispatch(
+          fetchCheques({
+            token,
+            url,
+            startWriteDate: new Date('2023-06-12'),
+            endWriteDate: new Date('2024-01-13'),
+            startDueDate: new Date('2023-06-12'),
+            endDueDate: new Date('2024-02-17')
+          })
+        )
       })
   }
 
   const fetchDataOnSearchSelect = async id => {
-    dispatch(fetchBills({ id, type }))
+    dispatch(fetchBillsCheques({ id, type }))
   }
 
   return (
@@ -262,12 +278,10 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
         aria-labelledby='max-width-dialog-title'
         sx={{ height: '100%' }}
       >
-        {voucherData ? (
+        {chequeData ? (
           <Fragment>
             <CustomHeader
-              title={`${type.charAt(0).toUpperCase() + type.slice(1)} Voucher Edit( Ref No: ${
-                voucherData.info[0].ref_no
-              })`}
+              title={` Cheque ${type}  Edit( Ref No: ${chequeData.info[0].ref_no})`}
               handleClose={handleClose}
               divider={false}
             />
@@ -276,9 +290,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                 {openLoading && (
                   <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={editStatus} />
                 )}
-                <Box sx={{ mb: 3 }}>
-                  <CardHeader title={`${type.charAt(0).toUpperCase() + type.slice(1)}`} />
-                </Box>
+
                 <Formik
                   initialValues={initialValues}
                   // validationSchema={validationSchema}
@@ -289,6 +301,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                     <Form>
                       <Box sx={{ p: 5 }}>
                         <Grid container spacing={2}>
+                          <Grid item xs={12} lg={6} md={4} sm={12}>
+                            <FormControl fullWidth>
+                              <TextField
+                                label='Cheque No'
+                                name='cheque_no'
+                                value={values.cheque_no}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={Boolean(touched.cheque_no && errors.cheque_no)}
+                              />
+                            </FormControl>
+                          </Grid>
                           <Grid item xs={12} lg={auth ? 6 : 12} md={4} sm={12}>
                             <FormControl fullWidth>
                               <TextField
@@ -318,7 +342,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                   ) {
                                     setFieldValue(
                                       'table',
-                                      voucherData.bill.map(row => ({
+                                      chequeData.bill.map(row => ({
                                         id: row.bill_id,
                                         check: false,
                                         date: row.date,
@@ -361,7 +385,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                     )
                                     setFieldValue(
                                       'table',
-                                      voucherData.bill.map(row => ({
+                                      chequeData.bill.map(row => ({
                                         id: row.bill_id,
                                         check: row.status === 0 ? true : false,
                                         date: row.date,
@@ -382,19 +406,19 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                     )
                                     setFieldValue(
                                       'payment_id',
-                                      voucherData.bill
+                                      chequeData.bill
                                         .filter(row => row.bill_id !== '' && row.status === 0)
                                         .map(row => row.payment_id)
                                     )
                                     setFieldValue(
                                       'old_bill_id ',
-                                      voucherData.bill
+                                      chequeData.bill
                                         .filter(row => row.bill_id !== '' && row.status === 0)
                                         .map(row => row.bill_id)
                                     )
                                     setFieldValue(
                                       'old_bill_amount',
-                                      voucherData.bill
+                                      chequeData.bill
                                         .filter(row => row.final_total !== '' && row.status === 0)
                                         .map(row => row.final_total) || []
                                     )
@@ -402,7 +426,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                     console.log('equal😁😁🤣')
                                     setFieldValue(
                                       'table',
-                                      voucherData.bill.map(row => ({
+                                      chequeData.bill.map(row => ({
                                         id: row.bill_id,
                                         check: row.status === 0 ? true : false,
                                         date: row.date,
@@ -423,19 +447,19 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                     )
                                     setFieldValue(
                                       'payment_id',
-                                      voucherData.bill
+                                      chequeData.bill
                                         .filter(row => row.bill_id !== '' && row.status === 0)
                                         .map(row => row.payment_id)
                                     )
                                     setFieldValue(
                                       'old_bill_id ',
-                                      voucherData.bill
+                                      chequeData.bill
                                         .filter(row => row.bill_id !== '' && row.status === 0)
                                         .map(row => row.bill_id)
                                     )
                                     setFieldValue(
                                       'old_bill_amount',
-                                      voucherData.bill
+                                      chequeData.bill
                                         .filter(row => row.final_total !== '' && row.status === 0)
                                         .map(row => row.final_total) || []
                                     )
@@ -471,7 +495,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                       const amount_currency = Number(event.target.value)
                                       setFieldValue(
                                         'table',
-                                        voucherData.bill.map(row => ({
+                                        chequeData.bill.map(row => ({
                                           id: row.bill_id,
                                           check: row.status === 0 ? true : false,
                                           date: row.date,
@@ -489,9 +513,8 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           payment_id: row.payment_id
                                         }))
                                       )
-                                      // setFieldValue('contact', [])
+                                      setFieldValue('contact', [])
                                       // setContactText('')
-                                      setFieldValue('contactText', '')
                                       setFieldValue('bill_id', [])
                                       setFieldValue('bill_amount', [])
 
@@ -513,7 +536,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                         ) {
                                           setFieldValue(
                                             'table',
-                                            voucherData.bill.map(row => ({
+                                            chequeData.bill.map(row => ({
                                               id: row.bill_id,
                                               check: false,
                                               date: row.date,
@@ -573,7 +596,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           )
                                           setFieldValue(
                                             'table',
-                                            voucherData.bill.map(row => ({
+                                            chequeData.bill.map(row => ({
                                               id: row.bill_id,
                                               check: row.status === 0 ? true : false,
                                               date: row.date,
@@ -594,19 +617,19 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           )
                                           setFieldValue(
                                             'payment_id',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.bill_id)
                                           )
                                           setFieldValue(
                                             'old_bill_amount',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.final_total !== '' && row.status === 0)
                                               .map(row => row.final_total) || []
                                           )
@@ -615,7 +638,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                         ) {
                                           setFieldValue(
                                             'table',
-                                            voucherData.bill.map(row => ({
+                                            chequeData.bill.map(row => ({
                                               id: row.bill_id,
                                               check: row.status === 0 ? true : false,
                                               date: row.date,
@@ -636,19 +659,19 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           )
                                           setFieldValue(
                                             'payment_id',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.bill_id)
                                           )
                                           setFieldValue(
                                             'old_bill_amount',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.final_total !== '' && row.status === 0)
                                               .map(row => row.final_total) || []
                                           )
@@ -677,7 +700,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                         ) {
                                           setFieldValue(
                                             'table',
-                                            voucherData.bill.map(row => ({
+                                            chequeData.bill.map(row => ({
                                               id: row.bill_id,
                                               check: false,
                                               date: row.date,
@@ -717,7 +740,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           )
                                           setFieldValue(
                                             'table',
-                                            voucherData.bill.map(row => ({
+                                            chequeData.bill.map(row => ({
                                               id: row.bill_id,
                                               check: row.status === 0 ? true : false,
                                               date: row.date,
@@ -738,26 +761,26 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           )
                                           setFieldValue(
                                             'payment_id',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.bill_id)
                                           )
                                           setFieldValue(
                                             'old_bill_amount',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.final_total !== '' && row.status === 0)
                                               .map(row => row.final_total) || []
                                           )
                                         } else if (Number(amount_currency) === Number(oldAmount)) {
                                           setFieldValue(
                                             'table',
-                                            voucherData.bill.map(row => ({
+                                            chequeData.bill.map(row => ({
                                               id: row.bill_id,
                                               check: row.status === 0 ? true : false,
                                               date: row.date,
@@ -778,19 +801,19 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           )
                                           setFieldValue(
                                             'payment_id',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
                                               .map(row => row.bill_id)
                                           )
                                           setFieldValue(
                                             'old_bill_amount',
-                                            voucherData.bill
+                                            chequeData.bill
                                               .filter(row => row.final_total !== '' && row.status === 0)
                                               .map(row => row.final_total) || []
                                           )
@@ -849,7 +872,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                   </Select>
                                 </FormControl>
                               </Grid>
-                              <Grid item xs={12} lg={6} md={4} sm={12}>
+                              <Grid item xs={12} lg={12} md={4} sm={12}>
                                 <FormControl fullWidth>
                                   <TextField
                                     type='text'
@@ -878,7 +901,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           ) {
                                             setFieldValue(
                                               'table',
-                                              voucherData.bill.map(row => ({
+                                              chequeData.bill.map(row => ({
                                                 id: row.bill_id,
                                                 check: false,
                                                 date: row.date,
@@ -933,7 +956,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                             )
                                             setFieldValue(
                                               'table',
-                                              voucherData.bill.map(row => ({
+                                              chequeData.bill.map(row => ({
                                                 id: row.bill_id,
                                                 check: row.status === 0 ? true : false,
                                                 date: row.date,
@@ -954,19 +977,19 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                             )
                                             setFieldValue(
                                               'payment_id',
-                                              voucherData.bill
+                                              chequeData.bill
                                                 .filter(row => row.bill_id !== '' && row.status === 0)
                                                 .map(row => row.payment_id)
                                             )
                                             setFieldValue(
                                               'old_bill_id ',
-                                              voucherData.bill
+                                              chequeData.bill
                                                 .filter(row => row.bill_id !== '' && row.status === 0)
                                                 .map(row => row.bill_id)
                                             )
                                             setFieldValue(
                                               'old_bill_amount',
-                                              voucherData.bill
+                                              chequeData.bill
                                                 .filter(row => row.final_total !== '' && row.status === 0)
                                                 .map(row => row.final_total) || []
                                             )
@@ -976,7 +999,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                             console.log('equal😁😁🤣')
                                             setFieldValue(
                                               'table',
-                                              voucherData.bill.map(row => ({
+                                              chequeData.bill.map(row => ({
                                                 id: row.bill_id,
                                                 check: row.status === 0 ? true : false,
                                                 date: row.date,
@@ -997,19 +1020,19 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                             )
                                             setFieldValue(
                                               'payment_id',
-                                              voucherData.bill
+                                              chequeData.bill
                                                 .filter(row => row.bill_id !== '' && row.status === 0)
                                                 .map(row => row.payment_id)
                                             )
                                             setFieldValue(
                                               'old_bill_id ',
-                                              voucherData.bill
+                                              chequeData.bill
                                                 .filter(row => row.bill_id !== '' && row.status === 0)
                                                 .map(row => row.bill_id)
                                             )
                                             setFieldValue(
                                               'old_bill_amount',
-                                              voucherData.bill
+                                              chequeData.bill
                                                 .filter(row => row.final_total !== '' && row.status === 0)
                                                 .map(row => row.final_total) || []
                                             )
@@ -1052,33 +1075,58 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                               </Grid>
                             </>
                           )}
+                          <Grid item xs={12} lg={12} md={4} sm={12}>
+                            <FormControl fullWidth>
+                              <InputLabel id='demo-simple-select-label'>Bank</InputLabel>
+                              <Select
+                                value={values.bank_id}
+                                name='bank_id'
+                                label='Bank'
+                                onChange={event => {
+                                  handleChange(event)
+                                }}
+                                onBlur={handleBlur}
+                                error={Boolean(touched.bank_id && errors.bank_id)}
+                              >
+                                <MenuItem value='' disabled>
+                                  Select Bank
+                                </MenuItem>
+                                {data.account_collect.length > 0 &&
+                                  data.account_collect.map((item, index) => (
+                                    <MenuItem key={index} value={item.id}>
+                                      {item.value}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                          </Grid>
                         </Grid>
                       </Box>
                       <Divider />
                       <Box sx={{ p: 5 }}>
                         <Grid container spacing={2}>
-                          <Grid item xs={12} lg={12} md={4} sm={12}>
+                          <Grid item xs={12} lg={6} md={4} sm={12}>
                             <FormControl fullWidth>
                               <DatePickerWrapper>
                                 <DatePicker
-                                  name='date'
-                                  selected={values.date}
+                                  name='write_date'
+                                  selected={values.write_date}
                                   popperPlacement={popperPlacement}
-                                  onChange={date => {
-                                    setFieldValue('date', date)
+                                  onChange={write_date => {
+                                    setFieldValue('write_date', write_date)
                                   }}
                                   id='basic-input'
                                   dateFormat='yyyy/MM/dd'
                                   customInput={
                                     <CustomInput
                                       fullWidth
-                                      label='Date '
+                                      label='Write Date'
                                       readOnly={false}
-                                      value={values.date}
-                                      name='date'
+                                      value={values.write_date}
+                                      name='write_date'
                                       onChange={handleChange}
                                       onBlur={handleBlur}
-                                      error={Boolean(touched.date && errors.date)}
+                                      error={Boolean(touched.write_date && errors.write_date)}
                                     />
                                   }
                                 />
@@ -1087,26 +1135,53 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                           </Grid>
                           <Grid item xs={12} lg={6} md={4} sm={12}>
                             <FormControl fullWidth>
-                              <Autocomplete
-                                disablePortal
-                                selectOnFocus
-                                fullWidth
-                                id='combo-box-demo'
-                                name='account'
-                                // value={values.accountText}
-                                value={data.accounts.find(account => account.value === values.accountText) || null}
-                                onChange={(event, newValue) => {
-                                  setFieldValue('accountText', newValue.value)
-                                  setFieldValue('account', newValue?.id || '')
-                                }}
-                                options={data.accounts || []}
-                                getOptionLabel={option => option.value || ''}
-                                renderInput={params => <TextField fullWidth {...params} label='Account' />}
-                              />
+                              <DatePickerWrapper>
+                                <DatePicker
+                                  name='due_date'
+                                  selected={values.due_date}
+                                  popperPlacement={popperPlacement}
+                                  onChange={due_date => {
+                                    setFieldValue('due_date', due_date)
+                                  }}
+                                  id='basic-input'
+                                  dateFormat='yyyy/MM/dd'
+                                  customInput={
+                                    <CustomInput
+                                      fullWidth
+                                      label='Due Date'
+                                      readOnly={false}
+                                      value={values.due_date}
+                                      name='due_date'
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                      error={Boolean(touched.due_date && errors.due_date)}
+                                    />
+                                  }
+                                />
+                              </DatePickerWrapper>
                             </FormControl>
                           </Grid>
+                          {/* <Grid item xs={12} lg={6} md={4} sm={12}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      disablePortal
+                      selectOnFocus
+                      fullWidth
+                      id='combo-box-demo'
+                      name='account'
+                      value={accountText}
+                      onChange={(event, newValue) => {
+                        setAccountText(newValue)
+                        setFieldValue('account', newValue?.id || '')
+                      }}
+                      options={data.accounts || []}
+                      getOptionLabel={option => option.value || ''}
+                      renderInput={params => <TextField fullWidth {...params} label='Account' />}
+                    />
+                  </FormControl>
+                </Grid> */}
 
-                          <Grid item xs={12} lg={6} md={4} sm={12}>
+                          <Grid item xs={12} lg={12} md={4} sm={12}>
                             <FormControl fullWidth>
                               <Autocomplete
                                 disablePortal
@@ -1115,10 +1190,9 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                 fullWidth
                                 name='contact'
                                 // value={values.contactText}
-                                value={data.contact.find(contact => contact.value === values.contactText) || ''}
+                                value={data.contact.find(contact => contact.value === values.contactText) || null}
                                 onChange={(event, newValue) => {
-                                  setFieldValue('contactText', newValue.value)
-
+                                  setFieldValue('contactText', newValue)
                                   setFieldValue('contact', newValue?.id || '')
                                   fetchDataOnSearchSelect(newValue?.id || '')
                                   setFieldValue(`table`, [])
@@ -1190,7 +1264,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                       <Box sx={{ p: 5 }}>
                         <FieldArray name='table'>
                           {({ push, remove }) => (
-                            <VoucherAddTable
+                            <ChequesAddTable
                               push={push}
                               type={type}
                               remove={remove}
@@ -1235,4 +1309,4 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   )
 }
 
-export default VoucherEditPopUp
+export default ChequeEdit

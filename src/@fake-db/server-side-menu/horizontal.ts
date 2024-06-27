@@ -229,18 +229,18 @@ const navigation: HorizontalNavItemsType = [
         title: 'Cheques',
         icon: 'icon-park-solid:bank-card-one',
         children: [
-          { title: 'List Cheques', path: '/apps/cheques/list' },
+          { title: 'List Cheques', path: '/apps/Cheques/list' },
           {
             title: 'Add Cheque In',
-            path: '/apps/cheques/add-cheque-in'
+            path: '/apps/Cheques/add-cheque-in'
           },
           {
             title: 'Add Cheque Out',
-            path: '/apps/cheques/add-cheque-out'
+            path: '/apps/Cheques/add-cheque-out'
           },
           {
             title: 'Contact Bank',
-            path: '/apps/cheques/contact-bank'
+            path: '/apps/Cheques/contact-bank'
           }
         ]
       },

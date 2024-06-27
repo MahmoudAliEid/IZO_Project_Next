@@ -37,7 +37,7 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowProgress(false)
-    }, 60000) // 60000 milliseconds = 1 minute
+    }, 30000) // 30000 milliseconds = 1 minute
 
     // Cleanup function to clear the timer if the component unmounts before the timer finishes
     return () => clearTimeout(timer)

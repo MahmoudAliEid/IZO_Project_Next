@@ -21,9 +21,6 @@ import Icon from 'src/@core/components/icon'
 // ** Store
 import { useSelector } from 'react-redux'
 
-// ** next cookies
-import { getCookie } from 'cookies-next'
-
 // ** Third Party Components
 // import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 // import CustomInputField from '../productVariable/components/CustomInputField'
@@ -40,13 +37,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) => {
+const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) => {
   // ** States
 
   const [rows, setRows] = useState([])
-  const decimalFormat = getCookie('DecimalFormat')
-  const currency_code = getCookie('currency_code')
-  const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
   // const [total, setTotal] = useState(values.amount)
   // const [remainValue, setRemainValue] = useState(values.amount)
 
@@ -233,48 +227,28 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
       headerName: 'Grand Total',
       align: 'center',
       flex: 0.25,
-      minWidth: 150,
-      renderCell: params => (
-        <Box>
-          <Typography variant='body2' align='center'>
-            {CurrencySymbolPlacement === 'after'
-              ? `${Number(params.grand_total).toFixed(decimalFormat)} ${currency_code} `
-              : `${currency_code} ${Number(params.grand_total).toFixed(decimalFormat)} `}
-          </Typography>
-        </Box>
-      )
+      minWidth: 150
     },
     {
       field: 'payment',
       headerName: 'Payment',
       align: 'center',
       flex: 0.25,
-      minWidth: 150,
-      renderCell: params => (
-        <Box>
-          <Typography variant='body2' align='center'>
-            {CurrencySymbolPlacement === 'after'
-              ? `${Number(params.payment).toFixed(decimalFormat)} ${currency_code} `
-              : `${currency_code} ${Number(params.payment).toFixed(decimalFormat)} `}
-          </Typography>
-        </Box>
-      )
+      minWidth: 150
+      // renderCell: params => (
+      //   <Box>
+      //     <Typography variant='body2' align='center'>
+      //       {isNaN(params.payment_due) ? 0 : Number(params.final_total) - Number(params.pay_due)}
+      //     </Typography>
+      //   </Box>
+      // )
     },
     {
       field: 'payment_due',
       headerName: 'Payment Due',
       align: 'center',
       flex: 0.25,
-      minWidth: 150,
-      renderCell: params => (
-        <Box>
-          <Typography variant='body2' align='center'>
-            {CurrencySymbolPlacement === 'after'
-              ? `${Number(params.payment_due).toFixed(decimalFormat)} ${currency_code} `
-              : `${currency_code} ${Number(params.payment_due).toFixed(decimalFormat)} `}
-          </Typography>
-        </Box>
-      )
+      minWidth: 150
     },
     {
       field: 'add_by',
@@ -287,13 +261,20 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
   ]
 
   // ** Get data from store
-  const storeBills = useSelector(state => state.getBills.data?.value)
+  const storeBills = useSelector(state => state.getBillsCheques.data?.value)
 
   // ** UseEffect Update rows
   useEffect(() => {
     if (storeBills) {
       setRows(storeBills)
-      storeBills.map(row => {
+    }
+  }, [storeBills])
+
+  useEffect(() => {
+    // auto pushing
+
+    if (rows.length > 0) {
+      rows.map(row => {
         const obj = {
           id: row.bill_id,
           check: false,
@@ -309,37 +290,15 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
           payment_due: row.pay_due,
           add_by: row.add_by || 'no add by'
         }
+
         push(obj)
+
+        console.log('pushed:', obj)
       })
     }
-  }, [storeBills, push])
+  }, [rows, push])
 
-  // useEffect(() => {
-  //   // auto pushing
-
-  //   if (rows.length > 0) {
-  //     rows.map(row => {
-  //       const obj = {
-  //         id: row.bill_id,
-  //         check: false,
-  //         date: row.date,
-  //         reference_no: row.reference_no,
-  //         supplier: row.supplier || 'no supplier',
-  //         purchase_status: row.status || 'no purchase status',
-  //         payment_status: row.pay_status || 'no payment status',
-  //         warehouse_name: row.store,
-  //         grand_total: row.final_total,
-  //         payment: row.pay_due,
-  //         status: row.status,
-  //         payment_due: row.pay_due,
-  //         add_by: row.add_by || 'no add by'
-  //       }
-  //       push(obj)
-  //     })
-  //   }
-  // }, [rows, push])
-
-  console.log('data form voucherTable store: & Row:', storeBills, rows)
+  console.log('data form Cheques store: & Row:', storeBills, rows)
 
   return (
     <>
@@ -428,11 +387,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             <Typography color={'white'}>Total :</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>
-              {CurrencySymbolPlacement === 'after'
-                ? `${Number(values?.amount).toFixed(decimalFormat)} ${currency_code} `
-                : `${currency_code} ${Number(values?.amount).toFixed(decimalFormat)} `}
-            </Typography>
+            <Typography color={'white'}>{Number(values?.amount).toFixed(2) || 0}</Typography>
           </StyledTableCell>
         </Box>
         <Box
@@ -447,11 +402,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             <Typography color={'white'}>Remain:</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>
-              {CurrencySymbolPlacement === 'after'
-                ? `${Number(values?.table_total).toFixed(decimalFormat)} ${currency_code} `
-                : `${currency_code} ${Number(values?.table_total).toFixed(decimalFormat)} `}
-            </Typography>
+            <Typography color={'white'}>{values?.table_total}</Typography>
           </StyledTableCell>
         </Box>
       </Box>
@@ -493,7 +444,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
   )
 }
 
-export default VoucherAddTable
+export default ChequesAddTable
 
 const RowOptions = ({ id }) => {
   // ** State
