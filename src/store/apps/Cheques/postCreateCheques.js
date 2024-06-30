@@ -8,6 +8,9 @@ export const createCheques = createAsyncThunk('Cheques/createCheques', async pay
   const token = getCookie('token')
   const url = getCookie('apiUrl')
   const { values } = payload
+
+  console.log(values, 'values from create Cheques')
+
   const formData = new FormData()
   // Extract the date components
   let year = values.date.getFullYear()

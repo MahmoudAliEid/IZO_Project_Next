@@ -62,6 +62,8 @@ const AddChequeIn = () => {
     amount_currency: '', //amount_currency
     bill_id: [],
     bill_amount: [],
+    old_bill_id: [],
+    old_bill_amount: [],
     attachment: [],
     note: '',
     table: [
