@@ -502,10 +502,10 @@ const ChequesList = () => {
   const decimalFormat = getCookie('DecimalFormat')
   const currency_code = getCookie('currency_code')
   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
-  const [startWriteDate, setStartWriteDate] = useState(null)
-  const [endWriteDate, setEndWriteDate] = useState(null)
-  const [startDueDate, setStartDueDate] = useState(null)
-  const [endDueDate, setEndDueDate] = useState(null)
+  const [startWriteDate, setStartWriteDate] = useState(new Date('2023-06-12'))
+  const [endWriteDate, setEndWriteDate] = useState(new Date('2024-01-13'))
+  const [startDueDate, setStartDueDate] = useState(new Date('2023-06-12'))
+  const [endDueDate, setEndDueDate] = useState(new Date('2024-02-17'))
   const columns = [
     {
       flex: 0.1,

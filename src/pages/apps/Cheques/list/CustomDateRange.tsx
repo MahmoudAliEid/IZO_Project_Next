@@ -1,23 +1,15 @@
 // ** React Imports
-import { forwardRef } from 'react'
+import React, {  forwardRef } from 'react';
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
-// ** Third Party Imports
-import format from 'date-fns/format'
-// import addDays from 'date-fns/addDays'
-import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
 
-// ** Types
-// import { DateType } from 'src/types/forms/reactDatepickerTypes'
+import DatePicker, { ReactDatePickerProps } from 'react-datepicker';
 
-interface PickerProps {
-  label?: string
-  end: Date | number
-  start: Date | number
-}
+// ** CSS Import for DatePicker
+import 'react-datepicker/dist/react-datepicker.css';
 
 const CustomDateRange = ({
   popperPlacement,
@@ -32,72 +24,39 @@ const CustomDateRange = ({
   setStartDate: (date: Date) => void,
   setEndDate: (date: Date) => void
 }) => {
-  // ** States
-  // const [startDate, setStartDate] = useState<DateType>(new Date())
-  // const [endDate, setEndDate] = useState<DateType>(addDays(new Date(), 15))
-  // const [startDateRange, setStartDateRange] = useState<DateType>(new Date())
-  // const [endDateRange, setEndDateRange] = useState<DateType>(addDays(new Date(), 45))
+  const handleOnChange = (dates: [Date, Date]) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
 
-  const handleOnChange = (dates: any) => {
-    const [start, end] = dates
-    setStartDate(start)
-    setEndDate(end)
-  }
-
-  // const handleOnChangeRange = (dates: any) => {
-  //   const [start, end] = dates
-  //   setStartDateRange(start)
-  //   setEndDateRange(end)
-  // }
-
-  const CustomInput = forwardRef((props: PickerProps, ref) => {
-    const startDate = props.end !== null?format(props.start, 'yyyy-MM-dd'):''
-    const endDate = props.end !== null ? ` - ${format(props.end, 'yyyy-MM-dd')}` : ''
-
-    const value = `${startDate}${endDate !== null ? endDate : ''}`
-
-    return <TextField inputRef={ref} label={props.label || ''} {...props} value={value} />
-  })
+  const CustomInput = forwardRef(({ value, onClick }: any, ref: React.Ref<HTMLInputElement>) => (
+    <TextField
+      inputRef={ref}
+      onClick={onClick}
+      value={value}
+      label="Date Range"
+      fullWidth
+    />
+  ));
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap' }} className='demo-space-x'>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
       <div>
         <DatePicker
           selectsRange
           endDate={endDate}
           selected={startDate}
           startDate={startDate}
-          id='date-range-picker'
           onChange={handleOnChange}
           shouldCloseOnSelect={false}
           popperPlacement={popperPlacement}
-          customInput={
-            <CustomInput label='Date Range' start={startDate as Date | number} end={endDate as Date | number} />
-          }
+          customInput={<CustomInput />}
         />
       </div>
-      {/* <div>
-        <DatePicker
-          selectsRange
-          monthsShown={2}
-          endDate={endDateRange}
-          selected={startDateRange}
-          startDate={startDateRange}
-          shouldCloseOnSelect={false}
-          id='date-range-picker-months'
-          onChange={handleOnChangeRange}
-          popperPlacement={popperPlacement}
-          customInput={
-            <CustomInput
-              label='Multiple Months'
-              end={endDateRange as Date | number}
-              start={startDateRange as Date | number}
-            />
-          }
-        />
-      </div> */}
     </Box>
-  )
-}
+  );
+};
+
 
 export default CustomDateRange
