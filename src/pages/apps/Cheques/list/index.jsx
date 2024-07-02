@@ -42,10 +42,7 @@ import { getInitials } from 'src/@core/utils/get-initials'
 // ** Custom Table Components Imports
 
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
-import CustomDateRange from './CustomDateRange'
 
-// ** Styled Component
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { fetchCheques } from 'src/store/apps/Cheques/getChequesSlice'
 import VoucherAttachmentPopUp from 'src/@core/components/vouchers/VoucherAttachmentPopUp'
 import EntryPopUp from 'src/@core/components/vouchers/EntryPopUp'
@@ -55,6 +52,8 @@ import { collect } from 'src/store/apps/Cheques/Actions/collect'
 import { deleteCheques } from 'src/store/apps/Cheques/postDeleteChequesSlice'
 import { unCollect } from 'src/store/apps/Cheques/Actions/unCollect'
 import { refund } from 'src/store/apps/Cheques/Actions/refund'
+import { Button, ButtonGroup } from '@mui/material'
+import DateRangePopUp from './DateRangePopUp'
 // import notify from 'src/utils/notify'
 
 const userStatusObj = {
@@ -92,7 +91,7 @@ const renderClient = row => {
   }
 }
 
-const RowOptions = ({ id, statusName, account_id }) => {
+const RowOptions = ({ id, statusName, account_id, document }) => {
   // ** Hooks
   const dispatch = useDispatch()
   console.log('Status Name =>', statusName)
@@ -359,16 +358,18 @@ const RowOptions = ({ id, statusName, account_id }) => {
         </MenuItem>
 
         {/* attachments */}
-        <MenuItem
-          onClick={() => {
-            handleRowOptionsClose()
-            setOpenViewAttachments(true)
-          }}
-          sx={{ '& svg': { mr: 2 } }}
-        >
-          <Icon icon='bx:paperclip' fontSize={20} />
-          Attachments
-        </MenuItem>
+        {document && document.length > 0 ? (
+          <MenuItem
+            onClick={() => {
+              handleRowOptionsClose()
+              setOpenViewAttachments(true)
+            }}
+            sx={{ '& svg': { mr: 2 } }}
+          >
+            <Icon icon='bx:paperclip' fontSize={20} />
+            Attachments
+          </MenuItem>
+        ) : null}
 
         {/* entry */}
         <MenuItem
@@ -419,77 +420,6 @@ const RowOptions = ({ id, statusName, account_id }) => {
   )
 }
 
-// const RowOptionsTransactions = ({ row }) => {
-//   // ** State
-//   const [openTransaction, setOpenTransaction] = useState(false)
-//   const [anchorEl, setAnchorEl] = useState(null)
-
-//   const decimalFormat = getCookie('DecimalFormat')
-//   const currency_code = getCookie('currency_code')
-//   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
-
-//   const handleTransactionClick = () => {
-//     setOpenTransaction(true)
-//   }
-
-//   const rowOptionsOpen = anchorEl
-
-//   const handleRowOptionsClick = event => {
-//     setAnchorEl(event.currentTarget)
-//   }
-
-//   const handleRowOptionsClose = () => {
-//     setAnchorEl(null)
-//   }
-
-//   return (
-//     <Fragment>
-//       <Button size='small' onClick={handleRowOptionsClick} sx={{ my: 3 }}>
-//         Invoices
-//       </Button>
-//       <Menu
-//         keepMounted
-//         anchorEl={anchorEl}
-//         open={rowOptionsOpen}
-//         onClose={handleRowOptionsClose}
-//         anchorOrigin={{
-//           vertical: 'bottom',
-//           horizontal: 'right'
-//         }}
-//         transformOrigin={{
-//           vertical: 'top',
-//           horizontal: 'right'
-//         }}
-//         PaperProps={{ style: { minWidth: '8rem' } }}
-//       >
-//         {row.payments.map((item, index) => (
-//           <MenuItem
-//             key={index}
-//             onClick={() => {
-//               handleRowOptionsClose()
-//               handleTransactionClick()
-//             }}
-//             sx={{ '& svg': { mr: 2 } }}
-//           >
-//             <Icon icon='bx:pencil' fontSize={20} />
-//             <LinkStyled>
-//               {item.transaction_id}{' '}
-//               {` ${
-//                 item.amount
-//                   ? CurrencySymbolPlacement === 'after'
-//                     ? `(${Number(item.amount).toFixed(decimalFormat)} ${currency_code} )`
-//                     : `(${currency_code} ${Number(item.amount).toFixed(decimalFormat)} )`
-//                   : ''
-//               }`}
-//             </LinkStyled>
-//           </MenuItem>
-//         ))}
-//       </Menu>
-//       {openTransaction && <VouchersTransactionPopUp open={openTransaction} toggle={setOpenTransaction} />}
-//     </Fragment>
-//   )
-// }
-
 const ChequesList = () => {
   // ** States
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
@@ -506,6 +436,7 @@ const ChequesList = () => {
   const [endWriteDate, setEndWriteDate] = useState(new Date('2024-01-13'))
   const [startDueDate, setStartDueDate] = useState(new Date('2023-06-12'))
   const [endDueDate, setEndDueDate] = useState(new Date('2024-02-17'))
+  const [openDateRange, setOpenDateRange] = useState(false)
   const columns = [
     {
       flex: 0.1,
@@ -514,7 +445,13 @@ const ChequesList = () => {
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }) => (
-        <RowOptions id={row.id} type={row.type} statusName={row.status_name} account_id={row.account_id} />
+        <RowOptions
+          id={row.id}
+          type={row.type}
+          statusName={row.status_name}
+          account_id={row.account_id}
+          document={row.document}
+        />
       )
     },
     {
@@ -556,6 +493,48 @@ const ChequesList = () => {
       }
     },
     {
+      flex: 0.2,
+      minWidth: 160,
+      field: 'status_name',
+      headerName: 'Status',
+      renderCell: params => {
+        const status =
+          params.row.status_name === 'Un Collect' ? userStatusObj['unCollect'] : userStatusObj[params.row.status_name]
+
+        return (
+          <CustomChip
+            rounded
+            size='small'
+            skin='light'
+            color={status?.color ? status.color : 'success'}
+            label={status?.title ? status.title : params.row.status_name}
+          />
+          // <Typography noWrap sx={{ color: 'text.secondary' }}>
+          //   {params.row.type}
+          // </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.25,
+      minWidth: 160,
+      field: 'payment_for',
+      headerName: 'Payment For',
+      renderCell: ({ row }) => {
+        return (
+          <Typography noWrap sx={{ color: 'text.secondary' }} variant='caption'>
+            {`${
+              row.payment_for
+                ? CurrencySymbolPlacement === 'after'
+                  ? `${Number(row.payment_for).toFixed(decimalFormat)} ${currency_code} `
+                  : `${currency_code} ${Number(row.payment_for).toFixed(decimalFormat)} `
+                : 'Not available'
+            }`}
+          </Typography>
+        )
+      }
+    },
+    {
       flex: 1,
       minWidth: 300,
       field: 'contactText',
@@ -588,25 +567,7 @@ const ChequesList = () => {
         )
       }
     },
-    {
-      flex: 0.25,
-      minWidth: 160,
-      field: 'payment_for',
-      headerName: 'Payment For',
-      renderCell: ({ row }) => {
-        return (
-          <Typography noWrap sx={{ color: 'text.secondary' }} variant='caption'>
-            {`${
-              row.payment_for
-                ? CurrencySymbolPlacement === 'after'
-                  ? `${Number(row.payment_for).toFixed(decimalFormat)} ${currency_code} `
-                  : `${currency_code} ${Number(row.payment_for).toFixed(decimalFormat)} `
-                : 'Not available'
-            }`}
-          </Typography>
-        )
-      }
-    },
+
     {
       flex: 0.25,
       minWidth: 160,
@@ -653,29 +614,6 @@ const ChequesList = () => {
     },
 
     {
-      flex: 0.2,
-      minWidth: 160,
-      field: 'status_name',
-      headerName: 'Status',
-      renderCell: params => {
-        const status =
-          params.row.status_name === 'Un Collect' ? userStatusObj['unCollect'] : userStatusObj[params.row.status_name]
-
-        return (
-          <CustomChip
-            rounded
-            size='small'
-            skin='light'
-            color={status?.color ? status.color : 'success'}
-            label={status?.title ? status.title : params.row.status_name}
-          />
-          // <Typography noWrap sx={{ color: 'text.secondary' }}>
-          //   {params.row.type}
-          // </Typography>
-        )
-      }
-    },
-    {
       flex: 0.25,
       minWidth: 140,
       field: 'write_date',
@@ -716,6 +654,9 @@ const ChequesList = () => {
     }
   ]
 
+  // ** for BTN
+  const [active, setActive] = useState('Month')
+  const [btnValue, setBtnValue] = useState('Month')
   // ** Hooks
   const dispatch = useDispatch()
   const theme = useTheme()
@@ -794,42 +735,10 @@ const ChequesList = () => {
   console.log('data of Cheques :', data)
   console.log('Write Date Range', startWriteDate, endWriteDate)
   console.log('Due Date Range', startDueDate, endDueDate)
+  console.log('Active:', active)
 
   return (
     <Grid container spacing={6}>
-      <Grid item xs={12}>
-        {/* create filter component */}
-        <Card>
-          <CardHeader title='Filters' />
-          <Divider />
-          <Box sx={{ p: 6, display: 'flex', justifyContent: 'space-between' }}>
-            <Box sx={{ p: 6 }}>
-              <Typography variant='h6'> Write Date Range</Typography>
-              <DatePickerWrapper>
-                <CustomDateRange
-                  popperPlacement={popperPlacement}
-                  setStartDate={setStartWriteDate}
-                  setEndDate={setEndWriteDate}
-                  startDate={startWriteDate}
-                  endDate={endWriteDate}
-                />
-              </DatePickerWrapper>
-            </Box>
-            <Box sx={{ p: 6 }}>
-              <Typography variant='h6'> Due Date Range</Typography>
-              <DatePickerWrapper>
-                <CustomDateRange
-                  popperPlacement={popperPlacement}
-                  setStartDate={setStartDueDate}
-                  setEndDate={setEndDueDate}
-                  startDate={startDueDate}
-                  endDate={endDueDate}
-                />
-              </DatePickerWrapper>
-            </Box>
-          </Box>
-        </Card>
-      </Grid>
       <Grid item xs={12}>
         <Card>
           <Box
@@ -845,6 +754,57 @@ const ChequesList = () => {
             <Box>
               <CardHeader title={title} />
             </Box>
+            <ButtonGroup variant='outlined' aria-label='Basic button group'>
+              <Button
+                onMouseEnter={() => {
+                  setActive('Month')
+                }}
+                onClick={() => {
+                  setActive('Month')
+                  setBtnValue('Month')
+                }}
+                variant={btnValue === 'Month' ? 'contained' : 'outlined'}
+              >
+                Month
+              </Button>
+              <Button
+                variant={btnValue === 'Weak' ? 'contained' : 'outlined'}
+                onMouseEnter={() => {
+                  setActive('Weak')
+                }}
+                onClick={() => {
+                  setActive('Weak')
+                  setBtnValue('Weak')
+                }}
+              >
+                Weak
+              </Button>
+              <Button
+                onMouseEnter={() => {
+                  setActive('Day')
+                }}
+                variant={btnValue === 'Day' ? 'contained' : 'outlined'}
+                onClick={() => {
+                  setActive('Day')
+                  setBtnValue('Day')
+                }}
+              >
+                Day
+              </Button>
+              <Button
+                onMouseEnter={() => {
+                  setActive('Range')
+                }}
+                variant={btnValue === 'Range' ? 'contained' : 'outlined'}
+                onClick={() => {
+                  setActive('Range')
+                  setBtnValue('Range')
+                  setOpenDateRange(true)
+                }}
+              >
+                Range
+              </Button>
+            </ButtonGroup>
           </Box>
           <Divider sx={{ mb: 2 }} />
           <Box>
@@ -875,6 +835,21 @@ const ChequesList = () => {
           </Box>
         </Card>
       </Grid>
+      {openDateRange && (
+        <DateRangePopUp
+          endDueDate={endDueDate}
+          endWriteDate={endWriteDate}
+          startDueDate={startDueDate}
+          startWriteDate={startWriteDate}
+          setEndDueDate={setEndDueDate}
+          setEndWriteDate={setEndWriteDate}
+          handleClose={() => setOpenDateRange(false)}
+          open={openDateRange}
+          setStartDueDate={setStartDueDate}
+          setStartWriteDate={setStartWriteDate}
+          popperPlacement={popperPlacement}
+        />
+      )}
     </Grid>
   )
 }

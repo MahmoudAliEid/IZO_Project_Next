@@ -57,7 +57,7 @@ const AddChequeIn = () => {
     date: '',
     account: '',
     contact: [],
-    amount: '',
+    amount: 0,
     payment_id: [],
     amount_currency: '', //amount_currency
     bill_id: [],
@@ -68,7 +68,7 @@ const AddChequeIn = () => {
     note: '',
     table: [
       {
-        id: 1,
+        id: 0,
         check: false,
         date: '12/3/2021',
         reference_no: '123',
@@ -76,8 +76,9 @@ const AddChequeIn = () => {
         purchase_status: 'purchase_status',
         payment_status: 'payment_status',
         warehouse_name: 'warehouse_name',
-        grand_total: 'grand_total',
-        payment_due: 'payment_due',
+        grand_total: 0,
+        payment_due: 0,
+        payment: 0,
         added_by: 'added_by',
         status: 'old/new'
       }
@@ -97,6 +98,7 @@ const AddChequeIn = () => {
   const [bills, setBills] = useState([])
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const decimalFormat = getCookie('DecimalFormat')
+  const transText = getCookie('fontStyle')
 
   const dispatch = useDispatch()
   const storeData = useSelector(state => state.getCreateCheque.data?.value)
@@ -163,6 +165,7 @@ const AddChequeIn = () => {
                 <Grid item xs={12} lg={6} md={4} sm={12}>
                   <FormControl fullWidth>
                     <TextField
+                      sx={{ textTransform: transText }}
                       label='Cheque No'
                       name='cheque_no'
                       value={values.cheque_no}
@@ -177,6 +180,7 @@ const AddChequeIn = () => {
                   <FormControl fullWidth>
                     <TextField
                       label='Amount'
+                      sx={{ textTransform: transText }}
                       name='amount'
                       value={values.amount}
                       onChange={event => {
@@ -230,6 +234,7 @@ const AddChequeIn = () => {
                     <Grid item xs={12} lg={6} md={4} sm={12}>
                       <FormControl fullWidth>
                         <TextField
+                          sx={{ textTransform: transText }}
                           label='Amount in Currency'
                           name='amount_currency'
                           value={values.amount_currency}
@@ -278,9 +283,12 @@ const AddChequeIn = () => {
                     </Grid>
                     <Grid item xs={12} lg={6} md={4} sm={12}>
                       <FormControl fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Currencies</InputLabel>
+                        <InputLabel sx={{ textTransform: transText }} id='demo-simple-select-label'>
+                          Currencies
+                        </InputLabel>
                         <Select
                           value={values.currencies}
+                          sx={{ textTransform: transText }}
                           name='currencies'
                           label='Currencies'
                           onChange={event => {
@@ -289,13 +297,14 @@ const AddChequeIn = () => {
                           onBlur={handleBlur}
                           error={Boolean(touched.currencies && errors.currencies)}
                         >
-                          <MenuItem value='' disabled>
+                          <MenuItem sx={{ textTransform: transText }} value='' disabled>
                             Select Currency
                           </MenuItem>
                           {data.currency.length > 0 &&
                             data.currency.map((item, index) => (
                               <MenuItem
                                 key={index}
+                                sx={{ textTransform: transText }}
                                 value={item.id}
                                 onClick={() => {
                                   setFieldValue('currency_value', Number(item.amount).toFixed(decimalFormat))
@@ -315,6 +324,7 @@ const AddChequeIn = () => {
                       <FormControl fullWidth>
                         <TextField
                           type='text'
+                          sx={{ textTransform: transText }}
                           label='Currency Value'
                           name='currency_value'
                           value={values.currency_value}
@@ -358,10 +368,13 @@ const AddChequeIn = () => {
               {/* dropdown menu for bank */}
               <Grid item xs={12} lg={6} md={4} sm={12}>
                 <FormControl fullWidth>
-                  <InputLabel id='demo-simple-select-label'>Bank</InputLabel>
+                  <InputLabel sx={{ textTransform: transText }} id='demo-simple-select-label'>
+                    Bank
+                  </InputLabel>
                   <Select
                     value={values.bank_id}
                     name='bank_id'
+                    sx={{ textTransform: transText }}
                     label='Bank'
                     onChange={event => {
                       handleChange(event)
@@ -369,12 +382,12 @@ const AddChequeIn = () => {
                     onBlur={handleBlur}
                     error={Boolean(touched.bank_id && errors.bank_id)}
                   >
-                    <MenuItem value='' disabled>
+                    <MenuItem sx={{ textTransform: transText }} value='' disabled>
                       Select Bank
                     </MenuItem>
                     {data.account_collect.length > 0 &&
                       data.account_collect.map((item, index) => (
-                        <MenuItem key={index} value={item.id}>
+                        <MenuItem sx={{ textTransform: transText }} key={index} value={item.id}>
                           {item.value}
                         </MenuItem>
                       ))}
@@ -405,6 +418,7 @@ const AddChequeIn = () => {
                             value={values.write_date}
                             name='write_date'
                             onChange={handleChange}
+                            sx={{ textTransform: transText }}
                             onBlur={handleBlur}
                             error={Boolean(touched.write_date && errors.write_date)}
                           />
@@ -432,6 +446,7 @@ const AddChequeIn = () => {
                             readOnly={false}
                             value={values.due_date}
                             name='due_date'
+                            sx={{ textTransform: transText }}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             error={Boolean(touched.due_date && errors.due_date)}
@@ -469,6 +484,7 @@ const AddChequeIn = () => {
                       selectOnFocus
                       fullWidth
                       name='contact'
+                      sx={{ textTransform: transText }}
                       value={contactText}
                       onChange={(event, newValue) => {
                         setContactText(newValue)
@@ -513,6 +529,7 @@ const AddChequeIn = () => {
                       name='note'
                       value={values.note}
                       variant='filled'
+                      sx={{ textTransform: transText }}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       error={Boolean(touched.note && errors.note)}
@@ -556,7 +573,7 @@ const AddChequeIn = () => {
               </FieldArray>
             </Box>
             <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button type='submit' variant='contained' color='primary'>
+              <Button sx={{ textTransform: transText }} type='submit' variant='contained' color='primary'>
                 Save
               </Button>
             </Box>

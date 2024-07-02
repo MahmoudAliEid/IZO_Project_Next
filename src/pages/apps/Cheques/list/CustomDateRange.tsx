@@ -16,10 +16,12 @@ const CustomDateRange = ({
   startDate,
   endDate,
   setStartDate,
-  setEndDate
+  setEndDate,
+  label
 }: {
   popperPlacement: ReactDatePickerProps['popperPlacement'],
-  startDate: Date,
+    startDate: Date,
+  label: string,
   endDate: Date,
   setStartDate: (date: Date) => void,
   setEndDate: (date: Date) => void
@@ -35,7 +37,7 @@ const CustomDateRange = ({
       inputRef={ref}
       onClick={onClick}
       value={value}
-      label="Date Range"
+      label={label}
       fullWidth
     />
   ));

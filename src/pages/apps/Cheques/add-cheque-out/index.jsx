@@ -30,6 +30,7 @@ import { createCheques } from 'src/store/apps/Cheques/postCreateCheques'
 // ** Cookies
 import { getCookie } from 'cookies-next'
 import ChequesAddTable from '../add-cheque-in/ChequesAddTable'
+import notify from 'src/utils/notify'
 // import VoucherAddTable from '../../vouchers/receipt-voucher/VoucherAddTable'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
@@ -43,12 +44,12 @@ const AddChequeOut = () => {
   const [changeCurrency] = useState(0)
   const [auth] = useState(true)
 
-  const [initialValues] = useState({
+  const [initialValues, setInitialValues] = useState({
     cheque_no: '',
     cheque_type: 1, // 0 for in 1 for out
     currencies: '', //currency_id
-    table_total: 1,
-    type: 0,
+    table_total: 0,
+    type: 1,
     bank_id: '',
     write_date: '',
     due_date: '',
@@ -57,7 +58,7 @@ const AddChequeOut = () => {
     date: '',
     account: '',
     contact: [],
-    amount: '',
+    amount: 0,
     payment_id: [],
     amount_currency: '', //amount_currency
     bill_id: [],
@@ -66,7 +67,7 @@ const AddChequeOut = () => {
     note: '',
     table: [
       {
-        id: 1,
+        id: 0,
         check: false,
         date: '12/3/2021',
         reference_no: '123',
@@ -74,8 +75,9 @@ const AddChequeOut = () => {
         purchase_status: 'purchase_status',
         payment_status: 'payment_status',
         warehouse_name: 'warehouse_name',
-        grand_total: 'grand_total',
-        payment_due: 'payment_due',
+        grand_total: '0',
+        payment_due: '0',
+        payment: '0',
         added_by: 'added_by',
         status: 'old/new'
       }
@@ -85,16 +87,19 @@ const AddChequeOut = () => {
   const [openLoading, setOpenLoading] = useState(false)
   const [data, setData] = useState({
     currency: [],
-    account_collect: [],
-    contact: []
+    contact_banks: [],
+    contact: [],
+    accounts: []
   })
 
   const [contactText, setContactText] = useState('')
   const theme = useTheme()
   const { direction } = theme
   const [bills, setBills] = useState([])
+  const [findContact, setFindContact] = useState(false)
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const decimalFormat = getCookie('DecimalFormat')
+  const transText = getCookie('fontStyle')
 
   const dispatch = useDispatch()
   const storeData = useSelector(state => state.getCreateCheque.data?.value)
@@ -126,6 +131,34 @@ const AddChequeOut = () => {
     }
   }, [storeBills])
 
+  useEffect(() => {
+    let foundChequeOut = false
+
+    if (data.accounts.length > 0) {
+      data.accounts.forEach(item => {
+        console.log(item, 'item form map accounts')
+        console.log(item.type, 'item type form map accounts')
+        if (item.type === 'chequeOut') {
+          if (!foundChequeOut) {
+            // Update state only if a chequeOut account hasn't been found yet
+            setInitialValues(prevState => ({
+              ...prevState,
+              account: item.id
+            }))
+            setFindContact(true)
+            foundChequeOut = true // Mark that a chequeOut account has been found
+          }
+        }
+      })
+
+      if (!foundChequeOut) {
+        // If no chequeOut account was found after iterating
+        notify('Please you should add account first!', 'error')
+        setFindContact(false)
+      }
+    }
+  }, [data.accounts])
+
   const handleSubmitForm = values => {
     console.log(values, 'values form submit')
 
@@ -139,6 +172,7 @@ const AddChequeOut = () => {
   }
 
   console.log('create Cheques data', data)
+  console.log('find account contact', findContact)
 
   return (
     <Card>
@@ -146,7 +180,7 @@ const AddChequeOut = () => {
         <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
       )}
       <Box sx={{ mb: 3 }}>
-        <CardHeader title='Add Cheques Out' />
+        <CardHeader title='Add Cheques Out' sx={{ textTransform: transText }} />
       </Box>
       <Formik
         initialValues={initialValues}
@@ -163,6 +197,7 @@ const AddChequeOut = () => {
                     <TextField
                       label='Cheque No'
                       name='cheque_no'
+                      sx={{ textTransform: transText }}
                       value={values.cheque_no}
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -175,6 +210,7 @@ const AddChequeOut = () => {
                   <FormControl fullWidth>
                     <TextField
                       label='Amount'
+                      sx={{ textTransform: transText }}
                       name='amount'
                       value={values.amount}
                       onChange={event => {
@@ -229,6 +265,7 @@ const AddChequeOut = () => {
                       <FormControl fullWidth>
                         <TextField
                           label='Amount in Currency'
+                          sx={{ textTransform: transText }}
                           name='amount_currency'
                           value={values.amount_currency}
                           onChange={event => {
@@ -276,18 +313,21 @@ const AddChequeOut = () => {
                     </Grid>
                     <Grid item xs={12} lg={6} md={4} sm={12}>
                       <FormControl fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Currencies</InputLabel>
+                        <InputLabel id='demo-simple-select-label' sx={{ textTransform: transText }}>
+                          Currencies
+                        </InputLabel>
                         <Select
                           value={values.currencies}
                           name='currencies'
                           label='Currencies'
+                          sx={{ textTransform: transText }}
                           onChange={event => {
                             handleChange(event)
                           }}
                           onBlur={handleBlur}
                           error={Boolean(touched.currencies && errors.currencies)}
                         >
-                          <MenuItem value='' disabled>
+                          <MenuItem value='' disabled sx={{ textTransform: transText }}>
                             Select Currency
                           </MenuItem>
                           {data.currency.length > 0 &&
@@ -295,6 +335,7 @@ const AddChequeOut = () => {
                               <MenuItem
                                 key={index}
                                 value={item.id}
+                                sx={{ textTransform: transText }}
                                 onClick={() => {
                                   setFieldValue('currency_value', Number(item.amount).toFixed(decimalFormat))
                                   setFieldValue(
@@ -314,6 +355,7 @@ const AddChequeOut = () => {
                         <TextField
                           type='text'
                           label='Currency Value'
+                          sx={{ textTransform: transText }}
                           name='currency_value'
                           value={values.currency_value}
                           onChange={event => {
@@ -356,23 +398,26 @@ const AddChequeOut = () => {
               {/* dropdown menu for bank */}
               <Grid item xs={12} lg={6} md={4} sm={12}>
                 <FormControl fullWidth>
-                  <InputLabel id='demo-simple-select-label'>Bank</InputLabel>
+                  <InputLabel id='demo-simple-select-label' sx={{ textTransform: transText }}>
+                    Bank
+                  </InputLabel>
                   <Select
                     value={values.bank_id}
                     name='bank_id'
                     label='Bank'
+                    sx={{ textTransform: transText }}
                     onChange={event => {
                       handleChange(event)
                     }}
                     onBlur={handleBlur}
                     error={Boolean(touched.bank_id && errors.bank_id)}
                   >
-                    <MenuItem value='' disabled>
+                    <MenuItem value='' disabled sx={{ textTransform: transText }}>
                       Select Bank
                     </MenuItem>
-                    {data.account_collect.length > 0 &&
-                      data.account_collect.map((item, index) => (
-                        <MenuItem key={index} value={item.id}>
+                    {data.contact_banks.length > 0 &&
+                      data.contact_banks.map((item, index) => (
+                        <MenuItem key={index} value={item.id} sx={{ textTransform: transText }}>
                           {item.value}
                         </MenuItem>
                       ))}
@@ -383,7 +428,7 @@ const AddChequeOut = () => {
             <Divider />
             <Box sx={{ p: 5 }}>
               <Grid container spacing={2}>
-                <Grid item xs={12} lg={6} md={4} sm={12}>
+                <Grid item xs={12} lg={6} md={4} sm={12} sx={{ textTransform: transText }}>
                   <FormControl fullWidth>
                     <DatePickerWrapper>
                       <DatePicker
@@ -467,6 +512,7 @@ const AddChequeOut = () => {
                       selectOnFocus
                       fullWidth
                       name='contact'
+                      sx={{ textTransform: transText }}
                       value={contactText}
                       onChange={(event, newValue) => {
                         setContactText(newValue)
@@ -506,6 +552,7 @@ const AddChequeOut = () => {
                   <FormControl fullWidth>
                     <TextField
                       label='Note'
+                      sx={{ textTransform: transText }}
                       multiline
                       rows={4}
                       name='note'
@@ -528,6 +575,7 @@ const AddChequeOut = () => {
                     borderRadius: '10px',
                     backgroundColor: theme => theme.palette.background.paper,
                     p: 3,
+                    textTransform: transText,
                     mt: 3
                   }}
                 >
@@ -553,9 +601,15 @@ const AddChequeOut = () => {
                 )}
               </FieldArray>
             </Box>
-            <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button type='submit' variant='contained' color='primary'>
-                Save
+            <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end', textTransform: transText }}>
+              <Button
+                type='submit'
+                variant='contained'
+                color='primary'
+                disabled={!findContact}
+                sx={{ textTransform: transText }}
+              >
+                save
               </Button>
             </Box>
           </Form>

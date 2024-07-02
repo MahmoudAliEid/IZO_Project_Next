@@ -22,6 +22,9 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { useDropzone } from 'react-dropzone'
 
+// ** next cookies
+import { getCookie } from 'cookies-next'
+
 interface FileProp {
   name: string
   type: string
@@ -64,7 +67,9 @@ const Attachment: React.FC<Props> = ({
 image,
   setFieldValue
 }) => {
-  // ** State
+
+  const transText = getCookie('fontStyle') as string | 'none'
+
 
 
   // ** Hooks
@@ -120,14 +125,16 @@ image,
             display: 'flex',
             flexDirection: ['row', 'row', 'row'],
             justifyContent: 'space-between'
+            ,
+
           }}
           key={file.name}
         >
           <div className='file-details'>
             <div className='file-preview'>{renderFilePreview(file)}</div>
             <div>
-              <Typography className='file-name'>{file.name}</Typography>
-              <Typography className='file-size' variant='body2'>
+              <Typography sx={{ textTransform: transText||'capitalize' }} className='file-name'>{file.name}</Typography>
+              <Typography sx={{ textTransform: transText||'capitalize' }} className='file-size' variant='body2'>
                 {Math.round(file.size / 100) / 10 > 1000
                   ? ` ${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
                   : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
@@ -144,7 +151,8 @@ image,
         sx={{
           display: 'flex',
           flexDirection: ['row', 'row', 'row'],
-          justifyContent: 'space-between'
+             justifyContent: 'space-between',
+
         }}
       >
         <div className='file-details'>
@@ -152,7 +160,7 @@ image,
             <img width={38} height={38} alt={'preview-img'} src={image as string} />
           </div>
           <div>
-            <Typography className='file-name'>The Image</Typography>
+            <Typography sx={{ textTransform: transText||'capitalize' }} className='file-name'>The Image</Typography>
           </div>
         </div>
         <IconButton onClick={() => setFieldValue('attachment',[])}>
@@ -171,11 +179,11 @@ image,
         <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
           <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-            <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
-            <Typography color='textSecondary'> Allowed File: .pdf, .csv, .zip, .doc, .docx, .jpeg, .jpg, .png</Typography>
-            <Typography color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } }}>
+            <HeadingTypography sx={{ textTransform: transText||'capitalize' }} variant='h5'>Drop files here or click to upload.</HeadingTypography>
+            <Typography sx={{ textTransform: transText||'capitalize' }} color='textSecondary'> Allowed File: .pdf, .csv, .zip, .doc, .docx, .jpeg, .jpg, .png</Typography>
+            <Typography  color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } ,textTransform: transText||'capitalize'}}>
               Drop files here or click{' '}
-              <Link href='/' onClick={e => e.preventDefault()}>
+              <Link  href='/' onClick={e => e.preventDefault()}>
                 browse
               </Link>{' '}
               thorough your machine
@@ -188,7 +196,7 @@ image,
         <Fragment>
           <List>{fileList}</List>
           <div className='buttons'>
-            <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
+            <Button  sx={{ textTransform: transText||'capitalize' }}color='error' variant='outlined' onClick={handleRemoveAllFiles}>
               Remove All
             </Button>
           </div>

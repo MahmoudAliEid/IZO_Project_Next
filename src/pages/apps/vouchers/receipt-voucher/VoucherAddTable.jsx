@@ -47,6 +47,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
   const decimalFormat = getCookie('DecimalFormat')
   const currency_code = getCookie('currency_code')
   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+  const transText = getCookie('fontStyle')
   // const [total, setTotal] = useState(values.amount)
   // const [remainValue, setRemainValue] = useState(values.amount)
 
@@ -356,7 +357,8 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                       minWidth: column.minWidth,
                       flex: column.flex,
                       flexDirection: 'column',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      textTransform: transText
                     }}
                   >
                     {column.headerName}
@@ -377,7 +379,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                       const params = row[column.field]
 
                       return (
-                        <TableCell key={index + 1} align={column.align}>
+                        <TableCell key={index + 1} align={column.align} sx={{ textTransform: transText }}>
                           {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
                         </TableCell>
                       )
@@ -389,7 +391,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell colSpan={6}>
-                    <Typography variant='body2' align='center' sx={{ my: 10 }}>
+                    <Typography variant='body2' align='center' sx={{ my: 10, textTransform: transText }}>
                       No Rows
                     </Typography>
                   </TableCell>
@@ -421,33 +423,29 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: 'black'
+            backgroundColor: '#424242',
+            textTransform: transText
           }}
         >
           <StyledTableCell>
-            <Typography color={'white'}>Total :</Typography>
+            <Typography sx={{ textTransform: transText }} color={'white'}>
+              Total :
+            </Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>
+            <Typography sx={{ textTransform: transText }} color={'white'}>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(values?.amount).toFixed(decimalFormat)} ${currency_code} `
                 : `${currency_code} ${Number(values?.amount).toFixed(decimalFormat)} `}
             </Typography>
           </StyledTableCell>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: 'black'
-          }}
-        >
           <StyledTableCell>
-            <Typography color={'white'}>Remain:</Typography>
+            <Typography sx={{ textTransform: transText }} color={'white'}>
+              Remain:
+            </Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>
+            <Typography sx={{ textTransform: transText }} color={'white'}>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(values?.table_total).toFixed(decimalFormat)} ${currency_code} `
                 : `${currency_code} ${Number(values?.table_total).toFixed(decimalFormat)} `}

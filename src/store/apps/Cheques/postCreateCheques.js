@@ -13,19 +13,28 @@ export const createCheques = createAsyncThunk('Cheques/createCheques', async pay
 
   const formData = new FormData()
   // Extract the date components
-  let year = values.date.getFullYear()
-  let month = String(values.date.getMonth() + 1).padStart(2, '0') // Months are 0-based in JavaScript
-  let day = String(values.date.getDate()).padStart(2, '0')
+  let yearWrite = values.write_date.getFullYear()
+  let monthWrite = String(values.write_date.getMonth() + 1).padStart(2, '0') // Months are 0-based in JavaScript
+  let dayWrite = String(values.write_date.getDate()).padStart(2, '0')
+
+  // for due date
+  let yearDue = values.due_date.getFullYear()
+  let monthDue = String(values.due_date.getMonth() + 1).padStart(2, '0') // Months are 0-based in JavaScript
+  let dayDue = String(values.due_date.getDate()).padStart(2, '0')
 
   // Format the date
-  let formattedDate = `${year}-${month}-${day}`
-
+  let formattedWriteDate = `${yearWrite}-${monthWrite}-${dayWrite}`
+  let formattedDueDate = `${yearDue}-${monthDue}-${dayDue}`
+  formData.append('cheque_no', values.cheque_no)
+  formData.append('write_date', formattedWriteDate)
+  formData.append('bank_id', values.bank_id)
+  formData.append('cheque_type', values.cheque_type)
   formData.append('amount', values.amount)
   formData.append('amount_currency', values.amount_currency)
   formData.append('contact_id', values.contact)
   formData.append('account_id', values.account)
-  formData.append('date', formattedDate)
-  formData.append('text', values.note)
+  formData.append('due_date', formattedDueDate)
+  formData.append('note', values.note)
   formData.append('currency_id', values.currencies)
   formData.append('currency_id_amount', values.currency_value)
 

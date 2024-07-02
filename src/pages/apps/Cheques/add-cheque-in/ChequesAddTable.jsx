@@ -20,6 +20,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Store
 import { useSelector } from 'react-redux'
+import { getCookie } from 'cookies-next'
 
 // ** Third Party Components
 // import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -41,6 +42,10 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
   // ** States
 
   const [rows, setRows] = useState([])
+  const transText = getCookie('fontStyle')
+  const decimalFormat = getCookie('DecimalFormat')
+  const currency_code = getCookie('currency_code')
+  const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
   // const [total, setTotal] = useState(values.amount)
   // const [remainValue, setRemainValue] = useState(values.amount)
 
@@ -227,28 +232,48 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
       headerName: 'Grand Total',
       align: 'center',
       flex: 0.25,
-      minWidth: 150
+      minWidth: 150,
+      renderCell: params => (
+        <Box>
+          <Typography variant='body2' align='center'>
+            {CurrencySymbolPlacement === 'after'
+              ? `${Number(params.grand_total).toFixed(decimalFormat)} ${currency_code} `
+              : `${currency_code} ${Number(params.grand_total).toFixed(decimalFormat)} `}
+          </Typography>
+        </Box>
+      )
     },
     {
       field: 'payment',
       headerName: 'Payment',
       align: 'center',
       flex: 0.25,
-      minWidth: 150
-      // renderCell: params => (
-      //   <Box>
-      //     <Typography variant='body2' align='center'>
-      //       {isNaN(params.payment_due) ? 0 : Number(params.final_total) - Number(params.pay_due)}
-      //     </Typography>
-      //   </Box>
-      // )
+      minWidth: 150,
+      renderCell: params => (
+        <Box>
+          <Typography variant='body2' align='center'>
+            {CurrencySymbolPlacement === 'after'
+              ? `${Number(params.payment).toFixed(decimalFormat)} ${currency_code} `
+              : `${currency_code} ${Number(params.payment).toFixed(decimalFormat)} `}
+          </Typography>
+        </Box>
+      )
     },
     {
       field: 'payment_due',
       headerName: 'Payment Due',
       align: 'center',
       flex: 0.25,
-      minWidth: 150
+      minWidth: 150,
+      renderCell: params => (
+        <Box>
+          <Typography variant='body2' align='center'>
+            {CurrencySymbolPlacement === 'after'
+              ? `${Number(params.payment_due).toFixed(decimalFormat)} ${currency_code} `
+              : `${currency_code} ${Number(params.payment_due).toFixed(decimalFormat)} `}
+          </Typography>
+        </Box>
+      )
     },
     {
       field: 'add_by',
@@ -315,7 +340,8 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                       minWidth: column.minWidth,
                       flex: column.flex,
                       flexDirection: 'column',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      textTransform: transText
                     }}
                   >
                     {column.headerName}
@@ -330,13 +356,22 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                     hover
                     role='checkbox'
                     key={idx}
-                    sx={{ display: row.id === 0 || row.id === '' ? 'none' : 'default' }}
+                    sx={{
+                      display: row.id === 0 || row.id === '' ? 'none' : 'default',
+                      textTransform: transText
+                    }}
                   >
                     {columns.map((column, index) => {
                       const params = row[column.field]
 
                       return (
-                        <TableCell key={index + 1} align={column.align}>
+                        <TableCell
+                          key={index + 1}
+                          align={column.align}
+                          sx={{
+                            textTransform: transText
+                          }}
+                        >
                           {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
                         </TableCell>
                       )
@@ -348,7 +383,14 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell colSpan={6}>
-                    <Typography variant='body2' align='center' sx={{ my: 10 }}>
+                    <Typography
+                      variant='body2'
+                      align='center'
+                      sx={{
+                        my: 10,
+                        textTransform: transText
+                      }}
+                    >
                       No Rows
                     </Typography>
                   </TableCell>
@@ -380,66 +422,36 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: 'black'
+            color: theme => theme.palette.primary.main,
+            backgroundColor: '#424242'
           }}
         >
           <StyledTableCell>
-            <Typography color={'white'}>Total :</Typography>
+            <Typography sx={{ textTransform: transText }} color={'white'}>
+              Total :
+            </Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>{Number(values?.amount).toFixed(2) || 0}</Typography>
+            <Typography sx={{ textTransform: transText }} color={'white'}>
+              {CurrencySymbolPlacement === 'after'
+                ? `${Number(values?.amount).toFixed(decimalFormat)} ${currency_code}`
+                : `${currency_code} ${Number(values?.amount).toFixed(decimalFormat)}`}
+            </Typography>
           </StyledTableCell>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: 'black'
-          }}
-        >
           <StyledTableCell>
-            <Typography color={'white'}>Remain:</Typography>
+            <Typography sx={{ textTransform: transText }} color={'white'}>
+              Remain:
+            </Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>{values?.table_total}</Typography>
+            <Typography color={'white'}>
+              {CurrencySymbolPlacement === 'after'
+                ? `${Number(values?.table_total).toFixed(decimalFormat)} ${currency_code}`
+                : `${currency_code} ${Number(values?.table_total).toFixed(decimalFormat)}`}
+            </Typography>
           </StyledTableCell>
         </Box>
       </Box>
-
-      {/* {open && (
-        <Dialog
-          open={open}
-          onClose={setTimeout(() => {
-            setOpen(false)
-          }, 2000)}
-          maxWidth='md'
-          fullWidth
-          sx={{
-            '& .MuiDialog-paper': {
-              width: '100%',
-              maxHeight: 'calc(100% - 1rem)',
-              backgroundColor: 'transparent',
-              boxShadow: 'none'
-            }
-          }}
-          scroll='body'
-        >
-          <div>
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '16px 0'
-              }}
-            >
-              <ProgressCustomization />
-            </div>
-          </div>
-        </Dialog>
-      )} */}
     </>
   )
 }

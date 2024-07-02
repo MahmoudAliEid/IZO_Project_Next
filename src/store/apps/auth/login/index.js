@@ -20,6 +20,7 @@ const initialState = {
   DateFormat: '',
   DecimalFormat: 0,
   DefaultProfit: 0,
+  fontStyle: 'none',
   FinancialYearStartMonth: null,
   StartDate: '',
   StockAccountingMethod: '',
@@ -76,6 +77,7 @@ export const loginSlice = createSlice({
         state.TimeFormat = action.payload?.global_data[0]?.global_settings.TimeFormat
         state.TimeZone = action.payload?.global_data[0]?.global_settings.TimeZone
         state.TransactionEditDays = action.payload?.global_data[0]?.global_settings.TransactionEditDays
+        state.fontStyle = action.payload?.global_data[0]?.global_settings.fontStyle
 
         if (
           action.payload?.global_data &&
@@ -93,6 +95,7 @@ export const loginSlice = createSlice({
           setCookie('TimeFormat', action.payload?.global_data[0]?.global_settings.TimeFormat)
           setCookie('TimeZone', action.payload?.global_data[0]?.global_settings.TimeZone)
           setCookie('TransactionEditDays', action.payload?.global_data[0]?.global_settings.TransactionEditDays)
+          setCookie('fontStyle', action.payload?.global_data[0]?.global_settings.FontStyle)
         }
 
         if (action.payload.authorization) {
