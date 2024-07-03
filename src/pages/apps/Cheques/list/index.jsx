@@ -1,78 +1,64 @@
 // ** React Imports
 import { useState, useEffect, Fragment } from 'react'
-// import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
-import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Next Imports
 import { getCookie } from 'cookies-next'
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import Menu from '@mui/material/Menu'
-import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
-// import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import MenuItem from '@mui/material/MenuItem'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import { useTheme } from '@mui/material/styles'
+import {
+  Box,
+  Card,
+  Menu,
+  Grid,
+  Divider,
+  MenuItem,
+  IconButton,
+  Typography,
+  CardHeader,
+  Button,
+  ButtonGroup
+} from '@mui/material'
 
+// ** Styles
+import { useTheme } from '@mui/material/styles'
 // ** Third Party Components
 import { DataGrid } from '@mui/x-data-grid'
+// ** Axios
 import axios from 'axios'
-
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
-// ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// ** Utils Import
-import { getInitials } from 'src/@core/utils/get-initials'
-
-// ** Date
-// import addDays from 'date-fns/addDays'
-
-// ** Custom Table Components Imports
-
-import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
-
-import { fetchCheques } from 'src/store/apps/Cheques/getChequesSlice'
 import VoucherAttachmentPopUp from 'src/@core/components/vouchers/VoucherAttachmentPopUp'
 import EntryPopUp from 'src/@core/components/vouchers/EntryPopUp'
 import ViewCheque from 'src/@core/components/cheques/ViewCheque'
 import ChequeEdit from 'src/@core/components/cheques/ChequeEdit'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
+import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
+import DateRangePopUp from './DateRangePopUp'
+import DropDownAccounts from './DropDownAccounts'
+
+// ** Utils Import
+import { getInitials } from 'src/@core/utils/get-initials'
+
+// ** Store & Actions
+import { fetchCheques } from 'src/store/apps/Cheques/getChequesSlice'
 import { collect } from 'src/store/apps/Cheques/Actions/collect'
 import { deleteCheques } from 'src/store/apps/Cheques/postDeleteChequesSlice'
 import { unCollect } from 'src/store/apps/Cheques/Actions/unCollect'
 import { refund } from 'src/store/apps/Cheques/Actions/refund'
-import { Button, ButtonGroup } from '@mui/material'
-import DateRangePopUp from './DateRangePopUp'
-// import notify from 'src/utils/notify'
+// ** Store Imports
+import { useDispatch, useSelector } from 'react-redux'
 
+// ------------------- ** Cheques List Elements ** -------------------
 const userStatusObj = {
   write: { title: 'Write', color: 'success' },
   collected: { title: 'collected', color: 'success' },
   unCollect: { title: 'un collect', color: 'secondary' },
   Refund: { title: 'REFUND', color: 'error' }
 }
-
-// const LinkStyled = styled(Box)(({ theme }) => ({
-//   fontWeight: 400,
-//   fontSize: '1rem',
-//   cursor: 'pointer',
-//   textDecoration: 'none',
-//   color: theme.palette.text.secondary,
-//   '&:hover': {
-//     color: theme.palette.primary.main
-//   }
-// }))
 
 // ** renders client column
 const renderClient = row => {
@@ -91,10 +77,13 @@ const renderClient = row => {
   }
 }
 
-const RowOptions = ({ id, statusName, account_id, document }) => {
+// ** Row options
+
+const RowOptions = ({ id, statusName, document }) => {
   // ** Hooks
   const dispatch = useDispatch()
   console.log('Status Name =>', statusName)
+  const transText = getCookie('fontStyle')
 
   const type = 'cheque'
 
@@ -106,6 +95,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
   const [openEdit, setOpenEdit] = useState(false)
   const [openViewAttachments, setOpenViewAttachments] = useState(false)
   const [openEntry, setOpenEntry] = useState(false)
+  const [openCollect, setOpenCollect] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -194,7 +184,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
       })
   }
 
-  const handleCollect = () => {
+  const handleCollect = ({ id, account_id }) => {
     dispatch(collect({ id, account_id, date: '2024' })).then(res => {
       try {
         if (res.payload.status === 200) {
@@ -274,7 +264,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
         <MenuItem
-          sx={{ '& svg': { mr: 2 } }}
+          sx={{ '& svg': { mr: 2 }, textTransform: transText }}
           onClick={() => {
             setOpenView(true)
             handleRowOptionsClose()
@@ -285,10 +275,11 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
         </MenuItem>
         {statusName === 'write' || statusName === 'Un Collect' ? (
           <MenuItem
-            sx={{ '& svg': { mr: 2 } }}
+            sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
               handleRowOptionsClose()
-              handleCollect()
+
+              setOpenCollect(true)
             }}
           >
             <Icon icon='bx:collection' fontSize={20} />
@@ -298,7 +289,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
 
         {statusName === 'write' || statusName === 'Un Collect' ? (
           <MenuItem
-            sx={{ '& svg': { mr: 2 } }}
+            sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
               handleRowOptionsClose()
               handleRefund()
@@ -310,7 +301,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
         ) : null}
         {statusName === 'collected' && (
           <MenuItem
-            sx={{ '& svg': { mr: 2 } }}
+            sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
               handleRowOptionsClose()
               handelUnCollect()
@@ -322,7 +313,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
         )}
         {statusName === 'collected' && (
           <MenuItem
-            sx={{ '& svg': { mr: 2 } }}
+            sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
               handleRowOptionsClose()
             }}
@@ -338,7 +329,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
               setOpenEdit(true)
               handleRowOptionsClose()
             }}
-            sx={{ '& svg': { mr: 2 } }}
+            sx={{ '& svg': { mr: 2 }, textTransform: transText }}
           >
             <Icon icon='bx:pencil' fontSize={20} />
             Edit
@@ -351,7 +342,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
             handleRowOptionsClose()
             handlePrint(id)
           }}
-          sx={{ '& svg': { mr: 2 } }}
+          sx={{ '& svg': { mr: 2 }, textTransform: transText }}
         >
           <Icon icon='mingcute:print-line' fontSize={20} />
           Print
@@ -364,7 +355,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
               handleRowOptionsClose()
               setOpenViewAttachments(true)
             }}
-            sx={{ '& svg': { mr: 2 } }}
+            sx={{ '& svg': { mr: 2 }, textTransform: transText }}
           >
             <Icon icon='bx:paperclip' fontSize={20} />
             Attachments
@@ -377,7 +368,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
             handleRowOptionsClose()
             setOpenEntry(true)
           }}
-          sx={{ '& svg': { mr: 2 } }}
+          sx={{ '& svg': { mr: 2 }, textTransform: transText }}
         >
           <Icon icon={'bx:file'} fontSize={20} />
           Entry
@@ -388,7 +379,7 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
               setOpenDeleteAlert(true)
               handleRowOptionsClose()
             }}
-            sx={{ '& svg': { mr: 2 } }}
+            sx={{ '& svg': { mr: 2 }, textTransform: transText }}
           >
             <Icon icon='bx:trash-alt' fontSize={20} />
             Delete
@@ -416,6 +407,14 @@ const RowOptions = ({ id, statusName, account_id, document }) => {
       {openEntry && (
         <EntryPopUp open={openEntry} toggle={setOpenEntry} itemId={id} name={'getEntryCheques'} type={'cheque'} />
       )}
+      {openCollect && (
+        <DropDownAccounts
+          open={openCollect}
+          handleClose={() => setOpenCollect(false)}
+          handleCollect={handleCollect}
+          id={id}
+        />
+      )}
     </Fragment>
   )
 }
@@ -428,15 +427,22 @@ const ChequesList = () => {
   const [data, setData] = useState(null)
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
-  const title = 'Cheques List'
-  const decimalFormat = getCookie('DecimalFormat')
-  const currency_code = getCookie('currency_code')
-  const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+  // ** Date Range
   const [startWriteDate, setStartWriteDate] = useState(new Date('2023-06-12'))
   const [endWriteDate, setEndWriteDate] = useState(new Date('2024-01-13'))
   const [startDueDate, setStartDueDate] = useState(new Date('2023-06-12'))
   const [endDueDate, setEndDueDate] = useState(new Date('2024-02-17'))
   const [openDateRange, setOpenDateRange] = useState(false)
+  // ** for BTN
+  const [active, setActive] = useState('Range')
+  const [btnValue, setBtnValue] = useState('Range')
+  // ** Cookies
+  const decimalFormat = getCookie('DecimalFormat')
+  const currency_code = getCookie('currency_code')
+  const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+  // ** Constants
+  const title = 'Cheques List'
+  const transText = getCookie('fontStyle')
   const columns = [
     {
       flex: 0.1,
@@ -506,6 +512,7 @@ const ChequesList = () => {
             rounded
             size='small'
             skin='light'
+            sx={{ textTransform: transText }}
             color={status?.color ? status.color : 'success'}
             label={status?.title ? status.title : params.row.status_name}
           />
@@ -654,22 +661,16 @@ const ChequesList = () => {
     }
   ]
 
-  // ** for BTN
-  const [active, setActive] = useState('Month')
-  const [btnValue, setBtnValue] = useState('Month')
-  // ** Hooks
+  // ** Hooks & Dispatch
   const dispatch = useDispatch()
   const theme = useTheme()
   const direction = theme.direction
-
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
 
-  const escapeRegExp = value => {
-    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
-  }
-
+  // ** Selectors
   const store = useSelector(state => state.getCheques.brands?.value?.value)
 
+  // ** useEffect
   useEffect(() => {
     setStartWriteDate(new Date('2023-06-12'))
     setEndWriteDate(new Date('2024-01-13'))
@@ -681,7 +682,6 @@ const ChequesList = () => {
     setData(store)
   }, [store])
 
-  // ** Cookies
   useEffect(() => {
     const token = getCookie('token')
     const url = getCookie('apiUrl')
@@ -705,13 +705,11 @@ const ChequesList = () => {
       )
     }
   }, [dispatch, token, url, , startWriteDate, endWriteDate, startDueDate, endDueDate])
-  // useEffect(() => {
-  //   if (token && url) {
-  //     dispatch(fetchCheques({ token, url }))
-  //   }
-  // }, [dispatch, token, url])
 
-  // ** handle search function
+  // ** Functions
+  const escapeRegExp = value => {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+  }
 
   const handleSearch = searchValue => {
     setSearchText(searchValue)
@@ -731,7 +729,7 @@ const ChequesList = () => {
     }
   }
 
-  // see if data is available
+  // ** see if data is available
   console.log('data of Cheques :', data)
   console.log('Write Date Range', startWriteDate, endWriteDate)
   console.log('Due Date Range', startDueDate, endDueDate)
@@ -748,11 +746,12 @@ const ChequesList = () => {
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              textTransform: transText
             }}
           >
             <Box>
-              <CardHeader title={title} />
+              <CardHeader sx={{ textTransform: transText }} title={title} />
             </Box>
             <ButtonGroup variant='outlined' aria-label='Basic button group'>
               <Button
@@ -764,11 +763,13 @@ const ChequesList = () => {
                   setBtnValue('Month')
                 }}
                 variant={btnValue === 'Month' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
               >
                 Month
               </Button>
               <Button
                 variant={btnValue === 'Weak' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
                 onMouseEnter={() => {
                   setActive('Weak')
                 }}
@@ -784,6 +785,7 @@ const ChequesList = () => {
                   setActive('Day')
                 }}
                 variant={btnValue === 'Day' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
                 onClick={() => {
                   setActive('Day')
                   setBtnValue('Day')
@@ -796,6 +798,7 @@ const ChequesList = () => {
                   setActive('Range')
                 }}
                 variant={btnValue === 'Range' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
                 onClick={() => {
                   setActive('Range')
                   setBtnValue('Range')
@@ -813,6 +816,15 @@ const ChequesList = () => {
                 autoHeight
                 columns={columns}
                 getRowHeight={() => 'auto'}
+                sx={{
+                  '& .MuiDataGrid-cell': { textTransform: transText },
+                  '& .MuiDataGrid-columnsContainer': {
+                    textTransform: transText
+                  },
+                  '& .MuiDataGrid-columnHeader': {
+                    textTransform: transText
+                  }
+                }}
                 columnHeaderHeight={50}
                 disableRowSelectionOnClick
                 pageSizeOptions={[10, 25, 50]}

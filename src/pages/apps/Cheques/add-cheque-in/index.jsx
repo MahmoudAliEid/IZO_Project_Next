@@ -42,6 +42,7 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
 const AddChequeIn = () => {
   const [changeCurrency] = useState(0)
   const [auth] = useState(true)
+  const [findContact, setFindContact] = useState(false)
 
   const [initialValues] = useState({
     cheque_no: '',
@@ -88,7 +89,8 @@ const AddChequeIn = () => {
   const [openLoading, setOpenLoading] = useState(false)
   const [data, setData] = useState({
     currency: [],
-    account_collect: [],
+    contact_banks: [],
+    accounts: [],
     contact: []
   })
 
@@ -129,6 +131,33 @@ const AddChequeIn = () => {
       setBills(storeBills)
     }
   }, [storeBills])
+  useEffect(() => {
+    let foundChequeOut = false
+
+    if (data.accounts.length > 0) {
+      data.accounts.forEach(item => {
+        console.log(item, 'item form map accounts')
+        console.log(item.type, 'item type form map accounts')
+        if (item.type === 'chequeOut') {
+          if (!foundChequeOut) {
+            // Update state only if a chequeOut account hasn't been found yet
+            setInitialValues(prevState => ({
+              ...prevState,
+              account: item.id
+            }))
+            setFindContact(true)
+            foundChequeOut = true // Mark that a chequeOut account has been found
+          }
+        }
+      })
+
+      if (!foundChequeOut) {
+        // If no chequeOut account was found after iterating
+        notify('Please you should add account first!', 'error')
+        setFindContact(false)
+      }
+    }
+  }, [data.accounts])
 
   const handleSubmitForm = values => {
     console.log(values, 'values form submit')
@@ -385,8 +414,8 @@ const AddChequeIn = () => {
                     <MenuItem sx={{ textTransform: transText }} value='' disabled>
                       Select Bank
                     </MenuItem>
-                    {data.account_collect.length > 0 &&
-                      data.account_collect.map((item, index) => (
+                    {data.contact_banks.length > 0 &&
+                      data.contact_banks.map((item, index) => (
                         <MenuItem sx={{ textTransform: transText }} key={index} value={item.id}>
                           {item.value}
                         </MenuItem>
@@ -573,7 +602,13 @@ const AddChequeIn = () => {
               </FieldArray>
             </Box>
             <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button sx={{ textTransform: transText }} type='submit' variant='contained' color='primary'>
+              <Button
+                sx={{ textTransform: transText }}
+                type='submit'
+                variant='contained'
+                color='primary'
+                disabled={!findContact}
+              >
                 Save
               </Button>
             </Box>

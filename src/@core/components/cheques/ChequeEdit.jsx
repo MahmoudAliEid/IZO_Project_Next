@@ -68,7 +68,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
     cheque_no: '',
     cheque_type: type === 'out' ? 1 : 0, // 0 for in 1 for out
     currencies: '', //currency_id
-
+    account: '',
     bank_id: '',
     write_date: '',
     due_date: '',
@@ -95,6 +95,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
   const [data, setData] = useState({
     currency: [],
     account_collect: [],
+    contact_banks: [],
 
     contact: []
   })
@@ -109,6 +110,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
   const { direction } = theme
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const DecimalFormat = getCookie('DecimalFormat')
+  const transText = getCookie('fontStyle')
 
   // ** Get data from store
   const storeData = useSelector(state => state.getEditCheque.data?.value)
@@ -187,7 +189,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
 
         table_total: storeData.remaining || 0,
         date: new Date(storeData.info[0].date),
-
+        account: storeData.info[0].account_id || '',
         contact: storeData.info[0].contact_id || '',
         amount: storeData.info[0].amount || '',
         amount_currency: storeData.info[0].amount_in_currency || '',
@@ -276,7 +278,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
         fullWidth={true}
         onClose={handleClose}
         aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
+        sx={{ height: '100%', textTransform: transText }}
       >
         {chequeData ? (
           <Fragment>
@@ -304,6 +306,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                           <Grid item xs={12} lg={6} md={4} sm={12}>
                             <FormControl fullWidth>
                               <TextField
+                                sx={{ textTransform: transText }}
                                 label='Cheque No'
                                 name='cheque_no'
                                 value={values.cheque_no}
@@ -316,6 +319,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                           <Grid item xs={12} lg={auth ? 6 : 12} md={4} sm={12}>
                             <FormControl fullWidth>
                               <TextField
+                                sx={{ textTransform: transText }}
                                 label='Amount'
                                 name='amount'
                                 value={values.amount}
@@ -488,6 +492,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                               <Grid item xs={12} lg={6} md={4} sm={12}>
                                 <FormControl fullWidth>
                                   <TextField
+                                    sx={{ textTransform: transText }}
                                     label='Amount in Currency'
                                     name='amount_currency'
                                     value={values.amount_currency}
@@ -875,6 +880,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                               <Grid item xs={12} lg={12} md={4} sm={12}>
                                 <FormControl fullWidth>
                                   <TextField
+                                    sx={{ textTransform: transText }}
                                     type='text'
                                     label='Currency Value'
                                     name='currency_value'
@@ -1077,10 +1083,13 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                           )}
                           <Grid item xs={12} lg={12} md={4} sm={12}>
                             <FormControl fullWidth>
-                              <InputLabel id='demo-simple-select-label'>Bank</InputLabel>
+                              <InputLabel sx={{ textTransform: transText }} id='demo-simple-select-label'>
+                                Bank
+                              </InputLabel>
                               <Select
                                 value={values.bank_id}
                                 name='bank_id'
+                                sx={{ textTransform: transText }}
                                 label='Bank'
                                 onChange={event => {
                                   handleChange(event)
@@ -1088,12 +1097,12 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                 onBlur={handleBlur}
                                 error={Boolean(touched.bank_id && errors.bank_id)}
                               >
-                                <MenuItem value='' disabled>
+                                <MenuItem sx={{ textTransform: transText }} value='' disabled>
                                   Select Bank
                                 </MenuItem>
-                                {data.account_collect.length > 0 &&
-                                  data.account_collect.map((item, index) => (
-                                    <MenuItem key={index} value={item.id}>
+                                {data.contact_banks.length > 0 &&
+                                  data.contact_banks.map((item, index) => (
+                                    <MenuItem sx={{ textTransform: transText }} key={index} value={item.id}>
                                       {item.value}
                                     </MenuItem>
                                   ))}
@@ -1121,6 +1130,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                     <CustomInput
                                       fullWidth
                                       label='Write Date'
+                                      sx={{ textTransform: transText }}
                                       readOnly={false}
                                       value={values.write_date}
                                       name='write_date'
@@ -1149,6 +1159,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                     <CustomInput
                                       fullWidth
                                       label='Due Date'
+                                      sx={{ textTransform: transText }}
                                       readOnly={false}
                                       value={values.due_date}
                                       name='due_date'
@@ -1176,7 +1187,8 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                       }}
                       options={data.accounts || []}
                       getOptionLabel={option => option.value || ''}
-                      renderInput={params => <TextField fullWidth {...params} label='Account' />}
+                      renderInput={params => <TextField
+                      sx={{ textTransform: transText }} fullWidth {...params} label='Account' />}
                     />
                   </FormControl>
                 </Grid> */}
@@ -1199,7 +1211,9 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                 }}
                                 options={data.contact || []}
                                 getOptionLabel={option => option.value || ''}
-                                renderInput={params => <TextField fullWidth {...params} label='Contact' />}
+                                renderInput={params => (
+                                  <TextField sx={{ textTransform: transText }} fullWidth {...params} label='Contact' />
+                                )}
                               />
                             </FormControl>
                           </Grid>
@@ -1228,6 +1242,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                           <Grid item xs={12} lg={12} md={4} sm={12}>
                             <FormControl fullWidth>
                               <TextField
+                                sx={{ textTransform: transText }}
                                 label='Note'
                                 multiline
                                 rows={4}
@@ -1277,7 +1292,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                         </FieldArray>
                       </Box>
                       <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button type='submit' variant='contained' color='primary'>
+                        <Button type='submit' variant='contained' color='primary' sx={{ textTransform: transText }}>
                           Update
                         </Button>
                       </Box>
