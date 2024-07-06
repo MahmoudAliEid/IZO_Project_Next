@@ -44,7 +44,7 @@ const AddChequeIn = () => {
   const [auth] = useState(true)
   const [findContact, setFindContact] = useState(false)
 
-  const [initialValues] = useState({
+  const [initialValues, setInitialValues] = useState({
     cheque_no: '',
     cheque_type: 0, // 0 for in 1 for out
     currencies: '', //currency_id
@@ -179,7 +179,7 @@ const AddChequeIn = () => {
         <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
       )}
       <Box sx={{ mb: 3 }}>
-        <CardHeader title='Add Cheques In' />
+        <CardHeader title='Add Cheques In' sx={{ textTransform: transText }} />
       </Box>
       <Formik
         initialValues={initialValues}

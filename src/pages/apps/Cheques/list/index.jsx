@@ -184,8 +184,8 @@ const RowOptions = ({ id, statusName, document }) => {
       })
   }
 
-  const handleCollect = ({ id, account_id }) => {
-    dispatch(collect({ id, account_id, date: '2024' })).then(res => {
+  const handleCollect = ({ id, account_id, date }) => {
+    dispatch(collect({ id, account_id, date })).then(res => {
       try {
         if (res.payload.status === 200) {
           dispatch(

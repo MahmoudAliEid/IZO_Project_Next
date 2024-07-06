@@ -432,7 +432,7 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             </Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography sx={{ textTransform: transText }} color={'white'}>
+            <Typography color={'white'}>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(values?.amount).toFixed(decimalFormat)} ${currency_code}`
                 : `${currency_code} ${Number(values?.amount).toFixed(decimalFormat)}`}
