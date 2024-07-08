@@ -1,5 +1,6 @@
 // ** MUI Imports
-import MuiChip from '@mui/material/Chip'
+import { Chip as MuiChip } from '@mui/material';
+
 
 // ** Third Party Imports
 import clsx from 'clsx'
@@ -38,9 +39,16 @@ const Chip = (props: CustomChipProps) => {
       variant='filled'
       className={clsx({
         'MuiChip-rounded': rounded,
-        'MuiChip-light': skin === 'light'
+        'MuiChip-light': skin === 'light',
+        textTransform: 'lowercase' // Override textTransform to be lowercase
+
       })}
-      sx={skin === 'light' && color ? Object.assign(colors[color], sx) : sx}
+
+      sx={{
+
+        ...(skin === 'light' && color ? Object.assign(colors[color], sx) : sx),
+        textTransform: 'lowercase' // Override textTransform to be lowercase
+      }}
     />
   )
 }

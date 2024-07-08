@@ -47,6 +47,8 @@ const CustomDateRange = ({
       <div>
         <DatePicker
           selectsRange
+          showYearDropdown
+                  showMonthDropdown
           endDate={endDate}
           selected={startDate}
           startDate={startDate}

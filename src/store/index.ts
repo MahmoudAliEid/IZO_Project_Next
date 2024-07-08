@@ -92,7 +92,7 @@ import getBillsSlice from './apps/vouchers/Actions/getBillsSlice'
 import postCreateReceiptSlice from './apps/vouchers/postCreateReceiptSlice'
 import getEditReceiptVoucher from './apps/vouchers/getEditReceiptVoucherSlice'
 import postEditReceiptSlice from './apps/vouchers/postEditReceiptSlice'
-import getAttachment from './apps/vouchers/Actions/getAttachment'
+import getAttachment from './apps/vouchers/Actions/getAttachmentCheque'
 import getViewEntry from './apps/vouchers/Actions/getViewEntry'
 import postDeleteVoucherSlice from './apps/vouchers/postDeleteVoucherSlice'
 // ** Cheques
@@ -108,6 +108,8 @@ import getViewChequesSlice from './apps/Cheques/Actions/getViewChequesSlice'
 import getEntryChequesSlice from './apps/Cheques/Actions/getEntryChequesSlice'
 import getBillsChequesSlice from './apps/Cheques/Actions/getBillsChequesSlice'
 import unCollect from './apps/Cheques/Actions/unCollect'
+import postDeleteCollectSlice from './apps/Cheques/Actions/postDeleteCollectSlice'
+import getAttachmentCheque from './apps/Cheques/Actions/getAttachment'
 // ** Contact Bank
 import getContactBankSlice from './apps/Cheques/contactBank/getContactBankSlice'
 import getCreateContactBank from './apps/Cheques/contactBank/getCreateContactBank'
@@ -222,7 +224,8 @@ export const store = configureStore({
     getBillsCheques: getBillsChequesSlice,
     unCollect,
     postDeleteCheques: postDeleteChequesSlice,
-
+    deleteCollect: postDeleteCollectSlice,
+    getAttachmentCheque,
     getContactBank: getContactBankSlice,
     getCreateContactBank: getCreateContactBank,
     getEditContactBank: getEditContactBank,

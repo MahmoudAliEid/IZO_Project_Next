@@ -2,17 +2,9 @@
 import Paper from '@mui/material/Paper'
 import { Table, TableBody, TableContainer, TableHead, TableRow } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
+import TableCell from '@mui/material/TableCell'
+import { getCookie } from 'cookies-next'
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.common.black
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14
-  }
-}))
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover
@@ -26,6 +18,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // Define the table component
 const CustomTableView = ({ dataRows, dataColumns, totalDebit, totalCredit }) => {
+  const transText = getCookie('fontStyle')
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -33,37 +27,51 @@ const CustomTableView = ({ dataRows, dataColumns, totalDebit, totalCredit }) => 
           <TableHead>
             <TableRow>
               {dataColumns.map((column, index) => (
-                <StyledTableCell
+                <TableCell
                   key={index}
                   align={column.align || 'center'}
                   sx={{
                     minWidth: column.minWidth || 100,
                     flex: column.flex || 1,
                     flexDirection: 'column',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    textTransform: transText
                   }}
                 >
                   {column.headerName}
-                </StyledTableCell>
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
             {dataRows ? (
               dataRows?.map((row, idR) => (
-                <StyledTableRow key={idR} sx={{ height: '90px' }}>
+                <StyledTableRow
+                  key={idR}
+                  sx={{
+                    height: '90px',
+                    textTransform: transText
+                  }}
+                >
                   {dataColumns.map((column, idx) => {
                     const value = row[column.field]
 
                     return (
-                      <StyledTableCell key={idx}>{column.renderCell ? column.renderCell(row) : value}</StyledTableCell>
+                      <TableCell
+                        key={idx}
+                        sx={{
+                          textTransform: transText
+                        }}
+                      >
+                        {column.renderCell ? column.renderCell(row) : value}
+                      </TableCell>
                     )
                   })}
                 </StyledTableRow>
               ))
             ) : (
               <StyledTableRow>
-                <StyledTableCell>No Rows</StyledTableCell>
+                <TableCell sx={{ textTransform: transText }}>No Rows</TableCell>
               </StyledTableRow>
             )}
           </TableBody>
@@ -73,18 +81,19 @@ const CustomTableView = ({ dataRows, dataColumns, totalDebit, totalCredit }) => 
             <TableHead>
               <TableRow>
                 {totalDebit.map((column, index) => (
-                  <StyledTableCell
+                  <TableCell
                     key={index}
                     align={column.align || 'center'}
                     sx={{
                       minWidth: column.minWidth || 100,
                       flex: column.flex || 1,
                       flexDirection: 'column',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      textTransform: transText
                     }}
                   >
                     {column.headerName}
-                  </StyledTableCell>
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -95,18 +104,19 @@ const CustomTableView = ({ dataRows, dataColumns, totalDebit, totalCredit }) => 
             <TableHead>
               <TableRow>
                 {totalCredit.map((column, index) => (
-                  <StyledTableCell
+                  <TableCell
                     key={index}
                     align={column.align || 'center'}
                     sx={{
                       minWidth: column.minWidth || 100,
                       flex: column.flex || 1,
                       flexDirection: 'column',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      textTransform: transText
                     }}
                   >
                     {column.headerName}
-                  </StyledTableCell>
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>

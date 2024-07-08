@@ -49,11 +49,12 @@ import { collect } from 'src/store/apps/Cheques/Actions/collect'
 import { deleteCheques } from 'src/store/apps/Cheques/postDeleteChequesSlice'
 import { unCollect } from 'src/store/apps/Cheques/Actions/unCollect'
 import { refund } from 'src/store/apps/Cheques/Actions/refund'
+import { deleteCollect } from 'src/store/apps/Cheques/Actions/postDeleteCollectSlice'
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
 // ------------------- ** Cheques List Elements ** -------------------
-const userStatusObj = {
+const StatusObj = {
   write: { title: 'Write', color: 'success' },
   collected: { title: 'collected', color: 'success' },
   unCollect: { title: 'un collect', color: 'secondary' },
@@ -79,7 +80,7 @@ const renderClient = row => {
 
 // ** Row options
 
-const RowOptions = ({ id, statusName, document }) => {
+const RowOptions = ({ id, statusName, document, dueDate }) => {
   // ** Hooks
   const dispatch = useDispatch()
   console.log('Status Name =>', statusName)
@@ -96,6 +97,7 @@ const RowOptions = ({ id, statusName, document }) => {
   const [openViewAttachments, setOpenViewAttachments] = useState(false)
   const [openEntry, setOpenEntry] = useState(false)
   const [openCollect, setOpenCollect] = useState(false)
+  const [openDeleteCollect, setOpenDeleteCollect] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -243,6 +245,31 @@ const RowOptions = ({ id, statusName, document }) => {
     })
   }
 
+  const handleDeleteCollect = () => {
+    console.log('Delete Collect:', id)
+    dispatch(deleteCollect({ id }))
+      .then(() => {
+        dispatch(
+          fetchCheques({
+            token,
+            url,
+            startWriteDate: new Date('2023-06-12'),
+            endWriteDate: new Date('2024-01-13'),
+            startDueDate: new Date('2023-06-12'),
+            endDueDate: new Date('2024-02-17')
+          })
+        )
+
+        handleRowOptionsClose()
+      })
+      .catch(error => {
+        console.error('Error deleting :', error)
+
+        // Handle the error as needed
+        handleRowOptionsClose()
+      })
+  }
+
   return (
     <Fragment>
       <IconButton size='small' onClick={handleRowOptionsClick}>
@@ -316,6 +343,7 @@ const RowOptions = ({ id, statusName, document }) => {
             sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
               handleRowOptionsClose()
+              setOpenDeleteCollect(true)
             }}
           >
             <Icon icon='bx:trash-alt' fontSize={20} />
@@ -395,11 +423,24 @@ const RowOptions = ({ id, statusName, document }) => {
           name={type.charAt(0).toUpperCase() + type.slice(1)}
         />
       )}
+      {openDeleteCollect && (
+        <DeleteGlobalAlert
+          open={openDeleteCollect}
+          close={() => setOpenDeleteCollect(!openDeleteCollect)}
+          mainHandleDelete={handleDeleteCollect}
+          name={"Cheque's Collect"}
+        />
+      )}
 
       {openView && <ViewCheque open={openView} toggle={setOpenView} itemId={id} />}
 
       {openViewAttachments && (
-        <VoucherAttachmentPopUp open={openViewAttachments} toggle={setOpenViewAttachments} itemId={id} />
+        <VoucherAttachmentPopUp
+          open={openViewAttachments}
+          toggle={setOpenViewAttachments}
+          itemId={id}
+          type={'cheque'}
+        />
       )}
 
       {openEdit && <ChequeEdit open={openEdit} toggle={handleEdit} itemId={id} type={type === 0 ? 'in' : 'out'} />}
@@ -410,6 +451,7 @@ const RowOptions = ({ id, statusName, document }) => {
       {openCollect && (
         <DropDownAccounts
           open={openCollect}
+          dueDate={dueDate}
           handleClose={() => setOpenCollect(false)}
           handleCollect={handleCollect}
           id={id}
@@ -457,6 +499,7 @@ const ChequesList = () => {
           statusName={row.status_name}
           account_id={row.account_id}
           document={row.document}
+          dueDate={row.due_date}
         />
       )
     },
@@ -505,15 +548,18 @@ const ChequesList = () => {
       headerName: 'Status',
       renderCell: params => {
         const status =
-          params.row.status_name === 'Un Collect' ? userStatusObj['unCollect'] : userStatusObj[params.row.status_name]
+          params.row.status_name === 'Un Collect' ? StatusObj['unCollect'] : StatusObj[params.row.status_name]
 
         return (
           <CustomChip
             rounded
             size='small'
             skin='light'
-            sx={{ textTransform: transText }}
-            color={status?.color ? status.color : 'success'}
+            title='Light Chip'
+            sx={{
+              '& .MuiChip-label': { textTransform: transText }
+            }}
+            color={status?.color ? status.color : 'warning'}
             label={status?.title ? status.title : params.row.status_name}
           />
           // <Typography noWrap sx={{ color: 'text.secondary' }}>
@@ -821,7 +867,8 @@ const ChequesList = () => {
                   '& .MuiDataGrid-columnsContainer': {
                     textTransform: transText
                   },
-                  '& .MuiDataGrid-columnHeader': {
+                  '& .MuiDataGrid-columnHeaderTitle': {
+                    // Corrected class name for header text
                     textTransform: transText
                   }
                 }}

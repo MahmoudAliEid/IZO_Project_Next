@@ -15,6 +15,8 @@ import {
 } from '@mui/material'
 // ** Next Imports
 import { getCookie } from 'cookies-next'
+// ** Styled Component
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 // ** Third Party Imports
 import DatePicker from 'react-datepicker'
@@ -22,11 +24,11 @@ import DatePicker from 'react-datepicker'
 // ** Custom Component Imports
 import CustomInput from 'src/views/forms/form-elements/pickers/PickersCustomInput'
 
-const DropDownAccounts = ({ open, handleClose, handleCollect, id }) => {
+const DropDownAccounts = ({ open, handleClose, handleCollect, id, dueDate }) => {
   const [accountList, setAccountList] = useState([]) // Renamed for clarity and initialized as an empty array
   const [selectedAccount, setSelectedAccount] = useState('') // Separate state for the selected account
   const transText = getCookie('fontStyle')
-  const [year, setYear] = useState(new Date().getFullYear()) // [1] Initialize state with current year
+  const [year, setYear] = useState(new Date())
 
   const store = useSelector(state => state.getCheques.brands?.value?.requirement?.account_collect)
 
@@ -42,48 +44,67 @@ const DropDownAccounts = ({ open, handleClose, handleCollect, id }) => {
       onClose={handleClose}
       fullWidth
       maxWidth='md'
-      scroll='body'
+      sx={{
+        height: '100vh',
+        boxSizing: 'border-box',
+        '.MuiDialog-paper': {
+          width: '100%',
+          height: '100%'
+        }
+      }}
+      // scroll='body'
       aria-labelledby='scroll-dialog-title'
       aria-describedby='scroll-dialog-description'
     >
-      <DialogTitle sx={{ textTransform: transText }}>Selecting an Account</DialogTitle>
+      <DialogTitle sx={{ textTransform: transText }}>Selecting an Account & Date</DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel sx={{ textTransform: transText }}>Accounts</InputLabel>
-              <Select
-                name='account'
-                label='Accounts'
-                sx={{ textTransform: transText }}
-                value={selectedAccount} // Controlled component
-                onChange={e => setSelectedAccount(e.target.value)} // Set selected account
-              >
-                {accountList.length > 0
-                  ? accountList.map((item, index) => (
-                      <MenuItem sx={{ textTransform: transText }} key={index} value={item.id}>
-                        {item.value}
-                      </MenuItem>
-                    ))
-                  : null}
-              </Select>
-            </FormControl>
+        <DatePickerWrapper>
+          <Grid container spacing={10}>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel sx={{ textTransform: transText }}>Accounts</InputLabel>
+                <Select
+                  name='account'
+                  label='Accounts'
+                  sx={{ textTransform: transText }}
+                  value={selectedAccount} // Controlled component
+                  onChange={e => setSelectedAccount(e.target.value)} // Set selected account
+                >
+                  {accountList.length > 0
+                    ? accountList.map((item, index) => (
+                        <MenuItem sx={{ textTransform: transText }} key={index} value={item.id}>
+                          {item.value}
+                        </MenuItem>
+                      ))
+                    : null}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            {/* add input of date just choose year */}
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <DatePicker
+                  selected={year}
+                  minDate={new Date(dueDate)}
+                  showYearDropdown
+                  showMonthDropdown
+                  dateFormat={'yyyy/MM/dd'}
+                  style={{
+                    textTransform: transText,
+                    width: '100%'
+                  }} // Ensure DatePicker takes full width
+                  popperPlacement={
+                    'auto' // Set popperPlacement to auto to ensure DatePicker is always visible on the screen
+                  }
+                  onChange={date => setYear(date)}
+                  placeholderText='Click to select a date'
+                  customInput={<CustomInput label={'Date'} sx={{ textTransform: transText, width: '100%' }} />}
+                />
+              </FormControl>
+            </Grid>
           </Grid>
-          {/* add input of date just choose year */}
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <DatePicker
-                selected={year}
-                id='basic-input'
-                style={{ textTransform: transText, width: '100%' }} // Ensure DatePicker takes full width
-                popperPlacement={transText === 'uppercase' ? 'top-end' : 'bottom-end'}
-                onChange={date => setYear(date)}
-                placeholderText='Click to select a date'
-                customInput={<CustomInput label={'Year'} sx={{ textTransform: transText, width: '100%' }} />}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+        </DatePickerWrapper>
       </DialogContent>
       <DialogActions>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>

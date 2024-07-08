@@ -23,6 +23,7 @@ import { Global, css } from '@emotion/react'
 
 import { useTheme } from '@mui/material/styles'
 import useThemeColor from 'src/@core/utils/useThemeColor'
+import useTextTransform from 'src/@core/utils/useTextTransForm'
 
 // ** Config Imports
 import 'src/configs/i18n'
@@ -115,7 +116,8 @@ if (themeConfig.routingLoader) {
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   const theme = useTheme();
-  const { themeColor,mainColor}=useThemeColor();
+  const { themeColor, mainColor } = useThemeColor();
+  const {fontStyle}= useTextTransform()
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
@@ -132,6 +134,7 @@ const App = (props: ExtendedAppProps) => {
 
   console.log('theme color 👁‍🗨👁‍🗨 🤩🤩', themeColor)
   console.log('theme color from _app 🤍 👁‍🗨👁‍🗨', theme.palette.primary.main)
+  console.log('font style **,',fontStyle)
 
 
   return (
@@ -143,6 +146,7 @@ const App = (props: ExtendedAppProps) => {
             ::selection {
               background-color: ${themeColor} ;
             }
+              text-transform: ${fontStyle} !important;
             ::-moz-selection {
               background-color: ${themeColor} ;
             }

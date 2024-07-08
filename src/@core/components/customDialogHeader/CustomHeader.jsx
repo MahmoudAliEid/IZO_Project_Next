@@ -4,8 +4,12 @@ import { useState } from 'react'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+// ** Cookies
+import { getCookie } from 'cookies-next'
+
 const CustomHeader = ({ title, handleClose, divider }) => {
   const [hover, setHover] = useState(false)
+  const transText = getCookie('fontStyle')
 
   return (
     <>
@@ -14,7 +18,8 @@ const CustomHeader = ({ title, handleClose, divider }) => {
           variant='h6'
           component='span'
           sx={{
-            textTransform: 'capitalize'
+            textTransform: 'capitalize',
+            textTransform: transText
           }}
         >
           {title}

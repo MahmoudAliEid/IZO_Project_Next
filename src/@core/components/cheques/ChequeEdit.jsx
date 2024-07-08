@@ -194,8 +194,8 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
         amount: storeData.info[0].amount || '',
         amount_currency: storeData.info[0].amount_in_currency || '',
         currency_value: storeData.info[0].exchange_price || '',
-        note: storeData.info[0].text || '',
-        attachment: storeData.info[0].attachment || [],
+        note: storeData.info[0].note || '',
+        // attachment: storeData.info[0].document || [],
         table:
           storeData.bill.map(row => ({
             id: row.bill_id,

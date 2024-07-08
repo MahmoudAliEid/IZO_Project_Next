@@ -28,6 +28,7 @@ const EntryPopUp = ({ open, toggle, itemId, type, name }) => {
   const decimalFormat = getCookie('DecimalFormat')
   const currency_code = getCookie('currency_code')
   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+  const fontStyling = getCookie('fontStyle')
 
   // const dataNames = [
   //   { headerName: 'Ref No', field: 'ref_no' },
@@ -91,7 +92,14 @@ const EntryPopUp = ({ open, toggle, itemId, type, name }) => {
           />
           <DialogContent sx={{ padding: '0 !important' }}>
             <Divider sx={{ mb: 2 }}>
-              <Chip label='Entry Information' color='primary' variant='outlined' />
+              <Chip
+                label='Entry Information'
+                color='primary'
+                variant='outlined'
+                sx={{
+                  '& .MuiChip-label': { textTransform: fontStyling }
+                }}
+              />
             </Divider>
 
             <Grid container spacing={2} sx={{ p: 3 }}>
@@ -99,7 +107,14 @@ const EntryPopUp = ({ open, toggle, itemId, type, name }) => {
                 entryData?.entries.map((item, index) => (
                   <Grid item xs={12} key={index}>
                     <Divider sx={{ mb: 2 }}>
-                      <Chip label={`${item.entry_reference}`} color='primary' variant='outlined' />
+                      <Chip
+                        sx={{
+                          '& .MuiChip-label': { textTransform: fontStyling }
+                        }}
+                        label={`${item.entry_reference}`}
+                        color='primary'
+                        variant='outlined'
+                      />
                     </Divider>
                     <CustomTableView
                       dataRows={item.allData}

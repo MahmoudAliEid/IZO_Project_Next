@@ -433,6 +433,8 @@ const AddChequeOut = () => {
                     <DatePickerWrapper>
                       <DatePicker
                         name='write_date'
+                        showYearDropdown
+                        showMonthDropdown
                         selected={values.write_date}
                         popperPlacement={popperPlacement}
                         onChange={write_date => {
@@ -461,6 +463,8 @@ const AddChequeOut = () => {
                     <DatePickerWrapper>
                       <DatePicker
                         name='due_date'
+                        showYearDropdown
+                        showMonthDropdown
                         selected={values.due_date}
                         popperPlacement={popperPlacement}
                         onChange={due_date => {

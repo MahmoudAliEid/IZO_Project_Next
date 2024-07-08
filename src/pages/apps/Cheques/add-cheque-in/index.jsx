@@ -432,6 +432,8 @@ const AddChequeIn = () => {
                     <DatePickerWrapper>
                       <DatePicker
                         name='write_date'
+                        showYearDropdown
+                        showMonthDropdown
                         selected={values.write_date}
                         popperPlacement={popperPlacement}
                         onChange={write_date => {
@@ -443,6 +445,8 @@ const AddChequeIn = () => {
                           <CustomInput
                             fullWidth
                             label='Write Date'
+                            showYearDropdown
+                            showMonthDropdown
                             readOnly={false}
                             value={values.write_date}
                             name='write_date'
@@ -461,6 +465,8 @@ const AddChequeIn = () => {
                     <DatePickerWrapper>
                       <DatePicker
                         name='due_date'
+                        showYearDropdown
+                        showMonthDropdown
                         selected={values.due_date}
                         popperPlacement={popperPlacement}
                         onChange={due_date => {

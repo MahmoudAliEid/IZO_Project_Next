@@ -63,7 +63,7 @@ const RowOptions = ({ id }) => {
   }
 
   const handleDelete = () => {
-    if (!id ) {
+    if (!id) {
       console.log('Invalid id ')
       handleRowOptionsClose()
 
@@ -187,16 +187,16 @@ const ContactBank = () => {
     {
       flex: 0.25,
       minWidth: 180,
-      field: 'business_id ',
+      field: 'location_id ',
       headerName: 'Business Location',
       renderCell: ({ row }) => {
-        const { business_id } = row
+        const { location_id } = row
 
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
               <Typography noWrap sx={{ color: 'text.secondary' }}>
-                {business_id ? business_id : 'Not available'}
+                {location_id ? location_id : 'Not available'}
               </Typography>
             </Box>
           </Box>

@@ -29,8 +29,8 @@ import { getCookie } from 'cookies-next'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.footer}`]: {
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.common.black,
+    color: theme.palette.text.primary,
+    backgroundColor: '#424242',
     border: 'none'
   },
   [`&.${tableCellClasses.body}`]: {
@@ -414,7 +414,9 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
       <Box
         style={{
           position: 'sticky',
-          bottom: '0'
+          bottom: '0',
+
+          backgroundColor: '#424242'
         }}
       >
         <Box
@@ -422,29 +424,25 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            color: theme => theme.palette.primary.main,
+
             backgroundColor: '#424242'
           }}
         >
           <StyledTableCell>
-            <Typography sx={{ textTransform: transText }} color={'white'}>
-              Total :
-            </Typography>
+            <Typography sx={{ textTransform: transText }}>Total :</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>
+            <Typography>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(values?.amount).toFixed(decimalFormat)} ${currency_code}`
                 : `${currency_code} ${Number(values?.amount).toFixed(decimalFormat)}`}
             </Typography>
           </StyledTableCell>
           <StyledTableCell>
-            <Typography sx={{ textTransform: transText }} color={'white'}>
-              Remain:
-            </Typography>
+            <Typography sx={{ textTransform: transText }}>Remain:</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography color={'white'}>
+            <Typography>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(values?.table_total).toFixed(decimalFormat)} ${currency_code}`
                 : `${currency_code} ${Number(values?.table_total).toFixed(decimalFormat)}`}

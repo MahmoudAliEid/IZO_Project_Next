@@ -10,6 +10,8 @@ import { Box } from '@mui/system'
 import { styled } from '@mui/material/styles'
 import { fetchViewCheque } from 'src/store/apps/Cheques/Actions/getViewChequesSlice'
 
+import { getCookie } from 'cookies-next'
+
 const LinkStyled = styled(Box)(({ theme }) => ({
   fontWeight: 400,
   fontSize: '1rem',
@@ -23,6 +25,7 @@ const LinkStyled = styled(Box)(({ theme }) => ({
 
 const ViewCheque = ({ open, toggle, itemId }) => {
   const [chequeData, setChequeData] = useState(null) // Initially setting data as null
+  const transText = getCookie('fontStyle')
 
   const dataNames = [
     { headerName: 'Cheque No', field: 'cheque_no' },
@@ -89,35 +92,83 @@ const ViewCheque = ({ open, toggle, itemId }) => {
             <CustomHeader title={` Cheque ( Ref No: ${chequeData.ref_no})`} handleClose={handleClose} divider={false} />
             <DialogContent sx={{ padding: '0 !important' }}>
               <Divider sx={{ mb: 2 }}>
-                <Chip label='Cheque Information' color='primary' variant='outlined' />
+                <Chip
+                  label='Cheque Information'
+                  color='primary'
+                  variant='outlined'
+                  sx={{
+                    '& .MuiChip-label': { textTransform: transText }
+                  }}
+                />
               </Divider>
 
-              <Grid container spacing={2} sx={{ p: 3 }}>
-                {chequeData &&
-                  dataNames.map((data, index) => {
-                    return (
-                      <Grid item xs={12} lg={4} md={4} sm={12} key={index}>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            mb: 4,
-                            gap: 2,
-                            flexDirection: 'row'
-                          }}
-                        >
-                          <Typography sx={{ ml: 3, fontWeight: 700, color: 'text.secondary' }}>
-                            {data.headerName}:
-                          </Typography>
-
-                          {chequeData[data.field] ? <Chip label={chequeData[data.field] || ''} size={'small'} /> : null}
-                        </Box>
-                      </Grid>
-                    )
-                  })}
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  p: 3,
+                  textTransform: transText
+                }}
+              >
+                <Grid
+                  item
+                  xs={12}
+                  // add glass effect
+                  sx={{
+                    background: '#191919',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 30px  rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(6.3px)',
+                    WebkitBackdropFilter: 'blur(6.3px)', // Ensuring compatibility with Webkit browsers
+                    border: '1px solid rgba(176, 170, 170, 0.3)',
+                    textTransform: transText
+                  }}
+                >
+                  <Grid container spacing={2}>
+                    {chequeData &&
+                      dataNames.map((data, index) => {
+                        return (
+                          <Grid item xs={12} lg={4} md={4} sm={12} key={index}>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                mb: 4,
+                                gap: 2,
+                                flexDirection: 'row',
+                                textTransform: transText
+                              }}
+                            >
+                              <Typography
+                                sx={{ ml: 3, fontWeight: 700, color: 'text.secondary', textTransform: transText }}
+                              >
+                                {data.headerName}:&nbsp;
+                                {chequeData[data.field] ? (
+                                  <Chip
+                                    label={chequeData[data.field] || ''}
+                                    size={'small'}
+                                    sx={{
+                                      '& .MuiChip-label': { textTransform: transText }
+                                    }}
+                                  />
+                                ) : null}
+                              </Typography>
+                            </Box>
+                          </Grid>
+                        )
+                      })}
+                  </Grid>
+                </Grid>
 
                 <Grid item xs={12}>
                   <Divider sx={{ mb: 2 }}>
-                    <Chip label='All Payments' color='primary' variant='outlined' />
+                    <Chip
+                      label='All Payments'
+                      color='primary'
+                      variant='outlined'
+                      sx={{
+                        '& .MuiChip-label': { textTransform: transText }
+                      }}
+                    />
                   </Divider>
                   {/* <TableOfPayments data={chequeData?.payments} /> */}
                   <CustomTableView
