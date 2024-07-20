@@ -13,7 +13,15 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import { Box, Typography } from '@mui/material'
 import WarningIcon from '@mui/icons-material/Warning'
 
-const DeleteGlobalAlert = ({ name, open, close, mainHandleDelete, customName, customDescription, nameOfAction }) => {
+const DeleteGlobalAlert = ({
+  name,
+  open,
+  close,
+  mainHandleDelete,
+  customName = null,
+  customDescription = null,
+  nameOfAction = null
+}) => {
   const handleDelete = () => {
     mainHandleDelete()
     close()

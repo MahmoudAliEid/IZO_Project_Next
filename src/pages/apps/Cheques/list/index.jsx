@@ -276,8 +276,6 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
       })
   }
 
-  console.log('type', type)
-
   return (
     <Fragment>
       <IconButton size='small' onClick={handleRowOptionsClick}>
