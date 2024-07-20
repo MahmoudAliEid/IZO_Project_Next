@@ -97,7 +97,11 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
         sx={{ height: '100%' }}
       >
         <Fragment>
-          <CustomHeader title={`Voucher Attachments `} handleClose={handleClose} divider={false} />
+          <CustomHeader
+            title={type === 'cheque' ? 'Cheque Attachments' : `Voucher Attachments `}
+            handleClose={handleClose}
+            divider={false}
+          />
           <DialogContent sx={{ padding: '0 !important' }}>
             <Divider sx={{ mb: 2 }}>
               <Chip

@@ -80,6 +80,7 @@ const AddChequeIn = () => {
         grand_total: 0,
         payment_due: 0,
         payment: 0,
+        previous_payment: 0,
         added_by: 'added_by',
         status: 'old/new'
       }

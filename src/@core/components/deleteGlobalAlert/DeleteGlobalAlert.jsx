@@ -13,7 +13,7 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import { Box, Typography } from '@mui/material'
 import WarningIcon from '@mui/icons-material/Warning'
 
-const DeleteGlobalAlert = ({ name, open, close, mainHandleDelete }) => {
+const DeleteGlobalAlert = ({ name, open, close, mainHandleDelete, customName, customDescription, nameOfAction }) => {
   const handleDelete = () => {
     mainHandleDelete()
     close()
@@ -33,7 +33,7 @@ const DeleteGlobalAlert = ({ name, open, close, mainHandleDelete }) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle id='alert-dialog-title' style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant='h5'>Delete {name}</Typography>
+          <Typography variant='h5'>{customName ? customName : `Delete ${name}`}</Typography>
           <Box color={'error'}>
             <WarningIcon sx={{ fontSize: '35px' }} color='error' />
           </Box>
@@ -41,7 +41,10 @@ const DeleteGlobalAlert = ({ name, open, close, mainHandleDelete }) => {
 
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
-            Are you sure you want to delete this {name}?
+            {customDescription
+              ? customDescription
+              : `Are you
+            sure you want to delete this ${name}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -50,7 +53,7 @@ const DeleteGlobalAlert = ({ name, open, close, mainHandleDelete }) => {
           </Button>
 
           <Button startIcon={<DeleteIcon />} variant='outlined' color='error' onClick={handleDelete}>
-            Delete
+            {nameOfAction ? nameOfAction : `Delete`}
           </Button>
         </DialogActions>
       </Dialog>

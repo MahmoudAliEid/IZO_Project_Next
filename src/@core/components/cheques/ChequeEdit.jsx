@@ -1,8 +1,16 @@
 import { forwardRef, useState, useEffect, Fragment } from 'react'
+
+// ** Formik
 import { Formik, Form, useField, FieldArray } from 'formik'
+
+// ** Selectors and Redux
 import { useDispatch, useSelector } from 'react-redux'
-import Dialog from '@mui/material/Dialog'
-import DialogContent from '@mui/material/DialogContent'
+import { fetchEditCheques } from 'src/store/apps/Cheques/getEditChequesSlice'
+import { editCheques } from 'src/store/apps/Cheques/postEditChequesSlice'
+import { fetchCheques } from 'src/store/apps/Cheques/getChequesSlice'
+import { fetchBillsCheques } from 'src/store/apps/Cheques/Actions/getBillsChequesSlice'
+
+// ** Custom Component
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 
@@ -18,34 +26,24 @@ import {
   Divider,
   Button,
   InputLabel,
-  Autocomplete
+  Autocomplete,
+  Dialog,
+  DialogContent
 } from '@mui/material'
 
+// ** Third Party Components
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
-import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 
 // ** next cookies
 import { getCookie } from 'cookies-next'
 
-import { fetchEditCheques } from 'src/store/apps/Cheques/getEditChequesSlice'
-import { editCheques } from 'src/store/apps/Cheques/postEditChequesSlice'
-import { fetchCheques } from 'src/store/apps/Cheques/getChequesSlice'
-import { fetchBillsCheques } from 'src/store/apps/Cheques/Actions/getBillsChequesSlice'
+// ** Parts
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
+import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 import ChequesAddTable from 'src/pages/apps/Cheques/add-cheque-in/ChequesAddTable'
 
-// const LinkStyled = styled(Box)(({ theme }) => ({
-//   fontWeight: 400,
-//   fontSize: '1rem',
-//   cursor: 'pointer',
-//   textDecoration: 'none',
-//   color: theme.palette.text.secondary,
-//   '&:hover': {
-//     color: theme.palette.primary.main
-//   }
-// }))
-
+// ** Custom Input Component
 const CustomInput = forwardRef(({ ...props }, ref) => {
   const { label, readOnly } = props
   const [field, meta] = useField(props)
@@ -55,12 +53,11 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
 
 const ChequeEdit = ({ open, toggle, itemId, type }) => {
   // ** States
+  const [oldAmount, setOldAmount] = useState(0)
+  // const [oldRemain, setOldRemain] = useState(0)
   const [changeCurrency] = useState(0)
   const [chequeData, setChequeData] = useState(null)
   const [auth] = useState(true)
-  // const [accountText, setAccountText] = useState('')
-  // const [contactText, setContactText] = useState('')
-  // const [bills, setBills] = useState([])
   const [initialValues, setInitialValues] = useState({
     currencies: '', //currency_id
     table_total: 0,
@@ -100,8 +97,12 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
     contact: []
   })
 
-  const [oldAmount, setOldAmount] = useState(0)
-  const [oldRemain, setOldRemain] = useState(0)
+  // ** Cookies
+  const token = getCookie('token')
+  const url = getCookie('apiUrl')
+  const DecimalFormat = getCookie('DecimalFormat')
+  const transText = getCookie('fontStyle')
+
   // ** Hooks
   const theme = useTheme()
   const dispatch = useDispatch()
@@ -109,73 +110,17 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
   // ** Vars
   const { direction } = theme
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
-  const DecimalFormat = getCookie('DecimalFormat')
-  const transText = getCookie('fontStyle')
 
   // ** Get data from store
   const storeData = useSelector(state => state.getEditCheque.data?.value)
   const editStatus = useSelector(state => state.postEditCheque)
-  // const storeBills = useSelector(state => state.getBills.data?.value)
 
-  // ** Functions
-
-  // ** Handle date convert
-  // Function to parse a YYYY-MM-DD date string to a Date object
-  // Function to format a Date object to the desired string format
-  function formatDateObject(dateString) {
-    let date = new Date(dateString)
-
-    // Ensure the parsed date is valid
-    if (isNaN(date)) {
-      throw new Error('Invalid date string provided')
-    }
-
-    // Ensure the input is a valid Date object
-    if (!(date instanceof Date) || isNaN(date)) {
-      throw new Error('Invalid Date object provided')
-    }
-
-    // Options for formatting the date string
-    let options = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZoneName: 'short'
-    }
-
-    // Format the date to the desired string format
-    let formattedDate = date.toLocaleString('en-US', options)
-
-    return formattedDate
-  }
-
-  // // Example usage
-  try {
-    let dateString = '2024-05-09'
-
-    let formattedDate = formatDateObject(dateString)
-
-    // console.log(dateObject) // Output: Thu May 09 2024 00:00:00 GMT+0300 (Eastern European Summer Time)
-    console.log(formattedDate) // Output: Thu, May 9, 2024, 12:00:00 AM GMT+3
-  } catch (error) {
-    console.error(error.message)
-  }
-
-  const handleClose = () => {
-    toggle()
-  }
-
+  // ** UseEffect
   useEffect(() => {
     if (itemId) {
       dispatch(fetchEditCheques({ itemId }))
     }
   }, [itemId, dispatch])
-
-  // ** Functions
 
   useEffect(() => {
     if (storeData) {
@@ -186,7 +131,6 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
         write_date: new Date(storeData.info[0].write_date) || '',
         due_date: new Date(storeData.info[0].due_date) || '',
         cheque_no: storeData.info[0].cheque_no || '',
-
         table_total: storeData.remaining || 0,
         date: new Date(storeData.info[0].date),
         account: storeData.info[0].account_id || '',
@@ -206,8 +150,9 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
             purchase_status: row.invoice_status || 'no purchase status',
             payment_status: row.pay_status || 'no payment status',
             warehouse_name: row.store,
+            previous_payment: row.previous_payment,
             grand_total: row.final_total,
-            payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(DecimalFormat),
+            payment: row.total_payment !== '' ? Number(row.total_payment).toFixed(DecimalFormat) : 0,
             payment_due: row.pay_due,
             add_by: row.add_by || 'no add by',
             status: row.status,
@@ -220,17 +165,17 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
           storeData.bill.filter(row => row.payment_id !== '' && row.status === 0).map(row => row.payment_id) || [],
         bill_id: [],
         bill_amount: [],
-        type: type === 'receipt' ? 1 : 0,
+        type: storeData.info[0].type,
         contactText: storeData.info[0].contactText || 'no contact'
       }))
     }
-  }, [storeData, DecimalFormat, type])
+  }, [storeData, DecimalFormat])
 
   useEffect(() => {
     if (storeData) {
       setData(storeData.require)
       setOldAmount(storeData.info[0].amount)
-      setOldRemain(storeData.remaining)
+      // setOldRemain(storeData.remaining)
     }
   }, [storeData])
   useEffect(() => {
@@ -239,12 +184,10 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
     }
   }, [storeData])
 
-  // useEffect(() => {
-  //   if (storeBills) {
-  //     setBills(storeBills)
-  //   }
-  // }, [storeBills])
-
+  // ** Functions
+  const handleClose = () => {
+    toggle()
+  }
   const handleSubmitForm = values => {
     console.log(values, 'values form submit edit cheque')
 
@@ -269,6 +212,8 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
   const fetchDataOnSearchSelect = async id => {
     dispatch(fetchBillsCheques({ id, type }))
   }
+
+  console.log('chequeData bills 😂', chequeData)
 
   return (
     <Fragment>
@@ -325,9 +270,35 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                 value={values.amount}
                                 onChange={event => {
                                   handleChange(event)
+                                  // ** when amount is changed set them to empty because it contains the checked values
+                                  // ** and we will un Check them on change amount
                                   setFieldValue('bill_id', [])
                                   setFieldValue('bill_amount', [])
+                                  // ** unCheck all the checked values
+                                  setFieldValue(
+                                    'table',
+                                    chequeData.bill.map(row => ({
+                                      id: row.bill_id,
+                                      check: false,
+                                      date: row.date,
+                                      reference_no: row.reference_no,
+                                      supplier: row.supplier || 'no supplier',
+                                      purchase_status: row.invoice_status || 'no purchase status',
+                                      payment_status: row.pay_status || 'no payment status',
+                                      warehouse_name: row.store,
+                                      grand_total: row.final_total,
+                                      payment: row.check ? 0 : Number(row.total_payment).toFixed(DecimalFormat),
+                                      payment_due: row.check ? row.final_total : row.pay_due,
+                                      add_by: row.add_by || 'no add by',
+                                      status: row.status,
+                                      payment_id: row.payment_id
+                                    }))
+                                  )
+                                  // ** Change total Table (remain)
+                                  setFieldValue('table_total', Number(event.target.value).toFixed(DecimalFormat))
+                                  setFieldValue('remain', Number(event.target.value).toFixed(DecimalFormat))
 
+                                  // ** Check if the currency value is not empty
                                   if (values.currency_value !== '' && values.currency_value !== 0) {
                                     setFieldValue(
                                       'amount_currency',
@@ -344,30 +315,30 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                     Number(event.target.value) < Number(oldAmount) &&
                                     Number(event.target.value) > 0
                                   ) {
-                                    setFieldValue(
-                                      'table',
-                                      chequeData.bill.map(row => ({
-                                        id: row.bill_id,
-                                        check: false,
-                                        date: row.date,
-                                        reference_no: row.reference_no,
-                                        supplier: row.supplier || 'no supplier',
-                                        purchase_status: row.invoice_status || 'no purchase status',
-                                        payment_status: row.pay_status || 'no payment status',
-                                        warehouse_name: row.store,
-                                        grand_total: row.final_total,
-                                        payment: 0,
-                                        payment_due: row.final_total,
-                                        add_by: row.add_by || 'no add by',
-                                        status: 1,
-                                        payment_id: row.status === 0 ? '' : row.payment_id
-                                      }))
-                                    )
+                                    // setFieldValue(
+                                    //   'table',
+                                    //   chequeData.bill.map(row => ({
+                                    //     id: row.bill_id,
+                                    //     check: false,
+                                    //     date: row.date,
+                                    //     reference_no: row.reference_no,
+                                    //     supplier: row.supplier || 'no supplier',
+                                    //     purchase_status: row.invoice_status || 'no purchase status',
+                                    //     payment_status: row.pay_status || 'no payment status',
+                                    //     warehouse_name: row.store,
+                                    //     grand_total: row.final_total,
+                                    //     payment: 0,
+                                    //     payment_due: row.final_total,
+                                    //     add_by: row.add_by || 'no add by',
+                                    //     status: 1,
+                                    //     payment_id: row.status === 0 ? '' : row.payment_id
+                                    //   }))
+                                    // )
 
                                     setFieldValue('bill_id', [])
                                     setFieldValue('bill_amount', [])
-                                    setFieldValue('table_total', Number(event.target.value).toFixed(DecimalFormat))
-                                    setFieldValue('remain', Number(event.target.value).toFixed(DecimalFormat))
+                                    // setFieldValue('table_total', Number(event.target.value).toFixed(DecimalFormat))
+                                    // setFieldValue('remain', Number(event.target.value).toFixed(DecimalFormat))
                                     setFieldValue('old_bill_id', [])
                                     setFieldValue('old_bill_amount', [])
                                     setFieldValue('payment_id', [])
@@ -375,39 +346,39 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
 
                                   // check if the amount is greater than the old amount
                                   else if (Number(event.target.value) > Number(oldAmount)) {
-                                    setFieldValue(
-                                      'table_total',
-                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
-                                        DecimalFormat
-                                      )
-                                    )
-                                    setFieldValue(
-                                      'remain',
-                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
-                                        DecimalFormat
-                                      )
-                                    )
-                                    setFieldValue(
-                                      'table',
-                                      chequeData.bill.map(row => ({
-                                        id: row.bill_id,
-                                        check: row.status === 0 ? true : false,
-                                        date: row.date,
-                                        reference_no: row.reference_no,
-                                        supplier: row.supplier || 'no supplier',
-                                        purchase_status: row.invoice_status || 'no purchase status',
-                                        payment_status: row.pay_status || 'no payment status',
-                                        warehouse_name: row.store,
-                                        grand_total: row.final_total,
-                                        status: row.status,
-                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                          DecimalFormat
-                                        ),
-                                        payment_due: row.pay_due,
-                                        add_by: row.add_by || 'no add by',
-                                        payment_id: row.payment_id
-                                      }))
-                                    )
+                                    // setFieldValue(
+                                    //   'table_total',
+                                    //   (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                    //     DecimalFormat
+                                    //   )
+                                    // )
+                                    // setFieldValue(
+                                    //   'remain',
+                                    //   (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                    //     DecimalFormat
+                                    //   )
+                                    // )
+                                    // setFieldValue(
+                                    //   'table',
+                                    //   chequeData.bill.map(row => ({
+                                    //     id: row.bill_id,
+                                    //     check: row.status === 0 ? true : false,
+                                    //     date: row.date,
+                                    //     reference_no: row.reference_no,
+                                    //     supplier: row.supplier || 'no supplier',
+                                    //     purchase_status: row.invoice_status || 'no purchase status',
+                                    //     payment_status: row.pay_status || 'no payment status',
+                                    //     warehouse_name: row.store,
+                                    //     grand_total: row.final_total,
+                                    //     status: row.status,
+                                    //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                    //       DecimalFormat
+                                    //     ),
+                                    //     payment_due: row.pay_due,
+                                    //     add_by: row.add_by || 'no add by',
+                                    //     payment_id: row.payment_id
+                                    //   }))
+                                    // )
                                     setFieldValue(
                                       'payment_id',
                                       chequeData.bill
@@ -427,28 +398,28 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                         .map(row => row.final_total) || []
                                     )
                                   } else if (Number(event.target.value) === Number(oldAmount)) {
-                                    console.log('equal😁😁🤣')
-                                    setFieldValue(
-                                      'table',
-                                      chequeData.bill.map(row => ({
-                                        id: row.bill_id,
-                                        check: row.status === 0 ? true : false,
-                                        date: row.date,
-                                        reference_no: row.reference_no,
-                                        supplier: row.supplier || 'no supplier',
-                                        purchase_status: row.invoice_status || 'no purchase status',
-                                        payment_status: row.pay_status || 'no payment status',
-                                        warehouse_name: row.store,
-                                        grand_total: row.final_total,
-                                        status: row.status,
-                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                          DecimalFormat
-                                        ),
-                                        payment_due: row.pay_due,
-                                        add_by: row.add_by || 'no add by',
-                                        payment_id: row.payment_id
-                                      }))
-                                    )
+                                    // console.log('equal😁😁🤣')
+                                    // setFieldValue(
+                                    //   'table',
+                                    //   chequeData.bill.map(row => ({
+                                    //     id: row.bill_id,
+                                    //     check: row.status === 0 ? true : false,
+                                    //     date: row.date,
+                                    //     reference_no: row.reference_no,
+                                    //     supplier: row.supplier || 'no supplier',
+                                    //     purchase_status: row.invoice_status || 'no purchase status',
+                                    //     payment_status: row.pay_status || 'no payment status',
+                                    //     warehouse_name: row.store,
+                                    //     grand_total: row.final_total,
+                                    //     status: row.status,
+                                    //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                    //       DecimalFormat
+                                    //     ),
+                                    //     payment_due: row.pay_due,
+                                    //     add_by: row.add_by || 'no add by',
+                                    //     payment_id: row.payment_id
+                                    //   }))
+                                    // )
                                     setFieldValue(
                                       'payment_id',
                                       chequeData.bill
@@ -467,18 +438,18 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                         .filter(row => row.final_total !== '' && row.status === 0)
                                         .map(row => row.final_total) || []
                                     )
-                                    setFieldValue(
-                                      'table_total',
-                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
-                                        DecimalFormat
-                                      )
-                                    )
-                                    setFieldValue(
-                                      'remain',
-                                      (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
-                                        DecimalFormat
-                                      )
-                                    )
+                                    // setFieldValue(
+                                    //   'table_total',
+                                    //   (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                    //     DecimalFormat
+                                    //   )
+                                    // )
+                                    // setFieldValue(
+                                    //   'remain',
+                                    //   (Number(event.target.value) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                    //     DecimalFormat
+                                    //   )
+                                    // )
                                   }
                                 }}
                                 onBlur={handleBlur}
@@ -498,11 +469,12 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                     value={values.amount_currency}
                                     onChange={event => {
                                       const amount_currency = Number(event.target.value)
+                                      // ** unCheck all the checked values
                                       setFieldValue(
                                         'table',
                                         chequeData.bill.map(row => ({
                                           id: row.bill_id,
-                                          check: row.status === 0 ? true : false,
+                                          check: false,
                                           date: row.date,
                                           reference_no: row.reference_no,
                                           supplier: row.supplier || 'no supplier',
@@ -510,11 +482,10 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                           payment_status: row.pay_status || 'no payment status',
                                           warehouse_name: row.store,
                                           grand_total: row.final_total,
-                                          payment: (Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                            DecimalFormat
-                                          ),
-                                          payment_due: row.pay_due,
+                                          payment: row.check ? 0 : Number(row.total_payment).toFixed(DecimalFormat),
+                                          payment_due: row.check ? row.final_total : row.pay_due,
                                           add_by: row.add_by || 'no add by',
+                                          status: row.status,
                                           payment_id: row.payment_id
                                         }))
                                       )
@@ -522,11 +493,22 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                       // setContactText('')
                                       setFieldValue('bill_id', [])
                                       setFieldValue('bill_amount', [])
+                                      setFieldValue('payment_id', [])
+                                      setFieldValue('old_bill_id', [])
+                                      setFieldValue('old_bill_amount', [])
+                                      // setFieldValue(
+                                      //   'table_total',
+                                      //   Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                      // )
 
                                       handleChange(event)
                                       if (values.currency_value !== '' && values.currency_value !== 0) {
                                         setFieldValue(
                                           'amount',
+                                          Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                        )
+                                        setFieldValue(
+                                          'table_total',
                                           Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
                                         )
                                         // setFieldValue(
@@ -539,87 +521,87 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                           Number(amount_currency * values.currency_value) < Number(oldAmount) &&
                                           Number(event.target.value) > 0
                                         ) {
-                                          setFieldValue(
-                                            'table',
-                                            chequeData.bill.map(row => ({
-                                              id: row.bill_id,
-                                              check: false,
-                                              date: row.date,
-                                              reference_no: row.reference_no,
-                                              supplier: row.supplier || 'no supplier',
-                                              purchase_status: row.invoice_status || 'no purchase status',
-                                              payment_status: row.pay_status || 'no payment status',
-                                              warehouse_name: row.store,
-                                              grand_total: row.final_total,
-                                              payment: 0,
-                                              payment_due: row.final_total,
-                                              add_by: row.add_by || 'no add by',
-                                              status: 1,
-                                              payment_id: row.status === 0 ? '' : row.payment_id
-                                            }))
-                                          )
+                                          // setFieldValue(
+                                          //   'table',
+                                          //   chequeData.bill.map(row => ({
+                                          //     id: row.bill_id,
+                                          //     check: false,
+                                          //     date: row.date,
+                                          //     reference_no: row.reference_no,
+                                          //     supplier: row.supplier || 'no supplier',
+                                          //     purchase_status: row.invoice_status || 'no purchase status',
+                                          //     payment_status: row.pay_status || 'no payment status',
+                                          //     warehouse_name: row.store,
+                                          //     grand_total: row.final_total,
+                                          //     payment: 0,
+                                          //     payment_due: row.final_total,
+                                          //     add_by: row.add_by || 'no add by',
+                                          //     status: 1,
+                                          //     payment_id: row.status === 0 ? '' : row.payment_id
+                                          //   }))
+                                          // )
 
                                           setFieldValue('bill_id', [])
                                           setFieldValue('bill_amount', [])
-                                          setFieldValue(
-                                            'amount',
-                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
-                                          )
-                                          setFieldValue(
-                                            'table_total',
-                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
-                                          )
-                                          setFieldValue(
-                                            'remain',
-                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
-                                          )
+                                          // setFieldValue(
+                                          //   'amount',
+                                          //   Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                          // )
+                                          // setFieldValue(
+                                          //   'table_total',
+                                          //   Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                          // )
+                                          // setFieldValue(
+                                          //   'remain',
+                                          //   Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                          // )
                                           setFieldValue('old_bill_id', [])
                                           setFieldValue('old_bill_amount', [])
                                           setFieldValue('payment_id', [])
                                         }
                                         // check if the amount is greater than the old amount
                                         else if (Number(amount_currency * values.currency_value) > Number(oldAmount)) {
-                                          setFieldValue(
-                                            'amount',
-                                            Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
-                                          )
-                                          setFieldValue(
-                                            'table_total',
-                                            (
-                                              Number(amount_currency * values.currency_value) -
-                                              Number(oldAmount) +
-                                              Number(oldRemain)
-                                            ).toFixed(DecimalFormat)
-                                          )
-                                          setFieldValue(
-                                            'remain',
-                                            (
-                                              Number(amount_currency * values.currency_value) -
-                                              Number(oldAmount) +
-                                              Number(oldRemain)
-                                            ).toFixed(DecimalFormat)
-                                          )
-                                          setFieldValue(
-                                            'table',
-                                            chequeData.bill.map(row => ({
-                                              id: row.bill_id,
-                                              check: row.status === 0 ? true : false,
-                                              date: row.date,
-                                              reference_no: row.reference_no,
-                                              supplier: row.supplier || 'no supplier',
-                                              purchase_status: row.invoice_status || 'no purchase status',
-                                              payment_status: row.pay_status || 'no payment status',
-                                              warehouse_name: row.store,
-                                              grand_total: row.final_total,
-                                              status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
-                                              payment_due: row.pay_due,
-                                              add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
-                                            }))
-                                          )
+                                          // setFieldValue(
+                                          //   'amount',
+                                          //   Number(amount_currency * values.currency_value).toFixed(DecimalFormat)
+                                          // )
+                                          // setFieldValue(
+                                          //   'table_total',
+                                          //   (
+                                          //     Number(amount_currency * values.currency_value) -
+                                          //     Number(oldAmount) +
+                                          //     Number(oldRemain)
+                                          //   ).toFixed(DecimalFormat)
+                                          // )
+                                          // setFieldValue(
+                                          //   'remain',
+                                          //   (
+                                          //     Number(amount_currency * values.currency_value) -
+                                          //     Number(oldAmount) +
+                                          //     Number(oldRemain)
+                                          //   ).toFixed(DecimalFormat)
+                                          // )
+                                          // setFieldValue(
+                                          //   'table',
+                                          //   chequeData.bill.map(row => ({
+                                          //     id: row.bill_id,
+                                          //     check: row.status === 0 ? true : false,
+                                          //     date: row.date,
+                                          //     reference_no: row.reference_no,
+                                          //     supplier: row.supplier || 'no supplier',
+                                          //     purchase_status: row.invoice_status || 'no purchase status',
+                                          //     payment_status: row.pay_status || 'no payment status',
+                                          //     warehouse_name: row.store,
+                                          //     grand_total: row.final_total,
+                                          //     status: row.status,
+                                          //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                          //       DecimalFormat
+                                          //     ),
+                                          //     payment_due: row.pay_due,
+                                          //     add_by: row.add_by || 'no add by',
+                                          //     payment_id: row.payment_id
+                                          //   }))
+                                          // )
                                           setFieldValue(
                                             'payment_id',
                                             chequeData.bill
@@ -641,27 +623,27 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                         } else if (
                                           Number(amount_currency * values.currency_value) === Number(oldAmount)
                                         ) {
-                                          setFieldValue(
-                                            'table',
-                                            chequeData.bill.map(row => ({
-                                              id: row.bill_id,
-                                              check: row.status === 0 ? true : false,
-                                              date: row.date,
-                                              reference_no: row.reference_no,
-                                              supplier: row.supplier || 'no supplier',
-                                              purchase_status: row.invoice_status || 'no purchase status',
-                                              payment_status: row.pay_status || 'no payment status',
-                                              warehouse_name: row.store,
-                                              grand_total: row.final_total,
-                                              status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
-                                              payment_due: row.pay_due,
-                                              add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
-                                            }))
-                                          )
+                                          // setFieldValue(
+                                          //   'table',
+                                          //   chequeData.bill.map(row => ({
+                                          //     id: row.bill_id,
+                                          //     check: row.status === 0 ? true : false,
+                                          //     date: row.date,
+                                          //     reference_no: row.reference_no,
+                                          //     supplier: row.supplier || 'no supplier',
+                                          //     purchase_status: row.invoice_status || 'no purchase status',
+                                          //     payment_status: row.pay_status || 'no payment status',
+                                          //     warehouse_name: row.store,
+                                          //     grand_total: row.final_total,
+                                          //     status: row.status,
+                                          //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                          //       DecimalFormat
+                                          //     ),
+                                          //     payment_due: row.pay_due,
+                                          //     add_by: row.add_by || 'no add by',
+                                          //     payment_id: row.payment_id
+                                          //   }))
+                                          // )
                                           setFieldValue(
                                             'payment_id',
                                             chequeData.bill
@@ -680,90 +662,90 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                               .filter(row => row.final_total !== '' && row.status === 0)
                                               .map(row => row.final_total) || []
                                           )
-                                          setFieldValue(
-                                            'table_total',
-                                            Number(amount_currency * values.currency_value) -
-                                              Number(oldAmount) +
-                                              Number(oldRemain)
-                                          )
-                                          setFieldValue(
-                                            'remain',
-                                            (
-                                              Number(amount_currency * values.currency_value) -
-                                              Number(oldAmount) +
-                                              Number(oldRemain)
-                                            ).toFixed(DecimalFormat)
-                                          )
+                                          // setFieldValue(
+                                          //   'table_total',
+                                          //   Number(amount_currency * values.currency_value) -
+                                          //     Number(oldAmount) +
+                                          //     Number(oldRemain)
+                                          // )
+                                          // setFieldValue(
+                                          //   'remain',
+                                          //   (
+                                          //     Number(amount_currency * values.currency_value) -
+                                          //     Number(oldAmount) +
+                                          //     Number(oldRemain)
+                                          //   ).toFixed(DecimalFormat)
+                                          // )
                                         }
                                       } else {
                                         setFieldValue('amount', Number(amount_currency).toFixed(DecimalFormat))
-                                        // setFieldValue('table_total', Number(amount_currency).toFixed(DecimalFormat))
+                                        setFieldValue('table_total', Number(amount_currency).toFixed(DecimalFormat))
                                         // check if the amount is  less than the old amount
                                         if (
                                           Number(amount_currency) < Number(oldAmount) &&
                                           Number(event.target.value) > 0
                                         ) {
-                                          setFieldValue(
-                                            'table',
-                                            chequeData.bill.map(row => ({
-                                              id: row.bill_id,
-                                              check: false,
-                                              date: row.date,
-                                              reference_no: row.reference_no,
-                                              supplier: row.supplier || 'no supplier',
-                                              purchase_status: row.invoice_status || 'no purchase status',
-                                              payment_status: row.pay_status || 'no payment status',
-                                              warehouse_name: row.store,
-                                              grand_total: row.final_total,
-                                              payment: 0,
-                                              payment_due: row.final_total,
-                                              add_by: row.add_by || 'no add by',
-                                              status: 1,
-                                              payment_id: row.status === 0 ? '' : row.payment_id
-                                            }))
-                                          )
+                                          // setFieldValue(
+                                          //   'table',
+                                          //   chequeData.bill.map(row => ({
+                                          //     id: row.bill_id,
+                                          //     check: false,
+                                          //     date: row.date,
+                                          //     reference_no: row.reference_no,
+                                          //     supplier: row.supplier || 'no supplier',
+                                          //     purchase_status: row.invoice_status || 'no purchase status',
+                                          //     payment_status: row.pay_status || 'no payment status',
+                                          //     warehouse_name: row.store,
+                                          //     grand_total: row.final_total,
+                                          //     payment: 0,
+                                          //     payment_due: row.final_total,
+                                          //     add_by: row.add_by || 'no add by',
+                                          //     status: 1,
+                                          //     payment_id: row.status === 0 ? '' : row.payment_id
+                                          //   }))
+                                          // )
 
                                           setFieldValue('bill_id', [])
                                           setFieldValue('bill_amount', [])
-                                          setFieldValue('table_total', Number(amount_currency).toFixed(DecimalFormat))
-                                          setFieldValue('remain', Number(amount_currency).toFixed(DecimalFormat))
+                                          // setFieldValue('table_total', Number(amount_currency).toFixed(DecimalFormat))
+                                          // setFieldValue('remain', Number(amount_currency).toFixed(DecimalFormat))
                                           setFieldValue('old_bill_id', [])
                                           setFieldValue('old_bill_amount', [])
                                           setFieldValue('payment_id', [])
                                         }
                                         // check if the amount is greater than the old amount
                                         else if (Number(amount_currency) > Number(oldAmount)) {
-                                          setFieldValue(
-                                            'table_total',
-                                            (Number(amount_currency) + Number(oldRemain)).toFixed(DecimalFormat)
-                                          )
-                                          setFieldValue(
-                                            'remain',
-                                            (
-                                              Number(amount_currency * values.currency_value) + Number(oldRemain)
-                                            ).toFixed(DecimalFormat)
-                                          )
-                                          setFieldValue(
-                                            'table',
-                                            chequeData.bill.map(row => ({
-                                              id: row.bill_id,
-                                              check: row.status === 0 ? true : false,
-                                              date: row.date,
-                                              reference_no: row.reference_no,
-                                              supplier: row.supplier || 'no supplier',
-                                              purchase_status: row.invoice_status || 'no purchase status',
-                                              payment_status: row.pay_status || 'no payment status',
-                                              warehouse_name: row.store,
-                                              grand_total: row.final_total,
-                                              status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
-                                              payment_due: row.pay_due,
-                                              add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
-                                            }))
-                                          )
+                                          // setFieldValue(
+                                          //   'table_total',
+                                          //   (Number(amount_currency) + Number(oldRemain)).toFixed(DecimalFormat)
+                                          // )
+                                          // setFieldValue(
+                                          //   'remain',
+                                          //   (
+                                          //     Number(amount_currency * values.currency_value) + Number(oldRemain)
+                                          //   ).toFixed(DecimalFormat)
+                                          // )
+                                          // setFieldValue(
+                                          //   'table',
+                                          //   chequeData.bill.map(row => ({
+                                          //     id: row.bill_id,
+                                          //     check: row.status === 0 ? true : false,
+                                          //     date: row.date,
+                                          //     reference_no: row.reference_no,
+                                          //     supplier: row.supplier || 'no supplier',
+                                          //     purchase_status: row.invoice_status || 'no purchase status',
+                                          //     payment_status: row.pay_status || 'no payment status',
+                                          //     warehouse_name: row.store,
+                                          //     grand_total: row.final_total,
+                                          //     status: row.status,
+                                          //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                          //       DecimalFormat
+                                          //     ),
+                                          //   payment_due: row.pay_due,
+                                          //   add_by: row.add_by || 'no add by',
+                                          //   payment_id: row.payment_id
+                                          // }))
+                                          // )
                                           setFieldValue(
                                             'payment_id',
                                             chequeData.bill
@@ -783,27 +765,27 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                               .map(row => row.final_total) || []
                                           )
                                         } else if (Number(amount_currency) === Number(oldAmount)) {
-                                          setFieldValue(
-                                            'table',
-                                            chequeData.bill.map(row => ({
-                                              id: row.bill_id,
-                                              check: row.status === 0 ? true : false,
-                                              date: row.date,
-                                              reference_no: row.reference_no,
-                                              supplier: row.supplier || 'no supplier',
-                                              purchase_status: row.invoice_status || 'no purchase status',
-                                              payment_status: row.pay_status || 'no payment status',
-                                              warehouse_name: row.store,
-                                              grand_total: row.final_total,
-                                              status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
-                                              payment_due: row.pay_due,
-                                              add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
-                                            }))
-                                          )
+                                          // setFieldValue(
+                                          //   'table',
+                                          //   chequeData.bill.map(row => ({
+                                          //     id: row.bill_id,
+                                          //     check: row.status === 0 ? true : false,
+                                          //     date: row.date,
+                                          //     reference_no: row.reference_no,
+                                          //     supplier: row.supplier || 'no supplier',
+                                          //     purchase_status: row.invoice_status || 'no purchase status',
+                                          //     payment_status: row.pay_status || 'no payment status',
+                                          //     warehouse_name: row.store,
+                                          //     grand_total: row.final_total,
+                                          //     status: row.status,
+                                          //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                          //       DecimalFormat
+                                          //     ),
+                                          //     payment_due: row.pay_due,
+                                          //     add_by: row.add_by || 'no add by',
+                                          //     payment_id: row.payment_id
+                                          //   }))
+                                          // )
                                           setFieldValue(
                                             'payment_id',
                                             chequeData.bill
@@ -822,18 +804,18 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                               .filter(row => row.final_total !== '' && row.status === 0)
                                               .map(row => row.final_total) || []
                                           )
-                                          setFieldValue(
-                                            'table_total',
-                                            (Number(amount_currency) - Number(oldAmount) + Number(oldRemain)).toFixed(
-                                              DecimalFormat
-                                            )
-                                          )
-                                          setFieldValue(
-                                            'remain',
-                                            (Number(amount_currency) - Number(oldAmount) + Number(oldRemain)).toFixed(
-                                              DecimalFormat
-                                            )
-                                          )
+                                          // setFieldValue(
+                                          //   'table_total',
+                                          //   (Number(amount_currency) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                          //     DecimalFormat
+                                          //   )
+                                          // )
+                                          // setFieldValue(
+                                          //   'remain',
+                                          //   (Number(amount_currency) - Number(oldAmount) + Number(oldRemain)).toFixed(
+                                          //     DecimalFormat
+                                          //   )
+                                          // )
                                         }
                                       }
                                     }}
@@ -888,6 +870,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                     onChange={event => {
                                       const currency_value = Number(event.target.value)
                                       handleChange(event)
+
                                       if (changeCurrency === 0) {
                                         // make change in amount left
                                         if (values.amount_currency !== '' && values.amount_currency !== 0) {
@@ -895,180 +878,221 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
                                             'amount',
                                             Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
                                           )
+                                          setFieldValue(
+                                            'table',
+                                            chequeData.bill.map(row => ({
+                                              id: row.bill_id,
+                                              check: false,
+                                              date: row.date,
+                                              reference_no: row.reference_no,
+                                              supplier: row.supplier || 'no supplier',
+                                              purchase_status: row.invoice_status || 'no purchase status',
+                                              payment_status: row.pay_status || 'no payment status',
+                                              warehouse_name: row.store,
+                                              grand_total: row.final_total,
+                                              payment: row.check ? 0 : Number(row.total_payment).toFixed(DecimalFormat),
+                                              payment_due: row.check ? row.final_total : row.pay_due,
+                                              add_by: row.add_by || 'no add by',
+                                              status: row.status,
+                                              payment_id: row.payment_id
+                                            }))
+                                          )
 
-                                          // setFieldValue(
-                                          //   'table_total',
-                                          //   Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
-                                          // )
-                                          // check if the amount is  less than the old amount
-                                          if (
-                                            Number(currency_value * values.amount_currency) < Number(oldAmount) &&
-                                            Number(currency_value * values.amount_currency) > 0
-                                          ) {
-                                            setFieldValue(
-                                              'table',
-                                              chequeData.bill.map(row => ({
-                                                id: row.bill_id,
-                                                check: false,
-                                                date: row.date,
-                                                reference_no: row.reference_no,
-                                                supplier: row.supplier || 'no supplier',
-                                                purchase_status: row.invoice_status || 'no purchase status',
-                                                payment_status: row.pay_status || 'no payment status',
-                                                warehouse_name: row.store,
-                                                grand_total: row.final_total,
-                                                payment: 0,
-                                                payment_due: row.final_total,
-                                                add_by: row.add_by || 'no add by',
-                                                status: 1,
-                                                payment_id: row.status === 0 ? '' : row.payment_id
-                                              }))
-                                            )
-
-                                            setFieldValue('bill_id', [])
-                                            setFieldValue('bill_amount', [])
-                                            setFieldValue(
-                                              'table_total',
-                                              Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
-                                            )
-                                            setFieldValue(
-                                              'remain',
-                                              Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
-                                            )
-                                            setFieldValue('old_bill_id', [])
-                                            setFieldValue('old_bill_amount', [])
-                                            setFieldValue('payment_id', [])
-                                          }
-
-                                          // check if the amount is greater than the old amount
-                                          else if (
-                                            Number(currency_value * values.amount_currency) > Number(oldAmount)
-                                          ) {
-                                            setFieldValue(
-                                              'table_total',
-                                              (
-                                                Number(currency_value * values.amount_currency) -
-                                                Number(oldAmount) +
-                                                Number(oldRemain)
-                                              ).toFixed(DecimalFormat)
-                                            )
-                                            setFieldValue(
-                                              'remain',
-                                              (
-                                                Number(currency_value * values.amount_currency) -
-                                                Number(oldAmount) +
-                                                Number(oldRemain)
-                                              ).toFixed(DecimalFormat)
-                                            )
-                                            setFieldValue(
-                                              'table',
-                                              chequeData.bill.map(row => ({
-                                                id: row.bill_id,
-                                                check: row.status === 0 ? true : false,
-                                                date: row.date,
-                                                reference_no: row.reference_no,
-                                                supplier: row.supplier || 'no supplier',
-                                                purchase_status: row.invoice_status || 'no purchase status',
-                                                payment_status: row.pay_status || 'no payment status',
-                                                warehouse_name: row.store,
-                                                grand_total: row.final_total,
-                                                status: row.status,
-                                                payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                  DecimalFormat
-                                                ),
-                                                payment_due: row.pay_due,
-                                                add_by: row.add_by || 'no add by',
-                                                payment_id: row.payment_id
-                                              }))
-                                            )
-                                            setFieldValue(
-                                              'payment_id',
-                                              chequeData.bill
-                                                .filter(row => row.bill_id !== '' && row.status === 0)
-                                                .map(row => row.payment_id)
-                                            )
-                                            setFieldValue(
-                                              'old_bill_id ',
-                                              chequeData.bill
-                                                .filter(row => row.bill_id !== '' && row.status === 0)
-                                                .map(row => row.bill_id)
-                                            )
-                                            setFieldValue(
-                                              'old_bill_amount',
-                                              chequeData.bill
-                                                .filter(row => row.final_total !== '' && row.status === 0)
-                                                .map(row => row.final_total) || []
-                                            )
-                                          } else if (
-                                            Number(currency_value * values.amount_currency) === Number(oldAmount)
-                                          ) {
-                                            console.log('equal😁😁🤣')
-                                            setFieldValue(
-                                              'table',
-                                              chequeData.bill.map(row => ({
-                                                id: row.bill_id,
-                                                check: row.status === 0 ? true : false,
-                                                date: row.date,
-                                                reference_no: row.reference_no,
-                                                supplier: row.supplier || 'no supplier',
-                                                purchase_status: row.invoice_status || 'no purchase status',
-                                                payment_status: row.pay_status || 'no payment status',
-                                                warehouse_name: row.store,
-                                                grand_total: row.final_total,
-                                                status: row.status,
-                                                payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                  DecimalFormat
-                                                ),
-                                                payment_due: row.pay_due,
-                                                add_by: row.add_by || 'no add by',
-                                                payment_id: row.payment_id
-                                              }))
-                                            )
-                                            setFieldValue(
-                                              'payment_id',
-                                              chequeData.bill
-                                                .filter(row => row.bill_id !== '' && row.status === 0)
-                                                .map(row => row.payment_id)
-                                            )
-                                            setFieldValue(
-                                              'old_bill_id ',
-                                              chequeData.bill
-                                                .filter(row => row.bill_id !== '' && row.status === 0)
-                                                .map(row => row.bill_id)
-                                            )
-                                            setFieldValue(
-                                              'old_bill_amount',
-                                              chequeData.bill
-                                                .filter(row => row.final_total !== '' && row.status === 0)
-                                                .map(row => row.final_total) || []
-                                            )
-                                            setFieldValue(
-                                              'table_total',
-                                              (
-                                                Number(currency_value * values.amount_currency) -
-                                                Number(oldAmount) +
-                                                Number(oldRemain)
-                                              ).toFixed(DecimalFormat)
-                                            )
-                                            setFieldValue(
-                                              'remain',
-                                              (
-                                                Number(currency_value * values.amount_currency) -
-                                                Number(oldAmount) +
-                                                Number(oldRemain)
-                                              ).toFixed(DecimalFormat)
-                                            )
-                                          }
+                                          setFieldValue('bill_id', [])
+                                          setFieldValue('bill_amount', [])
+                                          setFieldValue(
+                                            'table_total',
+                                            Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
+                                          )
+                                          setFieldValue(
+                                            'remain',
+                                            Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
+                                          )
+                                          setFieldValue('old_bill_id', [])
+                                          setFieldValue('old_bill_amount', [])
+                                          setFieldValue('payment_id', [])
                                         } else {
                                           setFieldValue('amount', Number(currency_value).toFixed(DecimalFormat))
                                           setFieldValue('table_total', Number(currency_value).toFixed(DecimalFormat))
+                                          setFieldValue('remain', Number(currency_value).toFixed(DecimalFormat))
                                         }
+
+                                        // setFieldValue(
+                                        //   'table_total',
+                                        //   Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
+                                        // )
+                                        // check if the amount is  less than the old amount
+                                        // if (
+                                        //   Number(currency_value * values.amount_currency) < Number(oldAmount) &&
+                                        //   Number(currency_value * values.amount_currency) > 0
+                                        // ) {
+
+                                        //   setFieldValue('bill_id', [])
+                                        //   setFieldValue('bill_amount', [])
+                                        //   setFieldValue(
+                                        //     'table_total',
+                                        //     Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
+                                        //   )
+                                        //   setFieldValue(
+                                        //     'remain',
+                                        //     Number(currency_value * values.amount_currency).toFixed(DecimalFormat)
+                                        //   )
+                                        //   setFieldValue('old_bill_id', [])
+                                        //   setFieldValue('old_bill_amount', [])
+                                        //   setFieldValue('payment_id', [])
+                                        // }
+
+                                        // check if the amount is greater than the old amount
+                                        // else if (
+                                        //   Number(currency_value * values.amount_currency) > Number(oldAmount)
+                                        // ) {
+                                        //   setFieldValue(
+                                        //     'table_total',
+                                        //     (
+                                        //       Number(currency_value * values.amount_currency) -
+                                        //       Number(oldAmount) +
+                                        //       Number(oldRemain)
+                                        //     ).toFixed(DecimalFormat)
+                                        //   )
+                                        //   setFieldValue(
+                                        //     'remain',
+                                        //     (
+                                        //       Number(currency_value * values.amount_currency) -
+                                        //       Number(oldAmount) +
+                                        //       Number(oldRemain)
+                                        //     ).toFixed(DecimalFormat)
+                                        //   )
+                                        // setFieldValue(
+                                        //   'table',
+                                        //   chequeData.bill.map(row => ({
+                                        //     id: row.bill_id,
+                                        //     check: row.status === 0 ? true : false,
+                                        //     date: row.date,
+                                        //     reference_no: row.reference_no,
+                                        //     supplier: row.supplier || 'no supplier',
+                                        //     purchase_status: row.invoice_status || 'no purchase status',
+                                        //     payment_status: row.pay_status || 'no payment status',
+                                        //     warehouse_name: row.store,
+                                        //     grand_total: row.final_total,
+                                        //     status: row.status,
+                                        //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                        //       DecimalFormat
+                                        //     ),
+                                        //     payment_due: row.pay_due,
+                                        //     add_by: row.add_by || 'no add by',
+                                        //     payment_id: row.payment_id
+                                        //   }))
+                                        // )
+                                        //   setFieldValue(
+                                        //     'payment_id',
+                                        //     chequeData.bill
+                                        //       .filter(row => row.bill_id !== '' && row.status === 0)
+                                        //       .map(row => row.payment_id)
+                                        //   )
+                                        //   setFieldValue(
+                                        //     'old_bill_id ',
+                                        //     chequeData.bill
+                                        //       .filter(row => row.bill_id !== '' && row.status === 0)
+                                        //       .map(row => row.bill_id)
+                                        //   )
+                                        //   setFieldValue(
+                                        //     'old_bill_amount',
+                                        //     chequeData.bill
+                                        //       .filter(row => row.final_total !== '' && row.status === 0)
+                                        //       .map(row => row.final_total) || []
+                                        //   )
+                                        // }
+                                        // else if (
+                                        //   Number(currency_value * values.amount_currency) === Number(oldAmount)
+                                        // ) {
+                                        // console.log('equal😁😁🤣')
+                                        // setFieldValue(
+                                        //   'table',
+                                        //   chequeData.bill.map(row => ({
+                                        //     id: row.bill_id,
+                                        //     check: row.status === 0 ? true : false,
+                                        //     date: row.date,
+                                        //     reference_no: row.reference_no,
+                                        //     supplier: row.supplier || 'no supplier',
+                                        //     purchase_status: row.invoice_status || 'no purchase status',
+                                        //     payment_status: row.pay_status || 'no payment status',
+                                        //     warehouse_name: row.store,
+                                        //     grand_total: row.final_total,
+                                        //     status: row.status,
+                                        //     payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
+                                        //       DecimalFormat
+                                        //     ),
+                                        //     payment_due: row.pay_due,
+                                        //     add_by: row.add_by || 'no add by',
+                                        //     payment_id: row.payment_id
+                                        //   }))
+                                        // )
+                                        // setFieldValue(
+                                        //   'payment_id',
+                                        //   chequeData.bill
+                                        //     .filter(row => row.bill_id !== '' && row.status === 0)
+                                        //     .map(row => row.payment_id)
+                                        // )
+                                        // setFieldValue(
+                                        //   'old_bill_id ',
+                                        //   chequeData.bill
+                                        //     .filter(row => row.bill_id !== '' && row.status === 0)
+                                        //     .map(row => row.bill_id)
+                                        // )
+                                        // setFieldValue(
+                                        //   'old_bill_amount',
+                                        //   chequeData.bill
+                                        //     .filter(row => row.final_total !== '' && row.status === 0)
+                                        //     .map(row => row.final_total) || []
+                                        // )
+                                        // setFieldValue(
+                                        //   'table_total',
+                                        //   (
+                                        //     Number(currency_value * values.amount_currency) -
+                                        //     Number(oldAmount) +
+                                        //     Number(oldRemain)
+                                        //   ).toFixed(DecimalFormat)
+                                        // )
+                                        // setFieldValue(
+                                        //   'remain',
+                                        //   (
+                                        //     Number(currency_value * values.amount_currency) -
+                                        //     Number(oldAmount) +
+                                        //     Number(oldRemain)
+                                        //   ).toFixed(DecimalFormat)
+                                        // )
+                                        // }}
                                       } else {
                                         if (values.amount !== '' && values.amount !== 0 && currency_value !== 0) {
                                           setFieldValue(
                                             'amount_currency',
                                             Number(values.amount / currency_value).toFixed(DecimalFormat)
                                           )
+                                          setFieldValue(
+                                            'table',
+                                            chequeData.bill.map(row => ({
+                                              id: row.bill_id,
+                                              check: false,
+                                              date: row.date,
+                                              reference_no: row.reference_no,
+                                              supplier: row.supplier || 'no supplier',
+                                              purchase_status: row.invoice_status || 'no purchase status',
+                                              payment_status: row.pay_status || 'no payment status',
+                                              warehouse_name: row.store,
+                                              grand_total: row.final_total,
+                                              payment: row.check ? 0 : Number(row.total_payment).toFixed(DecimalFormat),
+                                              payment_due: row.check ? row.final_total : row.pay_due,
+                                              add_by: row.add_by || 'no add by',
+                                              status: row.status,
+                                              payment_id: row.payment_id
+                                            }))
+                                          )
+                                          setFieldValue('bill_id', [])
+                                          setFieldValue('bill_amount', [])
+
+                                          setFieldValue('old_bill_id', [])
+                                          setFieldValue('old_bill_amount', [])
+                                          setFieldValue('payment_id', [])
                                         } else {
                                           setFieldValue('amount_currency', Number(values.amount).toFixed(DecimalFormat))
                                         }

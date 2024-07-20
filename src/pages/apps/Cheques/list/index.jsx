@@ -40,6 +40,10 @@ import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import DateRangePopUp from './DateRangePopUp'
 import DropDownAccounts from './DropDownAccounts'
 
+// ** Number Format
+import { NumericFormat } from 'react-number-format'
+// import { TextField } from '@mui/material'
+
 // ** Utils Import
 import { getInitials } from 'src/@core/utils/get-initials'
 
@@ -80,7 +84,7 @@ const renderClient = row => {
 
 // ** Row options
 
-const RowOptions = ({ id, statusName, document, dueDate }) => {
+const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
   // ** Hooks
   const dispatch = useDispatch()
   console.log('Status Name =>', statusName)
@@ -98,6 +102,8 @@ const RowOptions = ({ id, statusName, document, dueDate }) => {
   const [openEntry, setOpenEntry] = useState(false)
   const [openCollect, setOpenCollect] = useState(false)
   const [openDeleteCollect, setOpenDeleteCollect] = useState(false)
+  const [openUnCollectAlert, setOpenUnCollectAlert] = useState(false)
+  const [openRefundAlert, setOpenRefundAlert] = useState(false)
 
   const rowOptionsOpen = anchorEl
 
@@ -270,6 +276,8 @@ const RowOptions = ({ id, statusName, document, dueDate }) => {
       })
   }
 
+  console.log('type', type)
+
   return (
     <Fragment>
       <IconButton size='small' onClick={handleRowOptionsClick}>
@@ -319,7 +327,7 @@ const RowOptions = ({ id, statusName, document, dueDate }) => {
             sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
               handleRowOptionsClose()
-              handleRefund()
+              setOpenRefundAlert(true)
             }}
           >
             <Icon icon='ri:refund-2-fill' fontSize={20} />
@@ -331,7 +339,7 @@ const RowOptions = ({ id, statusName, document, dueDate }) => {
             sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
               handleRowOptionsClose()
-              handelUnCollect()
+              setOpenUnCollectAlert(true)
             }}
           >
             <Icon icon='mdi:file-undo' fontSize={20} />
@@ -431,6 +439,26 @@ const RowOptions = ({ id, statusName, document, dueDate }) => {
           name={"Cheque's Collect"}
         />
       )}
+      {openUnCollectAlert && (
+        <DeleteGlobalAlert
+          open={openUnCollectAlert}
+          close={() => setOpenUnCollectAlert(!openUnCollectAlert)}
+          mainHandleDelete={handelUnCollect}
+          customName={'UnCollect Cheque'}
+          customDescription={'Are you sure you want to UnCollect this cheque?'}
+          nameOfAction={'UnCollect'}
+        />
+      )}
+      {openRefundAlert && (
+        <DeleteGlobalAlert
+          open={openRefundAlert}
+          close={() => setOpenRefundAlert(!openRefundAlert)}
+          mainHandleDelete={handleRefund}
+          customName={'Refund Cheque'}
+          customDescription={'Are you sure you want to Refund this cheque?'}
+          nameOfAction={'Refund'}
+        />
+      )}
 
       {openView && <ViewCheque open={openView} toggle={setOpenView} itemId={id} />}
 
@@ -443,7 +471,9 @@ const RowOptions = ({ id, statusName, document, dueDate }) => {
         />
       )}
 
-      {openEdit && <ChequeEdit open={openEdit} toggle={handleEdit} itemId={id} type={type === 0 ? 'in' : 'out'} />}
+      {openEdit && (
+        <ChequeEdit open={openEdit} toggle={handleEdit} itemId={id} type={editType === '0' ? 'in' : 'out'} />
+      )}
 
       {openEntry && (
         <EntryPopUp open={openEntry} toggle={setOpenEntry} itemId={id} name={'getEntryCheques'} type={'cheque'} />
@@ -470,14 +500,13 @@ const ChequesList = () => {
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
   // ** Date Range
-  const [startWriteDate, setStartWriteDate] = useState(new Date('2023-06-12'))
-  const [endWriteDate, setEndWriteDate] = useState(new Date('2024-01-13'))
-  const [startDueDate, setStartDueDate] = useState(new Date('2023-06-12'))
-  const [endDueDate, setEndDueDate] = useState(new Date('2024-02-17'))
+  const [startWriteDate, setStartWriteDate] = useState(null)
+  const [endWriteDate, setEndWriteDate] = useState(null)
+  const [startDueDate, setStartDueDate] = useState(null)
+  const [endDueDate, setEndDueDate] = useState(null)
+
   const [openDateRange, setOpenDateRange] = useState(false)
-  // ** for BTN
-  const [active, setActive] = useState('Range')
-  const [btnValue, setBtnValue] = useState('Range')
+
   // ** Cookies
   const decimalFormat = getCookie('DecimalFormat')
   const currency_code = getCookie('currency_code')
@@ -485,6 +514,7 @@ const ChequesList = () => {
   // ** Constants
   const title = 'Cheques List'
   const transText = getCookie('fontStyle')
+  const FilterInitial = getCookie('FilterInitial')
   const columns = [
     {
       flex: 0.1,
@@ -495,7 +525,7 @@ const ChequesList = () => {
       renderCell: ({ row }) => (
         <RowOptions
           id={row.id}
-          type={row.type}
+          editType={row.type}
           statusName={row.status_name}
           account_id={row.account_id}
           document={row.document}
@@ -574,16 +604,48 @@ const ChequesList = () => {
       field: 'payment_for',
       headerName: 'Payment For',
       renderCell: ({ row }) => {
+        const value = row.payment_for ? Number(row.payment_for) : null
+
         return (
-          <Typography noWrap sx={{ color: 'text.secondary' }} variant='caption'>
-            {`${
-              row.payment_for
-                ? CurrencySymbolPlacement === 'after'
-                  ? `${Number(row.payment_for).toFixed(decimalFormat)} ${currency_code} `
-                  : `${currency_code} ${Number(row.payment_for).toFixed(decimalFormat)} `
-                : 'Not available'
-            }`}
-          </Typography>
+          <>
+            {row.payment_for ? (
+              <Typography noWrap sx={{ color: 'text.secondary' }} variant='caption'>
+                {CurrencySymbolPlacement === 'after' ? (
+                  <>
+                    <NumericFormat
+                      value={value}
+                      isNumericString={true}
+                      displayType={'text'}
+                      disabled
+                      customInput={Typography}
+                      variant='standard'
+                      thousandSeparator
+                    />
+
+                    {currency_code}
+                  </>
+                ) : (
+                  <>
+                    {currency_code}
+
+                    <NumericFormat
+                      value={value}
+                      isNumericString={true}
+                      displayType={'text'}
+                      disabled
+                      customInput={Typography}
+                      variant='standard'
+                      thousandSeparator
+                    />
+                  </>
+                )}
+              </Typography>
+            ) : (
+              <Typography noWrap sx={{ color: 'text.secondary' }}>
+                Not available
+              </Typography>
+            )}
+          </>
         )
       }
     },
@@ -640,12 +702,46 @@ const ChequesList = () => {
       field: 'amount',
       headerName: 'Amount',
       renderCell: ({ row }) => {
+        const value = row.amount ? Number(row.amount).toFixed(decimalFormat) : null
+
         return (
-          <Typography noWrap sx={{ color: 'text.secondary' }}>
-            {CurrencySymbolPlacement === 'after'
-              ? `${Number(row.amount).toFixed(decimalFormat)} ${currency_code} `
-              : `${currency_code} ${Number(row.amount).toFixed(decimalFormat)} `}
-          </Typography>
+          <>
+            {row.amount ? (
+              <Typography noWrap sx={{ color: 'text.secondary' }}>
+                {CurrencySymbolPlacement === 'after' ? (
+                  <>
+                    <NumericFormat
+                      value={value}
+                      isNumericString={true}
+                      displayType={'text'}
+                      disabled
+                      customInput={Typography}
+                      variant='outlined'
+                      thousandSeparator
+                    />
+                    {` ${currency_code}`}
+                  </>
+                ) : (
+                  <>
+                    {`${currency_code} `}
+                    <NumericFormat
+                      value={value}
+                      isNumericString={true}
+                      displayType={'text'}
+                      disabled
+                      customInput={Typography}
+                      variant='outlined'
+                      thousandSeparator
+                    />
+                  </>
+                )}
+              </Typography>
+            ) : (
+              <Typography noWrap sx={{ color: 'text.secondary' }}>
+                Not available
+              </Typography>
+            )}
+          </>
         )
       }
     },
@@ -706,6 +802,12 @@ const ChequesList = () => {
       }
     }
   ]
+  // ** for BTN
+  const [active, setActive] = useState(FilterInitial || 'month')
+  const [btnValue, setBtnValue] = useState(FilterInitial || 'month')
+  const [month, setMonth] = useState(FilterInitial === 'month' ? new Date() : null)
+  const [day, setDay] = useState(FilterInitial === 'day' ? new Date() : null)
+  const [weak, setWeak] = useState(FilterInitial === 'weak' ? new Date() : null)
 
   // ** Hooks & Dispatch
   const dispatch = useDispatch()
@@ -716,13 +818,13 @@ const ChequesList = () => {
   // ** Selectors
   const store = useSelector(state => state.getCheques.brands?.value?.value)
 
-  // ** useEffect
-  useEffect(() => {
-    setStartWriteDate(new Date('2023-06-12'))
-    setEndWriteDate(new Date('2024-01-13'))
-    setStartDueDate(new Date('2023-06-12'))
-    setEndDueDate(new Date('2024-02-17'))
-  }, [])
+  // // ** useEffect
+  // useEffect(() => {
+  //   setStartWriteDate(new Date('2023-06-12'))
+  //   setEndWriteDate(new Date('2024-01-13'))
+  //   setStartDueDate(new Date('2023-06-12'))
+  //   setEndDueDate(new Date('2024-02-17'))
+  // }, [])
 
   useEffect(() => {
     setData(store)
@@ -746,11 +848,14 @@ const ChequesList = () => {
           startWriteDate,
           endWriteDate,
           startDueDate,
-          endDueDate
+          endDueDate,
+          month,
+          day,
+          weak
         })
       )
     }
-  }, [dispatch, token, url, , startWriteDate, endWriteDate, startDueDate, endDueDate])
+  }, [dispatch, token, url, , startWriteDate, endWriteDate, startDueDate, endDueDate, month, day, weak])
 
   // ** Functions
   const escapeRegExp = value => {
@@ -780,6 +885,9 @@ const ChequesList = () => {
   console.log('Write Date Range', startWriteDate, endWriteDate)
   console.log('Due Date Range', startDueDate, endDueDate)
   console.log('Active:', active)
+  console.log('Month:', month)
+  console.log('Day:', day)
+  console.log('Weak:', weak)
 
   return (
     <Grid container spacing={6}>
@@ -802,53 +910,81 @@ const ChequesList = () => {
             <ButtonGroup variant='outlined' aria-label='Basic button group'>
               <Button
                 onMouseEnter={() => {
-                  setActive('Month')
+                  setActive('month')
                 }}
                 onClick={() => {
-                  setActive('Month')
-                  setBtnValue('Month')
+                  setActive('month')
+                  setBtnValue('month')
+                  setMonth(new Date())
+                  setStartWriteDate(null)
+                  setEndWriteDate(null)
+                  setStartDueDate(null)
+                  setEndDueDate(null)
+                  setWeak(null)
+                  setDay(null)
                 }}
-                variant={btnValue === 'Month' ? 'contained' : 'outlined'}
+                variant={btnValue === 'month' ? 'contained' : 'outlined'}
                 sx={{ textTransform: transText }}
               >
                 Month
               </Button>
               <Button
-                variant={btnValue === 'Weak' ? 'contained' : 'outlined'}
+                variant={btnValue === 'weak' ? 'contained' : 'outlined'}
                 sx={{ textTransform: transText }}
                 onMouseEnter={() => {
-                  setActive('Weak')
+                  setActive('weak')
                 }}
                 onClick={() => {
-                  setActive('Weak')
-                  setBtnValue('Weak')
+                  setActive('weak')
+                  setBtnValue('weak')
+                  setWeak(new Date())
+                  setMonth(null)
+                  setDay(null)
+                  setStartWriteDate(null)
+                  setEndWriteDate(null)
+                  setStartDueDate(null)
+                  setEndDueDate(null)
                 }}
               >
                 Weak
               </Button>
               <Button
                 onMouseEnter={() => {
-                  setActive('Day')
+                  setActive('day')
                 }}
-                variant={btnValue === 'Day' ? 'contained' : 'outlined'}
+                variant={btnValue === 'day' ? 'contained' : 'outlined'}
                 sx={{ textTransform: transText }}
                 onClick={() => {
-                  setActive('Day')
-                  setBtnValue('Day')
+                  setActive('day')
+                  setBtnValue('day')
+                  setDay(new Date())
+                  setMonth(null)
+                  setWeak(null)
+                  setStartWriteDate(null)
+                  setEndWriteDate(null)
+                  setStartDueDate(null)
+                  setEndDueDate(null)
                 }}
               >
                 Day
               </Button>
               <Button
                 onMouseEnter={() => {
-                  setActive('Range')
+                  setActive('range')
                 }}
-                variant={btnValue === 'Range' ? 'contained' : 'outlined'}
+                variant={btnValue === 'range' ? 'contained' : 'outlined'}
                 sx={{ textTransform: transText }}
                 onClick={() => {
-                  setActive('Range')
-                  setBtnValue('Range')
+                  setActive('range')
+                  setBtnValue('range')
                   setOpenDateRange(true)
+                  setMonth(null)
+                  setWeak(null)
+                  setDay(null)
+                  setStartWriteDate(null)
+                  setEndWriteDate(null)
+                  setStartDueDate(null)
+                  setEndDueDate(null)
                 }}
               >
                 Range

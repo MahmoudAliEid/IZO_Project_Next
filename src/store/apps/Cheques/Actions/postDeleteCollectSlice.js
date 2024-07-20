@@ -11,25 +11,21 @@ const initialState = {
   error: null
 }
 
-const token = getCookie('token')
-
-// const apiUrl = getCookie('apiUrl')
-
-// Create an Axios instance with common headers
-const axiosInstance = axios.create({
-  headers: {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-})
-
 // Define an async thunk for deleting a user
 export const deleteCollect = createAsyncThunk('dashboard/cheques/deleteCollect', async payload => {
   const url = getCookie('apiUrl')
+  const token = getCookie('token')
+
   try {
     const { id } = payload
 
-    const response = await axiosInstance.get(`${url}/app/react/cheque/delete-collect/${id}`)
+    const response = await axios.get(
+      `${url}/app/react/cheque/delete-collect/${id}`,
+
+      {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+      }
+    )
     const data = response.data
     notify(' Cheques successfully deleted.', 'success')
 

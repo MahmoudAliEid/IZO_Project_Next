@@ -7,7 +7,7 @@ import CustomTableView from '../products/listProduct/productView/CustomTableView
 import { Grid, Typography, Chip, Divider } from '@mui/material'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import { Box } from '@mui/system'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import { fetchViewCheque } from 'src/store/apps/Cheques/Actions/getViewChequesSlice'
 
 import { getCookie } from 'cookies-next'
@@ -60,7 +60,9 @@ const ViewCheque = ({ open, toggle, itemId }) => {
     toggle()
   }
 
+  // ** Hooks
   const dispatch = useDispatch()
+  const theme = useTheme()
 
   // Fetch data when itemId changes
   useEffect(() => {
@@ -114,13 +116,17 @@ const ViewCheque = ({ open, toggle, itemId }) => {
                   item
                   xs={12}
                   // add glass effect
+                  // For Light Theme
                   sx={{
-                    background: '#191919',
+                    background: theme.palette.mode === 'light' ? '#FFFFFF' : '#191919', // Light background
                     borderRadius: '16px',
-                    boxShadow: '0 4px 30px  rgba(0, 0, 0, 0.1)',
+                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                     backdropFilter: 'blur(6.3px)',
                     WebkitBackdropFilter: 'blur(6.3px)', // Ensuring compatibility with Webkit browsers
-                    border: '1px solid rgba(176, 170, 170, 0.3)',
+                    border:
+                      theme.palette.mode === 'light'
+                        ? '1px solid rgba(0, 0, 0, 0.1)'
+                        : '1px solid rgba(176, 170, 170, 0.3)', // Adjusted for lighter theme
                     textTransform: transText
                   }}
                 >

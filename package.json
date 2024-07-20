@@ -81,6 +81,7 @@
     "react-hot-toast": "^2.4.0",
     "react-html-parser": "^2.0.2",
     "react-i18next": "^12.2.0",
+    "react-number-format": "^5.4.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-popper": "^2.3.0",
     "react-redux": "^8.1.2",
