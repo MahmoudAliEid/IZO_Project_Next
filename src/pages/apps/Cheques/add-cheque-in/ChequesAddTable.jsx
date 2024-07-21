@@ -120,7 +120,7 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
           payment_status: row.pay_status || 'no payment status',
           warehouse_name: row.store,
           grand_total: row.final_total,
-          payment: row.pay_due,
+          payment: row.total_payment,
           status: row.status,
           payment_due: row.pay_due,
           previous_payment: row.previous_payment,
