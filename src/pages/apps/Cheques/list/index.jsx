@@ -306,7 +306,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
           <Icon icon='bx:show' fontSize={20} />
           View
         </MenuItem>
-        {statusName === 'write' || statusName === 'Un Collect' ? (
+        {statusName === 'write' || statusName === 'Un Collect' || statusName === 'Delete Collect' ? (
           <MenuItem
             sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
@@ -320,7 +320,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
           </MenuItem>
         ) : null}
 
-        {statusName === 'write' || statusName === 'Un Collect' ? (
+        {statusName === 'write' || statusName === 'Un Collect' || statusName === 'Delete Collect' ? (
           <MenuItem
             sx={{ '& svg': { mr: 2 }, textTransform: transText }}
             onClick={() => {
@@ -353,10 +353,10 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
             }}
           >
             <Icon icon='bx:trash-alt' fontSize={20} />
-            Delete collect
+            Delete Collect
           </MenuItem>
         )}
-        {statusName !== 'Refund' && statusName !== 'collected' ? (
+        {statusName !== 'Refund' || statusName !== 'collected' || statusName === 'Delete Collect' ? (
           <MenuItem
             onClick={() => {
               handleEdit()
@@ -805,7 +805,7 @@ const ChequesList = () => {
   const [btnValue, setBtnValue] = useState(FilterInitial || 'month')
   const [month, setMonth] = useState(FilterInitial === 'month' ? new Date() : null)
   const [day, setDay] = useState(FilterInitial === 'day' ? new Date() : null)
-  const [weak, setWeak] = useState(FilterInitial === 'weak' ? new Date() : null)
+  const [week, setWeek] = useState(FilterInitial === 'week' ? new Date() : null)
 
   // ** Hooks & Dispatch
   const dispatch = useDispatch()
@@ -849,11 +849,11 @@ const ChequesList = () => {
           endDueDate,
           month,
           day,
-          weak
+          week
         })
       )
     }
-  }, [dispatch, token, url, , startWriteDate, endWriteDate, startDueDate, endDueDate, month, day, weak])
+  }, [dispatch, token, url, , startWriteDate, endWriteDate, startDueDate, endDueDate, month, day, week])
 
   // ** Functions
   const escapeRegExp = value => {
@@ -885,7 +885,7 @@ const ChequesList = () => {
   console.log('Active:', active)
   console.log('Month:', month)
   console.log('Day:', day)
-  console.log('Weak:', weak)
+  console.log('week:', week)
 
   return (
     <Grid container spacing={6}>
@@ -918,7 +918,7 @@ const ChequesList = () => {
                   setEndWriteDate(null)
                   setStartDueDate(null)
                   setEndDueDate(null)
-                  setWeak(null)
+                  setWeek(null)
                   setDay(null)
                 }}
                 variant={btnValue === 'month' ? 'contained' : 'outlined'}
@@ -927,15 +927,15 @@ const ChequesList = () => {
                 Month
               </Button>
               <Button
-                variant={btnValue === 'weak' ? 'contained' : 'outlined'}
+                variant={btnValue === 'week' ? 'contained' : 'outlined'}
                 sx={{ textTransform: transText }}
                 onMouseEnter={() => {
-                  setActive('weak')
+                  setActive('week')
                 }}
                 onClick={() => {
-                  setActive('weak')
-                  setBtnValue('weak')
-                  setWeak(new Date())
+                  setActive('week')
+                  setBtnValue('week')
+                  setWeek(new Date())
                   setMonth(null)
                   setDay(null)
                   setStartWriteDate(null)
@@ -944,7 +944,7 @@ const ChequesList = () => {
                   setEndDueDate(null)
                 }}
               >
-                Weak
+                Week
               </Button>
               <Button
                 onMouseEnter={() => {
@@ -957,7 +957,7 @@ const ChequesList = () => {
                   setBtnValue('day')
                   setDay(new Date())
                   setMonth(null)
-                  setWeak(null)
+                  setWeek(null)
                   setStartWriteDate(null)
                   setEndWriteDate(null)
                   setStartDueDate(null)
@@ -977,7 +977,7 @@ const ChequesList = () => {
                   setBtnValue('range')
                   setOpenDateRange(true)
                   setMonth(null)
-                  setWeak(null)
+                  setWeek(null)
                   setDay(null)
                   setStartWriteDate(null)
                   setEndWriteDate(null)

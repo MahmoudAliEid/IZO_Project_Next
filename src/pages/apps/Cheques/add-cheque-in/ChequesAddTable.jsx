@@ -224,13 +224,15 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
           setFieldValue(`table.${idx}.payment`, payment + remain)
           setFieldValue(`table.${idx}.payment_due`, payment_due - remain)
           setFieldValue('table_total', 0)
+          setFieldValue('bill_amount', [...values?.bill_amount, remain])
         } else {
           setFieldValue(`table.${idx}.payment`, grand_total)
           setFieldValue(`table.${idx}.payment_due`, 0)
           setFieldValue('table_total', remain - payment_due)
+          setFieldValue('bill_amount', [...values?.bill_amount, grand_total - previous_payment])
         }
         setFieldValue('bill_id', [...values?.bill_id, params.id])
-        setFieldValue('bill_amount', [...values?.bill_amount, grand_total])
+        // setFieldValue('bill_amount', [...values?.bill_amount, grand_total])
       }
     } else {
       // First condition: previous_payment is true (contains a value), check was true (now unchecked)
@@ -253,7 +255,7 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
       )
       setFieldValue(
         'old_bill_amount',
-        values?.old_bill_amount.filter(row => row !== grand_total)
+        values?.old_bill_amount.filter(row => row !== params.grand_total - previous_payment)
       )
       setFieldValue(
         'payment_id',
@@ -263,10 +265,17 @@ const ChequesAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
         'bill_id',
         values?.bill_id.filter(id => id !== params.id)
       )
-      setFieldValue(
-        'bill_amount',
-        values?.bill_amount.filter(a => a !== grand_total)
-      )
+      if (previous_payment >= remain) {
+        setFieldValue(
+          'bill_amount',
+          values?.bill_amount.filter(a => a !== remain)
+        )
+      } else {
+        setFieldValue(
+          'bill_amount',
+          values?.bill_amount.filter(a => a !== grand_total - previous_payment)
+        )
+      }
     }
   }
 

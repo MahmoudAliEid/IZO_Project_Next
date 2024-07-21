@@ -160,7 +160,9 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
           })) || [],
         old_bill_id: storeData.bill.filter(row => row.bill_id !== '' && row.status === 0).map(row => row.bill_id) || [],
         old_bill_amount:
-          storeData.bill.filter(row => row.final_total !== '' && row.status === 0).map(row => row.final_total) || [],
+          storeData.bill
+            .filter(row => row.final_total !== '' && row.status === 0)
+            .map(row => Number(row.total_payment) - Number(row.previous_payment)) || [],
         payment_id:
           storeData.bill.filter(row => row.payment_id !== '' && row.status === 0).map(row => row.payment_id) || [],
         bill_id: [],
