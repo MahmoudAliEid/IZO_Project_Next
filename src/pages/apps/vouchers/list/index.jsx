@@ -40,17 +40,18 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import { deleteVoucher } from 'src/store/apps/vouchers/postDeleteVoucherSlice'
 import DialogAddSuppliers from 'src/views/apps/contacts/suppliers/DialogAddSuppliers'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
-import CustomDateRange from './CustomDateRange'
+// import CustomDateRange from './CustomDateRange'
 import VoucherViewPopUp from 'src/@core/components/vouchers/VoucherViewPopUp'
 
 // ** Styled Component
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+// import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import { fetchVouchers } from 'src/store/apps/vouchers/getVouchersSlice'
 import VouchersTransactionPopUp from 'src/@core/components/vouchers/VouchersTransactionPopUp'
-import { Button } from '@mui/material'
+import { Button, ButtonGroup } from '@mui/material'
 import VoucherEditPopUp from 'src/@core/components/vouchers/VoucherEditPopUp'
 import VoucherAttachmentPopUp from 'src/@core/components/vouchers/VoucherAttachmentPopUp'
 import EntryPopUp from 'src/@core/components/vouchers/EntryPopUp'
+import FilterRangePopUp from './FilterRangePopUp'
 
 // const userStatusObj = {
 //   receipt_voucher: { title: 'Receipt Voucher', color: 'success' },
@@ -102,7 +103,7 @@ const RowOptions = ({ id, type }) => {
   const rowOptionsOpen = anchorEl
 
   // ** Cookies
-
+  const transText = getCookie('fontStyle')
   const token = getCookie('token')
   const url = getCookie('apiUrl')
 
@@ -195,6 +196,7 @@ const RowOptions = ({ id, type }) => {
           vertical: 'top',
           horizontal: 'right'
         }}
+        sx={{ textTransform: transText }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
         <MenuItem
@@ -525,34 +527,23 @@ const VouchersList = () => {
   const direction = theme.direction
 
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
+  // ** Date Range
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+
+  const [openDateRange, setOpenDateRange] = useState(false)
+  const transText = getCookie('fontStyle')
+  const FilterInitial = getCookie('FilterInitial')
+  // ** for BTN
+  const [active, setActive] = useState(FilterInitial || 'month')
+  const [btnValue, setBtnValue] = useState(FilterInitial || 'month')
+  const [month, setMonth] = useState(FilterInitial === 'month' ? new Date() : null)
+  const [day, setDay] = useState(FilterInitial === 'day' ? new Date() : null)
+  const [week, setWeek] = useState(FilterInitial === 'week' ? new Date() : null)
 
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
   }
-
-  //create dammy data for testing
-  // const dammyData = [
-  //   {
-  //     id: 1,
-  //     Ref_No: 'Ref No 1',
-  //     contact: 'John Doe',
-  //     amount: '1000',
-  //     bill_amount: '2000',
-  //     account: 'Account 1',
-  //     type: 'receipt_voucher',
-  //     date: '12/12/2021'
-  //   },
-  //   {
-  //     id: 2,
-  //     Ref_No: 'Ref No 2',
-  //     contact: 'John Doe',
-  //     amount: '1000',
-  //     bill_amount: '2000',
-  //     account: 'Account 2',
-  //     type: 'payment_voucher',
-  //     date: '12/12/2021'
-  //   }
-  // ]
 
   const store = useSelector(state => state.getVouchers.brands.value)
 
@@ -600,21 +591,11 @@ const VouchersList = () => {
 
   // see if data is available
   console.log('data of Vouchers :', data)
+  console.log('date ', week, day, month, startDate, endDate, active)
 
   return (
     <Grid container spacing={6}>
-      <Grid item xs={12}>
-        {/* create filter component */}
-        <Card>
-          <CardHeader title='Filters' />
-          <Divider />
-          <Box sx={{ p: 6 }}>
-            <DatePickerWrapper>
-              <CustomDateRange popperPlacement={popperPlacement} />
-            </DatePickerWrapper>
-          </Box>
-        </Card>
-      </Grid>
+      <Grid item xs={12}></Grid>
       <Grid item xs={12}>
         <Card>
           <Box
@@ -624,12 +605,89 @@ const VouchersList = () => {
               display: 'flex',
               flexWrap: 'wrap',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              textTransform: transText
             }}
           >
             <Box>
-              <CardHeader title={title} />
+              <CardHeader sx={{ textTransform: transText }} title={title} />
             </Box>
+            <ButtonGroup variant='outlined' aria-label='Basic button group'>
+              <Button
+                onMouseEnter={() => {
+                  setActive('month')
+                }}
+                onClick={() => {
+                  setActive('month')
+                  setBtnValue('month')
+                  setMonth(new Date())
+                  setStartDate(null)
+                  setEndDate(null)
+
+                  setWeek(null)
+                  setDay(null)
+                }}
+                variant={btnValue === 'month' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+              >
+                Month
+              </Button>
+              <Button
+                variant={btnValue === 'week' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+                onMouseEnter={() => {
+                  setActive('week')
+                }}
+                onClick={() => {
+                  setActive('week')
+                  setBtnValue('week')
+                  setWeek(new Date())
+                  setMonth(null)
+                  setDay(null)
+                  setStartDate(null)
+                  setEndDate(null)
+                }}
+              >
+                Week
+              </Button>
+              <Button
+                onMouseEnter={() => {
+                  setActive('day')
+                }}
+                variant={btnValue === 'day' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+                onClick={() => {
+                  setActive('day')
+                  setBtnValue('day')
+                  setDay(new Date())
+                  setMonth(null)
+                  setWeek(null)
+                  setStartDate(null)
+                  setEndDate(null)
+                }}
+              >
+                Day
+              </Button>
+              <Button
+                onMouseEnter={() => {
+                  setActive('range')
+                }}
+                variant={btnValue === 'range' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+                onClick={() => {
+                  setActive('range')
+                  setBtnValue('range')
+                  setOpenDateRange(true)
+                  setMonth(null)
+                  setWeek(null)
+                  setDay(null)
+                  setStartDate(null)
+                  setEndDate(null)
+                }}
+              >
+                Range
+              </Button>
+            </ButtonGroup>
           </Box>
           <Divider sx={{ mb: 2 }} />
           <Box>
@@ -645,6 +703,16 @@ const VouchersList = () => {
                   slots={{ toolbar: QuickSearchToolbar }}
                   onPaginationModelChange={setPaginationModel}
                   rows={filteredData.length ? filteredData : data}
+                  sx={{
+                    '& .MuiDataGrid-cell': { textTransform: transText },
+                    '& .MuiDataGrid-columnsContainer': {
+                      textTransform: transText
+                    },
+                    '& .MuiDataGrid-columnHeaderTitle': {
+                      // Corrected class name for header text
+                      textTransform: transText
+                    }
+                  }}
                   slotProps={{
                     baseButton: {
                       variant: 'outlined'
@@ -677,6 +745,25 @@ const VouchersList = () => {
           </Box>
         </Card>
       </Grid>
+      {
+        // ** Date Range PopUp
+
+        openDateRange && (
+          <FilterRangePopUp
+            open={openDateRange}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            startDate={startDate}
+            endDate={endDate}
+            popperPlacement={popperPlacement}
+            handleClose={() => {
+              setStartDate(null)
+              setEndDate(null)
+              setOpenDateRange(false)
+            }}
+          />
+        )
+      }
 
       <DialogAddSuppliers open={addSupplierOpen} toggle={toggleAddSuppliersDrawer} isEdit={false} contact='supplier' />
     </Grid>

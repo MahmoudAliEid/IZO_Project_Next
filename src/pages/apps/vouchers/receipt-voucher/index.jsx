@@ -17,18 +17,21 @@ import {
   Autocomplete
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+// ** Custom Component
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 import VoucherAddTable from './VoucherAddTable'
+import Attachment from './Attachment'
+// ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCreateRVoucher } from 'src/store/apps/vouchers/getCreateReceiptVoucher'
 import { fetchBills } from 'src/store/apps/vouchers/Actions/getBillsSlice'
-import Attachment from './Attachment'
 import { createReceipt } from 'src/store/apps/vouchers/postCreateReceiptSlice'
 
 // ** Cookies
 import { getCookie } from 'cookies-next'
+import { fetchVouchers } from 'src/store/apps/vouchers/getVouchersSlice'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
   const { label, readOnly } = props
@@ -40,6 +43,7 @@ const CustomInput = forwardRef(({ ...props }, ref) => {
 const ReceiptVoucher = () => {
   const [changeCurrency] = useState(0)
   const [auth] = useState(true)
+  const transText = getCookie('fontStyle')
 
   const [initialValues] = useState({
     currencies: '', //currency_id
@@ -59,7 +63,7 @@ const ReceiptVoucher = () => {
     note: '',
     table: [
       {
-        id: 1,
+        id: 0,
         check: false,
         date: '12/3/2021',
         reference_no: '123',
@@ -69,6 +73,8 @@ const ReceiptVoucher = () => {
         warehouse_name: 'warehouse_name',
         grand_total: 'grand_total',
         payment_due: 'payment_due',
+        previous_payment: '',
+        payment: '',
         added_by: 'added_by',
         status: 'old/new'
       }
@@ -122,9 +128,13 @@ const ReceiptVoucher = () => {
   const handleSubmitForm = values => {
     console.log(values, 'values form submit')
 
-    dispatch(createReceipt({ values })).then(() => {
-      setOpenLoading(true)
-    })
+    dispatch(createReceipt({ values }))
+      .then(() => {
+        setOpenLoading(true)
+      })
+      .then(() => {
+        dispatch(fetchVouchers())
+      })
   }
 
   const fetchDataOnSearchSelect = async id => {
@@ -136,9 +146,14 @@ const ReceiptVoucher = () => {
   return (
     <Card>
       {openLoading && (
-        <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
+        <LoadingAnimation
+          open={openLoading}
+          onClose={() => setOpenLoading(false)}
+          statusType={createStatus}
+          redirectURL={'/apps/vouchers/list'}
+        />
       )}
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 3, textTransform: transText }}>
         <CardHeader title='Receipt Voucher' />
       </Box>
       <Formik
@@ -157,6 +172,9 @@ const ReceiptVoucher = () => {
                       label='Amount'
                       name='amount'
                       value={values.amount}
+                      sx={{
+                        textTransform: transText
+                      }}
                       onChange={event => {
                         handleChange(event)
                         setFieldValue(
@@ -172,17 +190,12 @@ const ReceiptVoucher = () => {
                             warehouse_name: row.store,
                             grand_total: row.final_total,
                             payment_due: row.pay_due,
-                            add_by: row.add_by || 'no add by'
+                            add_by: row.add_by || 'no add by',
+                            payment: row.total_payment,
+                            previous_payment: row.previous_payment
                           }))
                         )
-                        // setContactText('')
-                        // values.table.map((item, id) => {
-                        //   //change the check to false if it true
-                        //   if (item.check === true) {
-                        //     setFieldValue(`table.${id}.check`, false)
 
-                        //   }
-                        // })
                         setFieldValue('bill_id', [])
                         setFieldValue('bill_amount', [])
 
@@ -210,6 +223,9 @@ const ReceiptVoucher = () => {
                         <TextField
                           label='Amount in Currency'
                           name='amount_currency'
+                          sx={{
+                            textTransform: transText
+                          }}
                           value={values.amount_currency}
                           onChange={event => {
                             const amount_currency = Number(event.target.value)
@@ -226,7 +242,9 @@ const ReceiptVoucher = () => {
                                 warehouse_name: row.store,
                                 grand_total: row.final_total,
                                 payment_due: row.pay_due,
-                                add_by: row.add_by || 'no add by'
+                                add_by: row.add_by || 'no add by',
+                                payment: row.total_payment,
+                                previous_payment: row.previous_payment
                               }))
                             )
                             // setFieldValue('contact', [])
@@ -256,10 +274,20 @@ const ReceiptVoucher = () => {
                     </Grid>
                     <Grid item xs={12} lg={6} md={4} sm={12}>
                       <FormControl fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Currencies</InputLabel>
+                        <InputLabel
+                          sx={{
+                            textTransform: transText
+                          }}
+                          id='demo-simple-select-label'
+                        >
+                          Currencies
+                        </InputLabel>
                         <Select
                           value={values.currencies}
                           name='currencies'
+                          sx={{
+                            textTransform: transText
+                          }}
                           label='Currencies'
                           onChange={event => {
                             handleChange(event)
@@ -282,6 +310,9 @@ const ReceiptVoucher = () => {
                                     Number(values.amount / item.amount).toFixed(decimalFormat)
                                   )
                                 }}
+                                sx={{
+                                  textTransform: transText
+                                }}
                               >
                                 {item.value}
                               </MenuItem>
@@ -295,6 +326,9 @@ const ReceiptVoucher = () => {
                           type='text'
                           label='Currency Value'
                           name='currency_value'
+                          sx={{
+                            textTransform: transText
+                          }}
                           value={values.currency_value}
                           onChange={event => {
                             const currency_value = Number(event.target.value)
@@ -344,6 +378,9 @@ const ReceiptVoucher = () => {
                         name='date'
                         selected={values.date}
                         popperPlacement={popperPlacement}
+                        monthsShown={true}
+                        showMonthDropdown
+                        showYearDropdown
                         onChange={date => {
                           setFieldValue('date', date)
                         }}
@@ -355,6 +392,9 @@ const ReceiptVoucher = () => {
                             label='Date '
                             readOnly={false}
                             value={values.date}
+                            sx={{
+                              textTransform: transText
+                            }}
                             name='date'
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -372,6 +412,9 @@ const ReceiptVoucher = () => {
                       selectOnFocus
                       fullWidth
                       id='combo-box-demo'
+                      sx={{
+                        textTransform: transText
+                      }}
                       name='account'
                       value={accountText}
                       onChange={(event, newValue) => {
@@ -388,6 +431,9 @@ const ReceiptVoucher = () => {
                 <Grid item xs={12} lg={6} md={4} sm={12}>
                   <FormControl fullWidth>
                     <Autocomplete
+                      sx={{
+                        textTransform: transText
+                      }}
                       disablePortal
                       id='combo-box-demo'
                       selectOnFocus
@@ -431,6 +477,9 @@ const ReceiptVoucher = () => {
                 <Grid item xs={12} lg={12} md={4} sm={12}>
                   <FormControl fullWidth>
                     <TextField
+                      sx={{
+                        textTransform: transText
+                      }}
                       label='Note'
                       multiline
                       rows={4}
@@ -454,7 +503,8 @@ const ReceiptVoucher = () => {
                     borderRadius: '10px',
                     backgroundColor: theme => theme.palette.background.paper,
                     p: 3,
-                    mt: 3
+                    mt: 3,
+                    textTransform: transText
                   }}
                 >
                   <FormControl fullWidth>
@@ -479,7 +529,7 @@ const ReceiptVoucher = () => {
                 )}
               </FieldArray>
             </Box>
-            <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end', textTransform: transText }}>
               <Button type='submit' variant='contained' color='primary'>
                 Save
               </Button>

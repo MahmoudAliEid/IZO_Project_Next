@@ -1,7 +1,10 @@
 import { forwardRef, useState, useEffect } from 'react'
+
+// ** Formik & Validations
 import { Formik, Form, useField, FieldArray } from 'formik'
 import * as Yup from 'yup'
 
+// ** Mui Components
 import {
   Grid,
   Box,
@@ -16,23 +19,27 @@ import {
   InputLabel,
   Autocomplete
 } from '@mui/material'
+
 import { useTheme } from '@mui/material/styles'
-import DatePicker from 'react-datepicker'
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
+// ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchCreateCheques } from 'src/store/apps/Cheques/getCreateChequesSlice'
-
 import { fetchBillsCheques } from 'src/store/apps/Cheques/Actions/getBillsChequesSlice'
-import Attachment from '../../vouchers/receipt-voucher/Attachment'
 import { createCheques } from 'src/store/apps/Cheques/postCreateCheques'
 
 // ** Cookies
 import { getCookie } from 'cookies-next'
+
+// ** Custom Components && Third Party Components
+import Attachment from '../../vouchers/receipt-voucher/Attachment'
 import ChequesAddTable from '../add-cheque-in/ChequesAddTable'
 import notify from 'src/utils/notify'
-// import VoucherAddTable from '../../vouchers/receipt-voucher/VoucherAddTable'
+import DatePicker from 'react-datepicker'
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
+import { fetchCheques } from 'src/store/apps/Cheques/getChequesSlice'
 
+// ** Custom Input
 const CustomInput = forwardRef(({ ...props }, ref) => {
   const { label, readOnly } = props
   const [field, meta] = useField(props)
@@ -64,6 +71,9 @@ const AddChequeOut = () => {
     bill_id: [],
     bill_amount: [],
     attachment: [],
+    old_bill_id: [],
+    old_bill_amount: [],
+    payment: [],
     note: '',
     table: [
       {
@@ -100,6 +110,8 @@ const AddChequeOut = () => {
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const decimalFormat = getCookie('DecimalFormat')
   const transText = getCookie('fontStyle')
+  const token = getCookie('token')
+  const url = getCookie('apiUrl')
 
   const dispatch = useDispatch()
   const storeData = useSelector(state => state.getCreateCheque.data?.value)
@@ -161,23 +173,34 @@ const AddChequeOut = () => {
 
   const handleSubmitForm = values => {
     console.log(values, 'values form submit')
-
-    dispatch(createCheques({ values })).then(() => {
-      setOpenLoading(true)
-    })
+    // router.push('/apps/Cheques/list/')
+    dispatch(createCheques({ values }))
+      .then(() => {
+        setOpenLoading(true)
+      })
+      .then(() => {
+        dispatch(
+          fetchCheques({
+            token,
+            url
+          })
+        )
+      })
   }
 
   const fetchDataOnSearchSelect = async id => {
-    dispatch(fetchBillsCheques({ id, type: 'in' }))
+    dispatch(fetchBillsCheques({ id, type: 'out' }))
   }
-
-  console.log('create Cheques data', data)
-  console.log('find account contact', findContact)
 
   return (
     <Card>
       {openLoading && (
-        <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
+        <LoadingAnimation
+          open={openLoading}
+          onClose={() => setOpenLoading(false)}
+          statusType={createStatus}
+          redirectURL={'/apps/Cheques/list/'}
+        />
       )}
       <Box sx={{ mb: 3 }}>
         <CardHeader title='Add Cheques Out' sx={{ textTransform: transText }} />
@@ -227,7 +250,11 @@ const AddChequeOut = () => {
                             payment_status: row.pay_status || 'no payment status',
                             warehouse_name: row.store,
                             grand_total: row.final_total,
+
+                            payment: row.total_payment,
+                            status: row.status,
                             payment_due: row.pay_due,
+                            previous_payment: row.previous_payment,
                             add_by: row.add_by || 'no add by'
                           }))
                         )
@@ -283,7 +310,10 @@ const AddChequeOut = () => {
                                 warehouse_name: row.store,
                                 grand_total: row.final_total,
                                 payment_due: row.pay_due,
-                                add_by: row.add_by || 'no add by'
+                                add_by: row.add_by || 'no add by',
+                                payment: row.total_payment,
+                                status: row.status,
+                                previous_payment: row.previous_payment
                               }))
                             )
                             // setFieldValue('contact', [])

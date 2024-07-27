@@ -82,6 +82,92 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
 
   //** update allUnits when all_units in rows */
 
+  // ? old Code of check box
+  //  ?onChange={event => {
+  //?             handleChange(event)
+  //?             const total = Number(params.grand_total)
+  //?             const amount = total - values?.table_total
+
+  //?             if (values?.bill_id.includes(params.id)) {
+  //?               //? Checkbox is currently checked, uncheck it by removing params.id from bill_id
+  //?               setFieldValue(
+  //?                 'bill_id',
+  //?                 values?.bill_id.filter(id => id !== params.id)
+  //?               )
+  //?             } else {
+  //?               //? Checkbox is currently unchecked, check it by adding params.id to bill_id
+  //?               setFieldValue('bill_id', [...values?.bill_id, params.id])
+  //?             }
+
+  //?             if (values?.bill_amount.includes(amount)) {
+  //?               //? Checkbox is currently checked, uncheck it by removing amount from bill_amount
+  //?               setFieldValue(
+  //?                 'bill_amount',
+  //?                 values?.bill_amount.filter(a => a !== amount)
+  //?               )
+  //?             } else {
+  //?               //? Checkbox is currently unchecked, check it by adding amount to bill_amount
+  //?               setFieldValue('bill_amount', [...values?.bill_amount, amount])
+  //?             }
+
+  //?             if (event.target.checked) {
+  //?               //? set id to bill id  arr
+  //?               if (total > values?.table_total) {
+  //?                 setFieldValue(`table.${params.idx}.payment_due`, total - values?.table_total)
+  //?                 setFieldValue(`table.${params.idx}.payment`, total - (total - values?.table_total))
+  //?                 setFieldValue('bill_id', [...values?.bill_id, params.id])
+  //?                 setFieldValue('bill_amount', [...values?.bill_amount, values?.table_total])
+  //?                 setFieldValue('table_total', 0)
+  //?               } else {
+  //?                 setFieldValue('table_total', values?.table_total - total)
+  //?                 setFieldValue('bill_id', [...values?.bill_id, params.id])
+  //?                 setFieldValue('bill_amount', [...values?.bill_amount, total])
+  //?                 setFieldValue(`table.${params.idx}.payment_due`, 0)
+  //?                 setFieldValue(`table.${params.idx}.payment`, total)
+  //?               }
+  //?             } else {
+  //?               if (Number(params.payment_due) > 0) {
+  //?                 setFieldValue('table_total', values?.table_total + (total - Number(params.payment_due)))
+  //?                 setFieldValue(`table.${params.idx}.payment_due`, total)
+  //?                 setFieldValue(
+  //?                   'bill_id',
+  //?                   values?.bill_id.filter(id => id !== params.id)
+  //?                 )
+  //?                 setFieldValue(
+  //?                   'bill_amount',
+  //?                   values?.bill_amount.filter(a => a !== total - Number(params.payment_due))
+  //?                 )
+  //?                 setFieldValue(`table.${params.idx}.payment`, params.grand_total - total)
+  //?               } else {
+  //?                 setFieldValue('table_total', values?.table_total + total)
+  //?                 setFieldValue(`table.${params.idx}.payment_due`, total)
+  //?                 setFieldValue(`table.${params.idx}.payment`, params.grand_total - total)
+  //?                 setFieldValue(
+  //?                   'bill_id',
+  //?                   values?.bill_id.filter(id => id !== params.id)
+  //?                 )
+  //?                 setFieldValue(
+  //?                   'bill_amount',
+  //?                   values?.bill_amount.filter(a => a !== total)
+  //?                 )
+  //?               }
+  //?               setFieldValue(`table.${params.idx}.check`, false)
+  //?               setFieldValue(`table.${params.idx}.status`, 1)
+  //?               setFieldValue(
+  //?                 `old_bill_id`,
+  //?                 values?.old_bill_id.filter(row => row !== params.id)
+  //?               )
+  //?               setFieldValue(
+  //?                 `old_bill_amount`,
+  //?                 values?.old_bill_amount.filter(row => row !== params.grand_total)
+  //?               )
+  //?               setFieldValue(
+  //?                 `payment_id`,
+  //?                 values?.payment_id.filter(row => row !== params.payment_id)
+  //?               )
+  //?             }
+  //?           }}
+
   // ** columns
   const columns = [
     {
@@ -97,87 +183,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
             disabled={values?.table_total === 0 && !values?.table[params.idx].check}
             name={`table.${params.idx}.check`}
             onChange={event => {
-              handleChange(event)
-              const total = Number(params.grand_total)
-
-              if (values?.bill_id.includes(params.id)) {
-                // Checkbox is currently checked, uncheck it by removing params.id from bill_id
-                setFieldValue(
-                  'bill_id',
-                  values?.bill_id.filter(id => id !== params.id)
-                )
-              } else {
-                // Checkbox is currently unchecked, check it by adding params.id to bill_id
-                setFieldValue('bill_id', [...values?.bill_id, params.id])
-              }
-
-              const amount = total - values?.table_total
-              if (values?.bill_amount.includes(amount)) {
-                // Checkbox is currently checked, uncheck it by removing amount from bill_amount
-                setFieldValue(
-                  'bill_amount',
-                  values?.bill_amount.filter(a => a !== amount)
-                )
-              } else {
-                // Checkbox is currently unchecked, check it by adding amount to bill_amount
-                setFieldValue('bill_amount', [...values?.bill_amount, amount])
-              }
-              if (event.target.checked) {
-                // set id to bill id  arr
-                if (total > values?.table_total) {
-                  setFieldValue(`table.${params.idx}.payment_due`, total - values?.table_total)
-                  setFieldValue(`table.${params.idx}.payment`, total - (total - values?.table_total))
-                  setFieldValue('bill_id', [...values?.bill_id, params.id])
-                  setFieldValue('bill_amount', [...values?.bill_amount, values?.table_total])
-                  setFieldValue('table_total', 0)
-                } else {
-                  setFieldValue('table_total', values?.table_total - total)
-                  setFieldValue('bill_id', [...values?.bill_id, params.id])
-                  setFieldValue('bill_amount', [...values?.bill_amount, total])
-                  setFieldValue(`table.${params.idx}.payment_due`, 0)
-                  setFieldValue(`table.${params.idx}.payment`, total)
-                }
-              } else {
-                if (Number(params.payment_due) > 0) {
-                  setFieldValue('table_total', values?.table_total + (total - Number(params.payment_due)))
-                  setFieldValue(`table.${params.idx}.payment_due`, total)
-                  setFieldValue(
-                    'bill_id',
-                    values?.bill_id.filter(id => id !== params.id)
-                  )
-                  setFieldValue(
-                    'bill_amount',
-                    values?.bill_amount.filter(a => a !== total - Number(params.payment_due))
-                  )
-                  setFieldValue(`table.${params.idx}.payment`, params.grand_total - total)
-                } else {
-                  setFieldValue('table_total', values?.table_total + total)
-                  setFieldValue(`table.${params.idx}.payment_due`, total)
-                  setFieldValue(`table.${params.idx}.payment`, params.grand_total - total)
-                  setFieldValue(
-                    'bill_id',
-                    values?.bill_id.filter(id => id !== params.id)
-                  )
-                  setFieldValue(
-                    'bill_amount',
-                    values?.bill_amount.filter(a => a !== total)
-                  )
-                }
-                setFieldValue(`table.${params.idx}.check`, false)
-                setFieldValue(`table.${params.idx}.status`, 1)
-                setFieldValue(
-                  `old_bill_id`,
-                  values?.old_bill_id.filter(row => row !== params.id)
-                )
-                setFieldValue(
-                  `old_bill_amount`,
-                  values?.old_bill_amount.filter(row => row !== params.grand_total)
-                )
-                setFieldValue(
-                  `payment_id`,
-                  values?.payment_id.filter(row => row !== params.payment_id)
-                )
-              }
+              handleCheckBoxActions(event, params)
             }}
           />
         </FormControl>
@@ -308,7 +314,9 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
           payment: row.pay_due,
           status: row.status,
           payment_due: row.pay_due,
-          add_by: row.add_by || 'no add by'
+          add_by: row.add_by || 'no add by',
+          payment: row.total_payment,
+          previous_payment: row.previous_payment
         }
         push(obj)
       })
@@ -339,6 +347,93 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
   //     })
   //   }
   // }, [rows, push])
+
+  // ** Function to handle checkBox process
+  const handleCheckBoxActions = (event, params) => {
+    const { checked } = event.target
+    handleChange(event)
+    const previous_payment = Number(params.previous_payment)
+    console.log('previous_payment form check box 😫🍚🥩🍖😪', previous_payment)
+    const payment = Number(params.payment)
+    const payment_due = Number(params.payment_due)
+    const remain = Number(values?.table_total)
+    const grand_total = Number(params.grand_total)
+    const idx = params.idx
+
+    if (checked) {
+      if (previous_payment > 0) {
+        // Second condition: previous_payment is true (contains a value), check was false (now checked)
+        if (payment_due >= remain) {
+          setFieldValue(`table.${idx}.payment_due`, payment_due - remain)
+          setFieldValue(`table.${idx}.payment`, payment + remain)
+          setFieldValue('table_total', 0)
+        } else {
+          setFieldValue(`table.${idx}.payment`, grand_total)
+          setFieldValue(`table.${idx}.payment_due`, 0)
+          setFieldValue('table_total', remain - payment_due)
+        }
+        setFieldValue('bill_id', [...values?.bill_id, params.id])
+        setFieldValue('bill_amount', [...values?.bill_amount, grand_total])
+      } else if (previous_payment === 0) {
+        // Third condition: previous_payment is not true (does not contain a value), check was true (now unchecked)
+        if (payment_due >= remain) {
+          setFieldValue(`table.${idx}.payment`, payment + remain)
+          setFieldValue(`table.${idx}.payment_due`, payment_due - remain)
+          setFieldValue('table_total', 0)
+          setFieldValue('bill_amount', [...values?.bill_amount, remain])
+        } else {
+          setFieldValue(`table.${idx}.payment`, grand_total)
+          setFieldValue(`table.${idx}.payment_due`, 0)
+          setFieldValue('table_total', remain - payment_due)
+          setFieldValue('bill_amount', [...values?.bill_amount, grand_total - previous_payment])
+        }
+        setFieldValue('bill_id', [...values?.bill_id, params.id])
+        // setFieldValue('bill_amount', [...values?.bill_amount, grand_total])
+      }
+    } else {
+      // First condition: previous_payment is true (contains a value), check was true (now unchecked)
+      if (previous_payment > 0) {
+        setFieldValue(`table.${idx}.payment_due`, payment_due + (payment - previous_payment))
+        setFieldValue(`table.${idx}.payment`, previous_payment)
+        setFieldValue('table_total', remain + (payment - previous_payment))
+      } else {
+        setFieldValue('table_total', remain + (payment - previous_payment))
+        setFieldValue(`table.${idx}.payment_due`, payment_due + (payment - previous_payment))
+        setFieldValue(`table.${idx}.payment`, previous_payment)
+      }
+
+      // Reset values to defaults
+      setFieldValue(`table.${idx}.check`, false)
+      setFieldValue(`table.${idx}.status`, 1)
+      setFieldValue(
+        'old_bill_id',
+        values?.old_bill_id.filter(row => row !== params.id)
+      )
+      setFieldValue(
+        'old_bill_amount',
+        values?.old_bill_amount.filter(row => row !== params.grand_total - previous_payment)
+      )
+      setFieldValue(
+        'payment_id',
+        values?.payment_id.filter(row => row !== params.payment_id)
+      )
+      setFieldValue(
+        'bill_id',
+        values?.bill_id.filter(id => id !== params.id)
+      )
+      if (previous_payment >= remain) {
+        setFieldValue(
+          'bill_amount',
+          values?.bill_amount.filter(a => a !== remain)
+        )
+      } else {
+        setFieldValue(
+          'bill_amount',
+          values?.bill_amount.filter(a => a !== grand_total - previous_payment)
+        )
+      }
+    }
+  }
 
   console.log('data form voucherTable store: & Row:', storeBills, rows)
 

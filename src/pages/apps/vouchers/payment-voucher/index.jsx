@@ -59,7 +59,7 @@ const PaymentVoucher = () => {
     note: '',
     table: [
       {
-        id: 1,
+        id: 0,
         check: false,
         date: '12/3/2021',
         reference_no: '123',

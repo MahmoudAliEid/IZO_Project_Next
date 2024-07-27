@@ -201,11 +201,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
         dispatch(
           fetchCheques({
             token,
-            url,
-            startWriteDate: new Date('2023-06-12'),
-            endWriteDate: new Date('2024-01-13'),
-            startDueDate: new Date('2023-06-12'),
-            endDueDate: new Date('2024-02-17')
+            url
           })
         )
       })

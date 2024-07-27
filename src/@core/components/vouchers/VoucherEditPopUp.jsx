@@ -101,6 +101,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   const { direction } = theme
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const DecimalFormat = getCookie('DecimalFormat')
+  const transText = getCookie('fontStyle')
 
   // ** Get data from store
   const storeData = useSelector(state => state.getEditReceiptVoucher.data?.value)
@@ -192,17 +193,21 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
             payment_status: row.pay_status || 'no payment status',
             warehouse_name: row.store,
             grand_total: row.final_total,
-            payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(DecimalFormat),
+
             payment_due: row.pay_due,
             add_by: row.add_by || 'no add by',
             status: row.status,
-            payment_id: row.payment_id
+            payment_id: row.total_payment_id,
+            payment: row.total_payment,
+            previous_payment: row.previous_payment
           })) || [],
         old_bill_id: storeData.bill.filter(row => row.bill_id !== '' && row.status === 0).map(row => row.bill_id) || [],
         old_bill_amount:
           storeData.bill.filter(row => row.final_total !== '' && row.status === 0).map(row => row.final_total) || [],
         payment_id:
-          storeData.bill.filter(row => row.payment_id !== '' && row.status === 0).map(row => row.payment_id) || [],
+          storeData.bill
+            .filter(row => row.total_payment_id !== '' && row.status === 0)
+            .map(row => row.total_payment_id) || [],
         bill_id: [],
         bill_amount: [],
         type: type === 'receipt' ? 1 : 0,
@@ -260,7 +265,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
         fullWidth={true}
         onClose={handleClose}
         aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
+        sx={{ height: '100%', textTransform: transText }}
       >
         {voucherData ? (
           <Fragment>
@@ -271,7 +276,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
               handleClose={handleClose}
               divider={false}
             />
-            <DialogContent sx={{ padding: '0 !important' }}>
+            <DialogContent sx={{ padding: '0 !important', textTransform: transText }}>
               <Card>
                 {openLoading && (
                   <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={editStatus} />
@@ -328,11 +333,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                         payment_status: row.pay_status || 'no payment status',
                                         warehouse_name: row.store,
                                         grand_total: row.final_total,
-                                        payment: 0,
+                                        payment: row.total_payment,
+                                        previous_payment: row.previous_payment,
                                         payment_due: row.final_total,
                                         add_by: row.add_by || 'no add by',
                                         status: 1,
-                                        payment_id: row.status === 0 ? '' : row.payment_id
+                                        payment_id: row.status === 0 ? '' : row.total_payment_id
                                       }))
                                     )
 
@@ -372,19 +378,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                         warehouse_name: row.store,
                                         grand_total: row.final_total,
                                         status: row.status,
-                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                          DecimalFormat
-                                        ),
+                                        payment: row.total_payment,
+                                        previous_payment: row.previous_payment,
                                         payment_due: row.pay_due,
                                         add_by: row.add_by || 'no add by',
-                                        payment_id: row.payment_id
+                                        payment_id: row.total_payment_id
                                       }))
                                     )
                                     setFieldValue(
                                       'payment_id',
                                       voucherData.bill
                                         .filter(row => row.bill_id !== '' && row.status === 0)
-                                        .map(row => row.payment_id)
+                                        .map(row => row.total_payment_id)
                                     )
                                     setFieldValue(
                                       'old_bill_id ',
@@ -413,19 +418,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                         warehouse_name: row.store,
                                         grand_total: row.final_total,
                                         status: row.status,
-                                        payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                          DecimalFormat
-                                        ),
+                                        payment: row.total_payment,
+                                        previous_payment: row.previous_payment,
                                         payment_due: row.pay_due,
                                         add_by: row.add_by || 'no add by',
-                                        payment_id: row.payment_id
+                                        payment_id: row.total_payment_id
                                       }))
                                     )
                                     setFieldValue(
                                       'payment_id',
                                       voucherData.bill
                                         .filter(row => row.bill_id !== '' && row.status === 0)
-                                        .map(row => row.payment_id)
+                                        .map(row => row.total_payment_id)
                                     )
                                     setFieldValue(
                                       'old_bill_id ',
@@ -481,12 +485,11 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                           payment_status: row.pay_status || 'no payment status',
                                           warehouse_name: row.store,
                                           grand_total: row.final_total,
-                                          payment: (Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                            DecimalFormat
-                                          ),
+                                          payment: row.total_payment,
+                                          previous_payment: row.previous_payment,
                                           payment_due: row.pay_due,
                                           add_by: row.add_by || 'no add by',
-                                          payment_id: row.payment_id
+                                          payment_id: row.total_payment_id
                                         }))
                                       )
                                       // setFieldValue('contact', [])
@@ -523,11 +526,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                               payment_status: row.pay_status || 'no payment status',
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
-                                              payment: 0,
+                                              payment: row.total_payment,
+                                              previous_payment: row.previous_payment,
                                               payment_due: row.final_total,
                                               add_by: row.add_by || 'no add by',
                                               status: 1,
-                                              payment_id: row.status === 0 ? '' : row.payment_id
+                                              payment_id: row.status === 0 ? '' : row.total_payment_id
                                             }))
                                           )
 
@@ -584,19 +588,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
+                                              payment: row.total_payment,
+                                              previous_payment: row.previous_payment,
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
+                                              payment_id: row.total_payment_id
                                             }))
                                           )
                                           setFieldValue(
                                             'payment_id',
                                             voucherData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
-                                              .map(row => row.payment_id)
+                                              .map(row => row.total_payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
@@ -626,19 +629,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
+                                              payment: row.total_payment,
+                                              previous_payment: row.previous_payment,
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
+                                              payment_id: row.total_payment_id
                                             }))
                                           )
                                           setFieldValue(
                                             'payment_id',
                                             voucherData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
-                                              .map(row => row.payment_id)
+                                              .map(row => row.total_payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
@@ -687,11 +689,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                               payment_status: row.pay_status || 'no payment status',
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
-                                              payment: 0,
+                                              payment: row.total_payment,
+                                              previous_payment: row.previous_payment,
                                               payment_due: row.final_total,
                                               add_by: row.add_by || 'no add by',
                                               status: 1,
-                                              payment_id: row.status === 0 ? '' : row.payment_id
+                                              payment_id: row.status === 0 ? '' : row.total_payment_id
                                             }))
                                           )
 
@@ -728,19 +731,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
+                                              payment: row.total_payment,
+                                              previous_payment: row.previous_payment,
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
+                                              payment_id: row.total_payment_id
                                             }))
                                           )
                                           setFieldValue(
                                             'payment_id',
                                             voucherData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
-                                              .map(row => row.payment_id)
+                                              .map(row => row.total_payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
@@ -768,19 +770,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                               warehouse_name: row.store,
                                               grand_total: row.final_total,
                                               status: row.status,
-                                              payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                DecimalFormat
-                                              ),
+                                              payment: row.total_payment,
+                                              previous_payment: row.previous_payment,
                                               payment_due: row.pay_due,
                                               add_by: row.add_by || 'no add by',
-                                              payment_id: row.payment_id
+                                              payment_id: row.total_payment_id
                                             }))
                                           )
                                           setFieldValue(
                                             'payment_id',
                                             voucherData.bill
                                               .filter(row => row.bill_id !== '' && row.status === 0)
-                                              .map(row => row.payment_id)
+                                              .map(row => row.total_payment_id)
                                           )
                                           setFieldValue(
                                             'old_bill_id ',
@@ -888,11 +889,12 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                                 payment_status: row.pay_status || 'no payment status',
                                                 warehouse_name: row.store,
                                                 grand_total: row.final_total,
-                                                payment: 0,
+                                                payment: row.total_payment,
+                                                previous_payment: row.previous_payment,
                                                 payment_due: row.final_total,
                                                 add_by: row.add_by || 'no add by',
                                                 status: 1,
-                                                payment_id: row.status === 0 ? '' : row.payment_id
+                                                payment_id: row.status === 0 ? '' : row.total_payment_id
                                               }))
                                             )
 
@@ -944,19 +946,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                                 warehouse_name: row.store,
                                                 grand_total: row.final_total,
                                                 status: row.status,
-                                                payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                  DecimalFormat
-                                                ),
+                                                payment: row.total_payment,
+                                                previous_payment: row.previous_payment,
                                                 payment_due: row.pay_due,
                                                 add_by: row.add_by || 'no add by',
-                                                payment_id: row.payment_id
+                                                payment_id: row.total_payment_id
                                               }))
                                             )
                                             setFieldValue(
                                               'payment_id',
                                               voucherData.bill
                                                 .filter(row => row.bill_id !== '' && row.status === 0)
-                                                .map(row => row.payment_id)
+                                                .map(row => row.total_payment_id)
                                             )
                                             setFieldValue(
                                               'old_bill_id ',
@@ -987,19 +988,18 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                                 warehouse_name: row.store,
                                                 grand_total: row.final_total,
                                                 status: row.status,
-                                                payment: Number(Number(row.final_total) - Number(row.pay_due)).toFixed(
-                                                  DecimalFormat
-                                                ),
+                                                payment: row.total_payment,
+                                                previous_payment: row.previous_payment,
                                                 payment_due: row.pay_due,
                                                 add_by: row.add_by || 'no add by',
-                                                payment_id: row.payment_id
+                                                payment_id: row.total_payment_id
                                               }))
                                             )
                                             setFieldValue(
                                               'payment_id',
                                               voucherData.bill
                                                 .filter(row => row.bill_id !== '' && row.status === 0)
-                                                .map(row => row.payment_id)
+                                                .map(row => row.total_payment_id)
                                             )
                                             setFieldValue(
                                               'old_bill_id ',
@@ -1067,6 +1067,8 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                                   onChange={date => {
                                     setFieldValue('date', date)
                                   }}
+                                  showMonthDropdown
+                                  showYearDropdown
                                   id='basic-input'
                                   dateFormat='yyyy/MM/dd'
                                   customInput={

@@ -13,10 +13,14 @@ import DatePicker, { ReactDatePickerProps } from 'react-datepicker'
 // ** Types
 import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
+// ** Cookies
+import { getCookie } from 'cookies-next'
+
 interface PickerProps {
   label?: string
   end: Date | number
   start: Date | number
+  sx?:object
 }
 
 const CustomDateRange = ({ popperPlacement }: { popperPlacement: ReactDatePickerProps['popperPlacement'] }) => {
@@ -25,6 +29,9 @@ const CustomDateRange = ({ popperPlacement }: { popperPlacement: ReactDatePicker
   const [endDate, setEndDate] = useState<DateType>(addDays(new Date(), 15))
   // const [startDateRange, setStartDateRange] = useState<DateType>(new Date())
   // const [endDateRange, setEndDateRange] = useState<DateType>(addDays(new Date(), 45))
+
+  // ** Cookies
+  const transText = getCookie('fontStyle')
 
   const handleOnChange = (dates: any) => {
     const [start, end] = dates
@@ -44,7 +51,8 @@ const CustomDateRange = ({ popperPlacement }: { popperPlacement: ReactDatePicker
 
     const value = `${startDate}${endDate !== null ? endDate : ''}`
 
-    return <TextField inputRef={ref} label={props.label || ''} {...props} value={value} />
+    return <TextField inputRef={ref} label={props.label || ''} {...props} value={value}
+    />
   })
 
   return (
@@ -58,9 +66,11 @@ const CustomDateRange = ({ popperPlacement }: { popperPlacement: ReactDatePicker
           id='date-range-picker'
           onChange={handleOnChange}
           shouldCloseOnSelect={false}
+          showMonthDropdown
+          showYearDropdown
           popperPlacement={popperPlacement}
           customInput={
-            <CustomInput label='Date Range' start={startDate as Date | number} end={endDate as Date | number} />
+            <CustomInput label='Date Range' sx={{textTransform: transText}}  start={startDate as Date | number} end={endDate as Date | number} />
           }
         />
       </div>

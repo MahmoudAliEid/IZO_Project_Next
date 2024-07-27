@@ -133,11 +133,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
         dispatch(
           fetchCheques({
             token,
-            url,
-            startWriteDate: new Date('2023-06-12'),
-            endWriteDate: new Date('2024-01-13'),
-            startDueDate: new Date('2023-06-12'),
-            endDueDate: new Date('2024-02-17')
+            url
           })
         )
 
@@ -199,11 +195,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
           dispatch(
             fetchCheques({
               token,
-              url,
-              startWriteDate: new Date('2023-06-12'),
-              endWriteDate: new Date('2024-01-13'),
-              startDueDate: new Date('2023-06-12'),
-              endDueDate: new Date('2024-02-17')
+              url
             })
           )
         } else {
@@ -221,11 +213,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
         dispatch(
           fetchCheques({
             token,
-            url,
-            startWriteDate: new Date('2023-06-12'),
-            endWriteDate: new Date('2024-01-13'),
-            startDueDate: new Date('2023-06-12'),
-            endDueDate: new Date('2024-02-17')
+            url
           })
         )
       }
@@ -239,11 +227,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
         dispatch(
           fetchCheques({
             token,
-            url,
-            startWriteDate: new Date('2023-06-12'),
-            endWriteDate: new Date('2024-01-13'),
-            startDueDate: new Date('2023-06-12'),
-            endDueDate: new Date('2024-02-17')
+            url
           })
         )
       }
@@ -258,11 +242,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
         dispatch(
           fetchCheques({
             token,
-            url,
-            startWriteDate: new Date('2023-06-12'),
-            endWriteDate: new Date('2024-01-13'),
-            startDueDate: new Date('2023-06-12'),
-            endDueDate: new Date('2024-02-17')
+            url
           })
         )
 
@@ -356,7 +336,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
             Delete Collect
           </MenuItem>
         )}
-        {statusName !== 'Refund' || statusName !== 'collected' || statusName === 'Delete Collect' ? (
+        {statusName === 'Refund' || statusName === 'collected' ? null : (
           <MenuItem
             onClick={() => {
               handleEdit()
@@ -368,7 +348,7 @@ const RowOptions = ({ id, statusName, document, dueDate, editType }) => {
             <Icon icon='bx:pencil' fontSize={20} />
             Edit
           </MenuItem>
-        ) : null}
+        )}
 
         {/* print */}
         <MenuItem
@@ -552,7 +532,7 @@ const ChequesList = () => {
     },
     {
       flex: 0.25,
-      minWidth: 180,
+      minWidth: 220,
       field: 'cheque_no ',
       headerName: 'Cheque No',
       renderCell: ({ row }) => {

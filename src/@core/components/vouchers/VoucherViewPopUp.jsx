@@ -8,7 +8,8 @@ import CustomTableView from '../products/listProduct/productView/CustomTableView
 import { Grid, Typography, Chip, Divider } from '@mui/material'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import { Box } from '@mui/system'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
+import { getCookie } from 'cookies-next'
 
 const LinkStyled = styled(Box)(({ theme }) => ({
   fontWeight: 400,
@@ -23,13 +24,12 @@ const LinkStyled = styled(Box)(({ theme }) => ({
 
 const VoucherViewPopUp = ({ open, toggle, itemId }) => {
   const [voucherData, setVoucherData] = useState(null) // Initially setting data as null
+  const theme = useTheme()
+  const transText = getCookie('fontStyle')
 
   const dataNames = [
     { headerName: 'Ref No', field: 'ref_no' },
-    {
-      headerName: 'Contact',
-      field: 'contactText'
-    },
+    ,
     {
       headerName: 'Phone',
       field: 'phone'
@@ -40,7 +40,11 @@ const VoucherViewPopUp = ({ open, toggle, itemId }) => {
     },
 
     { headerName: 'Amount', field: 'amount' },
-    { headerName: 'Date', field: 'date' }
+    { headerName: 'Date', field: 'date' },
+    {
+      headerName: 'Contact',
+      field: 'contactText'
+    }
   ]
 
   const handleClose = () => {
@@ -83,37 +87,80 @@ const VoucherViewPopUp = ({ open, toggle, itemId }) => {
             />
             <DialogContent sx={{ padding: '0 !important' }}>
               <Divider sx={{ mb: 2 }}>
-                <Chip label='Voucher Information' color='primary' variant='outlined' />
+                <Chip
+                  label='Voucher Information'
+                  color='primary'
+                  variant='outlined'
+                  sx={{
+                    '& .MuiChip-label': { textTransform: transText }
+                  }}
+                />
               </Divider>
 
               <Grid container spacing={2} sx={{ p: 3 }}>
-                {voucherData &&
-                  dataNames.map((data, index) => {
-                    return (
-                      <Grid item xs={12} lg={4} md={4} sm={12} key={index}>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            mb: 4,
-                            gap: 2,
-                            flexDirection: 'row'
-                          }}
-                        >
-                          <Typography sx={{ ml: 3, fontWeight: 700, color: 'text.secondary' }}>
-                            {data.headerName}:
-                          </Typography>
-
-                          {voucherData[data.field] ? (
-                            <Chip label={voucherData[data.field] || ''} size={'small'} />
-                          ) : null}
-                        </Box>
-                      </Grid>
-                    )
-                  })}
-
+                <Grid
+                  item
+                  xs={12}
+                  // add glass effect
+                  // For Light Theme
+                  sx={{
+                    background: theme.palette.mode === 'light' ? '#FFFFFF' : '#191919', // Light background
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(6.3px)',
+                    WebkitBackdropFilter: 'blur(6.3px)', // Ensuring compatibility with Webkit browsers
+                    border:
+                      theme.palette.mode === 'light'
+                        ? '1px solid rgba(0, 0, 0, 0.1)'
+                        : '1px solid rgba(176, 170, 170, 0.3)', // Adjusted for lighter theme
+                    textTransform: transText
+                  }}
+                >
+                  <Grid container spacing={2}>
+                    {voucherData &&
+                      dataNames.map((data, index) => {
+                        return (
+                          <Grid item xs={12} lg={4} md={4} sm={12} key={index}>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                mb: 4,
+                                gap: 2,
+                                flexDirection: 'row',
+                                textTransform: transText
+                              }}
+                            >
+                              <Typography
+                                sx={{ ml: 3, fontWeight: 700, color: 'text.secondary', textTransform: transText }}
+                              >
+                                {data.headerName}:&nbsp;
+                                {voucherData[data.field] ? (
+                                  <Chip
+                                    label={voucherData[data.field] || ''}
+                                    size={'small'}
+                                    sx={{
+                                      '& .MuiChip-label': { textTransform: transText },
+                                      wordWrap: 'break-word'
+                                    }}
+                                  />
+                                ) : null}
+                              </Typography>
+                            </Box>
+                          </Grid>
+                        )
+                      })}
+                  </Grid>
+                </Grid>
                 <Grid item xs={12}>
                   <Divider sx={{ mb: 2 }}>
-                    <Chip label='All Payments' color='primary' variant='outlined' />
+                    <Chip
+                      label='All Payments'
+                      color='primary'
+                      variant='outlined'
+                      sx={{
+                        '& .MuiChip-label': { textTransform: transText }
+                      }}
+                    />
                   </Divider>
                   {/* <TableOfPayments data={voucherData?.payments} /> */}
                   <CustomTableView

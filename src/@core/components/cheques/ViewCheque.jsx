@@ -29,10 +29,7 @@ const ViewCheque = ({ open, toggle, itemId }) => {
 
   const dataNames = [
     { headerName: 'Cheque No', field: 'cheque_no' },
-    {
-      headerName: 'Contact',
-      field: 'contactText'
-    },
+
     {
       headerName: 'Phone',
       field: 'phone'
@@ -53,7 +50,11 @@ const ViewCheque = ({ open, toggle, itemId }) => {
     { headerName: 'Amount', field: 'amount' },
     { headerName: 'Write Date', field: 'write_date' },
     { headerName: 'Due Date', field: 'due_date' },
-    { headerName: 'Date', field: 'date' }
+    { headerName: 'Date', field: 'date' },
+    {
+      headerName: 'Contact',
+      field: 'contactText'
+    }
   ]
 
   const handleClose = () => {

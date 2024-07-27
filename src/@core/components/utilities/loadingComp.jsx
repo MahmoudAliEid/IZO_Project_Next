@@ -9,14 +9,23 @@ import { useTheme } from '@mui/material/styles'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import { Box } from '@mui/system'
 
-const LoadingAnimation = ({ open, onClose, statusType }) => {
-  const theme = useTheme()
+// ** UseRouter
+import { useRouter } from 'next/router'
 
+const LoadingAnimation = ({ open, onClose, statusType, redirectURL = null }) => {
+  const theme = useTheme()
+  const router = useRouter()
   useEffect(() => {
     if (statusType.success || statusType.error) {
       setTimeout(onClose, 2000)
     }
   }, [statusType.success, statusType.error, onClose])
+
+  useEffect(() => {
+    if (statusType.success && redirectURL) {
+      router.push(redirectURL)
+    }
+  }, [statusType.success, redirectURL, router])
 
   return (
     <Fragment>
