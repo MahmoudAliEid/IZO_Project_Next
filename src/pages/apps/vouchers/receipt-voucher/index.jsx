@@ -98,6 +98,7 @@ const ReceiptVoucher = () => {
 
   const dispatch = useDispatch()
   const storeData = useSelector(state => state.getCreateReceiptVoucher.data?.value)
+  // **  get  Bills first time
   const storeBills = useSelector(state => state.getBills.data?.value)
   const createStatus = useSelector(state => state.postCreateReceipt)
 

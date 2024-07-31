@@ -58,9 +58,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   const [changeCurrency] = useState(0)
   const [voucherData, setVoucherData] = useState(null)
   const [auth] = useState(true)
-  // const [accountText, setAccountText] = useState('')
-  // const [contactText, setContactText] = useState('')
-  // const [bills, setBills] = useState([])
+
   const [initialValues, setInitialValues] = useState({
     currencies: '', //currency_id
     table_total: 0,
@@ -79,7 +77,6 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
     attachment: [],
     note: '',
     table: [],
-
     old_bill_id: [],
     old_bill_amount: [],
     payment_id: []
@@ -106,55 +103,8 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
   // ** Get data from store
   const storeData = useSelector(state => state.getEditReceiptVoucher.data?.value)
   const editStatus = useSelector(state => state.postEditReceipt)
-  // const storeBills = useSelector(state => state.getBills.data?.value)
 
   // ** Functions
-
-  // ** Handle date convert
-  // Function to parse a YYYY-MM-DD date string to a Date object
-  // Function to format a Date object to the desired string format
-  function formatDateObject(dateString) {
-    let date = new Date(dateString)
-
-    // Ensure the parsed date is valid
-    if (isNaN(date)) {
-      throw new Error('Invalid date string provided')
-    }
-
-    // Ensure the input is a valid Date object
-    if (!(date instanceof Date) || isNaN(date)) {
-      throw new Error('Invalid Date object provided')
-    }
-
-    // Options for formatting the date string
-    let options = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZoneName: 'short'
-    }
-
-    // Format the date to the desired string format
-    let formattedDate = date.toLocaleString('en-US', options)
-
-    return formattedDate
-  }
-
-  // // Example usage
-  try {
-    let dateString = '2024-05-09'
-
-    let formattedDate = formatDateObject(dateString)
-
-    // console.log(dateObject) // Output: Thu May 09 2024 00:00:00 GMT+0300 (Eastern European Summer Time)
-    console.log(formattedDate) // Output: Thu, May 9, 2024, 12:00:00 AM GMT+3
-  } catch (error) {
-    console.error(error.message)
-  }
 
   const handleClose = () => {
     toggle()
@@ -193,7 +143,6 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
             payment_status: row.pay_status || 'no payment status',
             warehouse_name: row.store,
             grand_total: row.final_total,
-
             payment_due: row.pay_due,
             add_by: row.add_by || 'no add by',
             status: row.status,
@@ -1197,6 +1146,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                               type={type}
                               remove={remove}
                               values={values}
+                              bills={voucherData.bill}
                               setFieldValue={setFieldValue}
                               handleChange={handleChange}
                               handleBlur={handleBlur}

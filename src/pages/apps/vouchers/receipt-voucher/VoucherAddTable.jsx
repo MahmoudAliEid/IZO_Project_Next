@@ -40,7 +40,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) => {
+const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bills }) => {
   // ** States
 
   const [rows, setRows] = useState([])
@@ -48,39 +48,6 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
   const currency_code = getCookie('currency_code')
   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
   const transText = getCookie('fontStyle')
-  // const [total, setTotal] = useState(values.amount)
-  // const [remainValue, setRemainValue] = useState(values.amount)
-
-  // useEffect(() => {
-  //   if (values.amount) {
-  //     setRemainValue(Number(values.amount))
-  //     setTotal(Number(values.amount))
-  //   }
-  // }, [values.amount])
-
-  // ** Columns
-
-  // useEffect
-  // useEffect(() => {
-  //   if (variation_templates) {
-  //     setVariationsParent(variation_templates)
-  //   }
-  // }, [variation_templates])
-
-  // useEffect(() => {
-  //   if (variation_value_templates) {
-  //     setVariationsChild(variation_value_templates)
-  //   }
-  // }, [variation_value_templates])
-
-  // useEffect(() => {
-  //   if (Array.isArray(variationsChild) && searchProduct != null && variationsChild.length > 0 && searchProduct) {
-  //     const filteredChild = variationsChild.filter(child => child.variation_templates_id === searchProduct)
-  //     setFilteredVariationChildSecond(filteredChild)
-  //   }
-  // }, [variationsChild, searchProduct])
-
-  //** update allUnits when all_units in rows */
 
   // ? old Code of check box
   //  ?onChange={event => {
@@ -298,7 +265,29 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
 
   // ** UseEffect Update rows
   useEffect(() => {
-    if (storeBills) {
+    if (bills) {
+      setRows(bills)
+      bills.map(row => {
+        const obj = {
+          id: row.bill_id,
+          check: false,
+          date: row.date,
+          reference_no: row.reference_no,
+          supplier: row.supplier || 'no supplier',
+          purchase_status: row.status || 'no purchase status',
+          payment_status: row.pay_status || 'no payment status',
+          warehouse_name: row.store,
+          grand_total: row.final_total,
+          payment: row.pay_due,
+          status: row.status,
+          payment_due: row.pay_due,
+          add_by: row.add_by || 'no add by',
+          payment: row.total_payment,
+          previous_payment: row.previous_payment
+        }
+        push(obj)
+      })
+    } else if (storeBills && !bills) {
       setRows(storeBills)
       storeBills.map(row => {
         const obj = {
@@ -321,39 +310,13 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push }) 
         push(obj)
       })
     }
-  }, [storeBills, push])
-
-  // useEffect(() => {
-  //   // auto pushing
-
-  //   if (rows.length > 0) {
-  //     rows.map(row => {
-  //       const obj = {
-  //         id: row.bill_id,
-  //         check: false,
-  //         date: row.date,
-  //         reference_no: row.reference_no,
-  //         supplier: row.supplier || 'no supplier',
-  //         purchase_status: row.status || 'no purchase status',
-  //         payment_status: row.pay_status || 'no payment status',
-  //         warehouse_name: row.store,
-  //         grand_total: row.final_total,
-  //         payment: row.pay_due,
-  //         status: row.status,
-  //         payment_due: row.pay_due,
-  //         add_by: row.add_by || 'no add by'
-  //       }
-  //       push(obj)
-  //     })
-  //   }
-  // }, [rows, push])
+  }, [storeBills, push, bills])
 
   // ** Function to handle checkBox process
   const handleCheckBoxActions = (event, params) => {
     const { checked } = event.target
     handleChange(event)
     const previous_payment = Number(params.previous_payment)
-    console.log('previous_payment form check box 😫🍚🥩🍖😪', previous_payment)
     const payment = Number(params.payment)
     const payment_due = Number(params.payment_due)
     const remain = Number(values?.table_total)
