@@ -425,8 +425,8 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.isArray(values?.table) && values?.table && values?.table.length > 0 ? (
-                values?.table.map((row, idx) => (
+              {Array.isArray(rows) && rows && rows.length > 0 ? (
+                rows.map((row, idx) => (
                   <TableRow
                     hover
                     role='checkbox'
@@ -486,24 +486,20 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
           }}
         >
           <StyledTableCell>
-            <Typography sx={{ textTransform: transText }} color={'white'}>
-              Total :
-            </Typography>
+            <Typography sx={{ textTransform: transText }}>Total :</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography sx={{ textTransform: transText }} color={'white'}>
+            <Typography sx={{ textTransform: transText }}>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(values?.amount).toFixed(decimalFormat)} ${currency_code} `
                 : `${currency_code} ${Number(values?.amount).toFixed(decimalFormat)} `}
             </Typography>
           </StyledTableCell>
           <StyledTableCell>
-            <Typography sx={{ textTransform: transText }} color={'white'}>
-              Remain:
-            </Typography>
+            <Typography sx={{ textTransform: transText }}>Remain:</Typography>
           </StyledTableCell>
           <StyledTableCell align='right' colSpan={2}>
-            <Typography sx={{ textTransform: transText }} color={'white'}>
+            <Typography sx={{ textTransform: transText }}>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(values?.table_total).toFixed(decimalFormat)} ${currency_code} `
                 : `${currency_code} ${Number(values?.table_total).toFixed(decimalFormat)} `}

@@ -416,30 +416,18 @@ const columns = [
     }
   },
   {
-    flex: 0.25,
+    flex: 0.2,
     minWidth: 180,
-    field: 'account_id',
-    headerName: 'Account',
-    renderCell: ({ row }) => {
-      const { account_id } = row
+    field: 'type',
+    headerName: 'Type',
+    renderCell: params => {
+      // const status = userStatusObj[params.row.type]
 
       return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{account_id}</Box>
-        </Box>
-      )
-    }
-  },
-  {
-    flex: 0.25,
-    minWidth: 160,
-    field: 'text',
-    headerName: 'Text',
-    renderCell: ({ row }) => {
-      return (
-        <Typography noWrap sx={{ color: 'text.secondary' }} variant={'caption'}>
-          {row.text ? row.text : 'Not available'}
-        </Typography>
+        <CustomChip rounded size='small' skin='light' color={'success'} label={params.row.type} />
+        // <Typography noWrap sx={{ color: 'text.secondary' }}>
+        //   {params.row.type}
+        // </Typography>
       )
     }
   },
@@ -478,23 +466,35 @@ const columns = [
       )
     }
   },
-
   {
-    flex: 0.2,
+    flex: 0.25,
     minWidth: 180,
-    field: 'type',
-    headerName: 'Type',
-    renderCell: params => {
-      // const status = userStatusObj[params.row.type]
+    field: 'account_id',
+    headerName: 'Account',
+    renderCell: ({ row }) => {
+      const { account_id } = row
 
       return (
-        <CustomChip rounded size='small' skin='light' color={'success'} label={params.row.type} />
-        // <Typography noWrap sx={{ color: 'text.secondary' }}>
-        //   {params.row.type}
-        // </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{account_id}</Box>
+        </Box>
       )
     }
   },
+  {
+    flex: 0.25,
+    minWidth: 160,
+    field: 'text',
+    headerName: 'Text',
+    renderCell: ({ row }) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }} variant={'caption'}>
+          {row.text ? row.text : 'Not available'}
+        </Typography>
+      )
+    }
+  },
+
   {
     flex: 0.25,
     minWidth: 140,
