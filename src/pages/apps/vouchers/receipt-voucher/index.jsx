@@ -127,7 +127,7 @@ const ReceiptVoucher = () => {
   }, [storeBills])
 
   const handleSubmitForm = values => {
-    console.log(values, 'values form submit')
+    console.log(values, 'values form  receipt voucher')
 
     dispatch(createReceipt({ values }))
       .then(() => {

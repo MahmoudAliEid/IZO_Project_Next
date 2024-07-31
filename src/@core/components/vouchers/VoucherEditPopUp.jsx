@@ -1146,6 +1146,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
                               type={type}
                               remove={remove}
                               values={values}
+                              edit={true}
                               bills={voucherData.bill}
                               setFieldValue={setFieldValue}
                               handleChange={handleChange}

@@ -31,8 +31,8 @@ import { getCookie } from 'cookies-next'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.footer}`]: {
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.common.black,
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.mode === 'light' ? '#f3f4f6' : '#424242',
     border: 'none'
   },
   [`&.${tableCellClasses.body}`]: {
@@ -40,7 +40,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bills }) => {
+const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bills, edit }) => {
   // ** States
 
   const [rows, setRows] = useState([])
@@ -265,12 +265,12 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
 
   // ** UseEffect Update rows
   useEffect(() => {
-    if (bills) {
+    if (bills && edit) {
       setRows(bills)
       bills.map(row => {
         const obj = {
           id: row.bill_id,
-          check: false,
+          check: row.check,
           date: row.date,
           reference_no: row.reference_no,
           supplier: row.supplier || 'no supplier',
@@ -287,12 +287,12 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
         }
         push(obj)
       })
-    } else if (storeBills && !bills) {
+    } else if (storeBills && !bills && !edit) {
       setRows(storeBills)
       storeBills.map(row => {
         const obj = {
           id: row.bill_id,
-          check: false,
+          check: row.check,
           date: row.date,
           reference_no: row.reference_no,
           supplier: row.supplier || 'no supplier',
@@ -310,7 +310,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
         push(obj)
       })
     }
-  }, [storeBills, push, bills])
+  }, [storeBills, push, bills, edit])
 
   // ** Function to handle checkBox process
   const handleCheckBoxActions = (event, params) => {
@@ -481,7 +481,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: '#424242',
+            // backgroundColor: '#424242',
             textTransform: transText
           }}
         >
