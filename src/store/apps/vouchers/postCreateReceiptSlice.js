@@ -84,7 +84,7 @@ const postCreateReceiptSlice = createSlice({
         state.success = true
         state.error = false
         state.data = action.payload
-        notify('Receipt successfully stored.', 'success')
+        notify('Successfully stored.', 'success')
       })
       .addCase(createReceipt.rejected, (state, action) => {
         state.loading = false

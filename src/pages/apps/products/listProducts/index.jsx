@@ -10,7 +10,7 @@ import { getCookie } from 'cookies-next'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
+
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
@@ -75,19 +75,18 @@ const ListProducts = () => {
       <Grid item lg={12} xs={12}>
         <Box>
           <Card sx={{ mb: 20 }}>
-            <CardHeader title={title} />
-            <Divider sx={{ m: '0 !important' }} />
             <Box
               sx={{
                 p: 6,
                 gap: 4,
                 display: 'flex',
                 flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'center'
+                alignItems: 'space-between',
+                justifyContent: 'space-between'
               }}
             >
-              <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '200px' }}>
+              <CardHeader title={title} />
+              <Box sx={{ gap: 4, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
                 <Button fullWidth startIcon={<AddCircleOutlineIcon />} onClick={handleAddClickOpen} variant='contained'>
                   Add
                 </Button>

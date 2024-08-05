@@ -482,8 +482,8 @@ const columns = [
     }
   },
   {
-    flex: 0.25,
-    minWidth: 160,
+    flex: 0.5,
+    minWidth: 200,
     field: 'text',
     headerName: 'Text',
     renderCell: ({ row }) => {

@@ -1,1182 +1,655 @@
-// 'use client'
+// ** React Imports
+import { useState, Fragment, useEffect } from 'react'
+import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
+import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-// // ** React Imports
-// import { ChangeEvent, useState, useEffect, useRef, Fragment } from 'react'
+// ** Next Imports
+import { getCookie } from 'cookies-next'
 
-// //** Redux Imports
-// import { useDispatch, useSelector } from 'react-redux'
+// ** MUI Imports
+import { Box, Card, Menu, Grid, Divider, MenuItem, IconButton, Typography, CardHeader, Button } from '@mui/material'
+// import { useTheme, styled } from '@mui/material/styles'
 
-// // ** MUI Imports
-// import Card from '@mui/material/Card'
-// import CardHeader from '@mui/material/CardHeader'
-// import { DataGrid, GridColDef } from '@mui/x-data-grid'
-// import TextField from '@mui/material/TextField'
-// import { Box, FormControl, InputLabel, Select, MenuItem, Chip, Button, Divider, Grid, Typography } from '@mui/material'
-// import { useTheme } from '@mui/material/styles'
+// ** Third Party Components
+import { DataGrid } from '@mui/x-data-grid'
+// import axios from 'axios'
 
-// // ** User Components
-// import ProductVariable from '../productVariable/ProductVariable'
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
 
-// const ProductPrices = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue }) => {
-//   // ** States
-//   const [tax, setTax] = useState('')
+// ** Store Imports
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchOpeningStock } from 'src/store/apps/products/addOpeningStock/getListSlice'
+import { deleteOpeningStock } from 'src/store/apps/products/addOpeningStock/postDeleteOpeningStock'
+import { fetchEditOpeningStock } from 'src/store/apps/products/addOpeningStock/getEditOpeningStockSlice'
 
-//   const [filteredSubUnitsData, setFilteredSubUnitsData] = useState([])
-//   const [productType, setProductType] = useState('')
-//   const [unitsData, setUnitsData] = useState([])
-//   const [subUnitsIds, setSubUnitsIds] = useState([])
-//   const [taxValues, setTaxValues] = useState([])
-//   const [unitId, setUnitId] = useState('')
-//   const [subUnitsData, setSubUnitsData] = useState([])
-//   const [showMore, setShowMore] = useState(false)
-//   const [tableData, setTableData] = useState([
-//     {
-//       id: 1,
-//       unit_id: unitId,
-//       value: 'default_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 2,
-//       unit_id: unitId,
-//       value: 'whole_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 3,
-//       unit_id: unitId,
-//       value: 'retail_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 4,
-//       unit_id: unitId,
-//       value: 'minimum_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 5,
-//       unit_id: unitId,
-//       value: 'last_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 6,
-//       unit_id: unitId,
-//       value: 'ecm_before_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 7,
-//       unit_id: unitId,
-//       value: 'ecm_after_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 8,
-//       unit_id: unitId,
-//       value: 'custom_price_1',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 9,
-//       unit_id: unitId,
-//       value: 'custom_price_2',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 10,
-//       unit_id: unitId,
-//       value: 'custom_price_3',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 11,
-//       unit_id: unitId,
-//       value: 'custom_price_4',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     }
-//   ])
+// ** Custom Components Imports
+// import CustomChip from 'src/@core/components/mui/chip'
+// import CustomAvatar from 'src/@core/components/mui/avatar'
 
-//   const [tableDataChild1, setTableDataChild1] = useState([
-//     {
-//       id: 1,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'default_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 2,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'whole_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 3,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'retail_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 4,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'minimum_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 5,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'last_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 6,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'ecm_before_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 7,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'ecm_after_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 8,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'custom_price_1',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 9,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'custom_price_2',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 10,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'custom_price_3',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 11,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[0] : '',
-//       value: 'custom_price_4',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     }
-//   ])
-//   const [tableDataChild2, setTableDataChild2] = useState([
-//     {
-//       id: 1,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'default_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 2,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'whole_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 3,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'retail_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 4,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'minimum_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 5,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'last_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 6,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'ecm_before_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 7,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'ecm_after_price',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 8,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'custom_price_1',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 9,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'custom_price_2',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 10,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'custom_price_3',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     },
-//     {
-//       id: 11,
-//       unit_id: subUnitsIds.length > 0 ? subUnitsIds[1] : '',
-//       value: 'custom_price_4',
-//       single_dpp: '',
-//       single_dpp_in_tax: '',
-//       profit_percent: '',
-//       single_dsp: '',
-//       single_dsp_inc_tax: ''
-//     }
-//   ])
+// ** Utils Import
+// import { getInitials } from 'src/@core/utils/get-initials'
 
-//   // update the table data when tax changes 🔥
-//   // useEffect(() => {
-//   //   // update the table data
-//   //   const updatedTableData = initialValues.tableData.map(item => {
-//   //     return {
-//   //       ...item,
-//   //       ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
-//   //       ['single_dsp_inc_tax']:
-//   //         Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
-//   //         Number(item.single_dpp) +
-//   //         (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
-//   //     }
-//   //   })
+// ** Custom Table Components Imports
+import OpeningStockPopUp from 'src/@core/components/products/addOpeningStock/add/OpeningStockPopUp'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 
-//   //   // console.log(updatedTableData, 'updatedTableData 🔥')
-
-//   //   setFieldValue('tableData', updatedTableData)
-//   // }, [tax, setFieldValue, initialValues.tableData])
-
-//   // ** for child 1
-//   // useEffect(() => {
-//   //   // update the table data
-//   //   const updatedTableData = initialValues.tableDataChildOne.map(item => {
-//   //     return {
-//   //       ...item,
-//   //       ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
-//   //       ['single_dsp_inc_tax']:
-//   //         Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
-//   //         Number(item.single_dpp) +
-//   //         (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
-//   //     }
-//   //   })
-
-//   //   // console.log(updatedTableData, 'updatedTableData 🔥')
-
-//   //   setFieldValue('tableDataChildOne', updatedTableData)
-//   // }, [tax, setFieldValue, initialValues.tableDataChildOne])
-
-//   // ** for child 2
-//   // useEffect(() => {
-//   //   // update the table data
-//   //   const updatedTableData = initialValues.tableDataChildTwo.map(item => {
-//   //     return {
-//   //       ...item,
-//   //       ['single_dpp_in_tax']: Number(item.single_dpp) + Number(item.single_dpp) * Number(tax),
-//   //       ['single_dsp_inc_tax']:
-//   //         Number(item.single_dpp) * Number(item.profit_percent) * 0.01 +
-//   //         Number(item.single_dpp) +
-//   //         (Number(item.single_dpp) * Number(item.profit_percent) * 0.01 + Number(item.single_dpp)) * Number(tax)
-//   //     }
-//   //   })
-
-//   //   // console.log(updatedTableData, 'updatedTableData 🔥')
-
-//   //   setFieldValue('tableDataChildTwo', updatedTableData)
-//   // }, [tax, setFieldValue, initialValues.tableDataChildTwo])
-
-//   // update  unit_id when unit changes 🔥
-//   useEffect(() => {
-//     const updatedTableData = tableData.map(item => {
-//       return {
-//         ...item,
-//         ['unit_id']: unitId
-//       }
-//     })
-
-//     setFieldValue('tableData', updatedTableData)
-//   }, [unitId, setFieldValue, tableData])
-
-//   useEffect(() => {
-//     if (showMore === true) {
-//       setFieldValue('show_more_price', true)
-//     } else {
-//       setFieldValue('show_more_price', false)
-//     }
-//   }, [showMore, setFieldValue])
-
-//   // Update First input
-//   const updateFirstInput = (id, newValue, name, tableName) => {
-//     console.log('tableName ============ 🌚', tableName)
-//     const updatedTableData = initialValues[`${tableName}`].map(item => {
-//       if (item.id === id + 1) {
-//         return {
-//           ...item,
-//           [name]: Number(newValue),
-
-//           // ['single_dpp']: Number(item.single_dpp),
-
-//           ['single_dpp_in_tax']: Number(newValue) + Number(newValue) * Number(initialValues.tax),
-//           ['single_dsp']: Number(newValue) * Number(item.profit_percent) * 0.01 + Number(newValue),
-//           ['single_dsp_inc_tax']:
-//             Number(newValue) * Number(item.profit_percent) * 0.01 +
-//             Number(newValue) +
-//             (Number(newValue) * Number(item.profit_percent) * 0.01 + Number(newValue)) * Number(initialValues.tax)
-//         }
-//       }
-
-//       return item
-//     })
-//     setFieldValue(`${tableName}`, updatedTableData)
-//   }
-
-//   // ** update the table data when profit percent changes 🔥
-//   const updateValue = (id, newValue, name, tableName) => {
-//     console.log('tableName ============ 🌚', tableName)
-//     const updatedTableData = initialValues[`${tableName}`].map(item => {
-//       if (item.id === id + 1) {
-//         return {
-//           ...item,
-//           [name]: Number(newValue),
-//           ['single_dsp']: Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp),
-//           ['single_dsp_inc_tax']:
-//             Number(item.single_dpp) * Number(newValue) * 0.01 +
-//             Number(item.single_dpp) +
-//             (Number(item.single_dpp) * Number(newValue) * 0.01 + Number(item.single_dpp)) * Number(initialValues.tax)
-//         }
-//       }
-
-//       return item
-//     })
-
-//     setFieldValue(`${tableName}`, updatedTableData)
-//   }
-
-//   // **  function to update in single_dpp_in_tax
-//   const updateSingleDppInTax = (id, newValue, name, tableName) => {
-//     const updatedTableData = initialValues[`${tableName}`].map(item => {
-//       const newValueCal = (Number(newValue) * 100) / (100 + Number(initialValues.tax) * 100)
-//       if (item.id === id + 1) {
-//         return {
-//           ...item,
-//           [name]: Number(newValue),
-//           ['single_dpp']: newValueCal,
-//           ['single_dsp']: newValueCal * Number(item.profit_percent) * 0.01 + newValueCal,
-//           ['single_dsp_inc_tax']:
-//             newValueCal * Number(item.profit_percent) * 0.01 +
-//             newValueCal +
-//             (newValueCal * Number(item.profit_percent) * 0.01 + newValueCal) * Number(initialValues.tax)
-//         }
-//       }
-
-//       return item
-//     })
-
-//     setFieldValue(`${tableName}`, updatedTableData)
-//   }
-
-//   // ** update all fields when tax change
-
-//   console.log('Tax each time 🤍🤍', initialValues.tax)
-
-//   // ** Grid columns
-//   const columns = [
-//     {
-//       field: 'value',
-//       headerName: 'Header',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'center',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p
-//               style={{
-//                 textTransform: 'capitalize'
-//               }}
-//             >
-//               {params.row.value.replace(/_/g, ' ')}
-//             </p>
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'single_dpp',
-//       headerName: 'Default Purchase Price',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'space-between',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p>Exc. tax:</p>
-//             <TextField
-//               type='text'
-//               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
-//               onChange={event => {
-//                 const id = params.row.id - 1
-//                 const newValue = event.target.value
-//                 updateFirstInput(id, newValue, 'single_dpp', 'tableData')
-//               }}
-//             />
-//           </Box>
-//           <Box>
-//             <p>Inc. tax: </p>
-//             <TextField
-//               type='text'
-//               value={params.row.single_dpp_in_tax ? Number(params.row.single_dpp_in_tax) : ''}
-//               onChange={event => {
-//                 const id = params.row.id - 1
-//                 const newValue = event.target.value
-//                 updateSingleDppInTax(id, newValue, 'single_dpp_in_tax', 'tableData')
-//               }}
-//             />
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'xmargin',
-//       headerName: 'X Margin(%)',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'end',
-//             height: '85%',
-//             width: '100%'
-//           }}
-//         >
-//           <Box
-//             sx={{
-//               display: 'flex',
-//               alignItems: 'start',
-//               flexDirection: 'column'
-//             }}
-//           >
-//             <p>Margin: {params.row.profit_percent}%</p>
-//             <TextField
-//               type='text'
-//               value={params.row.profit_percent}
-//               onChange={e => {
-//                 const value = e.target.value
-//                 const id = params.row.id - 1
-//                 updateValue(id, value, 'profit_percent', 'tableData')
-//               }}
-//             />
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'defaultSalesPrice',
-//       headerName: 'Default Sales Price',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'space-between',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p>Exc. tax:</p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                     Number(params.row.single_dpp)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//           <Box>
-//             <p>Inc. tax: </p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                     Number(params.row.single_dpp) +
-//                     (Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                       Number(params.row.single_dpp)) *
-//                       Number(initialValues.tax)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//         </div>
-//       )
-//     }
-//   ]
-
-//   const columnsChildOne = [
-//     {
-//       field: 'value',
-//       headerName: 'Header',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'center',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p
-//               style={{
-//                 textTransform: 'capitalize'
-//               }}
-//             >
-//               {params.row.value.replace(/_/g, ' ')}
-//             </p>
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'single_dpp',
-//       headerName: 'Default Purchase Price',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'space-between',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p>Exc. tax:</p>
-//             <TextField
-//               type='text'
-//               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
-//               onChange={event => {
-//                 const id = params.row.id - 1
-//                 const newValue = event.target.value
-//                 updateFirstInput(id, newValue, 'single_dpp', 'tableDataChildOne')
-//               }}
-//             />
-//           </Box>
-//           <Box>
-//             <p>Inc. tax: </p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(initialValues.tax)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'xmargin',
-//       headerName: 'X Margin(%)',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'end',
-//             height: '85%',
-//             width: '100%'
-//           }}
-//         >
-//           <Box
-//             sx={{
-//               display: 'flex',
-//               alignItems: 'start',
-//               flexDirection: 'column'
-//             }}
-//           >
-//             <p>Margin: {params.row.profit_percent}%</p>
-//             <TextField
-//               type='text'
-//               value={params.row.profit_percent}
-//               onChange={e => {
-//                 const value = e.target.value
-//                 const id = params.row.id - 1
-//                 updateValue(id, value, 'profit_percent', 'tableDataChildOne')
-//               }}
-//             />
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'defaultSalesPrice',
-//       headerName: 'Default Sales Price',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'space-between',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p>Exc. tax:</p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                     Number(params.row.single_dpp)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//           <Box>
-//             <p>Inc. tax: </p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                     Number(params.row.single_dpp) +
-//                     (Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                       Number(params.row.single_dpp)) *
-//                       Number(initialValues.tax)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//         </div>
-//       )
-//     }
-//   ]
-//   const columnsChildTwo = [
-//     {
-//       field: 'value',
-//       headerName: 'Header',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'center',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p
-//               style={{
-//                 textTransform: 'capitalize'
-//               }}
-//             >
-//               {params.row.value.replace(/_/g, ' ')}
-//             </p>
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'single_dpp',
-//       headerName: 'Default Purchase Price',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'space-between',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p>Exc. tax:</p>
-//             <TextField
-//               type='text'
-//               value={params.row.single_dpp ? Number(params.row.single_dpp) : ''}
-//               onChange={event => {
-//                 const id = params.row.id - 1
-//                 const newValue = event.target.value
-//                 updateFirstInput(id, newValue, 'single_dpp', 'tableDataChildTwo')
-//               }}
-//             />
-//           </Box>
-//           <Box>
-//             <p>Inc. tax: </p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) + Number(params.row.single_dpp) * Number(initialValues.tax)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'xmargin',
-//       headerName: 'X Margin(%)',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'end',
-//             height: '85%',
-//             width: '100%'
-//           }}
-//         >
-//           <Box
-//             sx={{
-//               display: 'flex',
-//               alignItems: 'start',
-//               flexDirection: 'column'
-//             }}
-//           >
-//             <p>Margin: {params.row.profit_percent}%</p>
-//             <TextField
-//               type='text'
-//               value={params.row.profit_percent}
-//               onChange={e => {
-//                 const value = e.target.value
-//                 const id = params.row.id - 1
-//                 updateValue(id, value, 'profit_percent', 'tableDataChildTwo')
-//               }}
-//             />
-//           </Box>
-//         </div>
-//       )
-//     },
-//     {
-//       field: 'defaultSalesPrice',
-//       headerName: 'Default Sales Price',
-//       width: 200,
-//       renderCell: params => (
-//         <div
-//           style={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'space-between',
-//             gap: '1rem'
-//           }}
-//         >
-//           <Box>
-//             <p>Exc. tax:</p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                     Number(params.row.single_dpp)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//           <Box>
-//             <p>Inc. tax: </p>
-//             <TextField
-//               type='text'
-//               value={
-//                 params.row.single_dpp
-//                   ? Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                     Number(params.row.single_dpp) +
-//                     (Number(params.row.single_dpp) * Number(params.row.profit_percent) * 0.01 +
-//                       Number(params.row.single_dpp)) *
-//                       Number(initialValues.tax)
-//                   : ''
-//               }
-//             />
-//           </Box>
-//         </div>
-//       )
-//     }
-//   ]
-
-//   // ** Hooks
-//   const cardRef = useRef(null)
-//   const theme = useTheme()
-
-//   // ** Selectors
-//   const taxes = useSelector(state => state.getCreateProduct?.data?.value.taxes)
-//   const units = useSelector(state => state.getCreateProduct?.data?.value.units)
-//   const sub_units = useSelector(state => state.getCreateProduct?.data?.value.sub_units)
-
-//   // ** useEffect
-//   useEffect(() => {
-//     setUnitsData(units)
-//     if (sub_units) {
-//       setSubUnitsData(sub_units)
-//     }
-//   }, [units, sub_units])
-
-//   // ** filter sub units
-//   useEffect(() => {
-//     if (initialValues.sub_unit_id) {
-//       setSubUnitsIds(initialValues.sub_unit_id)
-//     }
-//   }, [subUnitsData, initialValues.sub_unit_id])
-
-//   useEffect(() => {
-//     try {
-//       setTaxValues(taxes)
-//     } catch (error) {
-//       console.error('Failed to set tax values:', error)
-//     }
-//   }, [taxes])
-
-//   // ** filter unit_id
-//   useEffect(() => {
-//     if (initialValues.unit_id) {
-//       setUnitId(initialValues.unit_id)
-//     }
-//   }, [initialValues.unit_id])
-
-//   // ** filter sub units
-//   useEffect(() => {
-//     const filteredSubUnits = subUnitsData.filter(subUnit => subUnit.parent_id === initialValues.unit_id)
-//     setFilteredSubUnitsData(filteredSubUnits.length ? filteredSubUnits : [])
-//   }, [subUnitsData, initialValues.unit_id])
-
-//   // ** to update value of initialvalue.tax each item  initialvalue.tax_id
-//   useEffect(() => {
-//     if (taxValues) {
-//       const tax = taxValues.find(tax => tax.id === initialValues.tax_id)
-//       if (tax) {
-//         setFieldValue('tax', tax.value)
-//         setFieldValue('my_fav_per', 'محمد صلى الله عليه وسلم')
-//       }
-//     }
-//   }, [initialValues.tax_id, taxValues, setFieldValue])
-
-//   console.log('tax Values 🤍🤍', taxValues)
-//   console.log('taxes selector 💦🤍', taxes)
-
-//   if (initialValues.product_type) {
-//     return (
-//       <Card style={{ height: '100%', width: '100%' }} ref={cardRef}>
-//         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, spacing: 2 }}>
-//           <CardHeader title='Product Prices' />
-//           <Divider sx={{ m: '0 !important' }} />
-//         </Box>
-//         <Box
-//           sx={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             justifyContent: 'center',
-//             gap: '1rem',
-//             marginBottom: '1rem',
-//             width: '100%',
-//             padding: '0px 1rem'
-//           }}
-//         >
-//           <FormControl fullWidth>
-//             <InputLabel>Applicable Tax:</InputLabel>
-//             <Select value={initialValues.tax_id} onChange={handleChange} label='Applicable Tax' name='tax_id'>
-//               <MenuItem value=''>Please Select</MenuItem>
-//               {taxValues.length > 0 &&
-//                 taxValues.map(tax => (
-//                   <MenuItem key={tax.id} value={tax.id}>
-//                     {tax.name}
-//                   </MenuItem>
-//                 ))}
-//             </Select>
-//           </FormControl>
-
-//           <FormControl fullWidth>
-//             <InputLabel>Product Type</InputLabel>
-//             <Select value={initialValues.product_type} onChange={handleChange} label='Product Type' name='product_type'>
-//               <MenuItem value={'single'}>Single</MenuItem>
-//               <MenuItem value={'variable'}>Variable</MenuItem>
-//               <MenuItem value={'combo'}>Combo</MenuItem>
-//             </Select>
-//           </FormControl>
-
-//           <FormControl fullWidth>
-//             <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
-//             <Select
-//               value={initialValues.unit_id}
-//               onChange={handleChange}
-//               required
-//               name='unit_id'
-//               id='demo-simple-select'
-//               label='Unit'
-//               fullWidth
-//               onBlur={handleBlur}
-//               disabled={true}
-//               error={touched.unit_id && !!errors.unit_id}
-//             >
-//               {unitsData.map(unit => (
-//                 <MenuItem key={unit.id} value={unit.id} disabled={initialValues.unit_id === unit.id ? false : true}>
-//                   {unit.value}
-//                 </MenuItem>
-//               ))}
-//             </Select>
-//           </FormControl>
-//         </Box>
-//         {initialValues.product_type === 'single' && (
-//           <Box padding={2}>
-//             <DataGrid autoHeight columns={columns} rowHeight={120} rows={initialValues.tableData} />
-//             {subUnitsIds.length > 0 && (
-//               <Button
-//                 variant='contained'
-//                 color='primary'
-//                 onClick={() => {
-//                   setShowMore(!showMore)
-//                 }}
-//               >
-//                 {showMore ? 'Show Less' : 'Show More'}
-//               </Button>
-//             )}
-//           </Box>
-//         )}
-
-//         {showMore &&
-//           subUnitsIds.length > 0 &&
-//           subUnitsIds.map((subUnit, index) => (
-//             <Box
-//               key={index}
-//               sx={{
-//                 marginTop: '1rem',
-//                 padding: '1rem',
-//                 border: '1px solid ',
-//                 borderRadius: '10px',
-//                 borderColor: theme => theme.palette.divider
-//               }}
-//             >
-//               <Grid item xs={6} sx={{ my: 5 }}>
-//                 <FormControl fullWidth>
-//                   <InputLabel id='demo-simple-select-label'>Sub Unit</InputLabel>
-//                   <Select
-//                     value={initialValues.sub_unit_id}
-//                     onChange={handleChange}
-//                     multiple
-//                     name='sub_unit_id'
-//                     id='demo-simple-select'
-//                     label='Sub Unit'
-//                     fullWidth
-//                     renderValue={selected =>
-//                       filteredSubUnitsData && filteredSubUnitsData.length > 0 ? (
-//                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-//                           <Chip
-//                             label={filteredSubUnitsData.find(subUnit => subUnit.id === selected[index])?.name || null}
-//                             onDelete={() => {
-//                               const updatedSubUnitIds = initialValues.sub_unit_id.filter(
-//                                 item => item !== selected[index]
-//                               )
-//                               setFieldValue('sub_unit_id', updatedSubUnitIds)
-//                               setFilteredSubUnitsData(filteredSubUnitsData.filter(item => item.id !== selected[index]))
-//                             }}
-//                           />
-//                         </Box>
-//                       ) : null
-//                     }
-//                     onBlur={handleBlur}
-//                     disabled={true}
-//                   >
-//                     {initialValues.sub_unit_id.length >= 2 && (
-//                       <MenuItem value='' disabled>
-//                         <em>You can select only up to two sub units</em>
-//                       </MenuItem>
-//                     )}
-//                     {filteredSubUnitsData.map(subUnit => (
-//                       <MenuItem
-//                         key={subUnit.id}
-//                         value={subUnit.id}
-//                         disabled={!initialValues.sub_unit_id.includes(subUnit.id)}
-//                       >
-//                         {subUnit.name}
-//                       </MenuItem>
-//                     ))}
-//                   </Select>
-//                 </FormControl>
-//               </Grid>
-
-//               <DataGrid
-//                 autoHeight
-//                 columns={index === 0 ? columnsChildOne : columnsChildTwo}
-//                 rowHeight={120}
-//                 rows={index === 0 ? initialValues.tableDataChildOne : initialValues.tableDataChildTwo}
-//               />
-//             </Box>
-//           ))}
-//         {initialValues.product_type === 'variable' && <ProductVariable />}
-//         {initialValues.product_type === 'combo' && <Typography>Under Developments</Typography>}
-//       </Card>
-//     )
-//   }
-
-//   // if (initialValues.product_type === 'variable') {
-//   //   return <Typography>Under Developments</Typography>
-//   // }
+// const userStatusObj = {
+//   receipt_voucher: { title: 'Receipt Voucher', color: 'success' },
+//   pending: { title: 'pending', color: 'warning' },
+//   payment_voucher: { title: 'Payment Voucher', color: 'secondary' }
 // }
 
-// export default ProductPrices
+// const LinkStyled = styled(Box)(({ theme }) => ({
+//   fontWeight: 400,
+//   fontSize: '1rem',
+//   cursor: 'pointer',
+//   textDecoration: 'none',
+//   color: theme.palette.text.secondary,
+//   '&:hover': {
+//     color: theme.palette.primary.main
+//   }
+// }))
+
+// ** renders client column
+// const renderClient = row => {
+//   if (row.avatar?.length) {
+//     return <CustomAvatar src={row.avatar} sx={{ mr: 3, width: 32, height: 32 }} />
+//   } else {
+//     return (
+//       <CustomAvatar
+//         skin='light'
+//         color={row.avatarColor || 'primary'}
+//         sx={{ mr: 3, width: 32, height: 32, fontSize: '.875rem' }}
+//       >
+//         {getInitials(row.contact_id ? String(row.contact_id) : 'John Doe')}
+//       </CustomAvatar>
+//     )
+//   }
+// }
+
+const RowOptions = ({ id, type }) => {
+  // ** Hooks
+  const dispatch = useDispatch()
+
+  // ** State
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
+  // const [openView, setOpenView] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
+
+  const rowOptionsOpen = anchorEl
+
+  // ** Cookies
+  const transText = getCookie('fontStyle')
+  const token = getCookie('token')
+  // const url = getCookie('apiUrl')
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleDelete = () => {
+    if (!id || !token) {
+      console.log('Invalid id or token')
+      handleRowOptionsClose()
+
+      return
+    }
+
+    dispatch(deleteOpeningStock({ id }))
+      .then(() => {
+        dispatch(fetchOpeningStock())
+
+        handleRowOptionsClose()
+      })
+      .catch(error => {
+        console.error('Error deleting user:', error)
+
+        // Handle the error as needed
+        handleRowOptionsClose()
+      })
+  }
+
+  const handleEdit = () => {
+    setOpenEdit(!openEdit)
+    dispatch(fetchEditOpeningStock({ id }))
+  }
+
+  return (
+    <Fragment>
+      <IconButton size='small' onClick={handleRowOptionsClick}>
+        <Icon icon='bx:dots-vertical-rounded' />
+      </IconButton>
+      <Menu
+        keepMounted
+        anchorEl={anchorEl}
+        open={rowOptionsOpen}
+        onClose={handleRowOptionsClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        sx={{ textTransform: transText }}
+        PaperProps={{ style: { minWidth: '8rem' } }}
+      >
+        <MenuItem
+          sx={{ '& svg': { mr: 2 } }}
+          onClick={() => {
+            setOpenView(true)
+            handleRowOptionsClose()
+          }}
+        >
+          <Icon icon='bx:show' fontSize={20} />
+          View
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleEdit()
+            setOpenEdit(true)
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
+          <Icon icon='bx:pencil' fontSize={20} />
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setOpenDeleteAlert(true)
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
+          <Icon icon='bx:trash-alt' fontSize={20} />
+          Delete
+        </MenuItem>
+      </Menu>
+
+      {openDeleteAlert && (
+        <DeleteGlobalAlert
+          open={openDeleteAlert}
+          close={() => setOpenDeleteAlert(!openDeleteAlert)}
+          mainHandleDelete={handleDelete}
+          name={type.charAt(0).toUpperCase() + type.slice(1)}
+        />
+      )}
+
+      {openEdit && <OpeningStockPopUp open={openEdit} handleClose={() => setOpenEdit(false)} edit={true} id={id} />}
+    </Fragment>
+  )
+}
+
+// const RowOptionsTransactions = ({ row }) => {
+//   // ** State
+//   const [openTransaction, setOpenTransaction] = useState(false)
+//   const [anchorEl, setAnchorEl] = useState(null)
+
+//   const decimalFormat = getCookie('DecimalFormat')
+//   const currency_code = getCookie('currency_code')
+//   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+
+//   const handleTransactionClick = () => {
+//     setOpenTransaction(true)
+//   }
+
+//   const rowOptionsOpen = anchorEl
+
+//   const handleRowOptionsClick = event => {
+//     setAnchorEl(event.currentTarget)
+//   }
+
+//   const handleRowOptionsClose = () => {
+//     setAnchorEl(null)
+//   }
+
+//   return (
+//     <Fragment>
+//       <Button size='small' onClick={handleRowOptionsClick} sx={{ my: 3 }}>
+//         Invoices
+//       </Button>
+//       <Menu
+//         keepMounted
+//         anchorEl={anchorEl}
+//         open={rowOptionsOpen}
+//         onClose={handleRowOptionsClose}
+//         anchorOrigin={{
+//           vertical: 'bottom',
+//           horizontal: 'right'
+//         }}
+//         transformOrigin={{
+//           vertical: 'top',
+//           horizontal: 'right'
+//         }}
+//         PaperProps={{ style: { minWidth: '8rem' } }}
+//       >
+//         {row.payments.map((item, index) => (
+//           <MenuItem
+//             key={index}
+//             onClick={() => {
+//               handleRowOptionsClose()
+//               handleTransactionClick()
+//             }}
+//             sx={{ '& svg': { mr: 2 } }}
+//           >
+//             <Icon icon='bx:pencil' fontSize={20} />
+//             <LinkStyled>
+//               {item.transaction_id}{' '}
+//               {` ${
+//                 item.amount
+//                   ? CurrencySymbolPlacement === 'after'
+//                     ? `(${Number(item.amount).toFixed(decimalFormat)} ${currency_code} )`
+//                     : `(${currency_code} ${Number(item.amount).toFixed(decimalFormat)} )`
+//                   : ''
+//               }`}
+//             </LinkStyled>
+//           </MenuItem>
+//         ))}
+//       </Menu>
+//       {openTransaction && <VouchersTransactionPopUp open={openTransaction} toggle={setOpenTransaction} />}
+//     </Fragment>
+//   )
+// }
+
+const columns = [
+  {
+    flex: 0.1,
+    minWidth: 90,
+    sortable: false,
+    field: 'actions',
+    headerName: 'Actions',
+    renderCell: ({ row }) => <RowOptions id={row.tran_id} type={row.type} />
+  },
+  {
+    flex: 0.25,
+    minWidth: 120,
+    field: 'ref_no ',
+    headerName: 'Ref No',
+    renderCell: ({ row }) => {
+      const { ref_no } = row
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+            <Typography noWrap sx={{ color: 'text.secondary' }}>
+              {ref_no ? ref_no : 'Not available'}
+            </Typography>
+          </Box>
+        </Box>
+      )
+    }
+  },
+
+  {
+    flex: 0.25,
+    minWidth: 130,
+    field: 'date',
+    headerName: 'Date',
+    renderCell: ({ row }) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }}>
+          {row.date ? row.date : 'Not available'}
+        </Typography>
+      )
+    }
+  }
+]
 
 const AddOpeningStock = () => {
+  // ** States
+  // const [addSupplierOpen, setSupplierOpen] = useState(false)
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [data, setData] = useState(null)
+  const [searchText, setSearchText] = useState('')
+  const [filteredData, setFilteredData] = useState([])
+  const [openAdd, setOpenAdd] = useState(false)
+  const title = 'Add Opening Stock'
+
+  // ** Hooks
+  const dispatch = useDispatch()
+  // const theme = useTheme()
+  // const direction = theme.direction
+
+  // const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
+  // ** Date Range
+  // const [startDate, setStartDate] = useState(null)
+  // const [endDate, setEndDate] = useState(null)
+
+  // const [openDateRange, setOpenDateRange] = useState(false)
+  const transText = getCookie('fontStyle')
+  // const FilterInitial = getCookie('FilterInitial')
+  // ** for BTN
+  // const [active, setActive] = useState(FilterInitial || 'month')
+  // const [btnValue, setBtnValue] = useState(FilterInitial || 'month')
+  // const [month, setMonth] = useState(FilterInitial === 'month' ? new Date() : null)
+  // const [day, setDay] = useState(FilterInitial === 'day' ? new Date() : null)
+  // const [week, setWeek] = useState(FilterInitial === 'week' ? new Date() : null)
+
+  const escapeRegExp = value => {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+  }
+
+  const store = useSelector(state => state.getOpeningStock?.data?.value)
+
+  useEffect(() => {
+    setData(store)
+  }, [store])
+
+  // ** Cookies
+  const token = getCookie('token')
+  const url = getCookie('apiUrl')
+
+  useEffect(() => {
+    if (token && url) {
+      dispatch(fetchOpeningStock(token, url))
+    }
+  }, [dispatch, token, url])
+
+  // const toggleAddSuppliersDrawer = () => setSupplierOpen(!addSupplierOpen)
+
+  // ** handle search function
+
+  const handleSearch = searchValue => {
+    setSearchText(searchValue)
+    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
+    const filteredRows = data.filter(row => {
+      return Object.keys(row).some(field => {
+        const fieldValue = row[field]
+
+        return fieldValue !== null && fieldValue !== undefined && searchRegex.test(fieldValue.toString())
+      })
+    })
+
+    if (searchValue.length) {
+      setFilteredData(filteredRows)
+    } else {
+      setFilteredData([])
+    }
+  }
+
+  // see if data is available
+  console.log('data of add opening stock :', data)
+
   return (
-    <div>
-      <h1>Add Opening Stock 🎉</h1>
-    </div>
+    <Grid container spacing={6}>
+      <Grid item xs={12}></Grid>
+      <Grid item xs={12}>
+        <Card>
+          <Box
+            sx={{
+              px: 6,
+              gap: 4,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              textTransform: transText
+            }}
+          >
+            <Box>
+              <CardHeader sx={{ textTransform: transText }} title={title} />
+            </Box>
+            {/* <ButtonGroup variant='outlined' aria-label='Basic button group'>
+              <Button
+                onMouseEnter={() => {
+                  setActive('month')
+                }}
+                onClick={() => {
+                  setActive('month')
+                  setBtnValue('month')
+                  setMonth(new Date())
+                  setStartDate(null)
+                  setEndDate(null)
+
+                  setWeek(null)
+                  setDay(null)
+                }}
+                variant={btnValue === 'month' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+              >
+                Month
+              </Button>
+              <Button
+                variant={btnValue === 'week' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+                onMouseEnter={() => {
+                  setActive('week')
+                }}
+                onClick={() => {
+                  setActive('week')
+                  setBtnValue('week')
+                  setWeek(new Date())
+                  setMonth(null)
+                  setDay(null)
+                  setStartDate(null)
+                  setEndDate(null)
+                }}
+              >
+                Week
+              </Button>
+              <Button
+                onMouseEnter={() => {
+                  setActive('day')
+                }}
+                variant={btnValue === 'day' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+                onClick={() => {
+                  setActive('day')
+                  setBtnValue('day')
+                  setDay(new Date())
+                  setMonth(null)
+                  setWeek(null)
+                  setStartDate(null)
+                  setEndDate(null)
+                }}
+              >
+                Day
+              </Button>
+              <Button
+                onMouseEnter={() => {
+                  setActive('range')
+                }}
+                variant={btnValue === 'range' ? 'contained' : 'outlined'}
+                sx={{ textTransform: transText }}
+                onClick={() => {
+                  setActive('range')
+                  setBtnValue('range')
+                  setOpenDateRange(true)
+                  setMonth(null)
+                  setWeek(null)
+                  setDay(null)
+                  setStartDate(null)
+                  setEndDate(null)
+                }}
+              >
+                Range
+              </Button>
+            </ButtonGroup> */}
+            <Box
+              sx={{
+                px: 6,
+                gap: 4,
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                textTransform: transText
+              }}
+            >
+              <Button sx={{ textTransform: transText }} color='primary' variant='contained'>
+                Filter
+              </Button>
+              <Button
+                startIcon={<AddCircleOutlineIcon />}
+                // onClick={toggleAddSuppliersDrawer}
+                sx={{ textTransform: transText }}
+                color='primary'
+                onClick={() => setOpenAdd(true)}
+                variant='contained'
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+          <Divider sx={{ mb: 2 }} />
+          <Box>
+            {data ? (
+              <>
+                <DataGrid
+                  autoHeight
+                  columns={columns}
+                  getRowHeight={() => 'auto'}
+                  disableRowSelectionOnClick
+                  pageSizeOptions={[10, 25, 50]}
+                  paginationModel={paginationModel}
+                  getRowId={row => row.tran_id}
+                  slots={{ toolbar: QuickSearchToolbar }}
+                  onPaginationModelChange={setPaginationModel}
+                  rows={filteredData.length ? filteredData : data}
+                  sx={{
+                    '& .MuiDataGrid-cell': { textTransform: transText },
+                    '& .MuiDataGrid-columnsContainer': {
+                      textTransform: transText
+                    },
+                    '& .MuiDataGrid-columnHeaderTitle': {
+                      // Corrected class name for header text
+                      textTransform: transText
+                    }
+                  }}
+                  slotProps={{
+                    baseButton: {
+                      variant: 'outlined'
+                    },
+                    toolbar: {
+                      value: searchText,
+                      clearSearch: () => handleSearch(''),
+                      onChange: event => handleSearch(event.target.value)
+                    }
+                  }}
+                />
+              </>
+            ) : (
+              <Grid>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px'
+                  }}
+                >
+                  <Box>
+                    <ProgressCustomization />
+                  </Box>
+                </Box>
+              </Grid>
+            )}
+          </Box>
+        </Card>
+      </Grid>
+      {/* {
+        // ** Date Range PopUp
+
+        openDateRange && (
+          <FilterRangePopUp
+            open={openDateRange}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            startDate={startDate}
+            endDate={endDate}
+            popperPlacement={popperPlacement}
+            handleClose={() => {
+              setStartDate(null)
+              setEndDate(null)
+              setOpenDateRange(false)
+            }}
+          />
+        )
+      } */}
+      {openAdd && <OpeningStockPopUp open={openAdd} handleClose={() => setOpenAdd(false)} />}
+
+      {/* <DialogAddSuppliers open={addSupplierOpen} toggle={toggleAddSuppliersDrawer} isEdit={false} contact='supplier' /> */}
+    </Grid>
   )
 }
 
 export default AddOpeningStock
+
+// pages/index.js
+// import React, { useState } from 'react'
+// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+// import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox } from '@mui/material'
+
+// const initialRows = [
+//   { id: '1', name: 'one' },
+//   { id: '2', name: 'two' }
+// ]
+
+// const reorder = (list, startIndex, endIndex) => {
+//   const result = Array.from(list)
+//   const [removed] = result.splice(startIndex, 1)
+//   result.splice(endIndex, 0, removed)
+
+//   return result
+// }
+
+// export default function Home() {
+//   const [rows, setRows] = useState(initialRows)
+
+//   const onDragEnd = result => {
+//     if (!result.destination) {
+//       return
+//     }
+
+//     const reorderedRows = reorder(rows, result.source.index, result.destination.index)
+
+//     setRows(reorderedRows)
+//   }
+
+//   return (
+//     <DragDropContext onDragEnd={onDragEnd}>
+//       <TableContainer component={Paper}>
+//         <Table>
+//           <TableHead>
+//             <TableRow>
+//               <TableCell>#</TableCell>
+//               <TableCell>Name</TableCell>
+//               <TableCell>Checkbox</TableCell>
+//             </TableRow>
+//           </TableHead>
+//           <Droppable droppableId='droppable'>
+//             {provided => (
+//               <TableBody {...provided.droppableProps} ref={provided.innerRef}>
+//                 {rows.map((row, index) => (
+//                   <Draggable key={row.id} draggableId={row.id} index={index}>
+//                     {provided => (
+//                       <TableRow ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+//                         <TableCell>{index + 1}</TableCell>
+//                         <TableCell>{row.name}</TableCell>
+//                         <TableCell>
+//                           <Checkbox defaultChecked />
+//                         </TableCell>
+//                       </TableRow>
+//                     )}
+//                   </Draggable>
+//                 ))}
+//                 {provided.placeholder}
+//               </TableBody>
+//             )}
+//           </Droppable>
+//         </Table>
+//       </TableContainer>
+//     </DragDropContext>
+//   )
+// }

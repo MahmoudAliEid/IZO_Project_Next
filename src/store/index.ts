@@ -117,6 +117,13 @@ import getEditContactBank from './apps/Cheques/contactBank/getEditContactBank'
 import postCreateContactBank from './apps/Cheques/contactBank/postCreateContactBank'
 import postEditContactBank from './apps/Cheques/contactBank/postEditContactBank'
 import postDeleteContactBank from './apps/Cheques/contactBank/postDeleteContactBank'
+// ** add opening stock
+import getListSlice from './apps/products/addOpeningStock/getListSlice'
+import getCreateOpeningStock from './apps/products/addOpeningStock/getCreateOpeningStock'
+import getEditOpeningStockSlice from './apps/products/addOpeningStock/getEditOpeningStockSlice'
+import postDeleteOpeningStock from './apps/products/addOpeningStock/postDeleteOpeningStock'
+import postCreateOpeningStock from './apps/products/addOpeningStock/postCreateOpeningStock'
+import postEditOpeningStock from './apps/products/addOpeningStock/postEditOpeningStock'
 
 export const store = configureStore({
   reducer: {
@@ -231,7 +238,13 @@ export const store = configureStore({
     getEditContactBank: getEditContactBank,
     postCreateContactBank: postCreateContactBank,
     postEditContactBank: postEditContactBank,
-    postDeleteContactBank: postDeleteContactBank
+    postDeleteContactBank: postDeleteContactBank,
+    getOpeningStock: getListSlice,
+    getCreateOpeningStock: getCreateOpeningStock,
+    getEditOpeningStock: getEditOpeningStockSlice,
+    postDeleteOpeningStock,
+    postCreateOpeningStock,
+    postEditOpeningStock
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

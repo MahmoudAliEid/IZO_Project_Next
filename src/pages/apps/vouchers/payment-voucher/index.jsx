@@ -56,6 +56,9 @@ const PaymentVoucher = () => {
     bill_id: [],
     bill_amount: [],
     attachment: [],
+    old_bill_id: [],
+    old_bill_amount: [],
+    payment: [],
     note: '',
     table: [
       {
@@ -89,6 +92,7 @@ const PaymentVoucher = () => {
   const [bills, setBills] = useState([])
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   const decimalFormat = getCookie('DecimalFormat')
+  const transText = getCookie('fontStyle')
 
   const dispatch = useDispatch()
   const storeData = useSelector(state => state.getCreateReceiptVoucher.data?.value)
@@ -113,6 +117,7 @@ const PaymentVoucher = () => {
       setData(storeData)
     }
   }, [storeData])
+
   useEffect(() => {
     if (storeBills) {
       setBills(storeBills)
@@ -120,8 +125,6 @@ const PaymentVoucher = () => {
   }, [storeBills])
 
   const handleSubmitForm = values => {
-    console.log(values, 'values form submit')
-
     dispatch(createReceipt({ values })).then(() => {
       setOpenLoading(true)
     })
@@ -131,14 +134,17 @@ const PaymentVoucher = () => {
     dispatch(fetchBills({ id, type: 'payment' }))
   }
 
-  console.log('create payment voucher data', data)
-
   return (
     <Card>
       {openLoading && (
-        <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
+        <LoadingAnimation
+          open={openLoading}
+          onClose={() => setOpenLoading(false)}
+          statusType={createStatus}
+          redirectURL={'/apps/vouchers/list'}
+        />
       )}
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 3, textTransform: transText }}>
         <CardHeader title='Payment Voucher' />
       </Box>
       <Formik
@@ -157,6 +163,9 @@ const PaymentVoucher = () => {
                       label='Amount'
                       name='amount'
                       value={values.amount}
+                      sx={{
+                        textTransform: transText
+                      }}
                       onChange={event => {
                         handleChange(event)
                         setFieldValue(
@@ -166,23 +175,18 @@ const PaymentVoucher = () => {
                             check: false,
                             date: row.date,
                             reference_no: row.reference_no,
-                            supplier: row.supplier || 'no supplier',
-                            purchase_status: row.status || 'no purchase status',
+                            supplier: row.contact_name || 'no supplier',
+                            purchase_status: row.invoice_status || 'no purchase status',
                             payment_status: row.pay_status || 'no payment status',
                             warehouse_name: row.store,
                             grand_total: row.final_total,
                             payment_due: row.pay_due,
-                            add_by: row.add_by || 'no add by'
+                            add_by: row.add_by || 'no add by',
+                            payment: row.total_payment,
+                            previous_payment: row.previous_payment
                           }))
                         )
-                        // setContactText('')
-                        // values.table.map((item, id) => {
-                        //   //change the check to false if it true
-                        //   if (item.check === true) {
-                        //     setFieldValue(`table.${id}.check`, false)
 
-                        //   }
-                        // })
                         setFieldValue('bill_id', [])
                         setFieldValue('bill_amount', [])
 
@@ -210,6 +214,9 @@ const PaymentVoucher = () => {
                         <TextField
                           label='Amount in Currency'
                           name='amount_currency'
+                          sx={{
+                            textTransform: transText
+                          }}
                           value={values.amount_currency}
                           onChange={event => {
                             const amount_currency = Number(event.target.value)
@@ -220,13 +227,15 @@ const PaymentVoucher = () => {
                                 check: false,
                                 date: row.date,
                                 reference_no: row.reference_no,
-                                supplier: row.supplier || 'no supplier',
-                                purchase_status: row.status || 'no purchase status',
+                                supplier: row.contact_name || 'no supplier',
+                                purchase_status: row.invoice_status || 'no purchase status',
                                 payment_status: row.pay_status || 'no payment status',
                                 warehouse_name: row.store,
                                 grand_total: row.final_total,
                                 payment_due: row.pay_due,
-                                add_by: row.add_by || 'no add by'
+                                add_by: row.add_by || 'no add by',
+                                payment: row.total_payment,
+                                previous_payment: row.previous_payment
                               }))
                             )
                             // setFieldValue('contact', [])
@@ -256,10 +265,20 @@ const PaymentVoucher = () => {
                     </Grid>
                     <Grid item xs={12} lg={6} md={4} sm={12}>
                       <FormControl fullWidth>
-                        <InputLabel id='demo-simple-select-label'>Currencies</InputLabel>
+                        <InputLabel
+                          sx={{
+                            textTransform: transText
+                          }}
+                          id='demo-simple-select-label'
+                        >
+                          Currencies
+                        </InputLabel>
                         <Select
                           value={values.currencies}
                           name='currencies'
+                          sx={{
+                            textTransform: transText
+                          }}
                           label='Currencies'
                           onChange={event => {
                             handleChange(event)
@@ -282,6 +301,9 @@ const PaymentVoucher = () => {
                                     Number(values.amount / item.amount).toFixed(decimalFormat)
                                   )
                                 }}
+                                sx={{
+                                  textTransform: transText
+                                }}
                               >
                                 {item.value}
                               </MenuItem>
@@ -295,6 +317,9 @@ const PaymentVoucher = () => {
                           type='text'
                           label='Currency Value'
                           name='currency_value'
+                          sx={{
+                            textTransform: transText
+                          }}
                           value={values.currency_value}
                           onChange={event => {
                             const currency_value = Number(event.target.value)
@@ -344,6 +369,9 @@ const PaymentVoucher = () => {
                         name='date'
                         selected={values.date}
                         popperPlacement={popperPlacement}
+                        monthsShown={true}
+                        showMonthDropdown
+                        showYearDropdown
                         onChange={date => {
                           setFieldValue('date', date)
                         }}
@@ -355,6 +383,9 @@ const PaymentVoucher = () => {
                             label='Date '
                             readOnly={false}
                             value={values.date}
+                            sx={{
+                              textTransform: transText
+                            }}
                             name='date'
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -372,6 +403,9 @@ const PaymentVoucher = () => {
                       selectOnFocus
                       fullWidth
                       id='combo-box-demo'
+                      sx={{
+                        textTransform: transText
+                      }}
                       name='account'
                       value={accountText}
                       onChange={(event, newValue) => {
@@ -388,6 +422,9 @@ const PaymentVoucher = () => {
                 <Grid item xs={12} lg={6} md={4} sm={12}>
                   <FormControl fullWidth>
                     <Autocomplete
+                      sx={{
+                        textTransform: transText
+                      }}
                       disablePortal
                       id='combo-box-demo'
                       selectOnFocus
@@ -431,6 +468,9 @@ const PaymentVoucher = () => {
                 <Grid item xs={12} lg={12} md={4} sm={12}>
                   <FormControl fullWidth>
                     <TextField
+                      sx={{
+                        textTransform: transText
+                      }}
                       label='Note'
                       multiline
                       rows={4}
@@ -454,7 +494,8 @@ const PaymentVoucher = () => {
                     borderRadius: '10px',
                     backgroundColor: theme => theme.palette.background.paper,
                     p: 3,
-                    mt: 3
+                    mt: 3,
+                    textTransform: transText
                   }}
                 >
                   <FormControl fullWidth>
@@ -469,7 +510,7 @@ const PaymentVoucher = () => {
                 {({ push, remove }) => (
                   <VoucherAddTable
                     push={push}
-                    type='receipt'
+                    type='payment'
                     remove={remove}
                     values={values}
                     setFieldValue={setFieldValue}
@@ -479,7 +520,7 @@ const PaymentVoucher = () => {
                 )}
               </FieldArray>
             </Box>
-            <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end', textTransform: transText }}>
               <Button type='submit' variant='contained' color='primary'>
                 Save
               </Button>

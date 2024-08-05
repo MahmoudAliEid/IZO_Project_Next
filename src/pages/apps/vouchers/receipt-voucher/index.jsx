@@ -60,6 +60,9 @@ const ReceiptVoucher = () => {
     bill_id: [],
     bill_amount: [],
     attachment: [],
+    old_bill_id: [],
+    old_bill_amount: [],
+    payment: [],
     note: '',
     table: [
       {
@@ -120,6 +123,7 @@ const ReceiptVoucher = () => {
       setData(storeData)
     }
   }, [storeData])
+
   useEffect(() => {
     if (storeBills) {
       setBills(storeBills)
@@ -127,8 +131,6 @@ const ReceiptVoucher = () => {
   }, [storeBills])
 
   const handleSubmitForm = values => {
-    console.log(values, 'values form  receipt voucher')
-
     dispatch(createReceipt({ values }))
       .then(() => {
         setOpenLoading(true)
@@ -141,8 +143,6 @@ const ReceiptVoucher = () => {
   const fetchDataOnSearchSelect = async id => {
     dispatch(fetchBills({ id, type: 'receipt' }))
   }
-
-  console.log('create voucher data', data)
 
   return (
     <Card>
@@ -185,8 +185,8 @@ const ReceiptVoucher = () => {
                             check: false,
                             date: row.date,
                             reference_no: row.reference_no,
-                            supplier: row.supplier || 'no supplier',
-                            purchase_status: row.status || 'no purchase status',
+                            supplier: row.contact_name || 'no supplier',
+                            purchase_status: row.invoice_status || 'no purchase status',
                             payment_status: row.pay_status || 'no payment status',
                             warehouse_name: row.store,
                             grand_total: row.final_total,
@@ -237,8 +237,8 @@ const ReceiptVoucher = () => {
                                 check: false,
                                 date: row.date,
                                 reference_no: row.reference_no,
-                                supplier: row.supplier || 'no supplier',
-                                purchase_status: row.status || 'no purchase status',
+                                supplier: row.contact_name || 'no supplier',
+                                purchase_status: row.invoice_status || 'no purchase status',
                                 payment_status: row.pay_status || 'no payment status',
                                 warehouse_name: row.store,
                                 grand_total: row.final_total,

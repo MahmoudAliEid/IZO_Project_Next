@@ -40,7 +40,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bills, edit }) => {
+const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, edit }) => {
   // ** States
 
   const [rows, setRows] = useState([])
@@ -173,9 +173,9 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
     {
       field: 'supplier',
       headerName: 'Supplier',
-      flex: 0.25,
+      flex: 0.35,
       align: 'center',
-      minWidth: 130
+      minWidth: 200
     },
     //purchase_status
     {
@@ -222,8 +222,8 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
       field: 'payment',
       headerName: 'Payment',
       align: 'center',
-      flex: 0.25,
-      minWidth: 150,
+      flex: 0.3,
+      minWidth: 170,
       renderCell: params => (
         <Box>
           <Typography variant='body2' align='center'>
@@ -263,18 +263,23 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
   // ** Get data from store
   const storeBills = useSelector(state => state.getBills.data?.value)
 
+  useEffect(() => {
+    if (storeBills) {
+      setRows(storeBills)
+    }
+  }, [storeBills])
+
   // ** UseEffect Update rows
   useEffect(() => {
-    if (bills && edit) {
-      setRows(bills)
-      bills.map(row => {
+    if (rows.length > 0 && !edit) {
+      rows.map(row => {
         const obj = {
           id: row.bill_id,
           check: row.check,
           date: row.date,
           reference_no: row.reference_no,
-          supplier: row.supplier || 'no supplier',
-          purchase_status: row.status || 'no purchase status',
+          supplier: row.contact_name || 'no supplier',
+          purchase_status: row.invoice_status || 'no purchase status',
           payment_status: row.pay_status || 'no payment status',
           warehouse_name: row.store,
           grand_total: row.final_total,
@@ -286,31 +291,10 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
           previous_payment: row.previous_payment
         }
         push(obj)
-      })
-    } else if (storeBills && !bills && !edit) {
-      setRows(storeBills)
-      storeBills.map(row => {
-        const obj = {
-          id: row.bill_id,
-          check: row.check,
-          date: row.date,
-          reference_no: row.reference_no,
-          supplier: row.supplier || 'no supplier',
-          purchase_status: row.status || 'no purchase status',
-          payment_status: row.pay_status || 'no payment status',
-          warehouse_name: row.store,
-          grand_total: row.final_total,
-          payment: row.pay_due,
-          status: row.status,
-          payment_due: row.pay_due,
-          add_by: row.add_by || 'no add by',
-          payment: row.total_payment,
-          previous_payment: row.previous_payment
-        }
-        push(obj)
+        console.log('obj form addTable Type Receipt 🍕:', obj)
       })
     }
-  }, [storeBills, push, bills, edit])
+  }, [rows, push, setFieldValue, edit])
 
   // ** Function to handle checkBox process
   const handleCheckBoxActions = (event, params) => {
@@ -398,7 +382,7 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
     }
   }
 
-  console.log('data form voucherTable store: & Row:', storeBills, rows)
+  console.log('this bill (storeBills) from VoucherAddTable Type Receipt:rows 🍕:', storeBills, rows)
 
   return (
     <>
@@ -407,26 +391,28 @@ const VoucherAddTable = ({ values, handleChange, remove, setFieldValue, push, bi
           <Table stickyHeader stickyFooter aria-label='sticky table'>
             <TableHead>
               <TableRow>
-                {columns.map((column, idx) => (
-                  <TableCell
-                    key={idx}
-                    align={column.align || 'center'}
-                    sx={{
-                      minWidth: column.minWidth,
-                      flex: column.flex,
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      textTransform: transText
-                    }}
-                  >
-                    {column.headerName}
-                  </TableCell>
-                ))}
+                {columns &&
+                  columns.length > 0 &&
+                  columns.map((column, idx) => (
+                    <TableCell
+                      key={idx}
+                      align={column.align || 'center'}
+                      sx={{
+                        minWidth: column.minWidth,
+                        flex: column.flex,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        textTransform: transText
+                      }}
+                    >
+                      {column.headerName}
+                    </TableCell>
+                  ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.isArray(rows) && rows && rows.length > 0 ? (
-                rows.map((row, idx) => (
+              {Array.isArray(values?.table) && values?.table && values?.table.length > 0 ? (
+                values?.table.map((row, idx) => (
                   <TableRow
                     hover
                     role='checkbox'
