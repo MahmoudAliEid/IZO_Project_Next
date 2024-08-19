@@ -246,7 +246,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
 
                             // set price value based on price_id in all items row if it's unit is null
                             values.items.forEach((item, index) => {
-                              if (item.unit !== '' && item.list_prices.length > 0 && !item.child_price) {
+                              if (item.unit !== '' && item.list_prices.length > 0 && item.child_price === '') {
                                 const price = item.list_prices.find(price => price.line_id === price_id)
 
                                 if (price) {
