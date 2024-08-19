@@ -11,7 +11,6 @@ const SearchAndSelect = ({
   values,
   setFieldValue,
   handleChange,
-
   rows,
   searchProduct,
   setSearchProduct,
@@ -156,11 +155,13 @@ const SearchAndSelect = ({
         product_id: itemToAdd.product_id,
         quantity: 1,
         price: itemToAdd.cost,
-        unit: '',
+        unit: 1,
         store: '',
         all_unit: itemToAdd.all_units,
         initial: false,
-        unit_quantity: 1
+        unit_quantity: 1,
+        child_price: '',
+        list_prices: []
       })
 
       // Clear searchInfo
@@ -205,11 +206,13 @@ const SearchAndSelect = ({
                     product_id: item.product_id,
                     quantity: 1,
                     price: item.cost,
-                    unit: '',
+                    unit: 1,
                     store: '',
                     all_unit: item.all_units,
                     initial: false,
-                    unit_quantity: 1
+                    unit_quantity: 1,
+                    child_price: '',
+                    list_prices: []
                   })
                 )
               }
@@ -225,11 +228,13 @@ const SearchAndSelect = ({
                 product_id: newValue.product_id,
                 quantity: 1,
                 price: newValue.cost,
-                unit: '',
+                unit: 1,
                 store: '',
                 all_unit: newValue.all_units,
                 initial: false,
-                unit_quantity: 1
+                unit_quantity: 1,
+                child_price: '',
+                list_prices: []
               })
             }
           }

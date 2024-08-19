@@ -7,17 +7,18 @@ import { getCookie } from 'cookies-next'
 
 // Define the initial state
 const initialState = {
-  data: null,
+  data: [],
   status: '',
   loading: false,
+
   error: null
 }
 
-export const getAttachment = createAsyncThunk('dashboard/vouchers/getAttachment', async payload => {
+export const fetchEditJournalVoucher = createAsyncThunk('dashboard/fetchEditJournalVoucher', async payload => {
   const url = getCookie('apiUrl')
   const token = getCookie('token')
   const { id } = payload
-  const response = await axios.get(`${url}/app/react/voucher/attach/${id}`, {
+  const response = await axios.get(`${url}/app/react/journal-voucher/edit/${id}`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`
     }
@@ -29,24 +30,24 @@ export const getAttachment = createAsyncThunk('dashboard/vouchers/getAttachment'
 })
 
 // Create a Redux slice
-const getAttachmentSlice = createSlice({
-  name: 'getAttachment',
+const getEditJournalVoucher = createSlice({
+  name: 'fetchEditJournalVoucher',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(getAttachment.pending, state => {
+      .addCase(fetchEditJournalVoucher.pending, state => {
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
-      .addCase(getAttachment.fulfilled, (state, action) => {
+      .addCase(fetchEditJournalVoucher.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
         state.error = null
       })
-      .addCase(getAttachment.rejected, (state, action) => {
+      .addCase(fetchEditJournalVoucher.rejected, (state, action) => {
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'
@@ -55,4 +56,4 @@ const getAttachmentSlice = createSlice({
   }
 })
 
-export default getAttachmentSlice.reducer
+export default getEditJournalVoucher.reducer

@@ -2,8 +2,6 @@ import { Fragment, useEffect, useState } from 'react'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import { getAttachment } from 'src/store/apps/vouchers/Actions/getAttachmentVoucher'
-import { fetchAttachment } from 'src/store/apps/Cheques/Actions/getAttachmentCheques'
 
 // ** MUI Components
 import { Grid, Chip, Divider, Typography, CardContent, List, ListItem, DialogContent, Dialog, Box } from '@mui/material'
@@ -23,19 +21,9 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** cookies
 import { getCookie } from 'cookies-next'
+import { fetchAttachmentJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/Actions/getAttachmentJournalVoucher'
 
-// const LinkStyled = styled(Box)(({ theme }) => ({
-//   fontWeight: 400,
-//   fontSize: '1rem',
-//   cursor: 'pointer',
-//   textDecoration: 'none',
-//   color: theme.palette.text.secondary,
-//   '&:hover': {
-//     color: theme.palette.primary.main
-//   }
-// }))
-
-const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
+const AttachmentJournalVoucher = ({ open, toggle, id }) => {
   const [attachment, setAttachment] = useState(null) // Initially setting data as null
   const [showProgress, setShowProgress] = useState(true)
 
@@ -60,29 +48,20 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
     settings: { direction }
   } = useSettings()
 
-  // Fetch data when itemId changes
   useEffect(() => {
-    if (type === 'cheque') {
-      if (itemId) {
-        dispatch(fetchAttachment({ id: itemId }))
-      }
-    } else {
-      if (itemId) {
-        dispatch(getAttachment({ id: itemId }))
-      }
+    if (id) {
+      dispatch(fetchAttachmentJournalVoucher({ id }))
     }
-  }, [itemId, dispatch, type])
+  }, [id, dispatch])
 
   // Update data when fetchData changes
-  const fetchData = useSelector(state => state.getAttachment?.data?.value)
-  const fetchDataCheque = useSelector(state => state.getAttachmentCheque?.data?.value)
-  useEffect(() => {
-    if (fetchData && fetchData.length > 0) setAttachment(fetchData)
-  }, [fetchData])
+  const fetchData = useSelector(state => state.getAttachmentJournalVoucher?.data?.value)
 
   useEffect(() => {
-    if (type === 'cheque' && fetchDataCheque && fetchDataCheque.length > 0) setAttachment(fetchDataCheque)
-  }, [fetchDataCheque, type])
+    if (fetchData) {
+      setAttachment(fetchData)
+    }
+  }, [fetchData])
 
   console.log('data of attachment', attachment)
 
@@ -90,22 +69,24 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
     <Fragment>
       <Dialog
         open={open}
-        maxWidth='lg'
+        maxWidth='md'
         fullWidth={true}
         onClose={handleClose}
         aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
+        sx={{
+          height: '100%'
+        }}
+        //make width responsive
+        fullScreen={true}
+        // make width fit content
+        // fullWidth={true}
       >
         <Fragment>
-          <CustomHeader
-            title={type === 'cheque' ? 'Cheque Attachments' : `Voucher Attachments `}
-            handleClose={handleClose}
-            divider={false}
-          />
+          <CustomHeader title={`Journal Voucher Attachments `} handleClose={handleClose} divider={false} />
           <DialogContent sx={{ padding: '0 !important' }}>
             <Divider sx={{ mb: 2 }}>
               <Chip
-                label='Voucher Attachments '
+                label='Journal Voucher Attachments '
                 color='primary'
                 variant='outlined'
                 sx={{
@@ -119,8 +100,8 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
               {attachment ? (
                 <CardContent>
                   {attachment?.length > 0 ? (
-                    <Grid container spacing={2} sx={{ p: 3 }}>
-                      <Grid item xs={12}>
+                    <Grid container spacing={2} justifyContent={'center'}>
+                      <Grid item xs={6}>
                         <SwiperThumbnails images={attachment || []} direction={direction} />
                       </Grid>
                       <Grid item xs={12}>
@@ -194,4 +175,4 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
   )
 }
 
-export default VoucherAttachmentPopUp
+export default AttachmentJournalVoucher

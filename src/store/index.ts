@@ -92,9 +92,19 @@ import getBillsSlice from './apps/vouchers/Actions/getBillsSlice'
 import postCreateReceiptSlice from './apps/vouchers/postCreateReceiptSlice'
 import getEditReceiptVoucher from './apps/vouchers/getEditReceiptVoucherSlice'
 import postEditReceiptSlice from './apps/vouchers/postEditReceiptSlice'
-import getAttachment from './apps/vouchers/Actions/getAttachmentCheque'
+import getAttachmentVoucher from './apps/vouchers/Actions/getAttachmentVoucher'
 import getViewEntry from './apps/vouchers/Actions/getViewEntry'
 import postDeleteVoucherSlice from './apps/vouchers/postDeleteVoucherSlice'
+// ** Journal Vouchers
+import getJournalVouchersSlice from './apps/vouchers/journalVoucher/getJournalVoucherSlice'
+import getCreateJournalVoucher from './apps/vouchers/journalVoucher/getCreateJournalVoucher'
+import getViewJVSlice from './apps/vouchers/journalVoucher/Actions/getViewJVSlice'
+import postCreateJVSlice from './apps/vouchers/journalVoucher/postCreateJVSlice'
+import postEditJournalVoucher from './apps/vouchers/journalVoucher/postEditJournalVoucher'
+import getEditJournalVoucher from './apps/vouchers/journalVoucher/getEditJournalVoucher'
+import postDeleteJournalVoucher from './apps/vouchers/journalVoucher/postDeleteJournalVoucher'
+import getAttachmentJournalVoucher from './apps/vouchers/journalVoucher/Actions/getAttachmentJournalVoucher'
+import getViewJournalEntry from './apps/vouchers/journalVoucher/Actions/getViewJournalEntry'
 // ** Cheques
 import getChequesSlice from './apps/Cheques/getChequesSlice'
 import getCreateChequeSlice from './apps/Cheques/getCreateChequesSlice'
@@ -109,7 +119,7 @@ import getEntryChequesSlice from './apps/Cheques/Actions/getEntryChequesSlice'
 import getBillsChequesSlice from './apps/Cheques/Actions/getBillsChequesSlice'
 import unCollect from './apps/Cheques/Actions/unCollect'
 import postDeleteCollectSlice from './apps/Cheques/Actions/postDeleteCollectSlice'
-import getAttachmentCheque from './apps/Cheques/Actions/getAttachment'
+import getAttachmentCheques from './apps/Cheques/Actions/getAttachmentCheques'
 // ** Contact Bank
 import getContactBankSlice from './apps/Cheques/contactBank/getContactBankSlice'
 import getCreateContactBank from './apps/Cheques/contactBank/getCreateContactBank'
@@ -124,6 +134,7 @@ import getEditOpeningStockSlice from './apps/products/addOpeningStock/getEditOpe
 import postDeleteOpeningStock from './apps/products/addOpeningStock/postDeleteOpeningStock'
 import postCreateOpeningStock from './apps/products/addOpeningStock/postCreateOpeningStock'
 import postEditOpeningStock from './apps/products/addOpeningStock/postEditOpeningStock'
+import getViewOpeningStock from './apps/products/addOpeningStock/getViewOpeningStock'
 
 export const store = configureStore({
   reducer: {
@@ -216,7 +227,7 @@ export const store = configureStore({
     postCreateReceipt: postCreateReceiptSlice,
     getEditReceiptVoucher: getEditReceiptVoucher,
     postEditReceipt: postEditReceiptSlice,
-    getAttachment,
+    getAttachmentVoucher,
     getViewEntry,
     postDeleteVoucher: postDeleteVoucherSlice,
     getCheques: getChequesSlice,
@@ -232,7 +243,7 @@ export const store = configureStore({
     unCollect,
     postDeleteCheques: postDeleteChequesSlice,
     deleteCollect: postDeleteCollectSlice,
-    getAttachmentCheque,
+    getAttachmentCheques,
     getContactBank: getContactBankSlice,
     getCreateContactBank: getCreateContactBank,
     getEditContactBank: getEditContactBank,
@@ -244,7 +255,17 @@ export const store = configureStore({
     getEditOpeningStock: getEditOpeningStockSlice,
     postDeleteOpeningStock,
     postCreateOpeningStock,
-    postEditOpeningStock
+    postEditOpeningStock,
+    getViewOpeningStock,
+    getJournalVouchers: getJournalVouchersSlice,
+    getCreateJournalVoucher,
+    getViewJVSlice,
+    postCreateJVSlice,
+    postEditJournalVoucher,
+    getEditJournalVoucher,
+    postDeleteJournalVoucher,
+    getAttachmentJournalVoucher,
+    getViewJournalEntry
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

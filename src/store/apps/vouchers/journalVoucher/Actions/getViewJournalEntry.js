@@ -13,11 +13,11 @@ const initialState = {
   error: null
 }
 
-export const fetchAttachment = createAsyncThunk('dashboard/fetchAttachment', async payload => {
+export const fetchViewJournalEntry = createAsyncThunk('dashboard/fetchViewJournalEntry', async payload => {
   const url = getCookie('apiUrl')
   const token = getCookie('token')
   const { id } = payload
-  const response = await axios.get(`${url}/app/react/cheque/attach/${id}`, {
+  const response = await axios.get(`${url}/app/react/journal-voucher/entry/${id}`, {
     headers: {
       Authorization: 'Bearer ' + `${token}`
     }
@@ -29,24 +29,24 @@ export const fetchAttachment = createAsyncThunk('dashboard/fetchAttachment', asy
 })
 
 // Create a Redux slice
-const getAttachment = createSlice({
-  name: 'fetchAttachment',
+const getViewJournalEntry = createSlice({
+  name: 'fetchViewJournalEntry',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchAttachment.pending, state => {
+      .addCase(fetchViewJournalEntry.pending, state => {
         state.loading = true
         state.error = null
         state.msg = 'pending'
       })
-      .addCase(fetchAttachment.fulfilled, (state, action) => {
+      .addCase(fetchViewJournalEntry.fulfilled, (state, action) => {
         state.loading = false
         state.data = action.payload
         state.status = action.payload.status
         state.error = null
       })
-      .addCase(fetchAttachment.rejected, (state, action) => {
+      .addCase(fetchViewJournalEntry.rejected, (state, action) => {
         state.loading = false
         state.data = null
         state.msg = 'There is an Error fetching data'
@@ -55,4 +55,4 @@ const getAttachment = createSlice({
   }
 })
 
-export default getAttachment.reducer
+export default getViewJournalEntry.reducer

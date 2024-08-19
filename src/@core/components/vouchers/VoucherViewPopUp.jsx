@@ -38,9 +38,14 @@ const VoucherViewPopUp = ({ open, toggle, itemId }) => {
       headerName: 'Account',
       field: 'accountText'
     },
-
-    { headerName: 'Amount', field: 'amount' },
-    { headerName: 'Date', field: 'date' },
+    {
+      headerName: 'Amount',
+      field: 'amount'
+    },
+    {
+      headerName: 'Date',
+      field: 'date'
+    },
     {
       headerName: 'Contact',
       field: 'contactText'

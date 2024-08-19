@@ -34,7 +34,8 @@ export const editOpeningStock = createAsyncThunk('products/addOpeningStock/editO
       quantity: Number(item.quantity),
       price: Number(item.price),
       unit_id: item.unit,
-      line_id: item?.line_id || ''
+      line_id: item?.line_id || '',
+      list_price: item.child_price
     }))
   }
 

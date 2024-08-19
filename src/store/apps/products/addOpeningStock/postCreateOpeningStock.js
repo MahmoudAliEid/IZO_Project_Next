@@ -33,7 +33,8 @@ export const createOpeningStock = createAsyncThunk('products/addOpeningStock/cre
       product_id: item.product_id,
       quantity: Number(item.quantity),
       price: Number(item.price),
-      unit_id: item.unit
+      unit_id: item.unit,
+      list_price: item.child_price
     }))
   }
 

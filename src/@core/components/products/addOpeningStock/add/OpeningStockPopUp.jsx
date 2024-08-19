@@ -61,6 +61,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
     total_items: 0,
     net_total_amount: 0,
     search_product: '',
+    parent_price: 0,
     items: [
       {
         id: 0,
@@ -76,7 +77,9 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
         initial: true,
         unit: 1, //id of unit
         all_unit: '', // dropDown menu
-        unit_quantity: '' //quantity of unit
+        unit_quantity: '', //quantity of unit
+        child_price: '',
+        list_prices: []
       }
     ]
   })
@@ -89,7 +92,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
 
   // ** Selectors
-  const store = useSelector(state => state.getCreateOpeningStock?.data?.value?.store)
+  const store = useSelector(state => state.getCreateOpeningStock?.data?.value)
   const createStatus = useSelector(state => state.postCreateOpeningStock)
   const editStore = useSelector(state => state.getEditOpeningStock?.data?.value)
   const editStatus = useSelector(state => state.postEditOpeningStock)
@@ -135,7 +138,13 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
           store: item.store_id,
           all_unit: editStore.require.store,
           initial: false,
-          unit_quantity: ''
+          unit_quantity: '',
+          child_price: item.list_price,
+          list_prices: item.list_unit_price,
+          product_unit_id: item.product_unit_id,
+          product_unit_qty: item.product_unit_qty,
+          line_id: item.line_id,
+          order_id: item.order_id
         }))
       }))
     }
@@ -222,6 +231,53 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
               {({ values, handleBlur, handleChange, errors, touched, setFieldValue }) => (
                 <Form>
                   <Grid container spacing={5} sx={{ p: 5 }}>
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel htmlFor='parent_price'>Prices</InputLabel>
+                        <Select
+                          id='parent_price'
+                          name='parent_price'
+                          label='Prices'
+                          value={values.parent_price}
+                          required
+                          onChange={event => {
+                            handleChange(event)
+                            const price_id = event.target.value
+
+                            // set price value based on price_id in all items row if it's unit is null
+                            values.items.forEach((item, index) => {
+                              if (item.unit !== '' && item.list_prices.length > 0 && !item.child_price) {
+                                const price = item.list_prices.find(price => price.line_id === price_id)
+
+                                if (price) {
+                                  const priceValue = price.price
+
+                                  setFieldValue(`items[${index}].price`, priceValue)
+                                  setFieldValue(`items[${index}].total`, Number(priceValue) * Number(item.quantity))
+                                } else if (price === null) {
+                                  setFieldValue(`items[${index}].price`, 0)
+                                  setFieldValue(`items[${index}].total`, 0)
+                                } else {
+                                  return
+                                }
+                              }
+                            })
+                          }}
+                          onBlur={handleBlur}
+                          error={errors.parent_price && touched.parent_price}
+                          fullWidth
+                        >
+                          {data &&
+                            data.prices.length > 0 &&
+                            data.prices.map((item, index) => (
+                              <MenuItem key={index} value={item.id}>
+                                {item.value}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                        {errors.store && touched.store && <FormHelperText error>{String(errors.store)}</FormHelperText>}
+                      </FormControl>
+                    </Grid>
                     <Grid item xs={12} sm={6}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor='Warehouse'>Warehouse</InputLabel>
@@ -237,8 +293,8 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                           fullWidth
                         >
                           {data &&
-                            data.length > 0 &&
-                            data.map((item, index) => (
+                            data.store.length > 0 &&
+                            data.store.map((item, index) => (
                               <MenuItem key={index} value={item.id}>
                                 {item.name}
                               </MenuItem>

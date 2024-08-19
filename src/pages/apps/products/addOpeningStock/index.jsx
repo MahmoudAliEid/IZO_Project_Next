@@ -9,11 +9,9 @@ import { getCookie } from 'cookies-next'
 
 // ** MUI Imports
 import { Box, Card, Menu, Grid, Divider, MenuItem, IconButton, Typography, CardHeader, Button } from '@mui/material'
-// import { useTheme, styled } from '@mui/material/styles'
 
 // ** Third Party Components
 import { DataGrid } from '@mui/x-data-grid'
-// import axios from 'axios'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -24,50 +22,10 @@ import { fetchOpeningStock } from 'src/store/apps/products/addOpeningStock/getLi
 import { deleteOpeningStock } from 'src/store/apps/products/addOpeningStock/postDeleteOpeningStock'
 import { fetchEditOpeningStock } from 'src/store/apps/products/addOpeningStock/getEditOpeningStockSlice'
 
-// ** Custom Components Imports
-// import CustomChip from 'src/@core/components/mui/chip'
-// import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// ** Utils Import
-// import { getInitials } from 'src/@core/utils/get-initials'
-
 // ** Custom Table Components Imports
 import OpeningStockPopUp from 'src/@core/components/products/addOpeningStock/add/OpeningStockPopUp'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
-
-// const userStatusObj = {
-//   receipt_voucher: { title: 'Receipt Voucher', color: 'success' },
-//   pending: { title: 'pending', color: 'warning' },
-//   payment_voucher: { title: 'Payment Voucher', color: 'secondary' }
-// }
-
-// const LinkStyled = styled(Box)(({ theme }) => ({
-//   fontWeight: 400,
-//   fontSize: '1rem',
-//   cursor: 'pointer',
-//   textDecoration: 'none',
-//   color: theme.palette.text.secondary,
-//   '&:hover': {
-//     color: theme.palette.primary.main
-//   }
-// }))
-
-// ** renders client column
-// const renderClient = row => {
-//   if (row.avatar?.length) {
-//     return <CustomAvatar src={row.avatar} sx={{ mr: 3, width: 32, height: 32 }} />
-//   } else {
-//     return (
-//       <CustomAvatar
-//         skin='light'
-//         color={row.avatarColor || 'primary'}
-//         sx={{ mr: 3, width: 32, height: 32, fontSize: '.875rem' }}
-//       >
-//         {getInitials(row.contact_id ? String(row.contact_id) : 'John Doe')}
-//       </CustomAvatar>
-//     )
-//   }
-// }
+import ViewOpeningStock from 'src/@core/components/products/addOpeningStock/view/ViewOpeningStock'
 
 const RowOptions = ({ id, type }) => {
   // ** Hooks
@@ -77,7 +35,7 @@ const RowOptions = ({ id, type }) => {
 
   const [anchorEl, setAnchorEl] = useState(null)
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
-  // const [openView, setOpenView] = useState(false)
+  const [openView, setOpenView] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
 
   const rowOptionsOpen = anchorEl
@@ -184,82 +142,12 @@ const RowOptions = ({ id, type }) => {
           name={type.charAt(0).toUpperCase() + type.slice(1)}
         />
       )}
+      {openView && <ViewOpeningStock open={openView} toggle={() => setOpenView(!openView)} id={id} />}
 
       {openEdit && <OpeningStockPopUp open={openEdit} handleClose={() => setOpenEdit(false)} edit={true} id={id} />}
     </Fragment>
   )
 }
-
-// const RowOptionsTransactions = ({ row }) => {
-//   // ** State
-//   const [openTransaction, setOpenTransaction] = useState(false)
-//   const [anchorEl, setAnchorEl] = useState(null)
-
-//   const decimalFormat = getCookie('DecimalFormat')
-//   const currency_code = getCookie('currency_code')
-//   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
-
-//   const handleTransactionClick = () => {
-//     setOpenTransaction(true)
-//   }
-
-//   const rowOptionsOpen = anchorEl
-
-//   const handleRowOptionsClick = event => {
-//     setAnchorEl(event.currentTarget)
-//   }
-
-//   const handleRowOptionsClose = () => {
-//     setAnchorEl(null)
-//   }
-
-//   return (
-//     <Fragment>
-//       <Button size='small' onClick={handleRowOptionsClick} sx={{ my: 3 }}>
-//         Invoices
-//       </Button>
-//       <Menu
-//         keepMounted
-//         anchorEl={anchorEl}
-//         open={rowOptionsOpen}
-//         onClose={handleRowOptionsClose}
-//         anchorOrigin={{
-//           vertical: 'bottom',
-//           horizontal: 'right'
-//         }}
-//         transformOrigin={{
-//           vertical: 'top',
-//           horizontal: 'right'
-//         }}
-//         PaperProps={{ style: { minWidth: '8rem' } }}
-//       >
-//         {row.payments.map((item, index) => (
-//           <MenuItem
-//             key={index}
-//             onClick={() => {
-//               handleRowOptionsClose()
-//               handleTransactionClick()
-//             }}
-//             sx={{ '& svg': { mr: 2 } }}
-//           >
-//             <Icon icon='bx:pencil' fontSize={20} />
-//             <LinkStyled>
-//               {item.transaction_id}{' '}
-//               {` ${
-//                 item.amount
-//                   ? CurrencySymbolPlacement === 'after'
-//                     ? `(${Number(item.amount).toFixed(decimalFormat)} ${currency_code} )`
-//                     : `(${currency_code} ${Number(item.amount).toFixed(decimalFormat)} )`
-//                   : ''
-//               }`}
-//             </LinkStyled>
-//           </MenuItem>
-//         ))}
-//       </Menu>
-//       {openTransaction && <VouchersTransactionPopUp open={openTransaction} toggle={setOpenTransaction} />}
-//     </Fragment>
-//   )
-// }
 
 const columns = [
   {
@@ -578,78 +466,8 @@ const AddOpeningStock = () => {
         )
       } */}
       {openAdd && <OpeningStockPopUp open={openAdd} handleClose={() => setOpenAdd(false)} />}
-
-      {/* <DialogAddSuppliers open={addSupplierOpen} toggle={toggleAddSuppliersDrawer} isEdit={false} contact='supplier' /> */}
     </Grid>
   )
 }
 
 export default AddOpeningStock
-
-// pages/index.js
-// import React, { useState } from 'react'
-// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-// import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox } from '@mui/material'
-
-// const initialRows = [
-//   { id: '1', name: 'one' },
-//   { id: '2', name: 'two' }
-// ]
-
-// const reorder = (list, startIndex, endIndex) => {
-//   const result = Array.from(list)
-//   const [removed] = result.splice(startIndex, 1)
-//   result.splice(endIndex, 0, removed)
-
-//   return result
-// }
-
-// export default function Home() {
-//   const [rows, setRows] = useState(initialRows)
-
-//   const onDragEnd = result => {
-//     if (!result.destination) {
-//       return
-//     }
-
-//     const reorderedRows = reorder(rows, result.source.index, result.destination.index)
-
-//     setRows(reorderedRows)
-//   }
-
-//   return (
-//     <DragDropContext onDragEnd={onDragEnd}>
-//       <TableContainer component={Paper}>
-//         <Table>
-//           <TableHead>
-//             <TableRow>
-//               <TableCell>#</TableCell>
-//               <TableCell>Name</TableCell>
-//               <TableCell>Checkbox</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <Droppable droppableId='droppable'>
-//             {provided => (
-//               <TableBody {...provided.droppableProps} ref={provided.innerRef}>
-//                 {rows.map((row, index) => (
-//                   <Draggable key={row.id} draggableId={row.id} index={index}>
-//                     {provided => (
-//                       <TableRow ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-//                         <TableCell>{index + 1}</TableCell>
-//                         <TableCell>{row.name}</TableCell>
-//                         <TableCell>
-//                           <Checkbox defaultChecked />
-//                         </TableCell>
-//                       </TableRow>
-//                     )}
-//                   </Draggable>
-//                 ))}
-//                 {provided.placeholder}
-//               </TableBody>
-//             )}
-//           </Droppable>
-//         </Table>
-//       </TableContainer>
-//     </DragDropContext>
-//   )
-// }

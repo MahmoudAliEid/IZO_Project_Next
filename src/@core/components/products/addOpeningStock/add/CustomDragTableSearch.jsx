@@ -1,463 +1,3 @@
-// // ** React Imports
-// import { Fragment, useState, useEffect } from 'react'
-
-// // ** MUI Imports
-// import Paper from '@mui/material/Paper'
-// import Table from '@mui/material/Table'
-// import TableRow from '@mui/material/TableRow'
-// import TableHead from '@mui/material/TableHead'
-// import TableBody from '@mui/material/TableBody'
-// import TableCell from '@mui/material/TableCell'
-// import TableContainer from '@mui/material/TableContainer'
-// import { styled } from '@mui/material/styles'
-// // import TablePagination from '@mui/material/TablePagination'
-
-// import { useSelector } from 'react-redux'
-
-// import {
-//   IconButton,
-//   Menu,
-//   MenuItem,
-//   Tooltip,
-//   Dialog,
-//   FormControl,
-//   InputLabel,
-//   Select,
-//   Typography,
-//   Grid,
-//   TextField,
-//   Box
-// } from '@mui/material'
-
-// // ** Formik
-// import { useField } from 'formik'
-
-// // ** Icon Imports
-// import Icon from 'src/@core/components/icon'
-
-// // ** Third Party Components
-// import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
-// import SearchAndSelect from './SearchAndSelect'
-
-// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-
-// // const StyledTableCell = styled(TableCell)(({ theme }) => ({
-// //   [`&.${tableCellClasses.footer}`]: {
-// //     color: theme.palette.common.white,
-// //     backgroundColor: theme.palette.common.black,
-// //     border: 'none'
-// //   },
-// //   [`&.${tableCellClasses.body}`]: {
-// //     fontSize: 14
-// //   }
-// // }))
-
-// const LinkStyled = styled(Box)(({ theme }) => ({
-//   fontWeight: 400,
-//   fontSize: '1rem',
-//   cursor: 'pointer',
-//   textDecoration: 'none',
-//   color: theme.palette.text.secondary,
-//   '&:hover': {
-//     color: theme.palette.primary.main
-//   }
-// }))
-
-// const CustomInputField = ({ name, value, onChange }) => {
-//   const [field] = useField(name)
-
-//   return (
-//     <TextField
-//       {...field}
-//       value={value}
-//       onChange={onChange}
-//       fullWidth
-//       // variant='outlined'
-//       // size='small'
-//       // margin='dense'
-//     />
-//   )
-// }
-
-// const reorder = (list, startIndex, endIndex) => {
-//   const result = Array.from(list)
-//   const [removed] = result.splice(startIndex, 1)
-//   result.splice(endIndex, 0, removed)
-
-//   return result
-// }
-
-// const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldValue, push }) => {
-//   // ** State
-//   const [open, setOpen] = useState(false)
-//   const [searchProduct, setSearchProduct] = useState(null)
-//   const [data, setData] = useState([])
-//   const [mainRows, setMainRows] = useState(rows)
-
-//   // ** Selectors
-//   const store = useSelector(state => state.getCreateOpeningStock?.data?.value)
-
-//   useEffect(() => {
-//     if (store) {
-//       setData(store)
-//     }
-//   }, [store])
-
-//   // const variation_templates = useSelector(state => state.getCreateProduct?.data?.value?.variation_templates)
-//   // const variation_value_templates = useSelector(state => state.getCreateProduct?.data?.value?.variation_value_templates)
-
-//   // useEffect
-//   // useEffect(() => {
-//   //   if (variation_templates) {
-//   //     setVariationsParent(variation_templates)
-//   //   }
-//   // }, [variation_templates])
-
-//   // useEffect(() => {
-//   //   if (variation_value_templates) {
-//   //     setVariationsChild(variation_value_templates)
-//   //   }
-//   // }, [variation_value_templates])
-
-//   // useEffect(() => {
-//   //   if (Array.isArray(variationsChild) && searchProduct != null && variationsChild.length > 0 && searchProduct) {
-//   //     const filteredChild = variationsChild.filter(child => child.variation_templates_id === searchProduct)
-//   //     setFilteredVariationChildSecond(filteredChild)
-//   //   }
-//   // }, [variationsChild, searchProduct])
-
-//   //** update allUnits when all_units in rows */
-
-//   // ** columns
-//   const columns = [
-//     {
-//       field: 'name',
-//       headerName: 'Product Name',
-//       flex: 0.25,
-//       align: 'center',
-//       minWidth: 120,
-//       renderCell: params => <LinkStyled>{params.name}</LinkStyled>
-//     },
-//     {
-//       field: 'quantity',
-//       headerName: 'Quantity',
-//       align: 'center',
-//       flex: 0.45,
-//       minWidth: 210,
-//       renderCell: params => (
-//         <Grid container spacing={2}>
-//           <Grid item xs={12} md={4} sm={12} lg={4}>
-//             <CustomInputField
-//               // name={`product_compo.${productIndex}.rows.${params.idx}.quantity`}
-//               value={params.quantity}
-//               onChange={e => {
-//                 handleChange(e)
-//                 const newValue =
-//                   Number(e.target.value) * Number(params.purchase_price_exc) * Number(params.unit_quantity)
-//                 //update total amount when quantity changes
-//                 console.log('value from quantity', e.target.value, params.purchase_price_exc, params.unit_quantity)
-//                 console.log('new value from quantity', newValue)
-//                 // setFieldValue(
-//                 //   `product_compo.${productIndex}.rows.${params.idx}.total_amount`,
-//                 //   Number(newValue).toFixed(2)
-//                 // )
-//               }}
-//             />
-//           </Grid>
-//           <Grid item xs={12} md={8} sm={12} lg={8}>
-//             <FormControl fullWidth>
-//               <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
-//               <Select
-//                 value={params.unit}
-//                 // name={`product_compo.${productIndex}.rows.${params.idx}.unit`}
-//                 onChange={e => {
-//                   handleChange(e)
-
-//                   // set value of unit_quantity to unit_quantity
-//                   setFieldValue(
-//                     // `product_compo.${productIndex}.rows.${params.idx}.unit_quantity`,
-//                     rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
-//                   )
-//                   // when unit takes a unit_quantity , update total amount
-
-//                   setFieldValue(
-//                     // `product_compo.${productIndex}.rows.${params.idx}.total_amount`,
-//                     Number(
-//                       params.purchase_price_exc *
-//                         params.quantity *
-//                         rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
-//                     ).toFixed(2)
-//                   )
-//                 }}
-//                 id='demo-simple-select'
-//                 label='Unit'
-//                 fullWidth
-//               >
-//                 {rows[params.idx].all_unit && rows[params.idx].all_unit.length > 0 ? (
-//                   rows[params.idx].all_unit.map((unit, idx) => (
-//                     <MenuItem key={idx} value={unit.id}>
-//                       {unit.value}
-//                     </MenuItem>
-//                   ))
-//                 ) : (
-//                   <MenuItem value={''}>No Units</MenuItem>
-//                 )}
-//               </Select>
-//             </FormControl>
-//           </Grid>
-//         </Grid>
-//       )
-//     },
-//     {
-//       field: 'price',
-//       headerName: 'Price',
-//       align: 'center',
-
-//       flex: 0.25,
-//       minWidth: 120,
-//       renderCell: params => <CustomInputField name={`item.${params.idx}.price`} />
-//     },
-//     {
-//       field: 'Store',
-//       headerName: 'Store',
-//       align: 'center',
-//       flex: 0.25,
-//       minWidth: 120,
-//       renderCell: params => (
-//         <Grid container spacing={2}>
-//           <Grid item xs={12}>
-//             <FormControl fullWidth>
-//               <InputLabel id='demo-simple-select-label'>Store</InputLabel>
-//               <Select
-//                 value={params.store}
-//                 name={`item.${params.idx}.store`}
-//                 handleChange={handleChange}
-//                 id='demo-simple-select'
-//                 label='Store'
-//                 fullWidth
-//               >
-//                 <MenuItem value={''}>Please Select</MenuItem>
-//                 {data && data.length > 0
-//                   ? data.map((store, idx) => (
-//                       <MenuItem key={idx} value={store.id}>
-//                         {store.name}
-//                       </MenuItem>
-//                     ))
-//                   : null}
-//               </Select>
-//             </FormControl>
-//           </Grid>
-//         </Grid>
-//       )
-//     },
-//     {
-//       field: 'actions',
-//       headerName: 'Actions',
-//       align: 'center',
-//       flex: 0.25,
-//       minWidth: 80,
-//       renderCell: params => <RowOptions id={params.id} idx={params.idx} params={params} remove={remove} />
-//     }
-//   ]
-
-//   // ? const profit = values.product_compo[productIndex].profit_percent
-
-//   //? useEffect(() => {
-//   //   const tax = values.tax
-
-//   //   setFieldValue(
-//   //     `product_compo.${productIndex}.selling_price_inc_tax`,
-//   //     rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0) * (1 + tax) * (1 + profit / 100)
-//   //   )
-//   // }, [rows, setFieldValue, productIndex, values.tax, profit])
-
-//   // useEffect(() => {
-//   //   setFieldValue(
-//   //     `product_compo.${productIndex}.selling_price_inc_tax`,
-//   //     rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)
-//   //   )
-//   // }, [rows, setFieldValue, productIndex])
-
-//   //? useEffect(() => {
-//   //   setFieldValue(
-//   //     `product_compo.${productIndex}.item_level_purchase_price_total`,
-//   //     rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)
-//   //   )
-//   // }, [rows, setFieldValue, productIndex])
-
-//   // update selling_price_inc_tax when value.tax changes
-//   // useEffect(() => {
-//   //   if (values.product_compo[productIndex].change === null) {
-//   //     const profit = values.product_compo[productIndex].profit_percent //0
-//   //     const tax = values.tax //0.05
-//   //     const newSellingPrice =
-//   //       Number(values.product_compo[productIndex].item_level_purchase_price_total) * (1 + profit / 100) * (1 + tax)
-//   //     setFieldValue(`product_compo.${productIndex}.selling_price_inc_tax`, Number(newSellingPrice).toFixed(2))
-//   //   } else {
-//   //     const newValue = values.product_compo[productIndex].change
-//   //     setFieldValue(`product_compo.${productIndex}.selling_price_inc_tax`, newValue)
-//   //   }
-
-//   //   return () => {
-//   //     setFieldValue(`product_compo.${productIndex}.change`, null)
-//   //   }
-//   // }, [values, setFieldValue, productIndex])
-
-//   console.log('searchProduct 🎃🎃🎃🎃', searchProduct)
-//   console.log('rows form compo table 🎃', mainRows)
-
-//   // ** Functions to handle drag and drop
-//   const onDragEnd = result => {
-//     if (!result.destination) {
-//       return
-//     }
-
-//     const reorderedRows = reorder(rows, result.source.index, result.destination.index)
-
-//     setMainRows(reorderedRows)
-//     setFieldValue('items', reorderedRows)
-//   }
-
-//   return (
-//     <>
-//       <SearchAndSelect
-//         rows={mainRows}
-//         values={values}
-//         setFieldValue={setFieldValue}
-//         handleChange={handleChange}
-//         searchProduct={searchProduct}
-//         setSearchProduct={setSearchProduct}
-//         push={push}
-//         setOpen={setOpen}
-//       />
-
-//       <DragDropContext onDragEnd={onDragEnd}>
-//         <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
-//           <Table stickyHeader stickyFooter aria-label='sticky table'>
-//             <TableHead>
-//               <TableRow>
-//                 {columns.map((column, idx) => (
-//                   <TableCell
-//                     key={idx}
-//                     align={column.align || 'center'}
-//                     sx={{
-//                       minWidth: column.minWidth,
-//                       flex: column.flex,
-//                       flexDirection: 'column',
-//                       justifyContent: 'center'
-//                     }}
-//                   >
-//                     {column.headerName}
-//                   </TableCell>
-//                 ))}
-//               </TableRow>
-//             </TableHead>
-//             <Droppable droppableId='droppable'>
-//               {provided => (
-//                 <TableBody {...provided.droppableProps} ref={provided.innerRef}>
-//                   {mainRows && mainRows.length > 1 ? (
-//                     mainRows.map((row, idx) => (
-//                       <Draggable key={row.id} draggableId={row.id} index={idx}>
-//                         {provided => (
-//                           <TableRow
-//                             hover
-//                             role='checkbox'
-//                             key={idx}
-//                             ref={provided.innerRef}
-//                             {...provided.draggableProps}
-//                             {...provided.dragHandleProps}
-//                             // sx={{ display: row.initial ? 'none' : 'default' }}
-//                           >
-//                             {columns.map((column, index) => {
-//                               const params = row[column.field]
-//                               console.log(row, 'row form table compo')
-
-//                               return (
-//                                 <TableCell key={index + 1} align={column.align}>
-//                                   {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
-//                                 </TableCell>
-//                               )
-//                             })}
-//                           </TableRow>
-//                         )}
-//                       </Draggable>
-//                     ))
-//                   ) : (
-//                     <TableRow>
-//                       <TableCell></TableCell>
-//                       <TableCell colSpan={3}>
-//                         <Typography variant='body2' align='center' sx={{ my: 10 }}>
-//                           No Rows
-//                         </Typography>
-//                       </TableCell>
-//                       <TableCell></TableCell>
-//                     </TableRow>
-//                   )}
-//                   {provided.placeholder}
-//                 </TableBody>
-//               )}
-//             </Droppable>
-
-//             {/* <TableFooter
-//               style={{
-//                 position: 'sticky',
-//                 bottom: '0'
-//               }}
-//             >
-//               <TableRow>
-//                 <StyledTableCell colSpan={3}>
-//                   <Typography color={'white'}>Total Net Amount:</Typography>
-//                 </StyledTableCell>
-//                 <StyledTableCell align='right' colSpan={2}>
-//                   <Typography color={'white'}>
-//                     {rows.reduce((acc, curr) => acc + Number(curr.total_amount), 0)}
-//                   </Typography>
-//                 </StyledTableCell>
-//               </TableRow>
-//             </TableFooter> */}
-//           </Table>
-//         </TableContainer>
-//       </DragDropContext>
-
-//       {open && (
-//         <Dialog
-//           open={open}
-//           onClose={setTimeout(() => {
-//             setOpen(false)
-//           }, 2000)}
-//           maxWidth='md'
-//           fullWidth
-//           sx={{
-//             '& .MuiDialog-paper': {
-//               width: '100%',
-//               maxHeight: 'calc(100% - 1rem)',
-//               backgroundColor: 'transparent',
-//               boxShadow: 'none'
-//             }
-//           }}
-//           scroll='body'
-//         >
-//           <div>
-//             <div
-//               style={{
-//                 display: 'flex',
-//                 flexWrap: 'wrap',
-//                 alignItems: 'center',
-//                 justifyContent: 'center',
-//                 margin: '16px 0'
-//               }}
-//             >
-//               <ProgressCustomization />
-//             </div>
-//           </div>
-//         </Dialog>
-//       )}
-//     </>
-//   )
-// }
-
-// export default CustomDragTableSearch
-
 const RowOptions = ({ id, idx, params, remove }) => {
   // ** State
   const [anchorEl, setAnchorEl] = useState(null)
@@ -583,7 +123,6 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
   const [open, setOpen] = useState(false)
   const [searchProduct, setSearchProduct] = useState(null)
   const [data, setData] = useState([])
-  // const [mainRows, setMainRows] = useState(rows)
 
   const store = useSelector(state => state.getCreateOpeningStock?.data?.value?.store)
 
@@ -615,6 +154,47 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
     }
   }, [setFieldValue, values, decimalFormate])
 
+  // //? Trigger when parent price change
+  // useEffect(() => {
+  //   if (values.parent_price && values.items && values.items.length > 0) {
+  //     const foundPrice =
+  //       values.parent_price === 0
+  //         ? values.items.map(item => {
+  //             if (item.list_prices && item.list_prices.length > 0) {
+  //               return item.list_prices[0].price
+  //             }
+  //           })
+  //         : values.items.map(item => {
+  //             if (item.list_prices && item.list_prices.length > 0) {
+  //               return item.list_prices.find(price => price.id === values.parent_price).price
+  //             }
+  //           })
+
+  //     setFieldValue(
+  //       'items',
+  //       values.items.map(item => {
+  //         return {
+  //           ...item,
+  //           price: foundPrice
+  //         }
+  //       })
+  //     )
+  //   }
+  // }, [setFieldValue, values.parent_price, values.items])
+
+  useEffect(() => {
+    values.items.map((item, idx) => {
+      if (item.unit) {
+        const arrOfUnit = item.all_unit
+
+        const unit = arrOfUnit && arrOfUnit.length > 0 && arrOfUnit.find(unit => unit.id === item.unit)
+        if (unit) {
+          setFieldValue(`items.${idx}.list_prices`, unit.list_price)
+        }
+      }
+    })
+  }, [setFieldValue, values.items])
+
   const columns = [
     {
       field: 'name',
@@ -642,18 +222,11 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                   setFieldValue(`items.${params.idx}.quantity`, 1)
                 }
                 handleChange(e)
-                // const newValue =
-                //   Number(e.target.value) * Number(params.purchase_price_exc) * Number(params.unit_quantity)
-                // console.log('value from quantity', e.target.value, params.purchase_price_exc, params.unit_quantity)
-                // console.log('new value from quantity', newValue)
+
                 if (values.items[params.idx].unit_quantity > 0) {
                   setFieldValue(
                     `items.${params.idx}.total`,
-                    (
-                      Number(e.target.value) *
-                      Number(values.items[params.idx].price) *
-                      Number(values.items[params.idx].unit_quantity)
-                    ).toFixed(decimalFormate)
+                    (Number(e.target.value) * Number(values.items[params.idx].price)).toFixed(decimalFormate)
                   )
                 } else {
                   setFieldValue(
@@ -672,15 +245,6 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                 name={`items.${params.idx}.unit`}
                 onChange={e => {
                   handleChange(e)
-                  // setFieldValue(rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity)
-                  // setFieldValue(
-                  //   Number(
-                  //     params.purchase_price_exc *
-                  //       params.quantity *
-                  //       rows[params.idx].all_unit.find(unit => unit.id === e.target.value).unit_quantity
-                  //   ).toFixed(2)
-                  // )
-                  // setFieldValue(`items.${params.idx}.total`, (Number(e.target.value) * Number(values.items[params.idx].quantity)).toFixed(decimalFormate))
                 }}
                 id='demo-simple-select'
                 label='Unit'
@@ -692,14 +256,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                       key={idx}
                       value={unit.id}
                       onClick={() => {
-                        setFieldValue(
-                          `items.${params.idx}.total`,
-                          (
-                            Number(values.items[params.idx].price) *
-                            Number(values.items[params.idx].quantity) *
-                            Number(unit.unit_quantity)
-                          ).toFixed(decimalFormate)
-                        )
+                        setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
                       }}
                     >
                       {unit.value}
@@ -708,6 +265,40 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                 ) : (
                   <MenuItem value={''}>No Units</MenuItem>
                 )}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Price</InputLabel>
+              <Select
+                value={values.items[params.idx].child_price}
+                name={`items.${params.idx}.child_price`}
+                onChange={event => {
+                  handleChange(event)
+                }}
+                id='demo-simple-select'
+                label='Price'
+                fullWidth
+              >
+                <MenuItem value={''}>Please Select</MenuItem>
+                {rows[params.idx].list_prices && rows[params.idx].list_prices.length > 0
+                  ? rows[params.idx].list_prices.map((price, idx) => (
+                      <MenuItem
+                        onClick={() => {
+                          setFieldValue(`items.${params.idx}.price`, price.price ? price.price : 0)
+                          setFieldValue(
+                            `items.${params.idx}.total`,
+                            (Number(values.items[params.idx].quantity) * Number(price.price)).toFixed(decimalFormate)
+                          )
+                        }}
+                        key={idx}
+                        value={price.line_id}
+                      >
+                        {price.name}
+                      </MenuItem>
+                    ))
+                  : null}
               </Select>
             </FormControl>
           </Grid>
@@ -724,7 +315,13 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
         <CustomInputField
           name={`items.${params.idx}.price`}
           value={Number(values.items[params.idx].price).toFixed(decimalFormate)}
-          onChange={handleChange}
+          onChange={e => {
+            handleChange(e)
+            setFieldValue(
+              `items.${params.idx}.total`,
+              (Number(values.items[params.idx].quantity) * Number(e.target.value)).toFixed(decimalFormate)
+            )
+          }}
         />
       )
     },
@@ -744,6 +341,10 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
           onChange={event => {
             handleChange(event)
             if (values.items[params.idx].quantity > 0) {
+              setFieldValue(
+                `items.${params.idx}.price`,
+                (Number(event.target.value) / Number(values.items[params.idx].quantity)).toFixed(decimalFormate)
+              )
               setFieldValue(
                 `items.${params.idx}.total`,
                 (Number(event.target.value) * Number(values.items[params.idx].quantity)).toFixed(decimalFormate)
