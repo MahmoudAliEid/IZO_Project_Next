@@ -66,7 +66,9 @@ const EditJournalVoucherPopUp = ({ open, handleClose, id }) => {
     // make account_id required in table
     table: Yup.array().of(
       Yup.object().shape({
-        account_id: Yup.string().required('Required')
+        account_id: Yup.string().required('Required'),
+        debit: Yup.number().min(0, 'Debit must be greater than 0'),
+        credit: Yup.number().min(0, 'Credit must be greater than 0')
       })
     )
   })
@@ -128,7 +130,7 @@ const EditJournalVoucherPopUp = ({ open, handleClose, id }) => {
   }, [storeEdit])
 
   // ** Functions
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = values => {
     console.log(values, 'values form submit💘')
     setLoading(true)
 
@@ -138,7 +140,7 @@ const EditJournalVoucherPopUp = ({ open, handleClose, id }) => {
       })
       .then(() => {
         setLoading(false)
-        resetForm()
+        dispatch(fetchEditJournalVoucher({ id }))
       })
   }
 
@@ -290,6 +292,12 @@ const EditJournalVoucherPopUp = ({ open, handleClose, id }) => {
                             console.log(isEmpty, 'isEmpty')
                             if (isEmpty.length > 0) {
                               notify('All accounts must be selected', 'error')
+                            } else {
+                              return
+                            }
+                            const isZeros = values.table.filter(row => row.debit === 0 && row.credit === 0)
+                            if (isZeros.length > 0) {
+                              notify('Debit or Credit must be greater than 0', 'error')
                             } else {
                               return
                             }

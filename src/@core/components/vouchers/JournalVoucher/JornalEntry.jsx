@@ -151,6 +151,11 @@ const JournalEntry = ({ open, toggle, itemId }) => {
                             : `${currency_code} ${Number(entryData.balance.total_credit).toFixed(decimalFormat)} `
                         }`,
                         align: 'left'
+                      },
+                      {
+                        field: '',
+                        headerName: '',
+                        align: 'left'
                       }
                     ]}
                   />

@@ -88,7 +88,9 @@ const AddPopUp = ({ open, handleClose }) => {
     // make account_id required in table
     table: Yup.array().of(
       Yup.object().shape({
-        account_id: Yup.string().required('Account is required')
+        account_id: Yup.string().required('Account is required'),
+        debit: Yup.number().min(0, 'Debit must be greater than 0'),
+        credit: Yup.number().min(0, 'Credit must be greater than 0')
       })
     )
   })
@@ -282,6 +284,12 @@ const AddPopUp = ({ open, handleClose }) => {
                             console.log(isEmpty, 'isEmpty')
                             if (isEmpty.length > 0) {
                               notify('All accounts must be selected', 'error')
+                            } else {
+                              return
+                            }
+                            const isZeros = values.table.filter(row => row.debit === 0 && row.credit === 0)
+                            if (isZeros.length > 0) {
+                              notify('Debit or Credit must be greater than 0', 'error')
                             } else {
                               return
                             }

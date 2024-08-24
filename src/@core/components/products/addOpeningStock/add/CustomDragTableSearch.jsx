@@ -232,21 +232,21 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                         setFieldValue(`items.${params.idx}.child_price`, '')
                         setFieldValue(`parent_price`, 0)
 
-                        const price_id = values.parent_price
+                        const price_id = 0
 
                         // set price value based on price_id in all items row if it's unit is null
                         values.items.forEach((item, index) => {
-                          if (item.unit !== '' && unit.list_price.length > 0 && item.child_price === '') {
+                          if (unit.list_price.length > 0) {
                             const price = unit.list_price.find(price => price.line_id === price_id)
 
                             if (price) {
                               const priceValue = price.price
 
-                              setFieldValue(`items[${index}].price`, priceValue)
-                              setFieldValue(`items[${index}].total`, Number(priceValue) * Number(item.quantity))
+                              setFieldValue(`items.${index}.price`, priceValue)
+                              setFieldValue(`items.${index}.total`, Number(priceValue) * Number(item.quantity))
                             } else if (price === null) {
-                              setFieldValue(`items[${index}].price`, 0)
-                              setFieldValue(`items[${index}].total`, 0)
+                              setFieldValue(`items.${index}.price`, 0)
+                              setFieldValue(`items.${index}.total`, 0)
                             } else {
                               return
                             }
@@ -472,7 +472,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
             <Droppable droppableId='droppable'>
               {provided => (
                 <TableBody {...provided.droppableProps} ref={provided.innerRef}>
-                  {values.items && values.items.length > 1 ? (
+                  {values.items && values.items.length > 0 ? (
                     values.items.map((row, idx) => (
                       <Draggable key={row.id} draggableId={row.id.toString()} index={idx}>
                         {provided => (

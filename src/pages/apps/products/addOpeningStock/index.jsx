@@ -203,6 +203,7 @@ const AddOpeningStock = () => {
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
   const [openAdd, setOpenAdd] = useState(false)
+  const [triggerLoadingList, setTriggerLoadingList] = useState(true)
   const title = 'Add Opening Stock'
 
   // ** Hooks
@@ -274,6 +275,15 @@ const AddOpeningStock = () => {
       setFilteredData([])
     }
   }
+
+  // ** handle loading list
+  useEffect(() => {
+    setTimeout(() => {
+      setTriggerLoadingList(!triggerLoadingList)
+    }, 4000)
+
+    // return () => clearTimeout(timer)
+  }, [triggerLoadingList])
 
   // see if data is available
   console.log('data of add opening stock :', data)
@@ -370,7 +380,7 @@ const AddOpeningStock = () => {
                   }}
                 >
                   <Box>
-                    <ProgressCustomization />
+                    {triggerLoadingList ? <ProgressCustomization /> : <Typography>No Data Found...</Typography>}
                   </Box>
                 </Box>
               </Grid>

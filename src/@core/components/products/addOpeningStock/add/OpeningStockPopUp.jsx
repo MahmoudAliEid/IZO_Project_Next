@@ -106,6 +106,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
         ...prev,
         store: editStore.info[0].store.id,
         date: new Date(editStore.info[0].date),
+        parent_price: editStore.info[0].list_price,
         items: editStore.info[0].items.map(item => ({
           id: item.id,
           name: item.productName,
@@ -115,9 +116,9 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
           product_id: item.product_id,
           quantity: item.quantity,
           price: item.price,
-          unit: item.store_id,
+          unit: item.product_unit_id,
           store: item.store_id,
-          all_unit: editStore.require.store,
+          all_unit: item.all_units,
           initial: false,
           unit_quantity: '',
           child_price: item.list_price,
@@ -234,11 +235,11 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                                 if (price) {
                                   const priceValue = price.price
 
-                                  setFieldValue(`items[${index}].price`, priceValue)
-                                  setFieldValue(`items[${index}].total`, Number(priceValue) * Number(item.quantity))
+                                  setFieldValue(`items.${index}.price`, priceValue)
+                                  setFieldValue(`items.${index}.total`, Number(priceValue) * Number(item.quantity))
                                 } else if (price === null) {
-                                  setFieldValue(`items[${index}].price`, 0)
-                                  setFieldValue(`items[${index}].total`, 0)
+                                  setFieldValue(`items.${index}.price`, 0)
+                                  setFieldValue(`items.${index}.total`, 0)
                                 } else {
                                   return
                                 }
