@@ -37,6 +37,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getCookie } from 'cookies-next'
 import { fetchCreateJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/getCreateJournalVoucher'
 import notify from 'src/utils/notify'
+import { getIn } from 'formik'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.footer}`]: {
@@ -70,7 +71,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 //   )
 // }
 
-const AddJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, push, handleBlur }) => {
+const AddJournalVoucherTable = ({
+  values,
+  handleChange,
+  remove,
+  setFieldValue,
+  push,
+  handleBlur,
+  errors,
+  touched,
+  setFieldTouched
+}) => {
   // ** States
   const [data, setData] = useState([])
   const decimalFormat = getCookie('DecimalFormat')
@@ -94,6 +105,7 @@ const AddJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, p
       setData(store)
     }
   }, [store])
+
   // ** columns
   const columns = [
     {
@@ -110,17 +122,36 @@ const AddJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, p
                 disablePortal
                 selectOnFocus
                 fullWidth
-                id='combo-box-demo'
+                id={`combo-box-${params.idx}`}
                 name={`table.${params.idx}.account_id`}
-                // value={values.accountText}
-                value={data?.accounts.find(account => account.value === values.table[params.idx].accountText) || null}
+                value={data?.accounts.find(account => account.id === values.table[params.idx].account_id) || null}
                 onChange={(event, newValue) => {
-                  setFieldValue(`table.${params.idx}.accountText`, newValue.value)
+                  setFieldValue(`table.${params.idx}.accountText`, newValue?.value || '')
                   setFieldValue(`table.${params.idx}.account_id`, newValue?.id || '')
+                }}
+                onBlur={e => {
+                  handleBlur(e)
+                  // Manually trigger touch state for `account_id`
+                  setFieldTouched(`table.${params.idx}.account_id`, true)
                 }}
                 options={data?.accounts || []}
                 getOptionLabel={option => option.value || ''}
-                renderInput={params => <TextField fullWidth {...params} label='Account' />}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label='Account'
+                    error={Boolean(
+                      getIn(touched, `table.${params.idx}.account_id`) &&
+                        getIn(errors, `table.${params.idx}.account_id`)
+                    )}
+                    helperText={
+                      getIn(touched, `table.${params.idx}.account_id`) &&
+                      getIn(errors, `table.${params.idx}.account_id`)
+                        ? getIn(errors, `table.${params.idx}.account_id`)
+                        : ''
+                    }
+                  />
+                )}
               />
             </FormControl>
           )}
@@ -526,7 +557,7 @@ const AddJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, p
     }
 
     if (totalDebit === totalCredit) {
-      notify('Total Credit and Total Debit are equal 💌', 'success')
+      notify('Total Credit and Total Debit are equal ', 'success')
     }
 
     if ((totalCredit === 0 && !values.table[idx].debit) || (totalDebit === 0 && !values.table[idx].credit)) {

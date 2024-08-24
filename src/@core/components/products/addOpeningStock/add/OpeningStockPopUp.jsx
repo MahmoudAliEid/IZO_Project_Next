@@ -61,27 +61,8 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
     total_items: 0,
     net_total_amount: 0,
     search_product: '',
-    parent_price: 0,
-    items: [
-      {
-        id: 0,
-        name: 'EVOL',
-        variation_id: '',
-        total: '',
-        line_store: '',
-        product_id: '',
-        quantity: '',
-        price: '',
-        store: '',
-        line_id: '',
-        initial: true,
-        unit: 1, //id of unit
-        all_unit: '', // dropDown menu
-        unit_quantity: '', //quantity of unit
-        child_price: '',
-        list_prices: []
-      }
-    ]
+    parent_price: null,
+    items: []
   })
 
   // ** Hooks
@@ -238,6 +219,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                           id='parent_price'
                           name='parent_price'
                           label='Prices'
+                          disabled={values.items.length === 0}
                           value={values.parent_price}
                           required
                           onChange={event => {

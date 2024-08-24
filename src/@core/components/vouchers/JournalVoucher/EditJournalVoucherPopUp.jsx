@@ -37,6 +37,8 @@ import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 import { getCookie } from 'cookies-next'
 import { Warning } from '@mui/icons-material'
 import EditJournalVoucherTable from './EditJournalVoucherTable'
+import notify from 'src/utils/notify'
+import { fetchJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/getJournalVoucherSlice'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
   const { label, readOnly } = props
@@ -126,17 +128,17 @@ const EditJournalVoucherPopUp = ({ open, handleClose, id }) => {
   }, [storeEdit])
 
   // ** Functions
-  const handleSubmit = (values, { setSubmitting }) => {
+  const handleSubmit = (values, { resetForm }) => {
     console.log(values, 'values form submit💘')
     setLoading(true)
 
     dispatch(editJournalVoucher({ values, id }))
       .then(() => {
-        dispatch(fetchCreateJournalVoucher())
+        dispatch(fetchJournalVoucher())
       })
       .then(() => {
         setLoading(false)
-        setSubmitting(false)
+        resetForm()
       })
   }
 
@@ -283,6 +285,15 @@ const EditJournalVoucherPopUp = ({ open, handleClose, id }) => {
                             values.total_debit === 0 ||
                             values.total_credit !== values.total_debit
                           }
+                          onClick={() => {
+                            const isEmpty = values.table.filter(row => row.account_id === '')
+                            console.log(isEmpty, 'isEmpty')
+                            if (isEmpty.length > 0) {
+                              notify('All accounts must be selected', 'error')
+                            } else {
+                              return
+                            }
+                          }}
                         >
                           Update
                         </Button>

@@ -17,7 +17,7 @@ import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import { Button, ButtonGroup } from '@mui/material'
+import { Button } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // ** Third Party Components
@@ -35,12 +35,13 @@ import { fetchJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/getJ
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 import AddPopUp from 'src/@core/components/vouchers/JournalVoucher/AddPopUp'
 // ** Styled Component
-import FilterRangePopUp from '../list/FilterRangePopUp'
 import ViewPopUp from 'src/@core/components/vouchers/JournalVoucher/ViewPopUp'
 import EditJournalVoucherPopUp from 'src/@core/components/vouchers/JournalVoucher/EditJournalVoucherPopUp'
 import { deleteJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/postDeleteJournalVoucher'
 import JournalEntry from 'src/@core/components/vouchers/JournalVoucher/JornalEntry'
 import AttachmentJournalVoucher from 'src/@core/components/vouchers/JournalVoucher/AttachmentJournalVoucher'
+import PageFilter from 'src/@core/Global/PageFilter'
+import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
 
 const RowOptions = ({ id }) => {
   // ** Hooks
@@ -268,22 +269,23 @@ const JournalVoucher = () => {
   const direction = theme.direction
 
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
-  // ** Date Range
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
 
-  const [openDateRange, setOpenDateRange] = useState(false)
   const transText = getCookie('fontStyle')
   const FilterInitial = getCookie('FilterInitial')
   const currency_code = getCookie('currency_code')
   const decimalFormat = getCookie('DecimalFormat')
   const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+
   // ** for BTN
-  const [active, setActive] = useState(FilterInitial || 'month')
-  const [btnValue, setBtnValue] = useState(FilterInitial || 'month')
-  const [month, setMonth] = useState(FilterInitial === 'month' ? new Date() : null)
-  const [day, setDay] = useState(FilterInitial === 'day' ? new Date() : null)
-  const [week, setWeek] = useState(FilterInitial === 'week' ? new Date() : null)
+  const [openDateRange, setOpenDateRange] = useState(false)
+  const [filterDate, setFilterDate] = useState({
+    month: FilterInitial === 'month' ? new Date() : null,
+    day: FilterInitial === 'day' ? new Date() : null,
+    week: FilterInitial === 'week' ? new Date() : null,
+    active: FilterInitial || 'month',
+    startDate: null,
+    endDate: null
+  })
 
   // ** Columns
   const columns = [
@@ -362,13 +364,20 @@ const JournalVoucher = () => {
     const url = getCookie('apiUrl')
 
     setToken(token)
-
     setUrl(url)
   }, [token, url])
 
   useEffect(() => {
-    dispatch(fetchJournalVoucher())
-  }, [dispatch])
+    dispatch(
+      fetchJournalVoucher({
+        month: filterDate.month,
+        week: filterDate.week,
+        day: filterDate.day,
+        startDate: filterDate.startDate,
+        endDate: filterDate.endDate
+      })
+    )
+  }, [dispatch, filterDate])
 
   // ** handle search function
 
@@ -392,8 +401,6 @@ const JournalVoucher = () => {
 
   // see if data is available
 
-  console.log('date ', week, day, month, startDate, endDate, active)
-
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}></Grid>
@@ -413,82 +420,9 @@ const JournalVoucher = () => {
             <Box>
               <CardHeader sx={{ textTransform: transText }} title={title} />
             </Box>
-            <ButtonGroup variant='outlined' aria-label='Basic button group'>
-              <Button
-                onMouseEnter={() => {
-                  setActive('month')
-                }}
-                onClick={() => {
-                  setActive('month')
-                  setBtnValue('month')
-                  setMonth(new Date())
-                  setStartDate(null)
-                  setEndDate(null)
 
-                  setWeek(null)
-                  setDay(null)
-                }}
-                variant={btnValue === 'month' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-              >
-                Month
-              </Button>
-              <Button
-                variant={btnValue === 'week' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-                onMouseEnter={() => {
-                  setActive('week')
-                }}
-                onClick={() => {
-                  setActive('week')
-                  setBtnValue('week')
-                  setWeek(new Date())
-                  setMonth(null)
-                  setDay(null)
-                  setStartDate(null)
-                  setEndDate(null)
-                }}
-              >
-                Week
-              </Button>
-              <Button
-                onMouseEnter={() => {
-                  setActive('day')
-                }}
-                variant={btnValue === 'day' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-                onClick={() => {
-                  setActive('day')
-                  setBtnValue('day')
-                  setDay(new Date())
-                  setMonth(null)
-                  setWeek(null)
-                  setStartDate(null)
-                  setEndDate(null)
-                }}
-              >
-                Day
-              </Button>
-              <Button
-                onMouseEnter={() => {
-                  setActive('range')
-                }}
-                variant={btnValue === 'range' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-                onClick={() => {
-                  setActive('range')
-                  setBtnValue('range')
-                  setOpenDateRange(true)
-                  setMonth(null)
-                  setWeek(null)
-                  setDay(null)
-                  setStartDate(null)
-                  setEndDate(null)
-                }}
-              >
-                Range
-              </Button>
-            </ButtonGroup>
+            <PageFilter filterDate={filterDate} setFilterDate={setFilterDate} setOpenDateRange={setOpenDateRange} />
+
             <Box>
               <Button
                 variant='contained'
@@ -561,16 +495,12 @@ const JournalVoucher = () => {
         // ** Date Range PopUp
 
         openDateRange && (
-          <FilterRangePopUp
+          <FilterRangePage
             open={openDateRange}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            startDate={startDate}
-            endDate={endDate}
+            setFilterDate={setFilterDate}
+            filterDate={filterDate}
             popperPlacement={popperPlacement}
             handleClose={() => {
-              setStartDate(null)
-              setEndDate(null)
               setOpenDateRange(false)
             }}
           />

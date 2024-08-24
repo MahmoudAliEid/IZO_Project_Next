@@ -30,13 +30,14 @@ import {
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
-
+import notify from 'src/utils/notify'
 import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 
 // ** next cookies
 import { getCookie } from 'cookies-next'
 import AddJournalVoucherTable from './AddJournalVoucherTable'
 import { Warning } from '@mui/icons-material'
+import { fetchJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/getJournalVoucherSlice'
 
 const CustomInput = forwardRef(({ ...props }, ref) => {
   const { label, readOnly } = props
@@ -87,7 +88,7 @@ const AddPopUp = ({ open, handleClose }) => {
     // make account_id required in table
     table: Yup.array().of(
       Yup.object().shape({
-        account_id: Yup.string().required('Required')
+        account_id: Yup.string().required('Account is required')
       })
     )
   })
@@ -117,17 +118,16 @@ const AddPopUp = ({ open, handleClose }) => {
   }, [store])
 
   // ** Functions
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log(values, 'values form submit💘')
+  const handleSubmit = (values, { resetForm }) => {
     setLoading(true)
 
     dispatch(createJournalVoucher({ values }))
       .then(() => {
-        dispatch(fetchCreateJournalVoucher())
+        dispatch(fetchJournalVoucher())
       })
-      .finally(() => {
+      .then(() => {
         setLoading(false)
-        setSubmitting(false)
+        resetForm()
       })
   }
 
@@ -160,7 +160,7 @@ const AddPopUp = ({ open, handleClose }) => {
                 onSubmit={handleSubmit}
                 enableReinitialize
               >
-                {({ values, errors, touched, handleBlur, handleChange, setFieldValue }) => (
+                {({ values, errors, touched, handleBlur, handleChange, setFieldValue, setFieldTouched }) => (
                   <Form>
                     <Box sx={{ p: 3 }}>
                       {values.total_credit !== values.total_debit ? (
@@ -256,10 +256,13 @@ const AddPopUp = ({ open, handleClose }) => {
                             <AddJournalVoucherTable
                               values={values}
                               handleBlur={handleBlur}
+                              touched={touched}
+                              errors={errors}
                               handleChange={handleChange}
                               setFieldValue={setFieldValue}
                               push={push}
                               remove={remove}
+                              setFieldTouched={setFieldTouched}
                             />
                           )}
                         </FieldArray>
@@ -274,6 +277,15 @@ const AddPopUp = ({ open, handleClose }) => {
                             values.total_debit === 0 ||
                             values.total_credit !== values.total_debit
                           }
+                          onClick={() => {
+                            const isEmpty = values.table.filter(row => row.account_id === '')
+                            console.log(isEmpty, 'isEmpty')
+                            if (isEmpty.length > 0) {
+                              notify('All accounts must be selected', 'error')
+                            } else {
+                              return
+                            }
+                          }}
                         >
                           Add
                         </Button>

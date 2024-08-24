@@ -9,6 +9,7 @@ import { getCookie } from 'cookies-next'
 
 // ** MUI Imports
 import { Box, Card, Menu, Grid, Divider, MenuItem, IconButton, Typography, CardHeader, Button } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 // ** Third Party Components
 import { DataGrid } from '@mui/x-data-grid'
@@ -26,6 +27,8 @@ import { fetchEditOpeningStock } from 'src/store/apps/products/addOpeningStock/g
 import OpeningStockPopUp from 'src/@core/components/products/addOpeningStock/add/OpeningStockPopUp'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 import ViewOpeningStock from 'src/@core/components/products/addOpeningStock/view/ViewOpeningStock'
+import PageFilter from 'src/@core/Global/PageFilter'
+import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
 
 const RowOptions = ({ id, type }) => {
   // ** Hooks
@@ -43,7 +46,6 @@ const RowOptions = ({ id, type }) => {
   // ** Cookies
   const transText = getCookie('fontStyle')
   const token = getCookie('token')
-  // const url = getCookie('apiUrl')
 
   const handleRowOptionsClick = event => {
     setAnchorEl(event.currentTarget)
@@ -205,23 +207,23 @@ const AddOpeningStock = () => {
 
   // ** Hooks
   const dispatch = useDispatch()
-  // const theme = useTheme()
-  // const direction = theme.direction
+  const theme = useTheme()
+  const direction = theme.direction
 
-  // const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
-  // ** Date Range
-  // const [startDate, setStartDate] = useState(null)
-  // const [endDate, setEndDate] = useState(null)
+  const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
 
-  // const [openDateRange, setOpenDateRange] = useState(false)
   const transText = getCookie('fontStyle')
-  // const FilterInitial = getCookie('FilterInitial')
+  const FilterInitial = getCookie('FilterInitial')
   // ** for BTN
-  // const [active, setActive] = useState(FilterInitial || 'month')
-  // const [btnValue, setBtnValue] = useState(FilterInitial || 'month')
-  // const [month, setMonth] = useState(FilterInitial === 'month' ? new Date() : null)
-  // const [day, setDay] = useState(FilterInitial === 'day' ? new Date() : null)
-  // const [week, setWeek] = useState(FilterInitial === 'week' ? new Date() : null)
+  const [openDateRange, setOpenDateRange] = useState(false)
+  const [filterDate, setFilterDate] = useState({
+    month: FilterInitial === 'month' ? new Date() : null,
+    day: FilterInitial === 'day' ? new Date() : null,
+    week: FilterInitial === 'week' ? new Date() : null,
+    active: FilterInitial || 'month',
+    startDate: null,
+    endDate: null
+  })
 
   const escapeRegExp = value => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -239,11 +241,19 @@ const AddOpeningStock = () => {
 
   useEffect(() => {
     if (token && url) {
-      dispatch(fetchOpeningStock(token, url))
+      dispatch(
+        fetchOpeningStock({
+          token,
+          url,
+          month: filterDate.month || '',
+          day: filterDate.day || '',
+          weak: filterDate.week || '',
+          startDate: filterDate.startDate || '',
+          endDate: filterDate.endDate || ''
+        })
+      )
     }
-  }, [dispatch, token, url])
-
-  // const toggleAddSuppliersDrawer = () => setSupplierOpen(!addSupplierOpen)
+  }, [dispatch, token, url, filterDate])
 
   // ** handle search function
 
@@ -267,10 +277,10 @@ const AddOpeningStock = () => {
 
   // see if data is available
   console.log('data of add opening stock :', data)
+  console.log('filtered data of add opening stock :', filterDate)
 
   return (
     <Grid container spacing={6}>
-      <Grid item xs={12}></Grid>
       <Grid item xs={12}>
         <Card>
           <Box
@@ -287,82 +297,7 @@ const AddOpeningStock = () => {
             <Box>
               <CardHeader sx={{ textTransform: transText }} title={title} />
             </Box>
-            {/* <ButtonGroup variant='outlined' aria-label='Basic button group'>
-              <Button
-                onMouseEnter={() => {
-                  setActive('month')
-                }}
-                onClick={() => {
-                  setActive('month')
-                  setBtnValue('month')
-                  setMonth(new Date())
-                  setStartDate(null)
-                  setEndDate(null)
-
-                  setWeek(null)
-                  setDay(null)
-                }}
-                variant={btnValue === 'month' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-              >
-                Month
-              </Button>
-              <Button
-                variant={btnValue === 'week' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-                onMouseEnter={() => {
-                  setActive('week')
-                }}
-                onClick={() => {
-                  setActive('week')
-                  setBtnValue('week')
-                  setWeek(new Date())
-                  setMonth(null)
-                  setDay(null)
-                  setStartDate(null)
-                  setEndDate(null)
-                }}
-              >
-                Week
-              </Button>
-              <Button
-                onMouseEnter={() => {
-                  setActive('day')
-                }}
-                variant={btnValue === 'day' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-                onClick={() => {
-                  setActive('day')
-                  setBtnValue('day')
-                  setDay(new Date())
-                  setMonth(null)
-                  setWeek(null)
-                  setStartDate(null)
-                  setEndDate(null)
-                }}
-              >
-                Day
-              </Button>
-              <Button
-                onMouseEnter={() => {
-                  setActive('range')
-                }}
-                variant={btnValue === 'range' ? 'contained' : 'outlined'}
-                sx={{ textTransform: transText }}
-                onClick={() => {
-                  setActive('range')
-                  setBtnValue('range')
-                  setOpenDateRange(true)
-                  setMonth(null)
-                  setWeek(null)
-                  setDay(null)
-                  setStartDate(null)
-                  setEndDate(null)
-                }}
-              >
-                Range
-              </Button>
-            </ButtonGroup> */}
+            <PageFilter setFilterDate={setFilterDate} setOpenDateRange={setOpenDateRange} />
             <Box
               sx={{
                 px: 6,
@@ -374,9 +309,6 @@ const AddOpeningStock = () => {
                 textTransform: transText
               }}
             >
-              <Button sx={{ textTransform: transText }} color='primary' variant='contained'>
-                Filter
-              </Button>
               <Button
                 startIcon={<AddCircleOutlineIcon />}
                 // onClick={toggleAddSuppliersDrawer}
@@ -446,25 +378,21 @@ const AddOpeningStock = () => {
           </Box>
         </Card>
       </Grid>
-      {/* {
+      {
         // ** Date Range PopUp
 
         openDateRange && (
-          <FilterRangePopUp
+          <FilterRangePage
             open={openDateRange}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            startDate={startDate}
-            endDate={endDate}
+            setFilterDate={setFilterDate}
+            filterDate={filterDate}
             popperPlacement={popperPlacement}
             handleClose={() => {
-              setStartDate(null)
-              setEndDate(null)
               setOpenDateRange(false)
             }}
           />
         )
-      } */}
+      }
       {openAdd && <OpeningStockPopUp open={openAdd} handleClose={() => setOpenAdd(false)} />}
     </Grid>
   )

@@ -110,17 +110,19 @@ const EditJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, 
                 disablePortal
                 selectOnFocus
                 fullWidth
-                id='combo-box-demo'
+                id={`combo-box-${params.idx}`}
                 name={`table.${params.idx}.account_id`}
-                // value={values.accountText}
-                value={data?.accounts.find(account => account.value === values.table[params.idx].accountName) || null}
+                value={data?.accounts.find(account => account.id === values.table[params.idx].account_id) || null}
                 onChange={(event, newValue) => {
-                  setFieldValue(`table.${params.idx}.accountText`, newValue.value)
+                  setFieldValue(`table.${params.idx}.accountText`, newValue?.value || '')
                   setFieldValue(`table.${params.idx}.account_id`, newValue?.id || '')
+                }}
+                onBlur={e => {
+                  handleBlur(e)
                 }}
                 options={data?.accounts || []}
                 getOptionLabel={option => option.value || ''}
-                renderInput={params => <TextField fullWidth {...params} label='Account' />}
+                renderInput={params => <TextField {...params} label='Account' />}
               />
             </FormControl>
           )}

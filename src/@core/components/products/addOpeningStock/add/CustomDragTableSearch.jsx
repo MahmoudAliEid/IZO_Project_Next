@@ -154,34 +154,6 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
     }
   }, [setFieldValue, values, decimalFormate])
 
-  // //? Trigger when parent price change
-  // useEffect(() => {
-  //   if (values.parent_price && values.items && values.items.length > 0) {
-  //     const foundPrice =
-  //       values.parent_price === 0
-  //         ? values.items.map(item => {
-  //             if (item.list_prices && item.list_prices.length > 0) {
-  //               return item.list_prices[0].price
-  //             }
-  //           })
-  //         : values.items.map(item => {
-  //             if (item.list_prices && item.list_prices.length > 0) {
-  //               return item.list_prices.find(price => price.id === values.parent_price).price
-  //             }
-  //           })
-
-  //     setFieldValue(
-  //       'items',
-  //       values.items.map(item => {
-  //         return {
-  //           ...item,
-  //           price: foundPrice
-  //         }
-  //       })
-  //     )
-  //   }
-  // }, [setFieldValue, values.parent_price, values.items])
-
   useEffect(() => {
     values.items.map((item, idx) => {
       if (item.unit) {
@@ -257,6 +229,29 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                       value={unit.id}
                       onClick={() => {
                         setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
+                        setFieldValue(`items.${params.idx}.child_price`, '')
+                        setFieldValue(`parent_price`, 0)
+
+                        const price_id = values.parent_price
+
+                        // set price value based on price_id in all items row if it's unit is null
+                        values.items.forEach((item, index) => {
+                          if (item.unit !== '' && unit.list_price.length > 0 && item.child_price === '') {
+                            const price = unit.list_price.find(price => price.line_id === price_id)
+
+                            if (price) {
+                              const priceValue = price.price
+
+                              setFieldValue(`items[${index}].price`, priceValue)
+                              setFieldValue(`items[${index}].total`, Number(priceValue) * Number(item.quantity))
+                            } else if (price === null) {
+                              setFieldValue(`items[${index}].price`, 0)
+                              setFieldValue(`items[${index}].total`, 0)
+                            } else {
+                              return
+                            }
+                          }
+                        })
                       }}
                     >
                       {unit.value}
@@ -281,7 +276,19 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                 label='Price'
                 fullWidth
               >
-                <MenuItem value={''}>Please Select</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    const parentPrice = values.parent_price
+                    const listPrice = values.items[params.idx].list_prices
+                    if (listPrice) {
+                      const childPrice = listPrice.find(price => price.line_id === parentPrice)
+                      setFieldValue(`items.${params.idx}.price`, childPrice?.price)
+                    }
+                  }}
+                  value={''}
+                >
+                  Please Select
+                </MenuItem>
                 {rows[params.idx].list_prices && rows[params.idx].list_prices.length > 0
                   ? rows[params.idx].list_prices.map((price, idx) => (
                       <MenuItem

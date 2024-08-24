@@ -37,8 +37,6 @@ const JournalEntry = ({ open, toggle, itemId }) => {
     if (fetchData) setEntryData(fetchData)
   }, [fetchData])
 
-  console.log('data of view entry 🤩🤩', entryData)
-
   return (
     <Fragment>
       <Dialog
@@ -110,6 +108,16 @@ const JournalEntry = ({ open, toggle, itemId }) => {
                                 ? `${Number(params.amount).toFixed(decimalFormat)} ${currency_code} `
                                 : `${currency_code} ${Number(params.amount).toFixed(decimalFormat)} `
                               : ''}
+                          </Typography>
+                        )
+                      },
+                      {
+                        field: 'cost_center',
+                        headerName: 'Cost Center',
+                        align: 'left',
+                        renderCell: params => (
+                          <Typography variant='body2' color='textSecondary'>
+                            {params.cost_center ? params.cost_center : ''}
                           </Typography>
                         )
                       }
