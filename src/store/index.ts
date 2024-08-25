@@ -135,6 +135,15 @@ import postDeleteOpeningStock from './apps/products/addOpeningStock/postDeleteOp
 import postCreateOpeningStock from './apps/products/addOpeningStock/postCreateOpeningStock'
 import postEditOpeningStock from './apps/products/addOpeningStock/postEditOpeningStock'
 import getViewOpeningStock from './apps/products/addOpeningStock/getViewOpeningStock'
+import getLastProductSlice from './apps/products/addOpeningStock/getLastProductSlice'
+// ** Expense Vouchers
+import getExpenseVoucher from './apps/vouchers/expenseVoucher/getExpenseVoucher'
+import getCreateExpenseVoucher from './apps/vouchers/expenseVoucher/getCreateExpenseVoucher'
+import getViewExpenseVoucher from './apps/vouchers/expenseVoucher/Actions/getViewExpenseVoucher'
+import getEditExpenseVoucher from './apps/vouchers/expenseVoucher/getEditExpenseVoucher'
+import postDeleteExpenseVoucher from './apps/vouchers/expenseVoucher/postDeleteExpenseVoucher'
+import getAttachmentExpenseVoucher from './apps/vouchers/expenseVoucher/Actions/getAttachmentExpenseVoucher'
+import getEntryExpenseVoucher from './apps/vouchers/expenseVoucher/Actions/getEntryExpenseVoucher'
 
 export const store = configureStore({
   reducer: {
@@ -257,6 +266,7 @@ export const store = configureStore({
     postCreateOpeningStock,
     postEditOpeningStock,
     getViewOpeningStock,
+    getLastProduct: getLastProductSlice,
     getJournalVouchers: getJournalVouchersSlice,
     getCreateJournalVoucher,
     getViewJVSlice,
@@ -265,7 +275,14 @@ export const store = configureStore({
     getEditJournalVoucher,
     postDeleteJournalVoucher,
     getAttachmentJournalVoucher,
-    getViewJournalEntry
+    getViewJournalEntry,
+    getExpenseVoucher,
+    getCreateExpenseVoucher,
+    getViewExpenseVoucher,
+    getEditExpenseVoucher,
+    postDeleteExpenseVoucher,
+    getAttachmentExpenseVoucher,
+    getEntryExpenseVoucher
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

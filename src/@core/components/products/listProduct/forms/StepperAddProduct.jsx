@@ -114,7 +114,7 @@ const StepperHeaderContainer = styled(CardContent)(({ theme }) => ({
   }
 }))
 
-const StepperAddProduct = ({ isEdit, itemId, handleClose }) => {
+const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => {
   // select names
   const names = useSelector(state => state.getCreateProduct.data?.value?.product_price)
 
@@ -501,90 +501,6 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose }) => {
     ]
   })
 
-  // localStorage.setItem('TableCount', 2 )
-  // const [test, setTest] = useState({
-  //  tableOne: [
-  //           {
-  //                   itemCode: '',
-  //                   value: '',
-  //                   exc: '',
-  //                   inc: '',
-  //                   profit: ''
-  //                   ,
-  //                   second_exc: '',
-  //                   second_inc: '',
-  //                   image: '',
-  //             },
-  //           {
-  //                   itemCode: '',
-  //                   value: '',
-  //                   exc: '',
-  //                   inc: '',
-  //                   profit: ''
-  //                   ,
-  //                   second_exc: '',
-  //                   second_inc: '',
-  //                   image: '',
-  //             },
-  //           {
-  //                   itemCode: '',
-  //                   value: '',
-  //                   exc: '',
-  //                   inc: '',
-  //                   profit: ''
-  //                   ,
-  //                   second_exc: '',
-  //                   second_inc: '',
-  //                   image: '',
-  //             },
-
-  //   ],
-  //   TableTwo: [
-
-  //   ]
-
-  // })
-
-  // // add Object to test in table one
-  // const addTableOne = (id) => {
-  //   setTest({
-  //     ...test,
-  //     [`table_${id}`]: [...test.tableOne, {
-  //       itemCode: '',
-  //       value: '',
-  //       exc: '',
-  //       inc: '',
-  //       profit: ''
-  //       ,
-  //       second_exc: '',
-  //       second_inc: '',
-  //       image: '',
-  //     }]
-  //   })
-  // }
-
-  // // add Table  as array of objects to test
-  // const addTable = () => {
-  //   const tableCount= localStorage.getItem('TableCount')
-  //   setTest({
-  //     ...test,
-  //     [`Table_${Number(tableCount) + 1}`]: [
-  //       {
-  //         itemCode: '',
-  //         value: '',
-  //         exc: '',
-  //         inc: '',
-  //         profit: ''
-  //         ,
-  //         second_exc: '',
-  //         second_inc: '',
-  //         image: '',
-  //       }
-  //     ]
-  //   })
-
-  // }
-
   // ** Selector for Update Product
   const updateProduct = useSelector(state => state.getUpdateProduct?.data?.value.info)
 
@@ -799,9 +715,16 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose }) => {
       })
       setActiveStep(activeStep + 1)
     } else {
-      dispatch(saveProduct({ product: values })).then(() => {
-        dispatch(fetchProducts({ token }))
-      })
+      dispatch(saveProduct({ product: values }))
+        .then(() => {
+          dispatch(fetchProducts({ token }))
+        })
+        .then(() => {
+          if (addOpeningStock) {
+            // dispatch(addOpeningStock({ product: values }))
+            dispatch(getLastProduct())
+          }
+        })
       setActiveStep(activeStep + 1)
     }
     setOpenLoading(true)

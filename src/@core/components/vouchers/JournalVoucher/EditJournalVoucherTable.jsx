@@ -164,7 +164,6 @@ const EditJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, 
                 })
               }
             }}
-            onBlur={handleBlur}
           />
         </FormControl>
       )
@@ -220,7 +219,6 @@ const EditJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, 
                 })
               }
             }}
-            onBlur={handleBlur}
           />
         </FormControl>
       )
@@ -422,7 +420,7 @@ const EditJournalVoucherTable = ({ values, handleChange, remove, setFieldValue, 
         </Box>
       </Box>
       <>
-        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%', overflow: 'visible' }}>
           <Table stickyHeader stickyFooter aria-label='sticky table'>
             <TableHead>
               <TableRow>

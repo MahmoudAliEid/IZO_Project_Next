@@ -27,8 +27,7 @@ const CustomDateRange = ({ popperPlacement }: { popperPlacement: ReactDatePicker
   // ** States
   const [startDate, setStartDate] = useState<DateType>(new Date())
   const [endDate, setEndDate] = useState<DateType>(addDays(new Date(), 15))
-  // const [startDateRange, setStartDateRange] = useState<DateType>(new Date())
-  // const [endDateRange, setEndDateRange] = useState<DateType>(addDays(new Date(), 45))
+
 
   // ** Cookies
   const transText = getCookie('fontStyle')
@@ -39,11 +38,7 @@ const CustomDateRange = ({ popperPlacement }: { popperPlacement: ReactDatePicker
     setEndDate(end)
   }
 
-  // const handleOnChangeRange = (dates: any) => {
-  //   const [start, end] = dates
-  //   setStartDateRange(start)
-  //   setEndDateRange(end)
-  // }
+
 
   const CustomInput = forwardRef((props: PickerProps, ref) => {
     const startDate = format(props.start, 'MM/dd/yyyy')
@@ -74,26 +69,7 @@ const CustomDateRange = ({ popperPlacement }: { popperPlacement: ReactDatePicker
           }
         />
       </div>
-      {/* <div>
-        <DatePicker
-          selectsRange
-          monthsShown={2}
-          endDate={endDateRange}
-          selected={startDateRange}
-          startDate={startDateRange}
-          shouldCloseOnSelect={false}
-          id='date-range-picker-months'
-          onChange={handleOnChangeRange}
-          popperPlacement={popperPlacement}
-          customInput={
-            <CustomInput
-              label='Multiple Months'
-              end={endDateRange as Date | number}
-              start={startDateRange as Date | number}
-            />
-          }
-        />
-      </div> */}
+
     </Box>
   )
 }

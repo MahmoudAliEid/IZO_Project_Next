@@ -125,6 +125,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
   const [data, setData] = useState([])
 
   const store = useSelector(state => state.getCreateOpeningStock?.data?.value?.store)
+  const lastProduct = useSelector(state => state.getLastProduct?.data?.info)
 
   // ** Cookies
   const decimalFormate = getCookie('DecimalFormat')
@@ -166,6 +167,29 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       }
     })
   }, [setFieldValue, values.items])
+
+  useEffect(() => {
+    if (lastProduct) {
+      push({
+        id: lastProduct.id,
+        name: lastProduct.text,
+        total: lastProduct?.total || 0,
+        variation_id: lastProduct.variation_id,
+        cost: lastProduct.cost === 0 ? lastProduct.all_units[0].list_price[0].price : lastProduct.cost,
+        line_store: '',
+        product_id: lastProduct.product_id,
+        quantity: 1,
+        price: lastProduct.cost === 0 ? lastProduct.all_units[0].list_price[0].price : lastProduct.cost,
+        unit: 1,
+        store: '',
+        all_unit: lastProduct.all_units,
+        initial: false,
+        unit_quantity: 1,
+        child_price: '',
+        list_prices: []
+      })
+    }
+  }, [lastProduct, push])
 
   const columns = [
     {
@@ -235,18 +259,18 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                         const price_id = 0
 
                         // set price value based on price_id in all items row if it's unit is null
-                        values.items.forEach((item, index) => {
+                        values.items.forEach(item => {
                           if (unit.list_price.length > 0) {
                             const price = unit.list_price.find(price => price.line_id === price_id)
 
                             if (price) {
                               const priceValue = price.price
 
-                              setFieldValue(`items.${index}.price`, priceValue)
-                              setFieldValue(`items.${index}.total`, Number(priceValue) * Number(item.quantity))
+                              setFieldValue(`items.${params.idx}.price`, priceValue)
+                              setFieldValue(`items.${params.idx}.total`, Number(priceValue) * Number(item.quantity))
                             } else if (price === null) {
-                              setFieldValue(`items.${index}.price`, 0)
-                              setFieldValue(`items.${index}.total`, 0)
+                              setFieldValue(`items.${params.idx}.price`, 0)
+                              setFieldValue(`items.${params.idx}.total`, 0)
                             } else {
                               return
                             }
@@ -321,7 +345,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       renderCell: params => (
         <CustomInputField
           name={`items.${params.idx}.price`}
-          value={Number(values.items[params.idx].price).toFixed(decimalFormate)}
+          value={Number(values.items[params.idx].price)}
           onChange={e => {
             handleChange(e)
             setFieldValue(
@@ -343,7 +367,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
           name={`items.${params.idx}.total`}
           value={
             values.items[params.idx].total ||
-            (Number(values.items[params.idx].price) * Number(values.items[params.idx].quantity)).toFixed(decimalFormate)
+            Number(values.items[params.idx].price) * Number(values.items[params.idx].quantity)
           }
           onChange={event => {
             handleChange(event)

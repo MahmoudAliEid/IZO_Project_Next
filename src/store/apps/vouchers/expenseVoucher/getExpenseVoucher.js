@@ -2,12 +2,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { getCookie } from 'cookies-next'
 
-export const fetchJournalVoucher = createAsyncThunk('journalVoucher/fetchJournalVoucher', async payload => {
+export const fetchExpenseVoucher = createAsyncThunk('expenseVoucher/fetchExpenseVoucher', async payload => {
   const token = getCookie('token')
   const url = getCookie('apiUrl')
 
-  const { month, week, day, startDate, endDate } = payload
-  let mainUrl = `${url}/app/react/journal-voucher/all`
+  const { month, weak, day, startDate, endDate } = payload
+  let mainUrl = `${url}/app/react/expense-voucher/all`
 
   if (startDate && endDate) {
     // ** Date format: YYYY-MM-DD
@@ -21,7 +21,7 @@ export const fetchJournalVoucher = createAsyncThunk('journalVoucher/fetchJournal
     // ** Normal Format
     let formattedStart = `${yearStart}-${monthStart}-${dayStart}`
     let formattedEnd = `${yearEnd}-${monthEnd}-${dayEnd}`
-    mainUrl = `${url}/app/react/journal-voucher/all?startDate=${formattedStart}&endDate=${formattedEnd}`
+    mainUrl = `${url}/app/react/expense-voucher/all?startDate=${formattedStart}&endDate=${formattedEnd}`
   } else if (month) {
     // ** Date format: YYYY-MM-DD
 
@@ -32,16 +32,16 @@ export const fetchJournalVoucher = createAsyncThunk('journalVoucher/fetchJournal
     // ** Normal Format
     let formattedMonth = `${yearMonth}-${monthMonth}-${dayMonth}`
 
-    mainUrl = `${url}/app/react/journal-voucher/all?month=${formattedMonth}`
-  } else if (week) {
+    mainUrl = `${url}/app/react/expense-voucher/all?month=${formattedMonth}`
+  } else if (weak) {
     // ** Date format: YYYY-MM-DD
-    let yearWeek = String(week.getFullYear())
-    let monthWeek = String(week.getMonth() + 1).padStart(2, '0') // Months are 0-based in JavaScript
-    let dayWeek = String(week.getDate()).padStart(2, '0')
+    let yearWeak = String(weak.getFullYear())
+    let monthWeak = String(weak.getMonth() + 1).padStart(2, '0') // Months are 0-based in JavaScript
+    let dayWeak = String(weak.getDate()).padStart(2, '0')
 
     // ** Normal Format
-    let formattedWeek = `${yearWeek}-${monthWeek}-${dayWeek}`
-    mainUrl = `${url}/app/react/journal-voucher/all?week=${formattedWeek}`
+    let formattedWeak = `${yearWeak}-${monthWeak}-${dayWeak}`
+    mainUrl = `${url}/app/react/expense-voucher/all?week=${formattedWeak}`
   } else if (day) {
     // ** Date format: YYYY-MM-DD
     let yearDay = String(day.getFullYear())
@@ -50,7 +50,7 @@ export const fetchJournalVoucher = createAsyncThunk('journalVoucher/fetchJournal
 
     // ** Normal Format
     let formattedDay = `${yearDay}-${monthDay}-${dayDay}`
-    mainUrl = `${url}/app/react/journal-voucher/all?day=${formattedDay}`
+    mainUrl = `${url}/app/react/expense-voucher/all?day=${formattedDay}`
   }
 
   try {
@@ -71,24 +71,24 @@ const initialState = {
   status: 'idle',
   error: null
 }
-const getJournalVoucherSlice = createSlice({
-  name: 'journalVoucher',
+const getExpenseVoucher = createSlice({
+  name: 'expenseVoucher',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchJournalVoucher.pending, state => {
+      .addCase(fetchExpenseVoucher.pending, state => {
         state.status = 'loading'
       })
-      .addCase(fetchJournalVoucher.fulfilled, (state, action) => {
+      .addCase(fetchExpenseVoucher.fulfilled, (state, action) => {
         state.status = 'succeeded'
         state.data = action.payload
       })
-      .addCase(fetchJournalVoucher.rejected, (state, action) => {
+      .addCase(fetchExpenseVoucher.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
       })
   }
 })
 
-export default getJournalVoucherSlice.reducer
+export default getExpenseVoucher.reducer

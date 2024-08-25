@@ -114,12 +114,7 @@ const PageFilter = ({ setFilterDate, setOpenDateRange }) => {
           setFilterDate(prev => {
             return {
               ...prev,
-              active: 'range',
-              startDate: null,
-              endDate: null,
-              month: null,
-              week: null,
-              day: null
+              active: 'range'
             }
           })
         }}

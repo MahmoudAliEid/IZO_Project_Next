@@ -1,4 +1,4 @@
-import { Button, CardContent, Dialog, DialogActions, DialogContent } from '@mui/material'
+import { Button, Dialog, DialogContent } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
@@ -11,39 +11,33 @@ const FilterRangePage = ({ open, handleClose, popperPlacement, filterDate, setFi
     <>
       <Dialog
         open={open}
-        maxWidth='sm'
         fullWidth={true}
         onClose={handleClose}
         aria-labelledby='max-width-dialog-title'
         sx={{
           height: 'auto',
           '.MuiDialog-paper': {
-            width: '100%',
-            height: 'auto'
+            height: 'auto',
+            width: 'auto',
+            overflow: 'visible'
           }
         }}
       >
         <CustomHeader title='Date Range' handleClose={handleClose} divider={true} />
         <DialogContent>
-          <Box>
-            <CardContent>
-              <Box sx={{ p: 6, display: 'flex', justifyContent: 'space-between' }}>
-                <Box sx={{ p: 6 }}>
-                  <DatePickerWrapper>
-                    <CustomDateRange
-                      popperPlacement={popperPlacement}
-                      filterDate={filterDate}
-                      setFilterDate={setFilterDate}
-                      label='Date Range'
-                    />
-                  </DatePickerWrapper>
-                </Box>
-              </Box>
-            </CardContent>
+          <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
+            <Box>
+              <DatePickerWrapper>
+                <CustomDateRange
+                  popperPlacement={popperPlacement}
+                  filterDate={filterDate}
+                  setFilterDate={setFilterDate}
+                  label='Date Range'
+                />
+              </DatePickerWrapper>
+            </Box>
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               onClick={() => {
                 setFilterDate(prev => {
@@ -61,17 +55,8 @@ const FilterRangePage = ({ open, handleClose, popperPlacement, filterDate, setFi
             >
               Cancel
             </Button>
-            <Button
-              variant='contained'
-              sx={{ ml: 2 }}
-              onClick={() => {
-                handleClose()
-              }}
-            >
-              Apply
-            </Button>
           </Box>
-        </DialogActions>
+        </DialogContent>
       </Dialog>
     </>
   )

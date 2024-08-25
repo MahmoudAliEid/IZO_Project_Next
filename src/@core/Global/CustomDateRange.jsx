@@ -10,7 +10,7 @@ import DatePicker from 'react-datepicker'
 // ** CSS Import for DatePicker
 import 'react-datepicker/dist/react-datepicker.css'
 
-const CustomDateRange = ({ popperPlacement, setFilterDate, filterDate, label }) => {
+const CustomDateRange = ({  setFilterDate, filterDate, label }) => {
   const { startDate, endDate } = filterDate
 
   const handleOnChange = dates => {
@@ -33,7 +33,7 @@ const CustomDateRange = ({ popperPlacement, setFilterDate, filterDate, label }) 
         startDate={startDate}
         onChange={handleOnChange}
         shouldCloseOnSelect={false}
-        popperPlacement={popperPlacement}
+        popperPlacement={'auto'}
         customInput={<CustomInput />}
       />
     </Box>

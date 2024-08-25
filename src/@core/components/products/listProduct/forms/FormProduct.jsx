@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent'
 import StepperAddProduct from './StepperAddProduct'
 import CustomHeader from '../../../customDialogHeader/CustomHeader'
 
-const FormProduct = ({ isEdit, open, toggle, itemId }) => {
+const FormProduct = ({ isEdit, open, toggle, itemId, addOpeningStock }) => {
   const handleClose = () => {
     toggle()
   }
@@ -29,7 +29,14 @@ const FormProduct = ({ isEdit, open, toggle, itemId }) => {
             padding: '0 !important'
           }}
         >
-          {<StepperAddProduct isEdit={isEdit} itemId={itemId} handleClose={handleClose} />}
+          {
+            <StepperAddProduct
+              isEdit={isEdit}
+              itemId={itemId}
+              handleClose={handleClose}
+              addOpeningStock={addOpeningStock}
+            />
+          }
         </DialogContent>
       </Dialog>
     </Fragment>

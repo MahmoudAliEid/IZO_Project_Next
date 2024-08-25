@@ -41,6 +41,7 @@ import { fetchCreateOpeningStock } from 'src/store/apps/products/addOpeningStock
 import { createOpeningStock } from 'src/store/apps/products/addOpeningStock/postCreateOpeningStock'
 import { editOpeningStock } from 'src/store/apps/products/addOpeningStock/postEditOpeningStock'
 import CustomDragTableSearch from './CustomDragTableSearch'
+import { fetchOpeningStock } from 'src/store/apps/products/addOpeningStock/getListSlice'
 
 // ** Custom Input Component
 const CustomInput = forwardRef(({ ...props }, ref) => {
@@ -140,7 +141,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
     if (edit && id) {
       dispatch(editOpeningStock({ values, id }))
         .then(() => {
-          dispatch(fetchCreateOpeningStock())
+          dispatch(fetchOpeningStock())
         })
         .then(() => {
           setOpenLoading(true)
@@ -151,7 +152,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
           setOpenLoading(true)
         })
         .then(() => {
-          dispatch(fetchCreateOpeningStock())
+          dispatch(fetchOpeningStock())
         })
     }
     setSubmitting(false)
@@ -397,7 +398,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
           </Grid>
         )}
       </DialogContent>
-      {openForm && <FormProduct isEdit={false} open={openForm} toggle={toggle} />}
+      {openForm && <FormProduct isEdit={false} open={openForm} toggle={toggle} addOpeningStock={true} />}
     </Dialog>
   )
 }

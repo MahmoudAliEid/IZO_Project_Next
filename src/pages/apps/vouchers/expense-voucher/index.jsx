@@ -1,23 +1,13 @@
 // ** React Imports
 import { useState, useEffect, Fragment } from 'react'
-import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
 // ** Next Imports
 import { getCookie } from 'cookies-next'
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import Menu from '@mui/material/Menu'
-import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import MenuItem from '@mui/material/MenuItem'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import { Button } from '@mui/material'
+import { Button, CardHeader, IconButton, Typography, MenuItem, Divider, Grid, Menu, Card, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // ** Third Party Components
@@ -29,19 +19,21 @@ import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/getJournalVoucherSlice'
+import { fetchExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getExpenseVoucher'
+import { deleteExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/postDeleteExpenseVoucher'
 
 // ** Custom Table Components Imports
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
-import AddPopUp from 'src/@core/components/vouchers/JournalVoucher/AddPopUp'
+
 // ** Styled Component
 import ViewPopUp from 'src/@core/components/vouchers/JournalVoucher/ViewPopUp'
 import EditJournalVoucherPopUp from 'src/@core/components/vouchers/JournalVoucher/EditJournalVoucherPopUp'
-import { deleteJournalVoucher } from 'src/store/apps/vouchers/journalVoucher/postDeleteJournalVoucher'
 import JournalEntry from 'src/@core/components/vouchers/JournalVoucher/JornalEntry'
 import AttachmentJournalVoucher from 'src/@core/components/vouchers/JournalVoucher/AttachmentJournalVoucher'
 import PageFilter from 'src/@core/Global/PageFilter'
 import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
+import ListLoading from 'src/@core/Global/ListLoading'
+import AddExpensePopUp from 'src/@core/components/vouchers/expenseVoucher/AddExpensePopUp'
 
 const RowOptions = ({ id }) => {
   // ** Hooks
@@ -79,9 +71,9 @@ const RowOptions = ({ id }) => {
       return
     }
 
-    dispatch(deleteJournalVoucher({ id }))
+    dispatch(deleteExpenseVoucher({ id }))
       .then(() => {
-        dispatch(fetchJournalVoucher(token, url))
+        dispatch(fetchExpenseVoucher(token, url))
 
         handleRowOptionsClose()
       })
@@ -106,7 +98,7 @@ const RowOptions = ({ id }) => {
       Authorization: `Bearer ${token}`
     }
     axios({
-      url: `${url}/app/react/journal-voucher/print/${id}`,
+      url: `${url}/app/react/expense-voucher/print/${id}`,
       method: 'GET',
       headers: headers
     })
@@ -252,7 +244,7 @@ const RowOptions = ({ id }) => {
   )
 }
 
-const JournalVoucher = () => {
+const ExpenseVoucher = () => {
   // ** States
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [token, setToken] = useState('')
@@ -261,7 +253,7 @@ const JournalVoucher = () => {
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
   const [openAdd, setOpenAdd] = useState(false)
-  const title = 'Journal Voucher List'
+  const title = 'Expense Voucher List'
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -282,7 +274,7 @@ const JournalVoucher = () => {
     month: FilterInitial === 'month' ? new Date() : null,
     day: FilterInitial === 'day' ? new Date() : null,
     week: FilterInitial === 'week' ? new Date() : null,
-    active: FilterInitial,
+    active: FilterInitial || 'month',
     startDate: null,
     endDate: null
   })
@@ -320,14 +312,14 @@ const JournalVoucher = () => {
     {
       flex: 0.25,
       minWidth: 160,
-      field: 'amount',
+      field: 'total',
       headerName: 'Amount',
       renderCell: ({ row }) => {
         return (
           <Typography variant='body2' color='textSecondary'>
             {CurrencySymbolPlacement === 'after'
-              ? `${Number(row.amount).toFixed(decimalFormat)} ${currency_code} `
-              : `${currency_code} ${Number(row.amount).toFixed(decimalFormat)} `}
+              ? `${Number(row.total).toFixed(decimalFormat)} ${currency_code} `
+              : `${currency_code} ${Number(row.total).toFixed(decimalFormat)} `}
           </Typography>
         )
       }
@@ -352,7 +344,7 @@ const JournalVoucher = () => {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
   }
 
-  const store = useSelector(state => state.getJournalVouchers?.data?.value)
+  const store = useSelector(state => state.getExpenseVoucher?.data?.value)
 
   useEffect(() => {
     setData(store)
@@ -369,7 +361,7 @@ const JournalVoucher = () => {
 
   useEffect(() => {
     dispatch(
-      fetchJournalVoucher({
+      fetchExpenseVoucher({
         month: filterDate.month,
         week: filterDate.week,
         day: filterDate.day,
@@ -472,21 +464,7 @@ const JournalVoucher = () => {
                 />
               </>
             ) : (
-              <Grid>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '20px'
-                  }}
-                >
-                  <Box>
-                    <ProgressCustomization />
-                  </Box>
-                </Box>
-              </Grid>
+              <ListLoading />
             )}
           </Box>
         </Card>
@@ -507,7 +485,7 @@ const JournalVoucher = () => {
         )
       }
       {openAdd && (
-        <AddPopUp
+        <AddExpensePopUp
           open={openAdd}
           handleClose={() => {
             setOpenAdd(false)
@@ -518,4 +496,4 @@ const JournalVoucher = () => {
   )
 }
 
-export default JournalVoucher
+export default ExpenseVoucher

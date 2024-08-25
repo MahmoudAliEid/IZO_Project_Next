@@ -1,6 +1,5 @@
 // ** React Imports
 import { useState, Fragment, useEffect } from 'react'
-import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
@@ -29,6 +28,7 @@ import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlob
 import ViewOpeningStock from 'src/@core/components/products/addOpeningStock/view/ViewOpeningStock'
 import PageFilter from 'src/@core/Global/PageFilter'
 import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
+import ListLoading from 'src/@core/Global/ListLoading'
 
 const RowOptions = ({ id, type }) => {
   // ** Hooks
@@ -369,21 +369,7 @@ const AddOpeningStock = () => {
                 />
               </>
             ) : (
-              <Grid>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '20px'
-                  }}
-                >
-                  <Box>
-                    {triggerLoadingList ? <ProgressCustomization /> : <Typography>No Data Found...</Typography>}
-                  </Box>
-                </Box>
-              </Grid>
+              <ListLoading />
             )}
           </Box>
         </Card>

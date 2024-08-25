@@ -192,13 +192,6 @@ const AddJournalVoucherTable = ({
                 })
               }
             }}
-            onBlur={handleBlur}
-            error={Boolean(touched.table && touched.table[params.idx] && touched.table[params.idx].credit)}
-            helperText={
-              touched.table && touched.table[params.idx] && touched.table[params.idx].credit
-                ? errors.table && errors.table[params.idx] && errors.table[params.idx].credit
-                : ''
-            }
           />
         </FormControl>
       )
@@ -254,13 +247,6 @@ const AddJournalVoucherTable = ({
                 })
               }
             }}
-            onBlur={handleBlur}
-            error={Boolean(touched.table && touched.table[params.idx] && touched.table[params.idx].debit)}
-            helperText={
-              touched.table && touched.table[params.idx] && touched.table[params.idx].debit
-                ? errors.table && errors.table[params.idx] && errors.table[params.idx].debit
-                : ''
-            }
           />
         </FormControl>
       )
@@ -626,7 +612,7 @@ const AddJournalVoucherTable = ({
         </Box>
       </Box>
       <>
-        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%', overflow: 'visible' }}>
           <Table stickyHeader stickyFooter aria-label='sticky table'>
             <TableHead>
               <TableRow>
