@@ -30,7 +30,7 @@ import PageFilter from 'src/@core/Global/PageFilter'
 import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
 import ListLoading from 'src/@core/Global/ListLoading'
 
-const RowOptions = ({ id, type }) => {
+const RowOptions = ({ id }) => {
   // ** Hooks
   const dispatch = useDispatch()
 
@@ -141,7 +141,7 @@ const RowOptions = ({ id, type }) => {
           open={openDeleteAlert}
           close={() => setOpenDeleteAlert(!openDeleteAlert)}
           mainHandleDelete={handleDelete}
-          name={type.charAt(0).toUpperCase() + type.slice(1)}
+          name={'Opening Stock'}
         />
       )}
       {openView && <ViewOpeningStock open={openView} toggle={() => setOpenView(!openView)} id={id} />}

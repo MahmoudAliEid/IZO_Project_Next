@@ -1,4 +1,4 @@
-const RowOptions = ({ id, idx, params, remove }) => {
+const RowOptions = ({ idx, remove }) => {
   // ** State
   const [anchorEl, setAnchorEl] = useState(null)
   const rowOptionsOpen = anchorEl
@@ -12,10 +12,6 @@ const RowOptions = ({ id, idx, params, remove }) => {
   }
 
   const handleDelete = () => {
-    console.log('id 👀👀👀', id)
-    console.log('idx 👀👀👀', idx)
-    console.log('params 👀👀👀✨', params)
-
     remove(idx)
 
     handleRowOptionsClose()
@@ -41,7 +37,7 @@ const RowOptions = ({ id, idx, params, remove }) => {
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <Tooltip title={`Delete this Row ${idx}`}>
+        <Tooltip title={`Delete this Row ${idx + 1}`}>
           <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
             <Icon icon='bx:trash-alt' fontSize={20} />
             Delete
@@ -254,7 +250,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                       onClick={() => {
                         setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
                         setFieldValue(`items.${params.idx}.child_price`, '')
-                        setFieldValue(`parent_price`, 0)
+                        setFieldValue('parent_price', 0)
 
                         const price_id = 0
 
@@ -345,7 +341,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       renderCell: params => (
         <CustomInputField
           name={`items.${params.idx}.price`}
-          value={Number(values.items[params.idx].price)}
+          value={values.items[params.idx].price.toFixed(decimalFormate)}
           onChange={e => {
             handleChange(e)
             setFieldValue(
@@ -367,7 +363,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
           name={`items.${params.idx}.total`}
           value={
             values.items[params.idx].total ||
-            Number(values.items[params.idx].price) * Number(values.items[params.idx].quantity)
+            (values.items[params.idx].price * values.items[params.idx].quantity).toFixed(decimalFormate)
           }
           onChange={event => {
             handleChange(event)
@@ -444,7 +440,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       align: 'center',
       flex: 0.25,
       minWidth: 80,
-      renderCell: params => <RowOptions id={params.id} idx={params.idx} params={params} remove={remove} />
+      renderCell: params => <RowOptions idx={params.idx} remove={remove} />
     }
   ]
 

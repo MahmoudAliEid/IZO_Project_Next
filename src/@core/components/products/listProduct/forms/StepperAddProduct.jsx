@@ -44,6 +44,7 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 import { getCookie } from 'cookies-next'
 
 import ProductAdditionalInfo from '../productAdditionalInfo/ProductAdditionalInfo'
+import { getLastProduct } from 'src/store/apps/products/addOpeningStock/getLastProductSlice'
 
 const steps = [
   {
@@ -715,16 +716,13 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
       })
       setActiveStep(activeStep + 1)
     } else {
-      dispatch(saveProduct({ product: values }))
-        .then(() => {
-          dispatch(fetchProducts({ token }))
-        })
-        .then(() => {
-          if (addOpeningStock) {
-            // dispatch(addOpeningStock({ product: values }))
-            dispatch(getLastProduct())
-          }
-        })
+      dispatch(saveProduct({ product: values })).then(() => {
+        dispatch(fetchProducts({ token }))
+        if (addOpeningStock) {
+          dispatch(getLastProduct())
+        }
+      })
+
       setActiveStep(activeStep + 1)
     }
     setOpenLoading(true)
