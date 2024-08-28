@@ -255,7 +255,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                         const price_id = 0
 
                         // set price value based on price_id in all items row if it's unit is null
-                        values.items.forEach(item => {
+                        values.items.forEach(() => {
                           if (unit.list_price.length > 0) {
                             const price = unit.list_price.find(price => price.line_id === price_id)
 
@@ -263,7 +263,10 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                               const priceValue = price.price
 
                               setFieldValue(`items.${params.idx}.price`, priceValue)
-                              setFieldValue(`items.${params.idx}.total`, Number(priceValue) * Number(item.quantity))
+                              setFieldValue(
+                                `items.${params.idx}.total`,
+                                Number(priceValue) * Number(values.items[params.idx].quantity)
+                              )
                             } else if (price === null) {
                               setFieldValue(`items.${params.idx}.price`, 0)
                               setFieldValue(`items.${params.idx}.total`, 0)

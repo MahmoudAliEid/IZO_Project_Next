@@ -51,6 +51,8 @@ export const fetchJournalVoucher = createAsyncThunk('journalVoucher/fetchJournal
     // ** Normal Format
     let formattedDay = `${yearDay}-${monthDay}-${dayDay}`
     mainUrl = `${url}/app/react/journal-voucher/all?day=${formattedDay}`
+  } else {
+    mainUrl = `${url}/app/react/journal-voucher/all`
   }
 
   try {

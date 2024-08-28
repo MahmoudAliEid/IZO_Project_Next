@@ -28,7 +28,7 @@ export const createOpeningStock = createAsyncThunk('products/addOpeningStock/cre
     date: formattedDate,
     store: values?.store,
     list_price: values.parent_price,
-    items: values?.items.slice(1).map((item, index) => ({
+    items: values?.items.map((item, index) => ({
       line_sorting: index,
       line_store: item.store ? item.store : values?.store,
       product_id: item.product_id,

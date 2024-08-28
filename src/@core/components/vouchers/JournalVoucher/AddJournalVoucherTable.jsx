@@ -612,7 +612,7 @@ const AddJournalVoucherTable = ({
         </Box>
       </Box>
       <>
-        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%', overflow: 'visible' }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
           <Table stickyHeader stickyFooter aria-label='sticky table'>
             <TableHead>
               <TableRow>
