@@ -341,7 +341,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       renderCell: params => (
         <CustomInputField
           name={`items.${params.idx}.price`}
-          value={values.items[params.idx].price.toFixed(decimalFormate)}
+          value={Number(values.items[params.idx].price).toFixed(decimalFormate)}
           onChange={e => {
             handleChange(e)
             setFieldValue(
@@ -363,7 +363,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
           name={`items.${params.idx}.total`}
           value={
             values.items[params.idx].total ||
-            (values.items[params.idx].price * values.items[params.idx].quantity).toFixed(decimalFormate)
+            Number(values.items[params.idx].price * values.items[params.idx].quantity).toFixed(decimalFormate)
           }
           onChange={event => {
             handleChange(event)
