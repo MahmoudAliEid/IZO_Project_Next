@@ -67,7 +67,7 @@ const postEditOpeningStock = createSlice({
         state.success = true
         state.error = false
         state.data = action.payload
-        notify('Successfully stored.', 'success')
+        notify('Successfully Updated.', 'success')
       })
       .addCase(editOpeningStock.rejected, state => {
         state.loading = false

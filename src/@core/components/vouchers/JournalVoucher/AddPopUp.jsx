@@ -118,16 +118,32 @@ const AddPopUp = ({ open, handleClose }) => {
   }, [store])
 
   // ** Functions
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = values => {
     setLoading(true)
 
     dispatch(createJournalVoucher({ values }))
       .then(() => {
         dispatch(fetchJournalVoucher())
       })
+
       .then(() => {
-        setLoading(false)
+        return dispatch(
+          fetchJournalVoucher({
+            day: null,
+            month: null,
+            week: null,
+            startDate: null,
+            endDate: null
+          })
+        )
+      })
+      .then(() => {
         resetForm()
+      })
+
+      .catch(error => {
+        console.error('Error:', error)
+        setLoading(false)
       })
   }
 

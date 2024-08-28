@@ -259,7 +259,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                         />
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} md={6} lg={6} sx={12}>
                       <FormControl fullWidth>
                         <DatePickerWrapper>
                           <DatePicker
@@ -288,6 +288,30 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                             }
                           />
                         </DatePickerWrapper>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={6}>
+                      <FormControl fullWidth>
+                        <InputLabel htmlFor='cost_center_id'>Cost Center</InputLabel>
+                        <Select
+                          id='cost_center_id'
+                          label='Cost Center'
+                          name={`cost_center_id`}
+                          value={values.cost_center_id}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          error={touched.cost_center_id && Boolean(errors.cost_center_id)}
+                          fullWidth
+                        >
+                          {data?.cost_center &&
+                            data?.cost_center.map((item, index) => {
+                              return (
+                                <MenuItem key={index} value={item.id}>
+                                  {item.value}
+                                </MenuItem>
+                              )
+                            })}
+                        </Select>
                       </FormControl>
                     </Grid>
                     {values.main_credit_check && (

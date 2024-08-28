@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 // ** MUI
-import { Dialog, DialogActions, DialogContent, Box } from '@mui/material'
+import { Dialog, DialogActions, DialogContent, Box, Typography } from '@mui/material'
 // ** Custom Components
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -9,12 +9,12 @@ import ProgressCustomization from 'src/views/components/progress/ProgressCircula
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
-import { viewOpeningStock } from 'src/store/apps/products/addOpeningStock/getViewOpeningStock'
+import { viewExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/Actions/getViewExpenseVoucher'
 
 // ** Data Grid
 import { DataGrid } from '@mui/x-data-grid'
 
-const ViewOpeningStock = ({ open, toggle, id }) => {
+const ViewExpense = ({ open, toggle, id }) => {
   // ** State
   const [data, setData] = useState([])
 
@@ -24,7 +24,7 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
 
   // ** Get Expense Voucher
   useEffect(() => {
-    dispatch(viewOpeningStock({ id }))
+    dispatch(viewExpenseVoucher({ id }))
   }, [id, dispatch])
 
   // ** Set data to state
@@ -41,9 +41,9 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
   console.log(data, 'data form view expense Voucher 🐣')
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth>
       <CustomHeader
-        title={`Expense Voucher ( ${data.ref_no ? data.ref_no : ''} )`}
+        title={`Expense Voucher ( ${data?.ref_no ? data.ref_no : ''} )`}
         handleClose={handleClose}
         divider={false}
       />
@@ -54,11 +54,33 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
               autoHeight
               rows={data.items}
               columns={[
-                { field: 'ref_no', headerName: 'Reference No', flex: 1 },
-                { field: 'productName', headerName: 'Product Name', flex: 1 },
-                { field: 'quantity', headerName: 'Quantity', flex: 1 },
-                { field: 'storeName', headerName: 'Warehouse', flex: 1 },
-                { field: 'date', headerName: 'Date', flex: 1 }
+                {
+                  field: 'ref_no',
+                  headerName: 'Reference No',
+                  flex: 0.35,
+                  minWidth: 170,
+                  renderCell: () => {
+                    return <Typography>{data.ref_no}</Typography>
+                  }
+                },
+                { field: 'creditAccountName', headerName: 'Credit', flex: 0.35, minWidth: 170 },
+                { field: 'debitAccountName', headerName: 'Debit', flex: 0.35, minWidth: 170 },
+                {
+                  field: 'total',
+                  headerName: 'Amount',
+                  flex: 0.3,
+                  minWidth: 100,
+                  renderCell: () => {
+                    return <Typography>{data.total}</Typography>
+                  }
+                },
+                { field: 'tax_percentage', headerName: 'Tax Account', flex: 0.25, minWidth: 100 },
+                { field: 'tax_amount', headerName: 'Tax Amount', flex: 0.25, minWidth: 100 },
+                { field: 'amount', headerName: 'Net Amount', flex: 0.25, minWidth: 100 },
+
+                { field: 'date', headerName: 'Date', flex: 0.3, minWidth: 100 },
+                { field: 'text', headerName: 'Note', flex: 0.35, minWidth: 170 },
+                { field: 'costCenterName', headerName: 'Cost Center', flex: 0.35, minWidth: 150 }
               ]}
             />
           </>
@@ -80,4 +102,4 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
   )
 }
 
-export default ViewOpeningStock
+export default ViewExpense

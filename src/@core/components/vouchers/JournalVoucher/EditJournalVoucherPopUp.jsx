@@ -129,12 +129,17 @@ const EditJournalVoucherPopUp = ({ open, handleClose, id }) => {
 
   // ** Functions
   const handleSubmit = values => {
-    console.log(values, 'values form submit💘')
     setLoading(true)
 
     dispatch(editJournalVoucher({ values, id }))
       .then(() => {
-        dispatch(fetchJournalVoucher())
+        fetchJournalVoucher({
+          day: null,
+          month: null,
+          week: null,
+          startDate: null,
+          endDate: null
+        })
       })
       .then(() => {
         setLoading(false)

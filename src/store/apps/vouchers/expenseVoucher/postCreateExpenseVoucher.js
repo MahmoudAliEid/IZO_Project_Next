@@ -36,10 +36,10 @@ export const createExpenseVoucher = createAsyncThunk('/dashboard/vouchers/expens
 
   if (values.table && values.table.length > 0) {
     values.table.forEach((row, index) => {
-      formData.append(`credit_account_id[${index}]`, row.credit_id)
+      formData.append(`credit_account_id[${index}]`, row?.credit_id ? row.credit_id : values.main_credit)
       formData.append(`debit_account_id[${index}]`, row.debit_id)
       formData.append(`amount[${index}]`, row.amount)
-      formData.append(`center_id[${index}]`, row.cost_center_id)
+      formData.append(`cost_center_id[${index}]`, row.cost_center_id ? row.cost_center_id : values.cost_center_id)
       formData.append(`text[${index}]`, row.note)
       formData.append(`tax_percentage[${index}]`, row.tax)
       formData.append(`tax_amount[${index}]`, row.tax_amount)

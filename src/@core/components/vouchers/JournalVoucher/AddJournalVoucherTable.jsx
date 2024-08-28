@@ -50,27 +50,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }
 }))
 
-// const CustomInput = ({ values, params, setFieldValue, handleChange, ...props }) => {
-//   useEffect(() => {
-//     if (values.table[params.idx].credit > 0) setFieldValue(`table.${params.idx}.disabled_debit`, true)
-//     else setFieldValue(`table.${params.idx}.disabled_debit`, false)
-//   }, [values.table, setFieldValue, params])
-
-//   return (
-//     <FormControl fullWidth>
-//       <TextField
-//         {...props}
-//         onChange={event => {
-//           handleChange(event)
-//           if (Number(event.target.value) > 0) setFieldValue(`table.${params.idx}.disabled_debit`, true)
-//           else setFieldValue(`table.${params.idx}.disabled_debit`, false)
-//         }}
-//         onBlur={handleBlur}
-//       />
-//     </FormControl>
-//   )
-// }
-
 const AddJournalVoucherTable = ({
   values,
   handleChange,
@@ -163,7 +142,7 @@ const AddJournalVoucherTable = ({
       headerName: 'Credit',
       flex: 0.35,
       align: 'center',
-      minWidth: 170,
+      minWidth: 160,
       renderCell: params => (
         <FormControl fullWidth>
           <TextField
@@ -199,9 +178,9 @@ const AddJournalVoucherTable = ({
     {
       field: '',
       headerName: '',
-      flex: 0.1,
+      flex: 0.25,
       align: 'center',
-      minWidth: 30,
+      minWidth: 10,
       renderCell: params => (
         <IconButton
           onClick={() => {
@@ -218,7 +197,7 @@ const AddJournalVoucherTable = ({
       headerName: 'Debit',
       flex: 0.35,
       align: 'center',
-      minWidth: 170,
+      minWidth: 160,
       renderCell: params => (
         <FormControl fullWidth>
           <TextField
@@ -308,168 +287,6 @@ const AddJournalVoucherTable = ({
     }
   ]
 
-  // const handleBalance = params => {
-  //   const totalDebit = Number(values?.total_debit)
-  //   const totalCredit = Number(values?.total_credit)
-  //   const difference = Math.abs(totalCredit - totalDebit)
-  //   const idx = params.idx
-  //   const length = values.table.length
-
-  //   // Function to set field values and handle enabling/disabling fields
-  //   const setFieldValues = (index, type, value, disableType) => {
-  //     setFieldValue(`table.${index}.${type}`, value)
-  //     setFieldValue(`table.${index}.disabled_${disableType}`, true)
-  //   }
-
-  //   if (totalCredit > totalDebit) {
-  //     // Handle debit when total credit is greater than total debit
-  //     if (idx !== length - 1 && !values.table[idx].disabled_debit) {
-  //       setFieldValues(idx, 'debit', difference + Number(values.table[idx].debit), 'credit')
-  //     } else if (idx !== length - 1) {
-  //       let nextIdx = idx + 1
-  //       while (nextIdx < length && values.table[nextIdx].disabled_debit) {
-  //         nextIdx++
-  //       }
-  //       if (nextIdx < length) {
-  //         setFieldValues(nextIdx, 'debit', difference + Number(values.table[nextIdx].debit), 'credit')
-  //       }
-  //     } else if (idx === length - 1 && !values.table[idx].disabled_debit) {
-  //       setFieldValues(idx, 'debit', difference + Number(values.table[idx].debit), 'credit')
-  //     } else if (idx === length - 1) {
-  //       let prevIdx = idx - 1
-  //       while (prevIdx >= 0 && values.table[prevIdx].disabled_debit) {
-  //         prevIdx--
-  //       }
-  //       if (prevIdx >= 0) {
-  //         setFieldValues(prevIdx, 'debit', difference + Number(values.table[prevIdx].debit), 'credit')
-  //       }
-  //     }
-  //   } else if (totalDebit > totalCredit) {
-  //     // Handle credit when total debit is greater than total credit
-  //     if (idx !== length - 1 && !values.table[idx].disabled_credit) {
-  //       setFieldValues(idx, 'credit', difference + Number(values.table[idx].credit), 'debit')
-  //     } else if (idx !== length - 1) {
-  //       let nextIdx = idx + 1
-  //       while (nextIdx < length && values.table[nextIdx].disabled_credit) {
-  //         nextIdx++
-  //       }
-  //       if (nextIdx < length) {
-  //         setFieldValues(nextIdx, 'credit', difference + Number(values.table[nextIdx].credit), 'debit')
-  //       }
-  //     } else if (idx === length - 1 && !values.table[idx].disabled_credit) {
-  //       setFieldValues(idx, 'credit', difference + Number(values.table[idx].credit), 'debit')
-  //     } else if (idx === length - 1) {
-  //       let prevIdx = idx - 1
-  //       while (prevIdx >= 0 && values.table[prevIdx].disabled_credit) {
-  //         prevIdx--
-  //       }
-  //       if (prevIdx >= 0) {
-  //         setFieldValues(prevIdx, 'credit', difference + Number(values.table[prevIdx].credit), 'debit')
-  //       }
-  //     }
-  //   } else {
-  //     notify('Total Credit and Total Debit are equal', 'success')
-  //   }
-  // }
-
-  // const handleBalanceV2 = params => {
-  //   const totalDebit = Number(values?.total_debit)
-  //   const totalCredit = Number(values?.total_credit)
-  //   const difference = Math.abs(totalCredit - totalDebit)
-  //   const idx = params.idx
-  //   // const length = values.table.length
-
-  //   // Function to set field values and handle enabling/disabling fields
-  //   // const setFieldValues = (index, type, value, disableType) => {
-  //   //   setFieldValue(`table.${index}.${type}`, value)
-  //   //   setFieldValue(`table.${index}.disabled_${disableType}`, true)
-  //   // }
-
-  //   if (totalCredit > totalDebit) {
-  //     // Handle debit when total credit is greater than total debit
-  //     if (values.table[idx].credit > 0) {
-  //       if (Number(values.table[idx].credit) > difference) {
-  //         setFieldValue(`table.${idx}.disabled_debit`, true)
-  //         setFieldValue(`table.${idx}.disabled_credit`, false)
-  //         setFieldValue(`table.${idx}.credit`, Number(values.table[idx].credit) - difference)
-  //       } else if (Number(values.table[idx].credit) < difference) {
-  //         setFieldValue(`table.${idx}.credit`, 0)
-  //         setFieldValue(`table.${idx}.debit`, difference - Number(values.table[idx].debit))
-  //         setFieldValue(`table.${idx}.disabled_credit`, true)
-  //         setFieldValue(`table.${idx}.disabled_debit`, false)
-  //       } else if (Number(values.table[idx].credit) === difference) {
-  //         setFieldValue(`table.${idx}.credit`, Number(values.table[idx].credit) + difference)
-  //         setFieldValue(`table.${idx}.disabled_credit`, false)
-  //         setFieldValue(`table.${idx}.disabled_debit`, true)
-  //       }
-  //     } else if (Number(values.table[idx].debit) > 0) {
-  //       if (Number(values.table[idx].debit) > difference) {
-  //         setFieldValue(`table.${idx}.disabled_credit`, true)
-  //         setFieldValue(`table.${idx}.disabled_debit`, false)
-  //         setFieldValue(`table.${idx}.debit`, Number(values.table[idx].debit) - difference)
-  //       } else if (Number(values.table[idx].debit) < difference) {
-  //         setFieldValue(`table.${idx}.debit`, 0)
-  //         setFieldValue(`table.${idx}.credit`, difference - Number(values.table[idx].debit))
-  //         setFieldValue(`table.${idx}.disabled_debit`, true)
-  //         setFieldValue(`table.${idx}.disabled_credit`, false)
-  //       } else if (Number(values.table[idx].debit) === difference) {
-  //         setFieldValue(`table.${idx}.debit`, Number(values.table[idx].debit) + difference)
-  //         setFieldValue(`table.${idx}.disabled_debit`, false)
-  //         setFieldValue(`table.${idx}.disabled_credit`, true)
-  //       }
-  //     } else if (Number(values.table[idx].debit) === 0 && Number(values.table[idx].credit) === 0) {
-  //       setFieldValue(`table.${idx}.debit`, difference)
-  //       setFieldValue(`table.${idx}.disabled_credit`, true)
-  //       setFieldValue(`table.${idx}.disabled_debit`, false)
-  //     }
-  //   } else if (totalDebit > totalCredit) {
-  //     // Handle credit when total debit is greater than total credit
-  //     if (values.table[idx].debit > 0) {
-  //       if (Number(values.table[idx].debit) > difference) {
-  //         setFieldValue(`table.${idx}.disabled_credit`, true)
-  //         setFieldValue(`table.${idx}.disabled_debit`, false)
-  //         setFieldValue(`table.${idx}.debit`, Number(values.table[idx].debit) - difference)
-  //       } else if (Number(values.table[idx].debit) < difference) {
-  //         setFieldValue(`table.${idx}.debit`, 0)
-  //         setFieldValue(`table.${idx}.credit`, difference - Number(values.table[idx].debit))
-  //         setFieldValue(`table.${idx}.disabled_debit`, true)
-  //         setFieldValue(`table.${idx}.disabled_credit`, false)
-  //       } else if (Number(values.table[idx].debit) === difference) {
-  //         setFieldValue(`table.${idx}.debit`, Number(values.table[idx].debit) + difference)
-  //         setFieldValue(`table.${idx}.disabled_debit`, false)
-  //         setFieldValue(`table.${idx}.disabled_credit`, true)
-  //       }
-  //     } else if (values.table[idx].credit > 0) {
-  //       if (Number(values.table[idx].credit) >= difference) {
-  //         setFieldValue(`table.${idx}.disabled_debit`, true)
-  //         setFieldValue(`table.${idx}.disabled_credit`, false)
-  //         setFieldValue(`table.${idx}.credit`, Number(values.table[idx].credit) - difference)
-  //       } else if (Number(values.table[idx].credit) <= difference) {
-  //         setFieldValue(`table.${idx}.credit`, 0)
-  //         setFieldValue(`table.${idx}.debit`, difference - Number(values.table[idx].debit))
-  //         setFieldValue(`table.${idx}.disabled_credit`, true)
-  //         setFieldValue(`table.${idx}.disabled_debit`, false)
-  //       } else if (Number(values.table[idx].credit) === difference) {
-  //         setFieldValue(`table.${idx}.credit`, Number(values.table[idx].credit) + difference)
-  //         setFieldValue(`table.${idx}.disabled_credit`, false)
-  //         setFieldValue(`table.${idx}.disabled_debit`, true)
-  //       }
-  //     } else if (Number(values.table[idx].credit) === 0 && Number(values.table[idx].debit) === 0) {
-  //       setFieldValue(`table.${idx}.credit`, difference)
-  //       setFieldValue(`table.${idx}.disabled_debit`, true)
-  //       setFieldValue(`table.${idx}.disabled_credit`, false)
-  //     }
-  //   } else {
-  //     notify('Total Credit and Total Debit are equal🍔', 'success')
-  //   }
-
-  //   if ((totalCredit === 0 && !values.table[idx].debit) || (totalDebit === 0 && !values.table[idx].credit)) {
-  //     setFieldValue(`table.${idx}.disabled_credit`, false)
-  //     setFieldValue(`table.${idx}.disabled_debit`, false)
-  //     setFieldValue(`table.${idx}.credit`, 0)
-  //     setFieldValue(`table.${idx}.debit`, 0)
-  //   }
-  // }
   const handleBalanceV2 = params => {
     const { idx } = params
     const totalDebit = Number(values?.total_debit)
@@ -574,9 +391,6 @@ const AddJournalVoucherTable = ({
     )
   }, [values.table, setFieldValue])
 
-  console.log('data form journal add table 👀👀👀', data)
-  console.log('store form journal add table 👀👀👀', store)
-
   return (
     <>
       <Box
@@ -611,97 +425,100 @@ const AddJournalVoucherTable = ({
           </Button>
         </Box>
       </Box>
-      <>
-        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
-          <Table stickyHeader stickyFooter aria-label='sticky table'>
-            <TableHead>
-              <TableRow>
-                {columns &&
-                  columns.length > 0 &&
-                  columns.map((column, idx) => (
-                    <TableCell
-                      key={idx}
-                      align={column.align || 'center'}
-                      sx={{
-                        minWidth: column.minWidth,
-                        flex: column.flex,
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        textTransform: transText
-                      }}
-                    >
-                      {column.headerName}
-                    </TableCell>
-                  ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Array.isArray(values?.table) && values?.table && values?.table.length > 0 ? (
-                values?.table.map((row, idx) => (
-                  <TableRow hover role='checkbox' key={idx}>
-                    {columns.map((column, index) => {
-                      const params = row[column.field]
-
-                      return (
-                        <TableCell key={index + 1} align={column.align} sx={{ textTransform: transText }}>
-                          {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                ))
-              ) : (
+      <Box sx={{ mx: -10 }}>
+        <Box>
+          <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
+            <Table stickyHeader stickyFooter aria-label='sticky table'>
+              <TableHead>
                 <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell colSpan={6}>
-                    <Typography variant='body2' align='center' sx={{ my: 10, textTransform: transText }}>
-                      No Rows
-                    </Typography>
-                  </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
+                  {columns &&
+                    columns.length > 0 &&
+                    columns.map((column, idx) => (
+                      <TableCell
+                        key={idx}
+                        align={column.align || 'center'}
+                        sx={{
+                          minWidth: column.minWidth,
+                          flex: column.flex,
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          textTransform: transText
+                        }}
+                      >
+                        {column.headerName}
+                      </TableCell>
+                    ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </>
-      <Box
-        style={{
-          position: 'sticky',
-          bottom: '0'
-        }}
-      >
+              </TableHead>
+              <TableBody>
+                {Array.isArray(values?.table) && values?.table && values?.table.length > 0 ? (
+                  values?.table.map((row, idx) => (
+                    <TableRow hover role='checkbox' key={idx}>
+                      {columns.map((column, index) => {
+                        const params = row[column.field]
+
+                        return (
+                          <TableCell key={index + 1} align={column.align} sx={{ textTransform: transText }}>
+                            {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell colSpan={6}>
+                      <Typography variant='body2' align='center' sx={{ my: 10, textTransform: transText }}>
+                        No Rows
+                      </Typography>
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
         <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            // backgroundColor: '#424242',
-            textTransform: transText
+          style={{
+            position: 'sticky',
+            bottom: '0',
+            mx: 5
           }}
         >
-          <StyledTableCell>
-            <Typography sx={{ textTransform: transText }}>Total Credit :</Typography>
-          </StyledTableCell>
-          <StyledTableCell align='right' colSpan={2}>
-            <Typography sx={{ textTransform: transText }}>
-              {CurrencySymbolPlacement === 'after'
-                ? `${Number(values?.total_credit).toFixed(decimalFormat)} ${currency_code} `
-                : `${currency_code} ${Number(values?.total_credit).toFixed(decimalFormat)} `}
-            </Typography>
-          </StyledTableCell>
-          <StyledTableCell>
-            <Typography sx={{ textTransform: transText }}>Total Debit:</Typography>
-          </StyledTableCell>
-          <StyledTableCell align='right' colSpan={2}>
-            <Typography sx={{ textTransform: transText }}>
-              {CurrencySymbolPlacement === 'after'
-                ? `${Number(values?.total_debit).toFixed(decimalFormat)} ${currency_code} `
-                : `${currency_code} ${Number(values?.total_debit).toFixed(decimalFormat)} `}
-            </Typography>
-          </StyledTableCell>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              // backgroundColor: '#424242',
+              textTransform: transText
+            }}
+          >
+            <StyledTableCell>
+              <Typography sx={{ textTransform: transText }}>Total Credit :</Typography>
+            </StyledTableCell>
+            <StyledTableCell align='right' colSpan={2}>
+              <Typography sx={{ textTransform: transText }}>
+                {CurrencySymbolPlacement === 'after'
+                  ? `${Number(values?.total_credit).toFixed(decimalFormat)} ${currency_code} `
+                  : `${currency_code} ${Number(values?.total_credit).toFixed(decimalFormat)} `}
+              </Typography>
+            </StyledTableCell>
+            <StyledTableCell>
+              <Typography sx={{ textTransform: transText }}>Total Debit:</Typography>
+            </StyledTableCell>
+            <StyledTableCell align='right' colSpan={2}>
+              <Typography sx={{ textTransform: transText }}>
+                {CurrencySymbolPlacement === 'after'
+                  ? `${Number(values?.total_debit).toFixed(decimalFormat)} ${currency_code} `
+                  : `${currency_code} ${Number(values?.total_debit).toFixed(decimalFormat)} `}
+              </Typography>
+            </StyledTableCell>
+          </Box>
         </Box>
       </Box>
     </>

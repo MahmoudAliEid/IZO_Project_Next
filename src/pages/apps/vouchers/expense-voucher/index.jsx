@@ -26,7 +26,6 @@ import { deleteExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/pos
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 
 // ** Styled Component
-import ViewPopUp from 'src/@core/components/vouchers/JournalVoucher/ViewPopUp'
 import EditJournalVoucherPopUp from 'src/@core/components/vouchers/JournalVoucher/EditJournalVoucherPopUp'
 import PageFilter from 'src/@core/Global/PageFilter'
 import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
@@ -34,6 +33,7 @@ import ListLoading from 'src/@core/Global/ListLoading'
 import AddExpensePopUp from 'src/@core/components/vouchers/expenseVoucher/AddExpensePopUp'
 import ExpenseEntry from 'src/@core/components/vouchers/expenseVoucher/ExpenseEntry'
 import AttachmentExpense from 'src/@core/components/vouchers/expenseVoucher/AttatchmentExpense'
+import ViewExpense from 'src/@core/components/vouchers/expenseVoucher/ViewExpense'
 
 const RowOptions = ({ id }) => {
   // ** Hooks
@@ -229,10 +229,10 @@ const RowOptions = ({ id }) => {
           open={openDeleteAlert}
           close={() => setOpenDeleteAlert(!openDeleteAlert)}
           mainHandleDelete={handleDelete}
-          name={'Journal Voucher'}
+          name={'Expense Voucher'}
         />
       )}
-      {openView && <ViewPopUp open={openView} toggle={handleView} id={id} />}
+      {openView && <ViewExpense open={openView} toggle={handleView} id={id} />}
       {openEdit && <EditJournalVoucherPopUp open={openEdit} handleClose={handleEdit} id={id} />}
 
       {openViewAttachments && <AttachmentExpense open={openViewAttachments} toggle={handleViewAttachments} id={id} />}
