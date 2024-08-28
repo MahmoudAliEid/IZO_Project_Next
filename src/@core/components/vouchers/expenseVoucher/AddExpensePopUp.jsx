@@ -12,7 +12,9 @@ import {
   Select,
   MenuItem,
   FormHelperText,
-  TextField
+  TextField,
+  Checkbox,
+  FormControlLabel
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { getCookie } from 'cookies-next'
@@ -22,18 +24,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomHeader from '../../customDialogHeader/CustomHeader'
 import DatePicker from 'react-datepicker'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-// import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
+import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 import notify from 'src/utils/notify'
 import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 
 // ** Formik
 import { Formik, FieldArray, Form } from 'formik'
 import * as Yup from 'yup'
-import fetchCreateExpenseVoucher from 'src/store/apps/vouchers/expenseVoucher/getCreateExpenseVoucher'
 import AddExpenseVoucherTable from './AddExpenseVoucherTable'
+import { fetchCreateExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getCreateExpenseVoucher'
+import { createExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/postCreateExpenseVoucher'
 
 const AddExpensePopUp = ({ open, handleClose }) => {
   const [data, setData] = useState([])
+  const [openLoading, setOpenLoading] = useState(false)
   const [initialValues] = useState({
     date: new Date(),
     currency_id: '',
@@ -42,12 +46,14 @@ const AddExpensePopUp = ({ open, handleClose }) => {
     main_credit_check: false,
     main_credit: null,
     cost_center_id: '',
+    main_note: '',
+    main_amount: 0,
     table: [
       {
         id: 0,
         credit_id: '',
         debit_id: '',
-        amount: '',
+        amount: 0,
         note: '',
         cost_center_id: '',
         tax: 0,
@@ -65,9 +71,11 @@ const AddExpensePopUp = ({ open, handleClose }) => {
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   // ** Cookies
   const transText = getCookie('fontStyle')
+  const decimalFormat = getCookie('DecimalFormat')
 
   // ** Get data from store
   const storeData = useSelector(state => state.getCreateExpenseVoucher.data.value)
+  const createStatus = useSelector(state => state.getCreateExpenseVoucher)
 
   // ** validate schema
   const validationSchema = Yup.object().shape({
@@ -97,11 +105,13 @@ const AddExpensePopUp = ({ open, handleClose }) => {
 
   // ** Function to handle form submit
   const handleSubmit = async (values, { setSubmitting }) => {
-    // ** API Call
-    console.log(values)
+    setOpenLoading(true)
 
     try {
       // ** Dispatch action to add expense
+      dispatch(createExpenseVoucher({ values })).then(() => {
+        dispatch(fetchCreateExpenseVoucher())
+      })
     } catch (error) {
       notify('Error', 'error')
       setSubmitting(false)
@@ -114,9 +124,13 @@ const AddExpensePopUp = ({ open, handleClose }) => {
       onClose={handleClose}
       maxWidth='lg'
       scroll='body'
+      fullScreen
       sx={{ height: '100%', textTransform: transText }}
       aria-labelledby='form-dialog-title'
     >
+      {openLoading && (
+        <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
+      )}
       <CustomHeader handleClose={handleClose} title={'Add Expense'} divider={false} />
       <DialogContent sx={{ padding: '0 !important', textTransform: transText }}>
         <Card>
@@ -126,29 +140,83 @@ const AddExpensePopUp = ({ open, handleClose }) => {
             onSubmit={handleSubmit}
             enableReinitialize
           >
-            {({ values, errors, touched, setFieldValue, handleChange, handleBlur }) => (
+            {({ values, errors, touched, setFieldValue, handleChange, handleBlur, setFieldTouched }) => (
               <Form>
-                <Box sx={{ p: 3 }}>
-                  <Grid container space={2}>
-                    <Grid item xs={12} md={6} lg={6} sm={12}>
-                      <FormControl>
-                        <InputLabel>Main Credit</InputLabel>
-                        <Select
-                          name='main_credit'
-                          value={values.main_credit}
-                          label='Main Credit'
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          error={touched.main_credit && errors.main_credit}
-                        >
-                          <MenuItem value='cash'>hi</MenuItem>
-                        </Select>
-                        {touched.main_credit && errors.main_credit && (
-                          <FormHelperText error>{String(errors.main_credit)}</FormHelperText>
-                        )}
-                      </FormControl>
+                <Box sx={{ p: 5 }}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <Grid container item spacing={2}>
+                        <Grid item xs={9}>
+                          <FormControl fullWidth>
+                            <InputLabel>Main Credit</InputLabel>
+                            <Select
+                              name='main_credit'
+                              value={values.main_credit}
+                              label='Main Credit'
+                              fullWidth
+                              onChange={event => {
+                                handleChange(event)
+                                if (values.main_credit_check) {
+                                  values.table.map((item, index) => {
+                                    setFieldValue(`table[${index}].credit_id`, event.target.value)
+                                  })
+                                }
+                              }}
+                              onBlur={handleBlur}
+                              error={touched.main_credit && errors.main_credit}
+                            >
+                              {data?.accounts_credit &&
+                                data?.accounts_credit.map((item, index) => {
+                                  return (
+                                    <MenuItem key={index} value={item.id}>
+                                      {item.value}
+                                    </MenuItem>
+                                  )
+                                })}
+                            </Select>
+                            {touched.main_credit && errors.main_credit && (
+                              <FormHelperText error>{String(errors.main_credit)}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                          <FormControl fullWidth>
+                            <FormControlLabel
+                              label='Main Credit'
+                              sx={{
+                                '& .MuiFormControlLabel-label': {
+                                  fontSize: '0.875rem',
+                                  color: 'text.secondary'
+                                }
+                              }}
+                              control={
+                                <Checkbox
+                                  checked={values.main_credit_check}
+                                  color='primary'
+                                  name='main_credit_check'
+                                  onChange={e => {
+                                    setFieldValue('main_credit_check', e.target.checked)
+                                    if (e.target.checked) {
+                                      const mainCredit = values.main_credit
+                                      values.table.map((item, index) => {
+                                        setFieldValue(`table[${index}].credit_id`, mainCredit)
+                                      })
+                                    } else {
+                                      values.table.map((item, index) => {
+                                        setFieldValue(`table[${index}].credit_id`, '')
+                                      })
+                                    }
+                                  }}
+                                />
+                              }
+                            />
+                          </FormControl>
+                        </Grid>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+
+                    <Grid item xs={6}>
                       <FormControl fullWidth>
                         <InputLabel id='currency_id'>Currency</InputLabel>
                         <Select
@@ -170,7 +238,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                                   key={index}
                                   value={item.id}
                                   onClick={() => {
-                                    setFieldValue('currency_id_amount', item.amount)
+                                    setFieldValue('currency_id_amount', item?.amount || 0)
                                   }}
                                 >
                                   {item.value}
@@ -222,6 +290,39 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                         </DatePickerWrapper>
                       </FormControl>
                     </Grid>
+                    {values.main_credit_check && (
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <TextField
+                            name='main_note'
+                            label='Main Note'
+                            value={values.main_note}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            rows={4}
+                            multiline
+                            error={Boolean(touched.main_note && errors.main_note)}
+                            helperText={errors.main_note}
+                          />
+                        </FormControl>
+                      </Grid>
+                    )}
+                    {values.main_credit_check && (
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <TextField
+                            name='main_amount'
+                            label='Main Amount'
+                            value={Number(values.table.reduce((acc, item) => acc + Number(item.amount), 0)).toFixed(
+                              decimalFormat
+                            )}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            disabled
+                          />
+                        </FormControl>
+                      </Grid>
+                    )}
                     <Grid item xs={12} sx={{ mb: 2 }}>
                       <FormControl fullWidth>
                         <Attachment image={values.attachment} setFieldValue={setFieldValue} />
