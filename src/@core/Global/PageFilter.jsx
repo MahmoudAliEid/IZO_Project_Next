@@ -1,6 +1,8 @@
 import { Button, ButtonGroup } from '@mui/material'
 import { getCookie } from 'cookies-next'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+// ** Hook Import
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Cookies
 
@@ -8,7 +10,66 @@ const PageFilter = ({ setFilterDate, setOpenDateRange }) => {
   // ** Cookies
   const FilterInitial = getCookie('FilterInitial')
   const transText = getCookie('fontStyle')
-  const [btnValue, setBtnValue] = useState(FilterInitial || 'month')
+  // ** Hook
+  const { settings } = useSettings()
+  const { searchFilter } = settings
+  const [btnValue, setBtnValue] = useState(FilterInitial)
+
+  useEffect(() => {
+    if (searchFilter) {
+      setBtnValue(searchFilter)
+      if (searchFilter === 'month') {
+        setFilterDate(prev => {
+          return {
+            ...prev,
+            active: 'month',
+            startDate: null,
+            endDate: null,
+            month: new Date(),
+            week: null,
+            day: null
+          }
+        })
+      }
+      if (searchFilter === 'week') {
+        setFilterDate(prev => {
+          return {
+            ...prev,
+            active: 'week',
+            startDate: null,
+            endDate: null,
+            month: null,
+            week: new Date(),
+            day: null
+          }
+        })
+      }
+      if (searchFilter === 'day') {
+        setFilterDate(prev => {
+          return {
+            ...prev,
+            active: 'day',
+            startDate: null,
+            endDate: null,
+            month: null,
+            week: null,
+            day: new Date()
+          }
+        })
+      }
+      if (searchFilter === 'range') {
+        setOpenDateRange(true)
+        setFilterDate(prev => {
+          return {
+            ...prev,
+            active: 'range'
+          }
+        })
+      }
+    } else {
+      setBtnValue(FilterInitial)
+    }
+  }, [searchFilter, FilterInitial, setFilterDate, setOpenDateRange])
 
   return (
     <ButtonGroup variant='outlined' aria-label='Basic button group'>

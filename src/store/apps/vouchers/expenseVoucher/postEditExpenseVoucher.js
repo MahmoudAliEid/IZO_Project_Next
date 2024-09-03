@@ -5,10 +5,10 @@ import { getCookie } from 'cookies-next'
 // ** Redux Imports
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-export const createExpenseVoucher = createAsyncThunk('/dashboard/vouchers/expense-voucher/create', async payload => {
+export const editExpenseVoucher = createAsyncThunk('/dashboard/vouchers/expense-voucher/edit', async payload => {
   const token = getCookie('token')
   const url = getCookie('apiUrl')
-  const { values } = payload
+  const { values, id } = payload
 
   // Extract the date components
   let year = values.date.getFullYear()
@@ -36,14 +36,27 @@ export const createExpenseVoucher = createAsyncThunk('/dashboard/vouchers/expens
 
   if (values.table && values.table.length > 0) {
     values.table.forEach((row, index) => {
-      formData.append(`credit_account_id[${index}]`, row?.credit_id ? row.credit_id : values.main_credit)
-      formData.append(`debit_account_id[${index}]`, row.debit_id)
-      formData.append(`amount[${index}]`, row.amount)
-      formData.append(`center_id[${index}]`, row.cost_center_id ? row.cost_center_id : values.cost_center_id)
-      formData.append(`text[${index}]`, row.note)
-      formData.append(`tax_percentage[${index}]`, row.tax)
-      formData.append(`tax_amount[${index}]`, row.tax_amount)
-      formData.append(`net_amount[${index}]`, row.net_amount)
+      if (!row?.status || row?.status !== 'old') {
+        formData.append(`credit_account_id[${index}]`, row?.credit_id ? row.credit_id : values.main_credit)
+        formData.append(`debit_account_id[${index}]`, row.debit_id)
+        formData.append(`amount[${index}]`, row.amount)
+        formData.append(`center_id[${index}]`, row.cost_center_id ? row.cost_center_id : values.cost_center_id)
+        formData.append(`text[${index}]`, row.note)
+        formData.append(`tax_percentage[${index}]`, row.tax)
+        formData.append(`tax_amount[${index}]`, row.tax_amount)
+        formData.append(`net_amount[${index}]`, row.net_amount)
+      }
+      if (row.status === 'old') {
+        formData.append(`old_credit_account_id[${index}]`, row?.credit_id ? row.credit_id : values.main_credit)
+        formData.append(`old_debit_account_id[${index}]`, row.debit_id)
+        formData.append(`old_amount[${index}]`, row.amount)
+        formData.append(`old_center_id[${index}]`, row.cost_center_id ? row.cost_center_id : values.cost_center_id)
+        formData.append(`old_text[${index}]`, row.note)
+        formData.append(`old_tax_percentage[${index}]`, row.tax)
+        formData.append(`old_tax_amount[${index}]`, row.tax_amount)
+        formData.append(`old_net_amount[${index}]`, row.net_amount)
+        formData.append(`old_date[${index}]`, row.date)
+      }
     })
   }
 
@@ -54,8 +67,8 @@ export const createExpenseVoucher = createAsyncThunk('/dashboard/vouchers/expens
     }
   }
   try {
-    const response = await axios.post(`${url}/app/react/expense-voucher/save`, formData, config)
-    console.log(response.data, 'response.data form create expense voucher')
+    const response = await axios.post(`${url}/app/react/expense-voucher/update/${id}`, formData, config)
+    console.log(response.data, 'response.data form edit expense voucher')
 
     return response.data
   } catch (error) {
@@ -74,26 +87,26 @@ const initialState = {
 }
 
 // Slice
-const postCreateExpenseVoucher = createSlice({
-  name: 'Create Expense Voucher',
+const postEditExpenseVoucher = createSlice({
+  name: 'Edit Expense Voucher',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(createExpenseVoucher.pending, state => {
+      .addCase(editExpenseVoucher.pending, state => {
         state.loading = true
         state.error = false
         state.success = false
         state.data = null
       })
-      .addCase(createExpenseVoucher.fulfilled, (state, action) => {
+      .addCase(editExpenseVoucher.fulfilled, (state, action) => {
         state.loading = false
         state.success = true
         state.error = false
         state.data = action.payload
-        notify('Successfully stored Expense.', 'success')
+        notify('Successfully updated', 'success')
       })
-      .addCase(createExpenseVoucher.rejected, (state, action) => {
+      .addCase(editExpenseVoucher.rejected, (state, action) => {
         state.loading = false
         state.success = false
         state.error = true
@@ -103,4 +116,4 @@ const postCreateExpenseVoucher = createSlice({
   }
 })
 
-export default postCreateExpenseVoucher.reducer
+export default postEditExpenseVoucher.reducer

@@ -20,13 +20,15 @@ import MuiDrawer, { DrawerProps } from '@mui/material/Drawer'
 import Icon from 'src/@core/components/icon'
 
 // ** Next Cookies
-import { setCookie } from 'cookies-next'
+import { setCookie ,getCookie} from 'cookies-next'
+
 
 // ** Type Import
 import { Settings } from 'src/@core/context/settingsContext'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { MenuItem, Select } from '@mui/material'
 
 const Toggler = styled(Box)<BoxProps>(({ theme }) => ({
   right: 0,
@@ -95,7 +97,9 @@ const Customizer = () => {
     themeColor,
     navCollapsed,
     contentWidth,
-    verticalNavToggleType
+    verticalNavToggleType,
+    dateFormat,
+    searchFilter
   } = settings
 
   const handleChange = (field: keyof Settings, value: Settings[keyof Settings]): void => {
@@ -176,6 +180,42 @@ const Customizer = () => {
                 <FormControlLabel value='default' label='Default' control={<Radio />} />
                 <FormControlLabel value='bordered' label='Bordered' control={<Radio />} />
               </RadioGroup>
+            </Box>
+            {/* Date Formate */}
+            <Box sx={{ mb: 5 }}>
+              <Typography>Date Format</Typography>
+              <Select
+                fullWidth
+                value={dateFormat ||getCookie('DateFormat')}
+                onChange={e => handleChange('dateFormat', e.target.value as Settings['dateFormat'])}
+
+              >
+                <MenuItem value=''>Default</MenuItem>
+                <MenuItem value='MM-dd-yyyy'>MM-DD-YYYY</MenuItem>
+                <MenuItem value='dd-MM-yyyy'>DD-MM-YYYY</MenuItem>
+                <MenuItem value='yyyy-MM-dd'>YYYY-MM-DD</MenuItem>
+                <MenuItem value='MM/dd/yyyy'>MM/DD/YYYY</MenuItem>
+                <MenuItem value='dd/MM/yyyy'>DD/MM/YYYY</MenuItem>
+                <MenuItem value='yyyy/MM/dd'>YYYY/MM/DD</MenuItem>
+              </Select>
+
+            </Box>
+            {/* Default Search Filter */}
+            <Box sx={{ mb: 5 }}>
+              <Typography>Default Search Filter</Typography>
+              <Select
+                fullWidth
+                value={searchFilter||getCookie('FilterInitial')}
+                onChange={e => handleChange('searchFilter', e.target.value as Settings['searchFilter'])}
+
+              >
+                <MenuItem value=''>Default</MenuItem>
+                <MenuItem value='month'>MONTH</MenuItem>
+                <MenuItem value='week'>WEEK</MenuItem>
+                <MenuItem value='day'>DAY</MenuItem>
+                <MenuItem value='range'>RANGE</MenuItem>
+              </Select>
+
             </Box>
 
             {/* Mode */}

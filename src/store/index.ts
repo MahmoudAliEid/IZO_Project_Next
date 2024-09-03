@@ -145,6 +145,7 @@ import postDeleteExpenseVoucher from './apps/vouchers/expenseVoucher/postDeleteE
 import getAttachmentExpenseVoucher from './apps/vouchers/expenseVoucher/Actions/getAttachmentExpenseVoucher'
 import getEntryExpenseVoucher from './apps/vouchers/expenseVoucher/Actions/getEntryExpenseVoucher'
 import postCreateExpenseVoucher from './apps/vouchers/expenseVoucher/postCreateExpenseVoucher'
+import postEditExpenseVoucher from './apps/vouchers/expenseVoucher/postEditExpenseVoucher'
 
 export const store = configureStore({
   reducer: {
@@ -284,7 +285,8 @@ export const store = configureStore({
     postDeleteExpenseVoucher,
     getAttachmentExpenseVoucher,
     getEntryExpenseVoucher,
-    postCreateExpenseVoucher
+    postCreateExpenseVoucher,
+    postEditExpenseVoucher
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

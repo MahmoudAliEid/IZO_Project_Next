@@ -5,14 +5,13 @@ import { Dialog, DialogActions, DialogContent, Box, Chip } from '@mui/material'
 // ** Custom Components
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
-// ** Cookies
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { viewOpeningStock } from 'src/store/apps/products/addOpeningStock/getViewOpeningStock'
 
 // ** Data Grid
-import { DataGrid } from '@mui/x-data-grid'
+import CustomSpanningTable from './CustomSpanningTable'
 
 const ViewOpeningStock = ({ open, toggle, id }) => {
   // ** State
@@ -38,12 +37,11 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
   const handleClose = () => {
     toggle()
   }
-  console.log(data, 'data form view opening stock 🐣')
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
       <CustomHeader
-        title={`Opening Stock ( ${data.ref_no ? data.ref_no : ''} )`}
+        title={`View Opening Stock ( ${data.ref_no ? data.ref_no : ''} )`}
         handleClose={handleClose}
         divider={false}
       />
@@ -61,15 +59,14 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
               Date:&nbsp;
               <Chip label={`${data.date}`} />
             </Box>
-            <DataGrid
-              autoHeight
-              rows={data.items}
+            <CustomSpanningTable
               columns={[
                 { field: 'productName', headerName: 'Product Name', flex: 1 },
                 { field: 'quantity', headerName: 'Quantity', flex: 1 },
                 { field: 'storeName', headerName: 'Warehouse', flex: 1 },
                 { field: 'date', headerName: 'Date', flex: 1 }
               ]}
+              rows={data.items}
             />
           </>
         ) : (

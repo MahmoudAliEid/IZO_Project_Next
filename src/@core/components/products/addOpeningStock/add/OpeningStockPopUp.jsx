@@ -24,6 +24,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { Formik, Form, FieldArray, useField } from 'formik'
 import * as Yup from 'yup'
 
+// ** Hook Import
+import { useSettings } from 'src/@core/hooks/useSettings'
 // ** Custom Components
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -69,6 +71,9 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
   // ** Hooks
   const theme = useTheme()
   const dispatch = useDispatch()
+  // ** Hook
+  const { settings } = useSettings()
+  const { dateFormat } = settings
   // ** Vars
   const { direction } = theme
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
@@ -261,6 +266,11 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                         </Select>
                         {errors.store && touched.store && <FormHelperText error>{String(errors.store)}</FormHelperText>}
                       </FormControl>
+                      {values.items.length === 0 && (
+                        <FormHelperText error sx={{ ml: 2 }}>
+                          Please add Rows to Table to show Prices
+                        </FormHelperText>
+                      )}
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <FormControl fullWidth>
@@ -297,7 +307,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                             onChange={date => {
                               setFieldValue('date', date)
                             }}
-                            dateFormat='yyyy/MM/dd'
+                            dateFormat={dateFormat}
                             customInput={
                               <CustomInput
                                 fullWidth

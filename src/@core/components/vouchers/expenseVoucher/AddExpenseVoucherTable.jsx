@@ -144,8 +144,8 @@ const AddExpenseVoucherTable = ({
                 handleChange(event)
 
                 const taxAmount = (
-                  (Number(values?.table[params.idx]?.tax) * 100) /
-                  (Number(values?.table[params.idx]?.tax) + Number(event.target.value))
+                  (Number(values?.table[params.idx]?.tax) * Number(event.target.value)) /
+                  (Number(values?.table[params.idx]?.tax) + 100)
                 ).toFixed(decimalFormat)
                 setFieldValue(`table[${params.idx}].tax_amount`, taxAmount)
                 setFieldValue(
@@ -211,10 +211,9 @@ const AddExpenseVoucherTable = ({
               onChange={event => {
                 handleChange(event)
                 const taxAmount = (
-                  (Number(event.target.value) * 100) /
-                  (Number(event.target.value) + Number(values?.table[params.idx]?.amount))
+                  (Number(event.target.value) * Number(values?.table[params.idx]?.amount)) /
+                  (Number(event.target.value) + 100)
                 ).toFixed(decimalFormat)
-
                 setFieldValue(`table[${params.idx}].tax_amount`, taxAmount)
                 setFieldValue(
                   `table[${params.idx}].net_amount`,

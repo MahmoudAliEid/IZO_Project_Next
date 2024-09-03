@@ -130,7 +130,6 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       setData(store)
     }
   }, [store])
-
   useEffect(() => {
     if (values.items && values.items.length > 0) {
       setFieldValue(
@@ -150,7 +149,6 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       )
     }
   }, [setFieldValue, values, decimalFormate])
-
   useEffect(() => {
     values.items.map((item, idx) => {
       if (item.unit) {
@@ -163,7 +161,6 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       }
     })
   }, [setFieldValue, values.items])
-
   useEffect(() => {
     if (lastProduct) {
       push({
@@ -191,9 +188,9 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
     {
       field: 'name',
       headerName: 'Product Name',
-      flex: 0.25,
+      flex: 0.35,
       align: 'center',
-      minWidth: 120,
+      minWidth: 150,
       renderCell: params => <LinkStyled>{params.name}</LinkStyled>
     },
     {
@@ -201,146 +198,163 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       headerName: 'Quantity',
       align: 'center',
       flex: 0.45,
-      minWidth: 210,
+      minWidth: 110,
       renderCell: params => (
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4} sm={12} lg={4}>
-            <CustomInputField
-              value={values.items[params.idx].quantity}
-              name={`items.${params.idx}.quantity`}
-              type='number'
-              onChange={e => {
-                if (e.target.value <= 0 || e.target.value === '0' || e.target.value === '') {
-                  setFieldValue(`items.${params.idx}.quantity`, 1)
-                }
-                handleChange(e)
+        <Grid item xs={12}>
+          <CustomInputField
+            value={values.items[params.idx].quantity}
+            name={`items.${params.idx}.quantity`}
+            type='number'
+            onChange={e => {
+              if (e.target.value <= 0 || e.target.value === '0' || e.target.value === '') {
+                setFieldValue(`items.${params.idx}.quantity`, 1)
+              }
+              handleChange(e)
 
-                if (values.items[params.idx].unit_quantity > 0) {
-                  setFieldValue(
-                    `items.${params.idx}.total`,
-                    (Number(e.target.value) * Number(values.items[params.idx].price)).toFixed(decimalFormate)
-                  )
-                } else {
-                  setFieldValue(
-                    `items.${params.idx}.total`,
-                    (Number(e.target.value) * Number(values.items[params.idx].price)).toFixed(decimalFormate)
-                  )
-                }
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={8} sm={12} lg={8}>
-            <FormControl fullWidth>
-              <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
-              <Select
-                value={values.items[params.idx].unit}
-                name={`items.${params.idx}.unit`}
-                onChange={e => {
-                  handleChange(e)
-                }}
-                id='demo-simple-select'
-                label='Unit'
-                fullWidth
-              >
-                {rows[params.idx].all_unit && rows[params.idx].all_unit.length > 0 ? (
-                  rows[params.idx].all_unit.map((unit, idx) => (
-                    <MenuItem
-                      key={idx}
-                      value={unit.id}
-                      onClick={() => {
-                        setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
-                        setFieldValue(`items.${params.idx}.child_price`, '')
-                        setFieldValue('parent_price', 0)
-
-                        const price_id = 0
-
-                        // set price value based on price_id in all items row if it's unit is null
-                        values.items.forEach(() => {
-                          if (unit.list_price.length > 0) {
-                            const price = unit.list_price.find(price => price.line_id === price_id)
-
-                            if (price) {
-                              const priceValue = price.price
-
-                              setFieldValue(`items.${params.idx}.price`, priceValue)
-                              setFieldValue(
-                                `items.${params.idx}.total`,
-                                Number(priceValue) * Number(values.items[params.idx].quantity)
-                              )
-                            } else if (price === null) {
-                              setFieldValue(`items.${params.idx}.price`, 0)
-                              setFieldValue(`items.${params.idx}.total`, 0)
-                            } else {
-                              return
-                            }
-                          }
-                        })
-                      }}
-                    >
-                      {unit.value}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value={''}>No Units</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id='demo-simple-select-label'>Price</InputLabel>
-              <Select
-                value={values.items[params.idx].child_price}
-                name={`items.${params.idx}.child_price`}
-                onChange={event => {
-                  handleChange(event)
-                }}
-                id='demo-simple-select'
-                label='Price'
-                fullWidth
-              >
-                <MenuItem
-                  onClick={() => {
-                    const parentPrice = values.parent_price
-                    const listPrice = values.items[params.idx].list_prices
-                    if (listPrice) {
-                      const childPrice = listPrice.find(price => price.line_id === parentPrice)
-                      setFieldValue(`items.${params.idx}.price`, childPrice?.price)
-                    }
-                  }}
-                  value={''}
-                >
-                  Please Select
-                </MenuItem>
-                {rows[params.idx].list_prices && rows[params.idx].list_prices.length > 0
-                  ? rows[params.idx].list_prices.map((price, idx) => (
-                      <MenuItem
-                        onClick={() => {
-                          setFieldValue(`items.${params.idx}.price`, price.price ? price.price : 0)
-                          setFieldValue(
-                            `items.${params.idx}.total`,
-                            (Number(values.items[params.idx].quantity) * Number(price.price)).toFixed(decimalFormate)
-                          )
-                        }}
-                        key={idx}
-                        value={price.line_id}
-                      >
-                        {price.name}
-                      </MenuItem>
-                    ))
-                  : null}
-              </Select>
-            </FormControl>
-          </Grid>
+              if (values.items[params.idx].unit_quantity > 0) {
+                setFieldValue(
+                  `items.${params.idx}.total`,
+                  (Number(e.target.value) * Number(values.items[params.idx].price)).toFixed(decimalFormate)
+                )
+              } else {
+                setFieldValue(
+                  `items.${params.idx}.total`,
+                  (Number(e.target.value) * Number(values.items[params.idx].price)).toFixed(decimalFormate)
+                )
+              }
+            }}
+          />
         </Grid>
       )
     },
+    {
+      field: 'unit',
+      headerName: 'Unit',
+      align: 'center',
+      flex: 0.25,
+      minWidth: 130,
+      renderCell: params => (
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Unit</InputLabel>
+            <Select
+              value={values.items[params.idx].unit}
+              name={`items.${params.idx}.unit`}
+              onChange={e => {
+                handleChange(e)
+              }}
+              id='demo-simple-select'
+              label='Unit'
+              fullWidth
+            >
+              {rows[params.idx].all_unit && rows[params.idx].all_unit.length > 0 ? (
+                rows[params.idx].all_unit.map((unit, idx) => (
+                  <MenuItem
+                    key={idx}
+                    value={unit.id}
+                    onClick={() => {
+                      setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
+                      setFieldValue(`items.${params.idx}.child_price`, '')
+                      setFieldValue('parent_price', 0)
+
+                      const price_id = 0
+
+                      // set price value based on price_id in all items row if it's unit is null
+                      values.items.forEach(() => {
+                        if (unit.list_price.length > 0) {
+                          const price = unit.list_price.find(price => price.line_id === price_id)
+
+                          if (price) {
+                            const priceValue = price.price
+
+                            setFieldValue(`items.${params.idx}.price`, priceValue)
+                            setFieldValue(
+                              `items.${params.idx}.total`,
+                              Number(priceValue) * Number(values.items[params.idx].quantity)
+                            )
+                          } else if (price === null) {
+                            setFieldValue(`items.${params.idx}.price`, 0)
+                            setFieldValue(`items.${params.idx}.total`, 0)
+                          } else {
+                            return
+                          }
+                        }
+                      })
+                    }}
+                  >
+                    {unit.value}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value={''}>No Units</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+        </Grid>
+      )
+    },
+    {
+      field: 'child_price',
+      headerName: 'List Prices',
+      align: 'center',
+      flex: 0.35,
+      minWidth: 150,
+      renderCell: params => (
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Price</InputLabel>
+            <Select
+              value={values.items[params.idx].child_price}
+              name={`items.${params.idx}.child_price`}
+              onChange={event => {
+                handleChange(event)
+              }}
+              id='demo-simple-select'
+              label='Price'
+              fullWidth
+            >
+              <MenuItem
+                onClick={() => {
+                  const parentPrice = values.parent_price
+                  const listPrice = values.items[params.idx].list_prices
+                  if (listPrice) {
+                    const childPrice = listPrice.find(price => price.line_id === parentPrice)
+                    setFieldValue(`items.${params.idx}.price`, childPrice?.price)
+                  }
+                }}
+                value={''}
+              >
+                Please Select
+              </MenuItem>
+              {rows[params.idx].list_prices && rows[params.idx].list_prices.length > 0
+                ? rows[params.idx].list_prices.map((price, idx) => (
+                    <MenuItem
+                      onClick={() => {
+                        setFieldValue(`items.${params.idx}.price`, price.price ? price.price : 0)
+                        setFieldValue(
+                          `items.${params.idx}.total`,
+                          (Number(values.items[params.idx].quantity) * Number(price.price)).toFixed(decimalFormate)
+                        )
+                      }}
+                      key={idx}
+                      value={price.line_id}
+                    >
+                      {price.name}
+                    </MenuItem>
+                  ))
+                : null}
+            </Select>
+          </FormControl>
+        </Grid>
+      )
+    },
+
     {
       field: 'price',
       headerName: 'Price',
       align: 'center',
       flex: 0.25,
-      minWidth: 120,
+      minWidth: 110,
       renderCell: params => (
         <CustomInputField
           name={`items.${params.idx}.price`}
@@ -360,7 +374,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
       headerName: 'Total',
       align: 'center',
       flex: 0.25,
-      minWidth: 120,
+      minWidth: 110,
       renderCell: params => (
         <CustomInputField
           name={`items.${params.idx}.total`}
@@ -524,7 +538,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                   ) : (
                     <TableRow>
                       <TableCell></TableCell>
-                      <TableCell colSpan={3}>
+                      <TableCell colSpan={6}>
                         <Typography variant='body2' align='center' sx={{ my: 10 }}>
                           No Rows
                         </Typography>

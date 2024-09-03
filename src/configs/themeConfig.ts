@@ -7,6 +7,8 @@
 
 // ** MUI Imports
 import { Direction } from '@mui/material'
+// ** Cookie
+import { getCookie } from 'cookies-next'
 
 // ** Types
 import {
@@ -45,6 +47,8 @@ type ThemeConfig = {
   afterVerticalNavMenuContentPosition: 'fixed' | 'static'
   beforeVerticalNavMenuContentPosition: 'fixed' | 'static'
   toastPosition: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+  dateFormat: 'MM-dd-yyyy' | 'dd-MM-yyyy' | 'yyyy-MM-dd' | 'MM/dd/yyyy' | 'dd/MM/yyyy' | 'yyyy/MM/dd' | string
+  searchFilter: 'month' | 'week' | 'day' | 'range' | string
 }
 
 const themeConfig: ThemeConfig = {
@@ -81,7 +85,11 @@ const themeConfig: ThemeConfig = {
   responsiveFontSizes: true /* true | false */,
   disableRipple: true /* true | false */,
   disableCustomizer: false /* true | false */,
-  toastPosition: 'top-right' /* top-left | top-center | top-right | bottom-left | bottom-center | bottom-right */
+  toastPosition: 'top-right' /* top-left | top-center | top-right | bottom-left | bottom-center | bottom-right */,
+  dateFormat: String(
+    getCookie('DateFormat') || 'MM-dd-yyyy'
+  ) /* MM-dd-yyyy | dd-MM-yyyy | yyyy-MM-dd | MM/dd/yyyy | dd/MM/yyyy | yyyy/MM/dd */,
+  searchFilter: String(getCookie('FilterInitial')) || 'month' /* month | week | day'range' */
 }
 
 export default themeConfig

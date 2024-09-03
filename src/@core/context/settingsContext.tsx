@@ -24,7 +24,9 @@ export type Settings = {
   layout?: 'vertical' | 'horizontal'
   lastLayout?: 'vertical' | 'horizontal'
   verticalNavToggleType: VerticalNavToggle
-  toastPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+  toastPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right',
+  dateFormat: 'MM-dd-yyyy' | 'dd-MM-yyyy' | 'yyyy-MM-dd' | 'MM/dd/yyyy' | 'dd/MM/yyyy' | 'yyyy/MM/dd' | string,
+  searchFilter: 'month' | 'week' | 'day' | 'range' | string
 }
 
 export type PageSpecificSettings = {
@@ -41,7 +43,9 @@ export type PageSpecificSettings = {
   layout?: 'vertical' | 'horizontal'
   lastLayout?: 'vertical' | 'horizontal'
   verticalNavToggleType?: VerticalNavToggle
-  toastPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+  toastPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right',
+  dateFormat?: 'MM-dd-yyyy' | 'dd-MM-yyyy' | 'yyyy-MM-dd' | 'MM/dd/yyyy' | 'dd/MM/yyyy' | 'yyyy/MM/dd' | string,
+  searchFilter: 'month' |'week' | 'day' | 'range'|string
 }
 export type SettingsContextValue = {
   settings: Settings
@@ -68,7 +72,9 @@ const initialSettings: Settings = {
   contentWidth: themeConfig.contentWidth,
   toastPosition: themeConfig.toastPosition,
   verticalNavToggleType: themeConfig.verticalNavToggleType,
-  appBar: themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden' ? 'fixed' : themeConfig.appBar
+  appBar: themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden' ? 'fixed' : themeConfig.appBar,
+  dateFormat: themeConfig.dateFormat,
+  searchFilter:themeConfig.searchFilter
 }
 
 const staticSettings = {

@@ -32,14 +32,15 @@ import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 import { Formik, FieldArray, Form } from 'formik'
 import * as Yup from 'yup'
 import AddExpenseVoucherTable from './AddExpenseVoucherTable'
-import { fetchCreateExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getCreateExpenseVoucher'
+import { fetchEditExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getEditExpenseVoucher'
 import { fetchExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getExpenseVoucher'
-import { createExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/postCreateExpenseVoucher'
+import { editExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/postEditExpenseVoucher'
+import { fetchCreateExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getCreateExpenseVoucher'
 
-const AddExpensePopUp = ({ open, handleClose }) => {
+const EditExpensePopUp = ({ open, handleClose, id }) => {
   const [data, setData] = useState([])
   const [openLoading, setOpenLoading] = useState(false)
-  const [initialValues] = useState({
+  const [initialValues, setInitialValues] = useState({
     date: new Date(),
     currency_id: '',
     currency_id_amount: '',
@@ -49,19 +50,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
     cost_center_id: '',
     main_note: '',
     main_amount: 0,
-    table: [
-      {
-        id: 0,
-        credit_id: '',
-        debit_id: '',
-        amount: 0,
-        note: '',
-        cost_center_id: '',
-        tax: 0,
-        tax_amount: 0,
-        net_amount: 0
-      }
-    ]
+    table: []
   })
 
   // ** Hooks
@@ -75,8 +64,8 @@ const AddExpensePopUp = ({ open, handleClose }) => {
   const decimalFormat = getCookie('DecimalFormat')
 
   // ** Get data from store
-  const storeData = useSelector(state => state.getCreateExpenseVoucher.data.value)
-  const createStatus = useSelector(state => state.postCreateExpenseVoucher)
+  const storeData = useSelector(state => state.getEditExpenseVoucher?.data?.value)
+  const createStatus = useSelector(state => state.postEditExpenseVoucher)
 
   // ** validate schema
   const validationSchema = Yup.object().shape({
@@ -87,13 +76,45 @@ const AddExpensePopUp = ({ open, handleClose }) => {
 
   useEffect(() => {
     if (storeData) {
-      setData(storeData)
+      setData(storeData.require)
     }
   }, [storeData])
 
   useEffect(() => {
+    dispatch(fetchEditExpenseVoucher({ id }))
     dispatch(fetchCreateExpenseVoucher())
-  }, [dispatch])
+  }, [dispatch, id])
+
+  // ** Set initial values
+  useEffect(() => {
+    if (storeData) {
+      setInitialValues(prev => ({
+        ...prev,
+        date: new Date(storeData.info[0]?.date),
+        currency_id: Number(storeData.info[0]?.currency_id),
+        currency_id_amount: storeData.info[0]?.exchange_price,
+        attachment: [],
+        main_credit_check: storeData.info[0]?.main_credit ? true : false,
+        main_credit: storeData.info[0]?.main_account_id,
+        cost_center_id: storeData.info[0]?.cost_center_id,
+        main_note: storeData.info[0]?.note_main,
+        main_amount: storeData.info[0]?.total_credit,
+        table: storeData.info[0]?.items.map(item => ({
+          id: item.id,
+          credit_id: item.credit_account_id,
+          date: item.date,
+          debit_id: item.debit_account_id,
+          amount: item.amount,
+          cost_center_id: item.cost_center_id,
+          note: item.text,
+          tax: item.tax_percentage,
+          tax_amount: item.tax_amount,
+          net_amount: (Number(item.amount) - Number(item.tax_amount)).toFixed(decimalFormat),
+          status: 'old'
+        }))
+      }))
+    }
+  }, [storeData, decimalFormat])
 
   // ** Function to handle form submit
   const handleSubmit = async (values, { setSubmitting }) => {
@@ -101,7 +122,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
 
     try {
       // ** Dispatch action to add expense
-      dispatch(createExpenseVoucher({ values })).then(() => {
+      dispatch(editExpenseVoucher({ values, id })).then(() => {
         dispatch(fetchExpenseVoucher())
       })
     } catch (error) {
@@ -123,7 +144,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
       {openLoading && (
         <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
       )}
-      <CustomHeader handleClose={handleClose} title={'Add Expense'} divider={false} />
+      <CustomHeader handleClose={handleClose} title={'Edit Expense'} divider={false} />
       <DialogContent sx={{ padding: '0 !important', textTransform: transText }}>
         <Card>
           <Formik
@@ -140,31 +161,34 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                       <Grid container item spacing={2}>
                         <Grid item xs={9}>
                           <FormControl fullWidth>
-                            <InputLabel>Main Credit</InputLabel>
+                            <InputLabel id='main_credit_label' htmlFor='main_credit' shrink>
+                              Main Credit
+                            </InputLabel>
+
                             <Select
                               name='main_credit'
-                              value={values.main_credit}
+                              id='main_credit'
+                              labelId='main_credit_label'
+                              value={values.main_credit || null}
                               label='Main Credit'
                               fullWidth
                               onChange={event => {
                                 handleChange(event)
                                 if (values.main_credit_check) {
-                                  values.table.map((item, index) => {
+                                  values.table.forEach((item, index) => {
                                     setFieldValue(`table[${index}].credit_id`, event.target.value)
                                   })
                                 }
                               }}
                               onBlur={handleBlur}
-                              error={touched.main_credit && errors.main_credit}
+                              error={touched.main_credit && Boolean(errors.main_credit)}
                             >
                               {data?.accounts_credit &&
-                                data?.accounts_credit.map((item, index) => {
-                                  return (
-                                    <MenuItem key={index} value={item.id}>
-                                      {item.value}
-                                    </MenuItem>
-                                  )
-                                })}
+                                data.accounts_credit.map((item, index) => (
+                                  <MenuItem key={index} value={item.id}>
+                                    {item.value}
+                                  </MenuItem>
+                                ))}
                             </Select>
                             {touched.main_credit && errors.main_credit && (
                               <FormHelperText error>{String(errors.main_credit)}</FormHelperText>
@@ -175,7 +199,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                         <Grid item xs={3}>
                           <FormControl fullWidth>
                             <FormControlLabel
-                              label='Main Credit'
+                              label='Main Credit check'
                               sx={{
                                 '& .MuiFormControlLabel-label': {
                                   fontSize: '0.875rem',
@@ -366,7 +390,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                 </Box>
                 <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
                   <Button type='submit' variant='contained' color='primary'>
-                    Add
+                    Update
                   </Button>
                 </Box>
               </Form>
@@ -377,4 +401,4 @@ const AddExpensePopUp = ({ open, handleClose }) => {
     </Dialog>
   )
 }
-export default AddExpensePopUp
+export default EditExpensePopUp

@@ -29,6 +29,8 @@ import ViewOpeningStock from 'src/@core/components/products/addOpeningStock/view
 import PageFilter from 'src/@core/Global/PageFilter'
 import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
 import ListLoading from 'src/@core/Global/ListLoading'
+// ** Hook Import
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 const RowOptions = ({ id }) => {
   // ** Hooks
@@ -204,12 +206,14 @@ const AddOpeningStock = () => {
   const [filteredData, setFilteredData] = useState([])
   const [openAdd, setOpenAdd] = useState(false)
   const [triggerLoadingList, setTriggerLoadingList] = useState(true)
-  const title = 'Add Opening Stock'
+  const title = 'Opening Stock'
 
   // ** Hooks
   const dispatch = useDispatch()
   const theme = useTheme()
   const direction = theme.direction
+  const { settings } = useSettings()
+  const { searchFilter } = settings
 
   const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
 
@@ -218,10 +222,10 @@ const AddOpeningStock = () => {
   // ** for BTN
   const [openDateRange, setOpenDateRange] = useState(false)
   const [filterDate, setFilterDate] = useState({
-    month: FilterInitial === 'month' ? new Date() : null,
-    day: FilterInitial === 'day' ? new Date() : null,
-    week: FilterInitial === 'week' ? new Date() : null,
-    active: FilterInitial || 'month',
+    month: searchFilter === 'month' ? new Date() : FilterInitial === 'month' ? new Date() : null,
+    day: searchFilter === 'day' ? new Date() : FilterInitial === 'day' ? new Date() : null,
+    week: searchFilter === 'week' ? new Date() : FilterInitial === 'week' ? new Date() : null,
+    active: searchFilter ? searchFilter : FilterInitial,
     startDate: null,
     endDate: null
   })

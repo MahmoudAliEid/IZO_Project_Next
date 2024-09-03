@@ -26,7 +26,7 @@ const CustomHeader = ({ title, handleClose, divider }) => {
         </Typography>
 
         <Button
-          size='medium'
+          size='large'
           aria-label='close'
           onClick={handleClose}
           // change variant to 'outlined' on hover and 'contained' if else to see the difference on hover
@@ -41,18 +41,19 @@ const CustomHeader = ({ title, handleClose, divider }) => {
           sx={{
             // make the button on right top corner
             position: 'absolute',
-            top: 0,
-            right: 0,
-            borderRadius: 0,
-            borderToP: 'none !important',
-            borderRight: 'none !important',
+            top: 3,
+            right: 3,
+            MozBorderRadiusTopright: 5,
+            fontSize: '35px',
+            border: '1px solid',
             padding: '0.5rem',
             '&:hover': {
-              backgroundColor: 'error'
+              backgroundColor: 'error',
+              border: 'none !important'
             }
           }}
         >
-          <Icon icon='bx:x' />
+          <Icon sx={{ fontSize: '35px !important', width: '50px' }} icon='bx:x' />
         </Button>
       </DialogTitle>
       {divider === false ? null : <Divider />}
