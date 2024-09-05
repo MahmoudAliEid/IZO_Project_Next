@@ -27,7 +27,6 @@ import {
   Button,
   InputLabel,
   Autocomplete,
-  Dialog,
   DialogContent
 } from '@mui/material'
 
@@ -42,6 +41,7 @@ import { getCookie } from 'cookies-next'
 import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 import Attachment from 'src/pages/apps/vouchers/receipt-voucher/Attachment'
 import ChequesAddTable from 'src/pages/apps/Cheques/add-cheque-in/ChequesAddTable'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 // ** Custom Input Component
 const CustomInput = forwardRef(({ ...props }, ref) => {
@@ -215,14 +215,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%', textTransform: transText }}
-      >
+      <CustomDialog open={open} toggle={toggle}>
         {chequeData ? (
           <Fragment>
             <CustomHeader
@@ -1341,7 +1334,7 @@ const ChequeEdit = ({ open, toggle, itemId, type }) => {
             </Box>
           </Grid>
         )}
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

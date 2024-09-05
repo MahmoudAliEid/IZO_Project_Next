@@ -25,8 +25,8 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
 
   return (
     <DropzoneWrapper>
-      <Grid container spacing={6} className='match-height'>
-        <Grid item xs={12}>
+      <Grid container spacing={5} className='match-height'>
+        <Grid item xs={6}>
           <Card>
             <CardHeader title='Product Image' sx={{ color: `${theme.palette.primary.main} !important` }} />
             <CardContent>
@@ -42,7 +42,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
           </Card>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Card>
             <CardHeader title='Product Multiple Images' />
 
@@ -60,7 +60,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
           </Card>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Card>
             <CardHeader title='Product Brochure' />
             <CardContent>
@@ -75,7 +75,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Card>
             <CardHeader title='Product Video' />
             <CardContent>

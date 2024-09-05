@@ -1,18 +1,14 @@
 import { Fragment } from 'react'
-// import { Fragment, useEffect, useState } from 'react'
-// import { useDispatch, useSelector } from 'react-redux'
-// import { fetchViewVoucher } from 'src/store/apps/vouchers/getViewVoucher'
-import Dialog from '@mui/material/Dialog'
+
 import DialogContent from '@mui/material/DialogContent'
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import CustomTableView from '../products/listProduct/productView/CustomTableView'
 import { Grid, Typography, Chip, Divider, Button } from '@mui/material'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
 import { Box } from '@mui/system'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const VouchersTransactionPopUp = ({ open, toggle }) => {
-  // const [voucherData, setVoucherData] = useState(null) // Initially setting data as null
-
   const dataNames = [
     { headerName: 'First Number', field: 'first_number' },
     { headerName: 'Previous Number', field: 'previous_number' },
@@ -70,14 +66,7 @@ const VouchersTransactionPopUp = ({ open, toggle }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
-      >
+      <CustomDialog open={open} toggle={handleClose}>
         {dataDammy ? (
           <Fragment>
             <CustomHeader title={`Sales Details (Invoice No. : DXB-0121)`} handleClose={handleClose} divider={false} />
@@ -231,7 +220,7 @@ const VouchersTransactionPopUp = ({ open, toggle }) => {
             </Box>
           </Grid>
         )}
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

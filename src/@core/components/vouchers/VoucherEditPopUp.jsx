@@ -3,7 +3,7 @@ import { Formik, Form, useField, FieldArray } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchEditRVoucher } from 'src/store/apps/vouchers/getEditReceiptVoucherSlice'
 import { editReceipt } from 'src/store/apps/vouchers/postEditReceiptSlice'
-import Dialog from '@mui/material/Dialog'
+
 import DialogContent from '@mui/material/DialogContent'
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -34,6 +34,7 @@ import { fetchVouchers } from 'src/store/apps/vouchers/getVouchersSlice'
 
 // ** next cookies
 import { getCookie } from 'cookies-next'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 // const LinkStyled = styled(Box)(({ theme }) => ({
 //   fontWeight: 400,
@@ -208,14 +209,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%', textTransform: transText }}
-      >
+      <CustomDialog open={open} toggle={handleClose}>
         {voucherData ? (
           <Fragment>
             <CustomHeader
@@ -1183,7 +1177,7 @@ const VoucherEditPopUp = ({ open, toggle, itemId, type }) => {
             </Box>
           </Grid>
         )}
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

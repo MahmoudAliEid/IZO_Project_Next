@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Dialog from '@mui/material/Dialog'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 import DialogContent from '@mui/material/DialogContent'
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import CustomTableView from '../products/listProduct/productView/CustomTableView'
@@ -82,14 +82,7 @@ const ViewCheque = ({ open, toggle, itemId }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
-      >
+      <CustomDialog open={open} toggle={toggle}>
         {chequeData ? (
           <Fragment>
             <CustomHeader title={` Cheque ( Ref No: ${chequeData.ref_no})`} handleClose={handleClose} divider={false} />
@@ -230,7 +223,7 @@ const ViewCheque = ({ open, toggle, itemId }) => {
             </Box>
           </Grid>
         )}
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

@@ -56,8 +56,8 @@ const CustomSpanningTable = ({ columns, rows }) => {
             </TableRow>
           ))}
           <TableRow sx={{ textTransform: transText }}>
-            <TableCell rowSpan={3} />
-            <TableCell colSpan={2}>Total Quantity</TableCell>
+            <TableCell rowSpan={5} />
+            <TableCell colSpan={4}>Total Quantity</TableCell>
             <TableCell align='right'>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(totalQuantity).toFixed(decimalFormat)} ${currency_code} `
@@ -66,7 +66,7 @@ const CustomSpanningTable = ({ columns, rows }) => {
           </TableRow>
 
           <TableRow sx={{ textTransform: transText }}>
-            <TableCell colSpan={2}>Total Amount</TableCell>
+            <TableCell colSpan={4}>Total Amount</TableCell>
             <TableCell align='right'>
               {CurrencySymbolPlacement === 'after'
                 ? `${Number(totalAmount).toFixed(decimalFormat)} ${currency_code} `

@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchViewEntry } from 'src/store/apps/vouchers/Actions/getViewEntry'
-import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import CustomTableView from '../products/listProduct/productView/CustomTableView'
@@ -11,6 +10,7 @@ import { Grid, Typography, Chip, Divider, Box } from '@mui/material'
 // ** cookies
 import { getCookie } from 'cookies-next'
 import { fetchChequeEntry } from 'src/store/apps/Cheques/Actions/getEntryChequesSlice'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 // const LinkStyled = styled(Box)(({ theme }) => ({
 //   fontWeight: 400,
@@ -76,14 +76,7 @@ const EntryPopUp = ({ open, toggle, itemId, type, name }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
-      >
+      <CustomDialog open={open} toggle={handleClose}>
         <Fragment>
           <CustomHeader
             title={`Entry ( Ref No: ${entryData?.source_reference ? entryData?.source_reference : ''})`}
@@ -230,7 +223,7 @@ const EntryPopUp = ({ open, toggle, itemId, type, name }) => {
             </Grid>
           </DialogContent>
         </Fragment>
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

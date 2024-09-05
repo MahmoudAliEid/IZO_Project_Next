@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchViewVoucher } from 'src/store/apps/vouchers/getViewVoucher'
-import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import CustomTableView from '../products/listProduct/productView/CustomTableView'
@@ -10,6 +9,7 @@ import ProgressCustomization from 'src/views/components/progress/ProgressCircula
 import { Box } from '@mui/system'
 import { styled, useTheme } from '@mui/material/styles'
 import { getCookie } from 'cookies-next'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const LinkStyled = styled(Box)(({ theme }) => ({
   fontWeight: 400,
@@ -75,14 +75,7 @@ const VoucherViewPopUp = ({ open, toggle, itemId }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
-      >
+      <CustomDialog open={open} toggle={handleClose}>
         {voucherData ? (
           <Fragment>
             <CustomHeader
@@ -220,7 +213,7 @@ const VoucherViewPopUp = ({ open, toggle, itemId }) => {
             </Box>
           </Grid>
         )}
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

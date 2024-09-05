@@ -4,7 +4,6 @@ import { Fragment } from 'react'
 
 // ** MUI Imports
 
-import Dialog from '@mui/material/Dialog'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -14,6 +13,7 @@ import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import StepperView from './StepperView'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 
 // import StepperStoreSuppliers from 'src/views/apps/contacts/suppliers/StepperStoreSuppliers'
@@ -48,7 +48,7 @@ const ViewPopUp = ({ open, toggle, isEdit, itemId, contact, contactData }: any) 
 
   return (
     <Fragment>
-      <Dialog open={open} maxWidth='lg' fullWidth={true} onClose={handleClose} aria-labelledby='max-width-dialog-title'>
+      <CustomDialog open={open}   toggle={handleClose} >
         <DialogTitle id='customized-dialog-title' sx={{ position: 'relative' }}>
           <Typography
             variant='h6'
@@ -70,7 +70,7 @@ const ViewPopUp = ({ open, toggle, isEdit, itemId, contact, contactData }: any) 
         >
           <StepperView ContactData={contactData} />
         </DialogContent>
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

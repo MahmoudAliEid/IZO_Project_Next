@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 
 // ** MUI
-import { Dialog, DialogActions, DialogContent, Box, Chip } from '@mui/material'
+import { DialogContent, Box, Chip, Typography } from '@mui/material'
 // ** Custom Components
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
+
+// ** Cookies
+import { getCookie } from 'cookies-next'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,10 +15,15 @@ import { viewOpeningStock } from 'src/store/apps/products/addOpeningStock/getVie
 
 // ** Data Grid
 import CustomSpanningTable from './CustomSpanningTable'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const ViewOpeningStock = ({ open, toggle, id }) => {
   // ** State
   const [data, setData] = useState([])
+
+  const decimalFormat = getCookie('DecimalFormat')
+  const currency_code = getCookie('currency_code')
+  const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
 
   // ** Hooks
   const dispatch = useDispatch()
@@ -39,7 +47,7 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
+    <CustomDialog open={open} toggle={toggle}>
       <CustomHeader
         title={`View Opening Stock ( ${data.ref_no ? data.ref_no : ''} )`}
         handleClose={handleClose}
@@ -63,6 +71,30 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
               columns={[
                 { field: 'productName', headerName: 'Product Name', flex: 1 },
                 { field: 'quantity', headerName: 'Quantity', flex: 1 },
+                {
+                  field: 'price',
+                  headerName: 'Unit Price',
+                  flex: 1,
+                  renderCell: params => (
+                    <Typography variant='body2' color='textSecondary'>
+                      {CurrencySymbolPlacement === 'after'
+                        ? `${Number(params.price).toFixed(decimalFormat)} ${currency_code} `
+                        : `${currency_code} ${Number(params.price).toFixed(decimalFormat)} `}
+                    </Typography>
+                  )
+                },
+                {
+                  field: '',
+                  headerName: 'Sub Total',
+                  flex: 1,
+                  renderCell: params => (
+                    <Typography variant='body2' color='textSecondary'>
+                      {CurrencySymbolPlacement === 'after'
+                        ? `${Number(params.quantity * params.price).toFixed(decimalFormat)} ${currency_code} `
+                        : `${currency_code} ${Number(params.quantity * params.price).toFixed(decimalFormat)} `}
+                    </Typography>
+                  )
+                },
                 { field: 'storeName', headerName: 'Warehouse', flex: 1 },
                 { field: 'date', headerName: 'Date', flex: 1 }
               ]}
@@ -82,8 +114,7 @@ const ViewOpeningStock = ({ open, toggle, id }) => {
           </Box>
         )}
       </DialogContent>
-      <DialogActions></DialogActions>
-    </Dialog>
+    </CustomDialog>
   )
 }
 

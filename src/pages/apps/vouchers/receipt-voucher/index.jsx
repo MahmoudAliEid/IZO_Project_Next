@@ -1,545 +1,703 @@
-import { forwardRef, useState, useEffect } from 'react'
-import { Formik, Form, useField, FieldArray } from 'formik'
-import * as Yup from 'yup'
+// ** React Imports
+import { useState, useEffect, Fragment } from 'react'
+import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
+import QuickSearchToolbar from 'src/views/table/data-grid/QuickSearchToolbar'
 
-import {
-  Grid,
-  Box,
-  CardHeader,
-  FormControl,
-  Select,
-  MenuItem,
-  TextField,
-  Card,
-  Divider,
-  Button,
-  InputLabel,
-  Autocomplete
-} from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-// ** Custom Component
-import DatePicker from 'react-datepicker'
-import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
-import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
-import VoucherAddTable from './VoucherAddTable'
-import Attachment from './Attachment'
-// ** Redux
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchCreateRVoucher } from 'src/store/apps/vouchers/getCreateReceiptVoucher'
-import { fetchBills } from 'src/store/apps/vouchers/Actions/getBillsSlice'
-import { createReceipt } from 'src/store/apps/vouchers/postCreateReceiptSlice'
-
-// ** Cookies
+// ** Next Imports
 import { getCookie } from 'cookies-next'
+
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import Menu from '@mui/material/Menu'
+import Grid from '@mui/material/Grid'
+import Divider from '@mui/material/Divider'
+// import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import MenuItem from '@mui/material/MenuItem'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import CardHeader from '@mui/material/CardHeader'
+import { useTheme, styled } from '@mui/material/styles'
+
+// ** Third Party Components
+import { DataGrid } from '@mui/x-data-grid'
+import axios from 'axios'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
+// ** Store Imports
+import { useDispatch, useSelector } from 'react-redux'
+
+// ** Custom Components Imports
+import CustomChip from 'src/@core/components/mui/chip'
+import CustomAvatar from 'src/@core/components/mui/avatar'
+
+// ** Utils Import
+import { getInitials } from 'src/@core/utils/get-initials'
+
+// ** Custom Table Components Imports
+import { deleteVoucher } from 'src/store/apps/vouchers/postDeleteVoucherSlice'
+import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
+// import CustomDateRange from './CustomDateRange'
+import VoucherViewPopUp from 'src/@core/components/vouchers/VoucherViewPopUp'
+
+// ** Styled Component
 import { fetchVouchers } from 'src/store/apps/vouchers/getVouchersSlice'
+import VouchersTransactionPopUp from 'src/@core/components/vouchers/VouchersTransactionPopUp'
+import { Button } from '@mui/material'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import VoucherEditPopUp from 'src/@core/components/vouchers/VoucherEditPopUp'
+import VoucherAttachmentPopUp from 'src/@core/components/vouchers/VoucherAttachmentPopUp'
+import EntryPopUp from 'src/@core/components/vouchers/EntryPopUp'
+import PageFilter from 'src/@core/Global/PageFilter'
+import AddReceiptVoucherPopUp from './AddReceiptVoucherPopUp'
+import FilterRangePage from 'src/@core/Global/FilterRangePopUp'
 
-const CustomInput = forwardRef(({ ...props }, ref) => {
-  const { label, readOnly } = props
-  const [field, meta] = useField(props)
+const LinkStyled = styled(Box)(({ theme }) => ({
+  fontWeight: 400,
+  fontSize: '1rem',
+  cursor: 'pointer',
+  textDecoration: 'none',
+  color: theme.palette.text.secondary,
+  '&:hover': {
+    color: theme.palette.primary.main
+  }
+}))
 
-  return <TextField inputRef={ref} {...field} {...meta} {...props} label={label || ''} readOnly={readOnly} />
-})
+// ** renders client column
+const renderClient = row => {
+  if (row.avatar?.length) {
+    return <CustomAvatar src={row.avatar} sx={{ mr: 3, width: 32, height: 32 }} />
+  } else {
+    return (
+      <CustomAvatar
+        skin='light'
+        color={row.avatarColor || 'primary'}
+        sx={{ mr: 3, width: 32, height: 32, fontSize: '.875rem' }}
+      >
+        {getInitials(row.contact_id ? String(row.contact_id) : 'John Doe')}
+      </CustomAvatar>
+    )
+  }
+}
 
-const ReceiptVoucher = () => {
-  const [changeCurrency] = useState(0)
-  const [auth] = useState(true)
-  const transText = getCookie('fontStyle')
-
-  const [initialValues] = useState({
-    currencies: '', //currency_id
-    table_total: 0,
-    type: 1,
-    document_expense: [],
-    currency_value: '',
-    date: '',
-    account: '',
-    contact: [],
-    amount: '',
-    payment_id: [],
-    amount_currency: '', //amount_currency
-    bill_id: [],
-    bill_amount: [],
-    attachment: [],
-    old_bill_id: [],
-    old_bill_amount: [],
-    payment: [],
-    note: '',
-    table: [
-      {
-        id: 0,
-        check: false,
-        date: '12/3/2021',
-        reference_no: '123',
-        supplier: 'supplier',
-        purchase_status: 'purchase_status',
-        payment_status: 'payment_status',
-        warehouse_name: 'warehouse_name',
-        grand_total: 'grand_total',
-        payment_due: 'payment_due',
-        previous_payment: '',
-        payment: '',
-        added_by: 'added_by',
-        status: 'old/new'
-      }
-    ]
-  })
-
-  const [openLoading, setOpenLoading] = useState(false)
-  const [data, setData] = useState({
-    currency: [],
-    account: [],
-    contact: []
-  })
-
-  const [accountText, setAccountText] = useState('')
-  const [contactText, setContactText] = useState('')
-  const theme = useTheme()
-  const { direction } = theme
-  const [bills, setBills] = useState([])
-  const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
-  const decimalFormat = getCookie('DecimalFormat')
-
+const RowOptions = ({ id, type }) => {
+  // ** Hooks
   const dispatch = useDispatch()
-  const storeData = useSelector(state => state.getCreateReceiptVoucher.data?.value)
-  // **  get  Bills first time
-  const storeBills = useSelector(state => state.getBills.data?.value)
-  const createStatus = useSelector(state => state.postCreateReceipt)
 
-  const validationSchema = Yup.object().shape({
-    date: Yup.string().required('Required'),
-    account: Yup.string().required('Required'),
-    contact: Yup.string().required('Required'),
-    amount: Yup.string().required('Required'),
-    amount_currency: Yup.string().required('Required')
-  })
+  // ** State
 
-  // ** Functions
-  useEffect(() => {
-    dispatch(fetchCreateRVoucher())
-  }, [dispatch])
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
+  const [openView, setOpenView] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
+  const [openViewAttachments, setOpenViewAttachments] = useState(false)
+  const [openEntry, setOpenEntry] = useState(false)
 
-  useEffect(() => {
-    if (storeData) {
-      setData(storeData)
+  const rowOptionsOpen = anchorEl
+
+  // ** Cookies
+  const transText = getCookie('fontStyle')
+  const token = getCookie('token')
+  const url = getCookie('apiUrl')
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleDelete = () => {
+    if (!id || !token) {
+      console.log('Invalid id or token')
+      handleRowOptionsClose()
+
+      return
     }
-  }, [storeData])
 
-  useEffect(() => {
-    if (storeBills) {
-      setBills(storeBills)
-    }
-  }, [storeBills])
-
-  const handleSubmitForm = values => {
-    dispatch(createReceipt({ values }))
+    dispatch(deleteVoucher({ id }))
       .then(() => {
-        setOpenLoading(true)
+        dispatch(fetchVouchers(token, url))
+
+        handleRowOptionsClose()
       })
-      .then(() => {
-        dispatch(fetchVouchers())
+      .catch(error => {
+        console.error('Error deleting user:', error)
+
+        // Handle the error as needed
+        handleRowOptionsClose()
       })
   }
 
-  const fetchDataOnSearchSelect = async id => {
-    dispatch(fetchBills({ id, type: 'receipt' }))
+  const handleEdit = () => {
+    setOpenEdit(!openEdit)
+  }
+
+  const handlePrint = id => {
+    // handle export to download file
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    axios({
+      url: `${url}/app/react/voucher/print/${id}`,
+      method: 'GET',
+      headers: headers
+    })
+      .then(response => {
+        if (response.data && response.data.value) {
+          axios({
+            url: response.data.value,
+            method: 'GET',
+            responseType: 'blob' // important
+          })
+            .then(response => {
+              const url = window.URL.createObjectURL(new Blob([response.data]))
+              const link = document.createElement('a')
+              link.href = url
+              link.setAttribute('download', 'voucher.pdf') //or any other extension
+              document.body.appendChild(link)
+              link.click()
+            })
+            .catch(error => {
+              console.error('Error in second axios request:', error)
+            })
+        } else {
+          console.error('Response data or info is undefined:', response)
+        }
+      })
+      .catch(error => {
+        console.error('Error in first axios request:', error)
+      })
   }
 
   return (
-    <Card>
-      {openLoading && (
-        <LoadingAnimation
-          open={openLoading}
-          onClose={() => setOpenLoading(false)}
-          statusType={createStatus}
-          redirectURL={'/apps/vouchers/list'}
+    <Fragment>
+      <IconButton size='small' onClick={handleRowOptionsClick}>
+        <Icon icon='bx:dots-vertical-rounded' />
+      </IconButton>
+      <Menu
+        keepMounted
+        anchorEl={anchorEl}
+        open={rowOptionsOpen}
+        onClose={handleRowOptionsClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        sx={{ textTransform: transText }}
+        PaperProps={{ style: { minWidth: '8rem' } }}
+      >
+        <MenuItem
+          sx={{ '& svg': { mr: 2 } }}
+          onClick={() => {
+            setOpenView(true)
+            handleRowOptionsClose()
+          }}
+        >
+          <Icon icon='bx:show' fontSize={20} />
+          View
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleEdit()
+            setOpenEdit(true)
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
+          <Icon icon='bx:pencil' fontSize={20} />
+          Edit
+        </MenuItem>
+
+        {/* print */}
+        <MenuItem
+          onClick={() => {
+            handleRowOptionsClose()
+            handlePrint(id)
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
+          <Icon icon='mingcute:print-line' fontSize={20} />
+          Print
+        </MenuItem>
+
+        {/* attachments */}
+        <MenuItem
+          onClick={() => {
+            handleRowOptionsClose()
+            setOpenViewAttachments(true)
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
+          <Icon icon='bx:paperclip' fontSize={20} />
+          Attachments
+        </MenuItem>
+
+        {/* entry */}
+        <MenuItem
+          onClick={() => {
+            handleRowOptionsClose()
+            setOpenEntry(true)
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
+          <Icon icon={'bx:file'} fontSize={20} />
+          Entry
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            setOpenDeleteAlert(true)
+            handleRowOptionsClose()
+          }}
+          sx={{ '& svg': { mr: 2 } }}
+        >
+          <Icon icon='bx:trash-alt' fontSize={20} />
+          Delete
+        </MenuItem>
+      </Menu>
+
+      {openDeleteAlert && (
+        <DeleteGlobalAlert
+          open={openDeleteAlert}
+          close={() => setOpenDeleteAlert(!openDeleteAlert)}
+          mainHandleDelete={handleDelete}
+          name={type.charAt(0).toUpperCase() + type.slice(1)}
         />
       )}
-      <Box sx={{ mb: 3, textTransform: transText }}>
-        <CardHeader title='Receipt Voucher' />
-      </Box>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmitForm}
-        enableReinitialize={true}
-      >
-        {({ values, errors, touched, handleBlur, handleChange, setFieldValue }) => (
-          <Form>
-            <Box sx={{ p: 5 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} lg={auth ? 6 : 12} md={4} sm={12}>
-                  <FormControl fullWidth>
-                    <TextField
-                      label='Amount'
-                      name='amount'
-                      value={values.amount}
-                      sx={{
-                        textTransform: transText
-                      }}
-                      onChange={event => {
-                        handleChange(event)
-                        setFieldValue(
-                          'table',
-                          bills.map(row => ({
-                            id: row.bill_id,
-                            check: false,
-                            date: row.date,
-                            reference_no: row.reference_no,
-                            supplier: row.contact_name || 'no supplier',
-                            purchase_status: row.invoice_status || 'no purchase status',
-                            payment_status: row.pay_status || 'no payment status',
-                            warehouse_name: row.store,
-                            grand_total: row.final_total,
-                            payment_due: row.pay_due,
-                            add_by: row.add_by || 'no add by',
-                            payment: row.total_payment,
-                            previous_payment: row.previous_payment
-                          }))
-                        )
+      {openView && <VoucherViewPopUp open={openView} toggle={setOpenView} itemId={id} />}
+      {openViewAttachments && (
+        <VoucherAttachmentPopUp open={openViewAttachments} toggle={setOpenViewAttachments} itemId={id} />
+      )}
 
-                        setFieldValue('bill_id', [])
-                        setFieldValue('bill_amount', [])
+      {openEdit && (
+        <VoucherEditPopUp
+          open={openEdit}
+          toggle={handleEdit}
+          itemId={id}
+          type={type === 'Receipt Voucher' ? 'receipt' : 'payment'}
+        />
+      )}
 
-                        if (values.currency_value !== '' && values.currency_value !== 0) {
-                          setFieldValue(
-                            'amount_currency',
-                            Number(event.target.value / values.currency_value).toFixed(decimalFormat)
-                          )
-                          setFieldValue('table_total', Number(event.target.value).toFixed(decimalFormat))
-                        } else {
-                          setFieldValue('amount_currency', Number(event.target.value).toFixed(decimalFormat))
-                          setFieldValue('table_total', Number(event.target.value).toFixed(decimalFormat))
-                        }
-                      }}
-                      onBlur={handleBlur}
-                      error={Boolean(touched.amount && errors.amount)}
-                    />
-                  </FormControl>
-                </Grid>
-
-                {auth === true && (
-                  <>
-                    <Grid item xs={12} lg={6} md={4} sm={12}>
-                      <FormControl fullWidth>
-                        <TextField
-                          label='Amount in Currency'
-                          name='amount_currency'
-                          sx={{
-                            textTransform: transText
-                          }}
-                          value={values.amount_currency}
-                          onChange={event => {
-                            const amount_currency = Number(event.target.value)
-                            setFieldValue(
-                              'table',
-                              bills.map(row => ({
-                                id: row.bill_id,
-                                check: false,
-                                date: row.date,
-                                reference_no: row.reference_no,
-                                supplier: row.contact_name || 'no supplier',
-                                purchase_status: row.invoice_status || 'no purchase status',
-                                payment_status: row.pay_status || 'no payment status',
-                                warehouse_name: row.store,
-                                grand_total: row.final_total,
-                                payment_due: row.pay_due,
-                                add_by: row.add_by || 'no add by',
-                                payment: row.total_payment,
-                                previous_payment: row.previous_payment
-                              }))
-                            )
-                            // setFieldValue('contact', [])
-                            // setContactText('')
-                            setFieldValue('bill_id', [])
-                            setFieldValue('bill_amount', [])
-
-                            handleChange(event)
-                            if (values.currency_value !== '' && values.currency_value !== 0) {
-                              setFieldValue(
-                                'amount',
-                                Number(amount_currency * values.currency_value).toFixed(decimalFormat)
-                              )
-                              setFieldValue(
-                                'table_total',
-                                Number(amount_currency * values.currency_value).toFixed(decimalFormat)
-                              )
-                            } else {
-                              setFieldValue('amount', Number(amount_currency).toFixed(decimalFormat))
-                              setFieldValue('table_total', Number(amount_currency).toFixed(decimalFormat))
-                            }
-                          }}
-                          onBlur={handleBlur}
-                          error={Boolean(touched.amount_currency && errors.amount_currency)}
-                        />
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} lg={6} md={4} sm={12}>
-                      <FormControl fullWidth>
-                        <InputLabel
-                          sx={{
-                            textTransform: transText
-                          }}
-                          id='demo-simple-select-label'
-                        >
-                          Currencies
-                        </InputLabel>
-                        <Select
-                          value={values.currencies}
-                          name='currencies'
-                          sx={{
-                            textTransform: transText
-                          }}
-                          label='Currencies'
-                          onChange={event => {
-                            handleChange(event)
-                          }}
-                          onBlur={handleBlur}
-                          error={Boolean(touched.currencies && errors.currencies)}
-                        >
-                          <MenuItem value='' disabled>
-                            Select Currency
-                          </MenuItem>
-                          {data.currency.length > 0 &&
-                            data.currency.map((item, index) => (
-                              <MenuItem
-                                key={index}
-                                value={item.id}
-                                onClick={() => {
-                                  setFieldValue('currency_value', Number(item.amount).toFixed(decimalFormat))
-                                  setFieldValue(
-                                    'amount_currency',
-                                    Number(values.amount / item.amount).toFixed(decimalFormat)
-                                  )
-                                }}
-                                sx={{
-                                  textTransform: transText
-                                }}
-                              >
-                                {item.value}
-                              </MenuItem>
-                            ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={12} lg={6} md={4} sm={12}>
-                      <FormControl fullWidth>
-                        <TextField
-                          type='text'
-                          label='Currency Value'
-                          name='currency_value'
-                          sx={{
-                            textTransform: transText
-                          }}
-                          value={values.currency_value}
-                          onChange={event => {
-                            const currency_value = Number(event.target.value)
-                            handleChange(event)
-                            if (changeCurrency === 0) {
-                              // make change in amount left
-                              if (values.amount_currency !== '' && values.amount_currency !== 0) {
-                                setFieldValue(
-                                  'amount',
-                                  Number(currency_value * values.amount_currency).toFixed(decimalFormat)
-                                )
-                                setFieldValue(
-                                  'table_total',
-                                  Number(currency_value * values.amount_currency).toFixed(decimalFormat)
-                                )
-                              } else {
-                                setFieldValue('amount', Number(currency_value).toFixed(decimalFormat))
-                                setFieldValue('table_total', Number(currency_value).toFixed(decimalFormat))
-                              }
-                            } else {
-                              if (values.amount !== '' && values.amount !== 0 && currency_value !== 0) {
-                                setFieldValue(
-                                  'amount_currency',
-                                  Number(values.amount / currency_value).toFixed(decimalFormat)
-                                )
-                              } else {
-                                setFieldValue('amount_currency', Number(values.amount).toFixed(decimalFormat))
-                              }
-                            }
-                          }}
-                          onBlur={handleBlur}
-                          error={Boolean(touched.currency_value && errors.currency_value)}
-                        />
-                      </FormControl>
-                    </Grid>
-                  </>
-                )}
-              </Grid>
-            </Box>
-            <Divider />
-            <Box sx={{ p: 5 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} lg={12} md={4} sm={12}>
-                  <FormControl fullWidth>
-                    <DatePickerWrapper>
-                      <DatePicker
-                        name='date'
-                        selected={values.date}
-                        popperPlacement={popperPlacement}
-                        monthsShown={true}
-                        showMonthDropdown
-                        showYearDropdown
-                        onChange={date => {
-                          setFieldValue('date', date)
-                        }}
-                        id='basic-input'
-                        dateFormat='yyyy/MM/dd'
-                        customInput={
-                          <CustomInput
-                            fullWidth
-                            label='Date '
-                            readOnly={false}
-                            value={values.date}
-                            sx={{
-                              textTransform: transText
-                            }}
-                            name='date'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={Boolean(touched.date && errors.date)}
-                          />
-                        }
-                      />
-                    </DatePickerWrapper>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} lg={6} md={4} sm={12}>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      disablePortal
-                      selectOnFocus
-                      fullWidth
-                      id='combo-box-demo'
-                      sx={{
-                        textTransform: transText
-                      }}
-                      name='account'
-                      value={accountText}
-                      onChange={(event, newValue) => {
-                        setAccountText(newValue)
-                        setFieldValue('account', newValue?.id || '')
-                      }}
-                      options={data.accounts || []}
-                      getOptionLabel={option => option.value || ''}
-                      renderInput={params => <TextField fullWidth {...params} label='Account' />}
-                    />
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12} lg={6} md={4} sm={12}>
-                  <FormControl fullWidth>
-                    <Autocomplete
-                      sx={{
-                        textTransform: transText
-                      }}
-                      disablePortal
-                      id='combo-box-demo'
-                      selectOnFocus
-                      fullWidth
-                      name='contact'
-                      value={contactText}
-                      onChange={(event, newValue) => {
-                        setContactText(newValue)
-                        setFieldValue('contact', newValue?.id || '')
-                        fetchDataOnSearchSelect(newValue?.id || '')
-                        setFieldValue(`table`, [])
-                      }}
-                      options={data.contact || []}
-                      getOptionLabel={option => option.value || ''}
-                      renderInput={params => <TextField fullWidth {...params} label='Contact' />}
-                    />
-                  </FormControl>
-                </Grid>
-
-                {/* <Grid item xs={12} lg={6} md={4} sm={12}>
-                  <FormControl fullWidth>
-                    <InputLabel id='demo-simple-select-label'>Contact</InputLabel>
-                    <Select
-                      label='Contact'
-                      name='contact'
-                      value={values.contact}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={Boolean(touched.contact && errors.contact)}
-                    >
-                      {data.contact.length > 0 &&
-                        data.contact.map((item, index) => (
-                          <MenuItem key={index} value={item.id}>
-                            {item.value}
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </FormControl>
-                </Grid> */}
-                <Divider />
-                <Grid item xs={12} lg={12} md={4} sm={12}>
-                  <FormControl fullWidth>
-                    <TextField
-                      sx={{
-                        textTransform: transText
-                      }}
-                      label='Note'
-                      multiline
-                      rows={4}
-                      name='note'
-                      value={values.note}
-                      variant='filled'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={Boolean(touched.note && errors.note)}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  lg={12}
-                  md={4}
-                  sm={12}
-                  sx={{
-                    border: theme => `1px solid ${theme.palette.divider}`,
-                    borderRadius: '10px',
-                    backgroundColor: theme => theme.palette.background.paper,
-                    p: 3,
-                    mt: 3,
-                    textTransform: transText
-                  }}
-                >
-                  <FormControl fullWidth>
-                    <Attachment image={values.attachment} setFieldValue={setFieldValue} />
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Box>
-            <Divider />
-            <Box sx={{ p: 5 }}>
-              <FieldArray name='table'>
-                {({ push, remove }) => (
-                  <VoucherAddTable
-                    push={push}
-                    type='receipt'
-                    remove={remove}
-                    values={values}
-                    setFieldValue={setFieldValue}
-                    handleChange={handleChange}
-                    handleBlur={handleBlur}
-                  />
-                )}
-              </FieldArray>
-            </Box>
-            <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end', textTransform: transText }}>
-              <Button type='submit' variant='contained' color='primary'>
-                Save
-              </Button>
-            </Box>
-          </Form>
-        )}
-      </Formik>
-    </Card>
+      {openEntry && (
+        <EntryPopUp open={openEntry} toggle={setOpenEntry} itemId={id} name={'getViewEntry'} type={'voucher'} />
+      )}
+    </Fragment>
   )
 }
 
-export default ReceiptVoucher
+const RowOptionsTransactions = ({ row }) => {
+  // ** State
+  const [openTransaction, setOpenTransaction] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+
+  const decimalFormat = getCookie('DecimalFormat')
+  const currency_code = getCookie('currency_code')
+  const CurrencySymbolPlacement = getCookie('CurrencySymbolPlacement')
+
+  const handleTransactionClick = () => {
+    setOpenTransaction(true)
+  }
+
+  const rowOptionsOpen = anchorEl
+
+  const handleRowOptionsClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleRowOptionsClose = () => {
+    setAnchorEl(null)
+  }
+
+  return (
+    <Fragment>
+      <Button size='small' onClick={handleRowOptionsClick} sx={{ my: 3 }}>
+        Invoices
+      </Button>
+      <Menu
+        keepMounted
+        anchorEl={anchorEl}
+        open={rowOptionsOpen}
+        onClose={handleRowOptionsClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        PaperProps={{ style: { minWidth: '8rem' } }}
+      >
+        {row.payments.map((item, index) => (
+          <MenuItem
+            key={index}
+            onClick={() => {
+              handleRowOptionsClose()
+              handleTransactionClick()
+            }}
+            sx={{ '& svg': { mr: 2 } }}
+          >
+            <Icon icon='bx:pencil' fontSize={20} />
+            <LinkStyled>
+              {item.transaction_id}{' '}
+              {` ${
+                item.amount
+                  ? CurrencySymbolPlacement === 'after'
+                    ? `(${Number(item.amount).toFixed(decimalFormat)} ${currency_code} )`
+                    : `(${currency_code} ${Number(item.amount).toFixed(decimalFormat)} )`
+                  : ''
+              }`}
+            </LinkStyled>
+          </MenuItem>
+        ))}
+      </Menu>
+      {openTransaction && <VouchersTransactionPopUp open={openTransaction} toggle={setOpenTransaction} />}
+    </Fragment>
+  )
+}
+
+const columns = [
+  {
+    flex: 0.1,
+    minWidth: 90,
+    sortable: false,
+    field: 'actions',
+    headerName: 'Actions',
+    renderCell: ({ row }) => <RowOptions id={row.id} type={row.type} />
+  },
+  {
+    flex: 0.25,
+    minWidth: 180,
+    field: 'ref_no ',
+    headerName: 'Ref No',
+    renderCell: ({ row }) => {
+      const { ref_no } = row
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+            <Typography noWrap sx={{ color: 'text.secondary' }}>
+              {ref_no ? ref_no : 'Not available'}
+            </Typography>
+          </Box>
+        </Box>
+      )
+    }
+  },
+  {
+    flex: 1,
+    minWidth: 300,
+    field: 'contact_id',
+    headerName: 'Contact',
+    renderCell: ({ row }) => {
+      const { contact_id } = row
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {renderClient(row)}
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', fontSize: '12px' }}>
+            {contact_id}
+          </Box>
+        </Box>
+      )
+    }
+  },
+  {
+    flex: 0.2,
+    minWidth: 180,
+    field: 'type',
+    headerName: 'Type',
+    renderCell: params => {
+      // const status = userStatusObj[params.row.type]
+
+      return (
+        <CustomChip rounded size='small' skin='light' color={'success'} label={params.row.type} />
+        // <Typography noWrap sx={{ color: 'text.secondary' }}>
+        //   {params.row.type}
+        // </Typography>
+      )
+    }
+  },
+  {
+    flex: 0.25,
+    minWidth: 160,
+    field: 'amount',
+    headerName: 'Amount',
+    renderCell: ({ row }) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }}>
+          {row.amount ? 'AED ' + Number(row.amount).toFixed(2) : 'Not available'}
+        </Typography>
+      )
+    }
+  },
+  {
+    flex: 0.25,
+    minWidth: 170,
+    field: 'payments',
+    headerName: 'Bill Amount',
+    renderCell: ({ row }) => {
+      return (
+        <Box sx={{ p: 1 }}>
+          <Typography noWrap sx={{ color: 'text.secondary', pb: 1 }}>
+            {row.payments
+              ? 'AED ' +
+                row.payments
+                  .map(item => Number(item.amount))
+                  .reduce((acc, curr) => acc + curr, 0)
+                  .toFixed(2)
+              : 'Not available'}
+          </Typography>
+          {row.payments && row.payments.length ? <RowOptionsTransactions row={row} /> : null}
+        </Box>
+      )
+    }
+  },
+  {
+    flex: 0.25,
+    minWidth: 180,
+    field: 'account_id',
+    headerName: 'Account',
+    renderCell: ({ row }) => {
+      const { account_id } = row
+
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{account_id}</Box>
+        </Box>
+      )
+    }
+  },
+  {
+    flex: 0.5,
+    minWidth: 200,
+    field: 'text',
+    headerName: 'Text',
+    renderCell: ({ row }) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }} variant={'caption'}>
+          {row.text ? row.text : 'Not available'}
+        </Typography>
+      )
+    }
+  },
+
+  {
+    flex: 0.25,
+    minWidth: 140,
+    field: 'date',
+    headerName: 'Date',
+    renderCell: ({ row }) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }}>
+          {row.date ? row.date : 'Not available'}
+        </Typography>
+      )
+    }
+  }
+]
+
+const ListReceiptVouchers = () => {
+  // ** States
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [token, setToken] = useState('')
+  const [url, setUrl] = useState('')
+  const [data, setData] = useState(null)
+  const [searchText, setSearchText] = useState('')
+  const [filteredData, setFilteredData] = useState([])
+  const [openAdd, setOpenAdd] = useState(false)
+  const title = 'Receipt Vouchers List'
+
+  // ** Hooks
+  const dispatch = useDispatch()
+  const theme = useTheme()
+  const direction = theme.direction
+
+  const popperPlacement = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
+
+  const [openDateRange, setOpenDateRange] = useState(false)
+  const transText = getCookie('fontStyle')
+  const FilterInitial = getCookie('FilterInitial')
+  // ** for BTN
+  const [filterDate, setFilterDate] = useState({
+    month: FilterInitial === 'month' ? new Date() : null,
+    day: FilterInitial === 'day' ? new Date() : null,
+    week: FilterInitial === 'week' ? new Date() : null,
+    active: FilterInitial,
+    startDate: null,
+    endDate: null
+  })
+
+  const escapeRegExp = value => {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+  }
+
+  const store = useSelector(state => state.getVouchers.brands.value)
+
+  useEffect(() => {
+    setData(store)
+  }, [store])
+
+  // ** Cookies
+  useEffect(() => {
+    const token = getCookie('token')
+    const url = getCookie('apiUrl')
+
+    setToken(token)
+
+    setUrl(url)
+  }, [token, url])
+
+  useEffect(() => {
+    if (token && url) {
+      dispatch(fetchVouchers(token, url))
+    }
+  }, [dispatch, token, url])
+
+  // ** handle search function
+
+  const handleSearch = searchValue => {
+    setSearchText(searchValue)
+    const searchRegex = new RegExp(escapeRegExp(searchValue), 'i')
+    const filteredRows = data.filter(row => {
+      return Object.keys(row).some(field => {
+        const fieldValue = row[field]
+
+        return fieldValue !== null && fieldValue !== undefined && searchRegex.test(fieldValue.toString())
+      })
+    })
+
+    if (searchValue.length) {
+      setFilteredData(filteredRows)
+    } else {
+      setFilteredData([])
+    }
+  }
+
+  return (
+    <Grid container spacing={6}>
+      <Grid item xs={12}></Grid>
+      <Grid item xs={12}>
+        <Card>
+          <Box
+            sx={{
+              px: 6,
+              gap: 4,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              textTransform: transText
+            }}
+          >
+            <Box>
+              <CardHeader sx={{ textTransform: transText }} title={title} />
+            </Box>
+
+            <PageFilter filterDate={filterDate} setFilterDate={setFilterDate} setOpenDateRange={setOpenDateRange} />
+
+            <Box>
+              <Button
+                variant='contained'
+                startIcon={<AddCircleOutlineIcon />}
+                onClick={() => {
+                  setOpenAdd(true)
+                }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+
+          <Divider sx={{ mb: 2 }} />
+          <Box>
+            {data ? (
+              <>
+                <DataGrid
+                  autoHeight
+                  columns={columns}
+                  getRowHeight={() => 'auto'}
+                  disableRowSelectionOnClick
+                  pageSizeOptions={[10, 25, 50]}
+                  paginationModel={paginationModel}
+                  slots={{ toolbar: QuickSearchToolbar }}
+                  onPaginationModelChange={setPaginationModel}
+                  rows={filteredData.length ? filteredData : data}
+                  sx={{
+                    '& .MuiDataGrid-cell': { textTransform: transText },
+                    '& .MuiDataGrid-columnsContainer': {
+                      textTransform: transText
+                    },
+                    '& .MuiDataGrid-columnHeaderTitle': {
+                      // Corrected class name for header text
+                      textTransform: transText
+                    }
+                  }}
+                  slotProps={{
+                    baseButton: {
+                      variant: 'outlined'
+                    },
+                    toolbar: {
+                      value: searchText,
+                      clearSearch: () => handleSearch(''),
+                      onChange: event => handleSearch(event.target.value)
+                    }
+                  }}
+                />
+              </>
+            ) : (
+              <Grid>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px'
+                  }}
+                >
+                  <Box>
+                    <ProgressCustomization />
+                  </Box>
+                </Box>
+              </Grid>
+            )}
+          </Box>
+        </Card>
+      </Grid>
+      {
+        // ** Date Range PopUp
+
+        openDateRange && (
+          <FilterRangePage
+            open={openDateRange}
+            setFilterDate={setFilterDate}
+            filterDate={filterDate}
+            popperPlacement={popperPlacement}
+            handleClose={() => {
+              setOpenDateRange(false)
+            }}
+          />
+        )
+      }
+      {openAdd && (
+        <AddReceiptVoucherPopUp
+          open={openAdd}
+          toggle={() => {
+            setOpenAdd(false)
+          }}
+        />
+      )}
+    </Grid>
+  )
+}
+
+export default ListReceiptVouchers

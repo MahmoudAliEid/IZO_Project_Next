@@ -2,10 +2,11 @@
 import { Fragment } from 'react'
 
 // ** MUI Imports
-import Dialog from '@mui/material/Dialog'
+
 import DialogContent from '@mui/material/DialogContent'
 import StepperAddProduct from './StepperAddProduct'
 import CustomHeader from '../../../customDialogHeader/CustomHeader'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const FormProduct = ({ isEdit, open, toggle, itemId, addOpeningStock }) => {
   const handleClose = () => {
@@ -14,15 +15,7 @@ const FormProduct = ({ isEdit, open, toggle, itemId, addOpeningStock }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        scroll='body'
-        maxWidth='lg'
-        fullWidth={true}
-        fullScreen={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-      >
+      <CustomDialog open={open} toggle={handleClose}>
         <CustomHeader title={isEdit ? `Update Product ` : `Add Product `} handleClose={handleClose} />
         <DialogContent
           sx={{
@@ -38,7 +31,7 @@ const FormProduct = ({ isEdit, open, toggle, itemId, addOpeningStock }) => {
             />
           }
         </DialogContent>
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

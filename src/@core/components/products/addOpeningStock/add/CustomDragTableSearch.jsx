@@ -37,7 +37,7 @@ const RowOptions = ({ idx, remove }) => {
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
-        <Tooltip title={`Delete this Row ${idx + 1}`}>
+        <Tooltip title={`Delete this Row `}>
           <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
             <Icon icon='bx:trash-alt' fontSize={20} />
             Delete
@@ -115,7 +115,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result
 }
 
-const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldValue, push }) => {
+const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldValue, push, edit }) => {
   const [open, setOpen] = useState(false)
   const [searchProduct, setSearchProduct] = useState(null)
   const [data, setData] = useState([])
@@ -185,6 +185,20 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
   }, [lastProduct, push])
 
   const columns = [
+    {
+      field: 'idx',
+      headerName: 'No.',
+      flex: 0.1,
+      align: 'center',
+      minWidth: 10,
+      renderCell: params => {
+        if (edit) {
+          return <span>{params.no + 1}</span>
+        } else {
+          return <span>{params.no}</span>
+        }
+      }
+    },
     {
       field: 'name',
       headerName: 'Product Name',
@@ -470,6 +484,7 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
 
     // setMainRows(reorderedRows)
     setFieldValue('items', reorderedRows)
+    console.log(reorderedRows, 'reordered Rows🍤🍤🍤')
   }
 
   return (
@@ -520,14 +535,15 @@ const CustomDragTableSearch = ({ rows, values, handleChange, remove, setFieldVal
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            sx={{ display: row.id === 0 ? 'none' : 'auto' }}
+                            sx={{ display: row.id === -1 ? 'none' : 'auto' }}
                           >
                             {columns.map((column, index) => {
                               const params = row[column.field]
+                              const no = row.id === -1 ? idx - 1 : idx
 
                               return (
                                 <TableCell key={index + 1} align={column.align}>
-                                  {column.renderCell ? column.renderCell({ ...row, idx: idx }) : params}
+                                  {column.renderCell ? column.renderCell({ ...row, idx: idx, no: no }) : params}
                                 </TableCell>
                               )
                             })}

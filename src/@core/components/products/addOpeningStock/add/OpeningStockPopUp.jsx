@@ -2,7 +2,6 @@ import { useState, useEffect, forwardRef } from 'react'
 
 // ** MUI
 import {
-  Dialog,
   DialogContent,
   DialogActions,
   Button,
@@ -15,7 +14,8 @@ import {
   InputLabel,
   FormControl,
   FormHelperText,
-  Divider
+  Divider,
+  Typography
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
@@ -44,6 +44,7 @@ import { createOpeningStock } from 'src/store/apps/products/addOpeningStock/post
 import { editOpeningStock } from 'src/store/apps/products/addOpeningStock/postEditOpeningStock'
 import CustomDragTableSearch from './CustomDragTableSearch'
 import { fetchOpeningStock } from 'src/store/apps/products/addOpeningStock/getListSlice'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 // ** Custom Input Component
 const CustomInput = forwardRef(({ ...props }, ref) => {
@@ -65,7 +66,28 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
     net_total_amount: 0,
     search_product: '',
     parent_price: null,
-    items: []
+    items: [
+      {
+        id: -1,
+        name: '',
+        line_id: '',
+        total: '',
+        line_store: '',
+        product_id: '',
+        quantity: '',
+        price: '',
+        unit: '',
+        store: '',
+        all_unit: [],
+        initial: true,
+        unit_quantity: '',
+        child_price: '',
+        list_prices: [],
+        product_unit_id: '',
+        product_unit_qty: '',
+        order_id: ''
+      }
+    ]
   })
 
   // ** Hooks
@@ -171,14 +193,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
   console.log(data, 'data from opening stock')
 
   return (
-    <Dialog
-      open={open}
-      maxWidth='lg'
-      fullWidth={true}
-      onClose={handleClose}
-      aria-labelledby='max-width-dialog-title'
-      sx={{ height: '100%', textTransform: transText }}
-    >
+    <CustomDialog open={open} toggle={toggle}>
       <CustomHeader
         title={edit ? 'Update Opening Stock' : 'Add Opening Stock'}
         handleClose={handleClose}
@@ -218,15 +233,15 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
             >
               {({ values, handleBlur, handleChange, errors, touched, setFieldValue }) => (
                 <Form>
-                  <Grid container spacing={5} sx={{ p: 5 }}>
-                    <Grid item xs={12}>
+                  <Grid container spacing={3} sx={{ p: 5 }}>
+                    <Grid item xs={4}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor='parent_price'>Prices</InputLabel>
                         <Select
                           id='parent_price'
                           name='parent_price'
                           label='Prices'
-                          disabled={values.items.length === 0}
+                          disabled={values.items.length === 1 && !edit}
                           value={values.parent_price}
                           required
                           onChange={event => {
@@ -266,13 +281,21 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                         </Select>
                         {errors.store && touched.store && <FormHelperText error>{String(errors.store)}</FormHelperText>}
                       </FormControl>
-                      {values.items.length === 0 && (
+                      {values.items.length === 1 && !edit ? (
                         <FormHelperText error sx={{ ml: 2 }}>
-                          Please add Rows to Table to show Prices
+                          <Typography color={'error'} variant='caption'>
+                            Please add Rows to Table to show Prices
+                          </Typography>
                         </FormHelperText>
-                      )}
+                      ) : values.items.length === 0 && edit ? (
+                        <FormHelperText error sx={{ ml: 2 }}>
+                          <Typography color={'error'} variant='caption'>
+                            Please add Rows to Table to show Prices
+                          </Typography>
+                        </FormHelperText>
+                      ) : null}
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={4} sm={4}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor='Warehouse'>Warehouse</InputLabel>
                         <Select
@@ -297,7 +320,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                         {errors.store && touched.store && <FormHelperText error>{String(errors.store)}</FormHelperText>}
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={4} sm={4}>
                       <FormControl fullWidth>
                         <DatePickerWrapper>
                           <DatePicker
@@ -338,6 +361,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                               push={push}
                               remove={remove}
                               setFieldValue={setFieldValue}
+                              edit={edit}
                             />
 
                             <Divider
@@ -346,7 +370,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                               }}
                             />
                             <Grid container spacing={3}>
-                              <Grid item xs={12} md={6} sm={12} lg={6}>
+                              <Grid item xs={12} md={5} lg={5}>
                                 <FormControl fullWidth>
                                   <TextField
                                     name='total_items'
@@ -359,7 +383,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                                   />
                                 </FormControl>
                               </Grid>
-                              <Grid item xs={12} md={6} sm={12} lg={6}>
+                              <Grid item xs={12} md={5} lg={5}>
                                 <FormControl fullWidth>
                                   <TextField
                                     label='Net Total Amount'
@@ -372,6 +396,28 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                                   />
                                 </FormControl>
                               </Grid>
+                              <Grid item xs={12} md={2} lg={2}>
+                                <Box
+                                  sx={{
+                                    border: theme => `1px solid ${theme.palette.divider}`,
+                                    borderRadius: '10px',
+                                    backgroundColor: theme => theme.palette.background.paper
+                                  }}
+                                >
+                                  <Button
+                                    type='submit'
+                                    variant='contained'
+                                    color='primary'
+                                    sx={{
+                                      textTransform: transText,
+                                      width: '100%',
+                                      height: '55px'
+                                    }}
+                                  >
+                                    {edit ? 'Update' : 'Save'}
+                                  </Button>
+                                </Box>
+                              </Grid>
                             </Grid>
                           </div>
                         )}
@@ -379,13 +425,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
                     </Grid>
                     {/* ______________________________________________________ */}
                   </Grid>
-                  <DialogActions>
-                    <Box sx={{ p: 5, display: 'flex', justifyContent: 'flex-end' }}>
-                      <Button type='submit' variant='contained' color='primary' sx={{ textTransform: transText }}>
-                        {edit ? 'Update' : 'Save'}
-                      </Button>
-                    </Box>
-                  </DialogActions>
+                  <DialogActions></DialogActions>
                 </Form>
               )}
             </Formik>
@@ -409,7 +449,7 @@ const OpeningStockPopUp = ({ open, handleClose, edit, id }) => {
         )}
       </DialogContent>
       {openForm && <FormProduct isEdit={false} open={openForm} toggle={toggle} addOpeningStock={true} />}
-    </Dialog>
+    </CustomDialog>
   )
 }
 

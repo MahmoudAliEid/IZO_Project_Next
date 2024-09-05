@@ -179,9 +179,9 @@ image,
         <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
           <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-            <HeadingTypography sx={{ textTransform: transText||'capitalize' }} variant='h5'>Drop files here or click to upload.</HeadingTypography>
+            <HeadingTypography sx={{ textTransform: transText||'capitalize' }} variant='h6'>Drop files here or click to upload.</HeadingTypography>
             <Typography sx={{ textTransform: transText||'capitalize' }} color='textSecondary'> Allowed File: .pdf, .csv, .zip, .doc, .docx, .jpeg, .jpg, .png</Typography>
-            <Typography  color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } ,textTransform: transText||'capitalize'}}>
+            <Typography variant='body2' color='textSecondary' sx={{ '& a': { color: 'primary.main', textDecoration: 'none' } ,textTransform: transText||'capitalize'}}>
               Drop files here or click{' '}
               <Link  href='/' onClick={e => e.preventDefault()}>
                 browse

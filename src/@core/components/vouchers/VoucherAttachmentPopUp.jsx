@@ -6,7 +6,7 @@ import { getAttachment } from 'src/store/apps/vouchers/Actions/getAttachmentVouc
 import { fetchAttachment } from 'src/store/apps/Cheques/Actions/getAttachmentCheques'
 
 // ** MUI Components
-import { Grid, Chip, Divider, Typography, CardContent, List, ListItem, DialogContent, Dialog, Box } from '@mui/material'
+import { Grid, Chip, Divider, Typography, CardContent, List, ListItem, DialogContent, Box } from '@mui/material'
 
 // ** Custom Components
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -23,6 +23,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** cookies
 import { getCookie } from 'cookies-next'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 // const LinkStyled = styled(Box)(({ theme }) => ({
 //   fontWeight: 400,
@@ -88,14 +89,7 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
-      >
+      <CustomDialog open={open} toggle={handleClose}>
         <Fragment>
           <CustomHeader
             title={type === 'cheque' ? 'Cheque Attachments' : `Voucher Attachments `}
@@ -189,7 +183,7 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
             </KeenSliderWrapper>
           </DialogContent>
         </Fragment>
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

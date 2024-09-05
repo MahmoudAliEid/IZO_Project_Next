@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import {
   Button,
   Card,
-  Dialog,
   DialogContent,
   Divider,
   Grid,
@@ -35,6 +34,7 @@ import AddExpenseVoucherTable from './AddExpenseVoucherTable'
 import { fetchCreateExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getCreateExpenseVoucher'
 import { fetchExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getExpenseVoucher'
 import { createExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/postCreateExpenseVoucher'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const AddExpensePopUp = ({ open, handleClose }) => {
   const [data, setData] = useState([])
@@ -111,15 +111,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth='lg'
-      scroll='body'
-      fullScreen
-      sx={{ height: '100%', textTransform: transText }}
-      aria-labelledby='form-dialog-title'
-    >
+    <CustomDialog open={open} toggle={handleClose}>
       {openLoading && (
         <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
       )}
@@ -208,7 +200,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                       </Grid>
                     </Grid>
 
-                    <Grid item xs={6}>
+                    <Grid item xs={12} lg={3}>
                       <FormControl fullWidth>
                         <InputLabel id='currency_id'>Currency</InputLabel>
                         <Select
@@ -240,7 +232,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} lg={3}>
                       <FormControl fullWidth>
                         <TextField
                           label='Currency Amount'
@@ -251,7 +243,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                         />
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6} lg={6} sx={12}>
+                    <Grid item xs={12} md={3} lg={3} sx={12}>
                       <FormControl fullWidth>
                         <DatePickerWrapper>
                           <DatePicker
@@ -282,7 +274,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
                         </DatePickerWrapper>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6} lg={6}>
+                    <Grid item xs={12} md={3} lg={3}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor='cost_center_id'>Cost Center</InputLabel>
                         <Select
@@ -374,7 +366,7 @@ const AddExpensePopUp = ({ open, handleClose }) => {
           </Formik>
         </Card>
       </DialogContent>
-    </Dialog>
+    </CustomDialog>
   )
 }
 export default AddExpensePopUp

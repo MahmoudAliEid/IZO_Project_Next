@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import {
-  Dialog,
   Grid,
   Card,
   CardContent,
@@ -36,6 +35,7 @@ import TableAverage from './TableAverage'
 import ReactHtmlParser from 'react-html-parser'
 import CustomTableView from './CustomTableView'
 import CustomHeader from '../../../customDialogHeader/CustomHeader'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 // Styled Grid component
 // const StyledGrid = styled(Grid)(({ theme }) => ({
@@ -110,7 +110,7 @@ const ProductView = ({ open, setOpen, id }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleCancel} scroll='body' fullWidth maxWidth='lg' fullScreen>
+    <CustomDialog open={open} toggle={handleCancel}>
       <Card>
         <CustomHeader title={productInfo?.name || ''} handleClose={handleCancel} divider={false} />
 
@@ -731,7 +731,7 @@ const ProductView = ({ open, setOpen, id }) => {
           </Button>
         </CardActions>
       </Card>
-    </Dialog>
+    </CustomDialog>
   )
 }
 

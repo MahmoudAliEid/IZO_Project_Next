@@ -39,16 +39,16 @@ interface Props {
 
 // Styled component for the upload image inside the dropzone area
 const Img = styled('img')(({ theme }) => ({
-  width: 300,
+  width: 250,
   [theme.breakpoints.up('md')]: {
     marginRight: theme.spacing(15.75)
   },
   [theme.breakpoints.down('md')]: {
-    width: 250,
+    width: 200,
     marginBottom: theme.spacing(4)
   },
   [theme.breakpoints.down('sm')]: {
-    width: 200
+    width: 150
   }
 }))
 
@@ -168,7 +168,7 @@ image,
     <Fragment>
       <div {...getRootProps({ className: 'dropzone' })}>
         <input {...getInputProps()} />
-        <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'column'], alignItems: 'center' }}>
           <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
             <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
