@@ -1,6 +1,6 @@
 
 // ** React Imports
-import { Fragment} from 'react'
+import { Fragment,useState} from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -21,6 +21,8 @@ import toast from 'react-hot-toast'
 
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
+import CustomImagePreview from './CustomImagePreview'
+
 
 interface FileProp {
   name: string
@@ -63,6 +65,8 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 const Productimage = ({ image, setFieldValue }: Props) => {
 
+  const [openImagePreview, setOpenImagePreview] = useState(false)
+
   // ** Hooks
   const theme = useTheme()
   const { getRootProps, getInputProps } = useDropzone({
@@ -100,6 +104,10 @@ const Productimage = ({ image, setFieldValue }: Props) => {
         'productImage',[...filtered])
   }
 
+  const toggleImagePreview = () => {
+    setOpenImagePreview(!openImagePreview)
+  }
+
   const fileList =
     Array.isArray(image) && image.length > 0 ? (
       image.map(file => (
@@ -107,7 +115,11 @@ const Productimage = ({ image, setFieldValue }: Props) => {
           sx={{
             display: 'flex',
             flexDirection: ['row', 'row', 'row'],
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+              cursor: 'pointer'
+          }}
+          onClick={() => {
+            setOpenImagePreview(true)
           }}
           key={file.name}
         >
@@ -132,8 +144,15 @@ const Productimage = ({ image, setFieldValue }: Props) => {
         sx={{
           display: 'flex',
           flexDirection: ['row', 'row', 'row'],
-          justifyContent: 'space-between'
-        }}
+            justifyContent: 'space-between'
+            ,
+          cursor: 'pointer'
+
+          }}
+          onClick={() => {
+            setOpenImagePreview(true)
+          }
+        }
       >
         <div className='file-details'>
           <div className='file-preview'>
@@ -181,10 +200,19 @@ const Productimage = ({ image, setFieldValue }: Props) => {
               Remove All
             </Button>
           </div>
+           {
+    openImagePreview && (
+      <CustomImagePreview files={image} open={openImagePreview}
+        toggle={toggleImagePreview}
+      />
+    )
+  }
         </Fragment>
       ) : null}
     </Fragment>
+
   )
+
 }
 
 export default Productimage

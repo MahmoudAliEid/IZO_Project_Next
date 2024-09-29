@@ -45,6 +45,8 @@ import { getCookie } from 'cookies-next'
 
 import ProductAdditionalInfo from '../productAdditionalInfo/ProductAdditionalInfo'
 import { getLastProduct } from 'src/store/apps/products/addOpeningStock/getLastProductSlice'
+import SecondInfo from '../productInfo/ScondInfo'
+import SecondMedia from '../productmedia/SecondMedia'
 
 const steps = [
   {
@@ -53,8 +55,18 @@ const steps = [
     subtitle: 'Manage Product Information'
   },
   {
+    icon: 'fluent-mdl2:product-variant',
+    title: 'Product Information #2',
+    subtitle: 'Manage Product Information'
+  },
+  {
     icon: 'ic:baseline-perm-media',
     title: 'Product Media',
+    subtitle: 'Provide Product Media'
+  },
+  {
+    icon: 'ic:baseline-perm-media',
+    title: 'Product Media #2',
     subtitle: 'Provide Product Media'
   },
   {
@@ -642,6 +654,22 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
       case 1:
         return (
           <Fragment key={step}>
+            {/* // **Done: Create Product Information Section here  */}
+            <SecondInfo
+              initialValues={values}
+              errors={errors}
+              touched={touched}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+              updatingProductData={updatingProductData || []}
+              isEdit={isEdit}
+            />
+          </Fragment>
+        )
+      case 2:
+        return (
+          <Fragment key={step}>
             <ProductMedia
               initialValues={values}
               errors={errors}
@@ -653,7 +681,20 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
             />
           </Fragment>
         )
-      case 2:
+      case 3:
+        return (
+          <Fragment key={step}>
+            <SecondMedia
+              initialValues={values}
+              errors={errors}
+              touched={touched}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+            />
+          </Fragment>
+        )
+      case 4:
         return (
           <Fragment key={step}>
             <ProductAdditionalInfo
@@ -666,7 +707,7 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
             />
           </Fragment>
         )
-      case 3:
+      case 5:
         return (
           <Fragment key={step}>
             <ProductPrices
@@ -680,7 +721,7 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
             />
           </Fragment>
         )
-      case 4:
+      case 6:
         return <Fragment key={step}></Fragment>
       default:
         return 'Unknown Step'
@@ -773,7 +814,7 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
         >
           {({ values, errors, touched, handleBlur, handleChange, setFieldValue, resetForm }) => (
             <form>
-              <Grid container mt={5}>
+              <Grid container mt={3}>
                 <Grid item xs={12} mb={5} sx={{ px: 3 }}>
                   <Typography variant='body1' sx={{ fontWeight: 600, color: 'text.primary' }}>
                     {steps[activeStep].title}
@@ -852,7 +893,13 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
             activeStep={activeStep}
             orientation='vertical'
             connector={<></>}
-            sx={{ height: '100%', minWidth: '15rem' }}
+            sx={{
+              height: '100%',
+              minWidth: '15rem',
+              scrollBehavior: 'smooth',
+              overflowY: 'scroll',
+              overflowX: 'hidden'
+            }}
           >
             {steps.map((step, index) => {
               return (
@@ -872,7 +919,7 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
-                        padding: '1rem 0'
+                        padding: '.4rem 0'
                       }}
                       onClick={() => {
                         setActiveStep(index)
@@ -897,11 +944,13 @@ const StepperAddProduct = ({ isEdit, itemId, handleClose, addOpeningStock }) => 
                           flexDirection: 'column',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          gap: '0.5rem',
-                          marginTop: '0.5rem'
+                          gap: '0.2rem',
+                          marginTop: '0.2rem'
                         }}
                       >
-                        <Typography className='step-title'>{step.title}</Typography>
+                        <Typography variant='body2' className='step-title'>
+                          {step.title}
+                        </Typography>
                         <Typography className='step-subtitle'>{step.subtitle}</Typography>
                       </div>
                     </div>

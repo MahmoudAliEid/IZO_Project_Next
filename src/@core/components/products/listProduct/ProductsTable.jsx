@@ -681,7 +681,6 @@ const ProductsTable = () => {
     )
   }
 
-  console.log('last page 🤩🤩🤩🙂🙂🙂', lastPage)
 
   return (
     <Grid container spacing={6}>

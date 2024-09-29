@@ -102,7 +102,15 @@ const AddExpensePopUp = ({ open, handleClose }) => {
     try {
       // ** Dispatch action to add expense
       dispatch(createExpenseVoucher({ values })).then(() => {
-        dispatch(fetchExpenseVoucher())
+        dispatch(
+          fetchExpenseVoucher({
+            month: null,
+            week: null,
+            day: null,
+            startDate: null,
+            endDate: null
+          })
+        )
       })
     } catch (error) {
       notify('Error', 'error')

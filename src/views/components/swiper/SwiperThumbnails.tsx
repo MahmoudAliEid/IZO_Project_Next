@@ -67,7 +67,10 @@ const SwiperThumbnails = ({ images, direction }: { images: [], direction: Direct
       }
     },
     [ThumbnailPlugin(instanceRef)]
+
   )
+
+  console.log(images,'images form slider')
 
   return (
     <Box>

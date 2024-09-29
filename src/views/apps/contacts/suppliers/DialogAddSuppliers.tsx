@@ -37,7 +37,7 @@ import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 
 
 
-const DialogAddSuppliers = ({ isView, open, toggle, isEdit, itemId, contact }: any) => {
+const DialogAddSuppliers = ({ isView, open, toggle, isEdit, itemId, contact,isFromPurchase }: any) => {
   const handleClose = () => {
     toggle()
   }
@@ -57,7 +57,9 @@ const DialogAddSuppliers = ({ isView, open, toggle, isEdit, itemId, contact }: a
         >
           {
 
-            <StepperStoreSuppliers isView={isView} isEdit={isEdit} itemId={itemId} contact={contact} />
+            <StepperStoreSuppliers isView={isView} isEdit={isEdit} itemId={itemId} contact={contact}
+            isFromPurchase={isFromPurchase}
+            />
 
           }
         </DialogContent>

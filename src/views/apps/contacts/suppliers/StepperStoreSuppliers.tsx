@@ -59,6 +59,9 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import LoadingAnimation from 'src/@core/components/utilities/loadingComp'
 import { fetchSuppliers } from 'src/store/apps/contacts/getSuppliersSlice'
 import { fetchCustomers } from 'src/store/apps/contacts/getCustomersSlice'
+import { getLastSupplierAdded } from 'src/store/apps/purchases/Actions/getLastSupplierAddedSlice'
+import axios from 'axios'
+import notify from 'src/utils/notify'
 
 const steps = [
   {
@@ -136,10 +139,11 @@ const StepperHeaderContainer = styled(CardContent)(({ theme }) => ({
 
 
 
-const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
+const StepperStoreSuppliers = ({  isEdit, itemId, contact,isFromPurchase }: any) => {
   const [token, setToken] = useState('')
   const [url, setUrl] = useState('')
   const [openLoading, setOpenLoading] = useState(false)
+  const [isExistInDatabase, setIsExistInDatabase] = useState(false)
 
 
   //** Theme */
@@ -248,6 +252,57 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
     setActiveStep(0)
   }
 
+  // check business name in database if exist when is form purchase
+
+
+
+
+  const checkExist = async (value: any) => {
+    if (isFromPurchase) {
+      try {
+
+        const response = await axios.get(`${url}/app/react/purchase/supplier-name?value=${value}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+
+            }
+          })
+
+        console.log('response from check business name ', response);
+        if (response.status === 200) {
+          setIsExistInDatabase(false)
+          console.log('response from check business name ', response);
+          if (response.data.error) {
+            notify(`${response.data.message} `, 'error')
+            setIsExistInDatabase(true)
+          }
+          else {
+
+
+            setIsExistInDatabase(false)
+           }
+        }
+        if (response.status === 403) {
+          setIsExistInDatabase(true)
+          notify(`Sorry !!, This Name Is Already Exist`, 'error')
+
+        }
+      } catch (error) {
+
+
+        notify(`Not Authorized `, 'error')
+
+      }
+
+
+      }
+
+  }
+
+
+
+
   const getStepContent = ({ values, errors, touched, handleBlur, handleChange, setFieldValue,step }: any) => {
     switch (step) {
       case 0:
@@ -255,7 +310,6 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
           <Fragment key={step}>
            <Grid container spacing={3} justifyContent={'center'}  margin={'auto '} sx={{p:10,}}  >
               <Grid item lg={6} md={6} sm={12} xs={12}>
-
                   <FormControl fullWidth>
                     <InputLabel id='demo-simple-select-standard-label'>Contact type </InputLabel>
                     <Select
@@ -266,6 +320,7 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                     label='Contact type'
+                    disabled={isFromPurchase}
 
                     >
                       {ContactType.map((item: any) => (
@@ -312,16 +367,30 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
                   {/* form input for Business Name */}
 
                 <Field
-                  as={TextField}
-                  name='supplier_business_name'
-                  label='Business Name'
+                    as={TextField}
+                    name='supplier_business_name'
+                    label='Business Name'
                     variant='outlined'
                     fullWidth
-                  sx={{margin:0,p:0, gridColumn: 'span 6' }}
-                  required
+                    error={isExistInDatabase}
+                    sx={{
+                      margin: 0, p: 0, gridColumn: 'span 6',
+                      color: isExistInDatabase ? 'red' : 'inherit'
+                    }}
+
+                    required
+                    onChange={(event: any) => {
+                      handleChange(event)
+
+                    }}
+
+                    onBlur={(event: any) => {
+                      checkExist(event.target.value)
+                    }}
 
                   />
                 </FormControl>
+
               </Grid>
 
 
@@ -855,6 +924,10 @@ const StepperStoreSuppliers = ({  isEdit, itemId, contact }: any) => {
     if (!isEdit) {
        //@ts-ignore
       dispatch(saveNewContact(values)).then(() => {
+        if (isFromPurchase) {
+          //@ts-ignore
+          dispatch(getLastSupplierAdded())
+        }
         if (contact === 'supplier') {
           //@ts-ignore
           dispatch(fetchSuppliers(token, url))

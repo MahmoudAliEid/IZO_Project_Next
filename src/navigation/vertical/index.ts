@@ -109,10 +109,7 @@ const navigation = (): VerticalNavItemsType => {
           title: 'List Products',
           path: '/apps/products/listProducts'
         },
-        {
-          title: 'Add Product',
-          path: '/apps/products/addProduct'
-        },
+
         {
           title: 'Variations',
           path: '/apps/products/variations'
@@ -190,15 +187,19 @@ const navigation = (): VerticalNavItemsType => {
       children: [
         {
           title: 'List Purchases',
-          path: '/apps/purchase/list'
+          path: '/apps/purchases/list'
+        },
+        {
+          title: 'Add Purchases',
+          path: '/apps/purchases/add'
         },
         {
           title: 'List Purchase Return',
-          path: '/apps/purchase/return'
+          path: '/apps/purchases/return'
         },
         {
           title: 'Map',
-          path: '/apps/purchase/map'
+          path: '/apps/purchases/map'
         }
       ]
     },

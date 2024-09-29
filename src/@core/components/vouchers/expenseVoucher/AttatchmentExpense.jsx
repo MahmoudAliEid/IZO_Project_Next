@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** MUI Components
-import { Grid, Chip, Divider, Typography, CardContent, List, ListItem, DialogContent, Dialog, Box } from '@mui/material'
+import { Grid, Chip, Divider, Typography, CardContent, List, ListItem, DialogContent, Box } from '@mui/material'
 
 // ** Custom Components
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -22,6 +22,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 // ** cookies
 import { getCookie } from 'cookies-next'
 import { attachmentExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/Actions/getAttachmentExpenseVoucher'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const AttachmentExpense = ({ open, toggle, id }) => {
   const [attachment, setAttachment] = useState(null) // Initially setting data as null
@@ -66,15 +67,7 @@ const AttachmentExpense = ({ open, toggle, id }) => {
   return (
     <Fragment>
       <KeenSliderWrapper>
-        <Dialog
-          open={open}
-          minWidth={'lg'}
-          scroll='paper'
-          fullWidth={true}
-          fullScreen
-          onClose={handleClose}
-          aria-labelledby='max-width-dialog-title'
-        >
+        <CustomDialog open={open} toggle={handleClose}>
           <Fragment>
             <CustomHeader title={`Expense Voucher Attachments `} handleClose={handleClose} divider={false} />
             <DialogContent sx={{ padding: '0 !important' }}>
@@ -163,7 +156,7 @@ const AttachmentExpense = ({ open, toggle, id }) => {
               )}
             </DialogContent>
           </Fragment>
-        </Dialog>
+        </CustomDialog>
       </KeenSliderWrapper>
     </Fragment>
   )

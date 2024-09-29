@@ -2,8 +2,8 @@ import { Fragment, useEffect, useState } from 'react'
 
 // ** Store & Actions
 import { useDispatch, useSelector } from 'react-redux'
-import { getAttachment } from 'src/store/apps/vouchers/Actions/getAttachmentVoucher'
-import { fetchAttachment } from 'src/store/apps/Cheques/Actions/getAttachmentCheques'
+import { fetchAttachmentVoucher } from 'src/store/apps/vouchers/Actions/getAttachmentVoucher'
+import { fetchAttachmentCheques } from 'src/store/apps/Cheques/Actions/getAttachmentCheques'
 
 // ** MUI Components
 import { Grid, Chip, Divider, Typography, CardContent, List, ListItem, DialogContent, Box } from '@mui/material'
@@ -65,17 +65,17 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
   useEffect(() => {
     if (type === 'cheque') {
       if (itemId) {
-        dispatch(fetchAttachment({ id: itemId }))
+        dispatch(fetchAttachmentCheques({ id: itemId }))
       }
     } else {
       if (itemId) {
-        dispatch(getAttachment({ id: itemId }))
+        dispatch(fetchAttachmentVoucher({ id: itemId }))
       }
     }
   }, [itemId, dispatch, type])
 
   // Update data when fetchData changes
-  const fetchData = useSelector(state => state.getAttachment?.data?.value)
+  const fetchData = useSelector(state => state.getAttachmentVoucher?.data?.value)
   const fetchDataCheque = useSelector(state => state.getAttachmentCheque?.data?.value)
   useEffect(() => {
     if (fetchData && fetchData.length > 0) setAttachment(fetchData)
@@ -86,6 +86,7 @@ const VoucherAttachmentPopUp = ({ open, toggle, itemId, type }) => {
   }, [fetchDataCheque, type])
 
   console.log('data of attachment', attachment)
+  console.log('fetchData of attachment', fetchData)
 
   return (
     <Fragment>

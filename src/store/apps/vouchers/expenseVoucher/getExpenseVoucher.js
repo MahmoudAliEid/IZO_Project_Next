@@ -6,7 +6,7 @@ export const fetchExpenseVoucher = createAsyncThunk('expenseVoucher/fetchExpense
   const token = getCookie('token')
   const url = getCookie('apiUrl')
 
-  const { month, weak, day, startDate, endDate } = payload
+  const { month, week, day, startDate, endDate } = payload
   let mainUrl = `${url}/app/react/expense-voucher/all`
 
   if (startDate && endDate) {
@@ -33,15 +33,15 @@ export const fetchExpenseVoucher = createAsyncThunk('expenseVoucher/fetchExpense
     let formattedMonth = `${yearMonth}-${monthMonth}-${dayMonth}`
 
     mainUrl = `${url}/app/react/expense-voucher/all?month=${formattedMonth}`
-  } else if (weak) {
+  } else if (week) {
     // ** Date format: YYYY-MM-DD
-    let yearWeak = String(weak.getFullYear())
-    let monthWeak = String(weak.getMonth() + 1).padStart(2, '0') // Months are 0-based in JavaScript
-    let dayWeak = String(weak.getDate()).padStart(2, '0')
+    let yearWeek = String(week.getFullYear())
+    let monthWeek = String(week.getMonth() + 1).padStart(2, '0') // Months are 0-based in JavaScript
+    let dayWeek = String(week.getDate()).padStart(2, '0')
 
     // ** Normal Format
-    let formattedWeak = `${yearWeak}-${monthWeak}-${dayWeak}`
-    mainUrl = `${url}/app/react/expense-voucher/all?week=${formattedWeak}`
+    let formattedWeek = `${yearWeek}-${monthWeek}-${dayWeek}`
+    mainUrl = `${url}/app/react/expense-voucher/all?week=${formattedWeek}`
   } else if (day) {
     // ** Date format: YYYY-MM-DD
     let yearDay = String(day.getFullYear())

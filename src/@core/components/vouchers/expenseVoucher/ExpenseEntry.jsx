@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import CustomTableView from '../../products/listProduct/productView/CustomTableView'
@@ -10,6 +9,7 @@ import { Grid, Typography, Chip, Divider, Box } from '@mui/material'
 // ** cookies
 import { getCookie } from 'cookies-next'
 import { entryExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/Actions/getEntryExpenseVoucher'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const ExpenseEntry = ({ open, toggle, itemId }) => {
   const [entryData, setEntryData] = useState(null) // Initially setting data as null
@@ -39,14 +39,7 @@ const ExpenseEntry = ({ open, toggle, itemId }) => {
 
   return (
     <Fragment>
-      <Dialog
-        open={open}
-        maxWidth='lg'
-        fullWidth={true}
-        onClose={handleClose}
-        aria-labelledby='max-width-dialog-title'
-        sx={{ height: '100%' }}
-      >
+      <CustomDialog open={open} toggle={handleClose}>
         <Fragment>
           <CustomHeader
             title={`Entry ( Ref No: ${
@@ -184,7 +177,7 @@ const ExpenseEntry = ({ open, toggle, itemId }) => {
             </Grid>
           </DialogContent>
         </Fragment>
-      </Dialog>
+      </CustomDialog>
     </Fragment>
   )
 }

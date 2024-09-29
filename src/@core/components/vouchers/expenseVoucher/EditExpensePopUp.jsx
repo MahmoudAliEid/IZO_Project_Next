@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import {
   Button,
   Card,
-  Dialog,
   DialogContent,
   Divider,
   Grid,
@@ -36,6 +35,7 @@ import { fetchEditExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/
 import { fetchExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getExpenseVoucher'
 import { editExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/postEditExpenseVoucher'
 import { fetchCreateExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/getCreateExpenseVoucher'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const EditExpensePopUp = ({ open, handleClose, id }) => {
   const [data, setData] = useState([])
@@ -123,7 +123,15 @@ const EditExpensePopUp = ({ open, handleClose, id }) => {
     try {
       // ** Dispatch action to add expense
       dispatch(editExpenseVoucher({ values, id })).then(() => {
-        dispatch(fetchExpenseVoucher())
+        dispatch(
+          fetchExpenseVoucher({
+            month: null,
+            week: null,
+            day: null,
+            startDate: null,
+            endDate: null
+          })
+        )
       })
     } catch (error) {
       notify('Error', 'error')
@@ -132,15 +140,7 @@ const EditExpensePopUp = ({ open, handleClose, id }) => {
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth='lg'
-      scroll='body'
-      fullScreen
-      sx={{ height: '100%', textTransform: transText }}
-      aria-labelledby='form-dialog-title'
-    >
+    <CustomDialog open={open} toggle={handleClose}>
       {openLoading && (
         <LoadingAnimation open={openLoading} onClose={() => setOpenLoading(false)} statusType={createStatus} />
       )}
@@ -398,7 +398,7 @@ const EditExpensePopUp = ({ open, handleClose, id }) => {
           </Formik>
         </Card>
       </DialogContent>
-    </Dialog>
+    </CustomDialog>
   )
 }
 export default EditExpensePopUp

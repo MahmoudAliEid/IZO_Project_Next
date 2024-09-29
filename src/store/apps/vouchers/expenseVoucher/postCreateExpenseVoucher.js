@@ -91,6 +91,7 @@ const postCreateExpenseVoucher = createSlice({
         state.success = true
         state.error = false
         state.data = action.payload
+        console.log(action.payload, 'action.payload from create expense voucher 🍩')
         notify('Successfully stored Expense.', 'success')
       })
       .addCase(createExpenseVoucher.rejected, (state, action) => {
@@ -98,6 +99,7 @@ const postCreateExpenseVoucher = createSlice({
         state.success = false
         state.error = true
         state.error = action.error.message
+        console.log(action.payload, 'action.payload from create expense voucher 🍩')
         notify('There is an error try again later', 'error')
       })
   }

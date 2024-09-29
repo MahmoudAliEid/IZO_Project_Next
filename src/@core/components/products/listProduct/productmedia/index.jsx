@@ -10,15 +10,9 @@ import { Card, CardContent, CardHeader } from '@mui/material'
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 
 // ** Demo Components Imports
-import Productbrochure from './Productbrochure'
+// import Productbrochure from './Productbrochure'
 import Productimage from './Productimage'
 import Productmultipleimages from './Productmultipleimages'
-import UploadVideo from './UploadVideo'
-
-// const LinkStyled = styled(Link)(({ theme }) => ({
-//   textDecoration: 'none',
-//   color: theme.palette.primary.main
-// }))
 
 const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange, setFieldValue, handleClose }) => {
   const theme = useTheme()
@@ -60,7 +54,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
           </Card>
         </Grid>
 
-        <Grid item xs={6}>
+        {/* <Grid item xs={6}>
           <Card>
             <CardHeader title='Product Brochure' />
             <CardContent>
@@ -74,22 +68,7 @@ const ProductMedia = ({ initialValues, errors, touched, handleBlur, handleChange
               />
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Card>
-            <CardHeader title='Product Video' />
-            <CardContent>
-              <UploadVideo
-                video={initialValues.productvideo}
-                errors={errors}
-                touched={touched}
-                handleBlur={handleBlur}
-                handleChange={handleChange}
-                setFieldValue={setFieldValue}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
+        </Grid> */}
       </Grid>
     </DropzoneWrapper>
   )

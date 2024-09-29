@@ -146,6 +146,16 @@ import getAttachmentExpenseVoucher from './apps/vouchers/expenseVoucher/Actions/
 import getEntryExpenseVoucher from './apps/vouchers/expenseVoucher/Actions/getEntryExpenseVoucher'
 import postCreateExpenseVoucher from './apps/vouchers/expenseVoucher/postCreateExpenseVoucher'
 import postEditExpenseVoucher from './apps/vouchers/expenseVoucher/postEditExpenseVoucher'
+// ** Purchases
+import getPurchasesSlice from './apps/purchases/getPurchasesSlice'
+import getViewAttachmentPurchase from './apps/purchases/Actions/getViewAttachmentPurchase'
+import getEntryPurchase from './apps/purchases/Actions/getEntryPurchase'
+import getMapPurchase from './apps/purchases/Actions/getMapPurchase'
+import getViewPurchase from './apps/purchases/Actions/getViewPurchase'
+import getCreatePurchase from './apps/purchases/getCreatePurchase'
+import getEditPurchase from './apps/purchases/getEditPurchase'
+import postDeletePurchase from './apps/purchases/postDeletePurchase'
+import getLastSupplierAddedSlice from './apps/purchases/Actions/getLastSupplierAddedSlice'
 
 export const store = configureStore({
   reducer: {
@@ -286,7 +296,16 @@ export const store = configureStore({
     getAttachmentExpenseVoucher,
     getEntryExpenseVoucher,
     postCreateExpenseVoucher,
-    postEditExpenseVoucher
+    postEditExpenseVoucher,
+    getPurchases: getPurchasesSlice,
+    getViewAttachmentPurchase,
+    getEntryPurchase,
+    getMapPurchase,
+    getViewPurchase,
+    getCreatePurchase,
+    getEditPurchase,
+    postDeletePurchase,
+    getLastSupplierAdded: getLastSupplierAddedSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -30,6 +30,7 @@ import { useDropzone } from 'react-dropzone'
 // ** Import global alert
  import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 import axios from 'axios'
+import CustomSlider from 'src/@core/Global/CustomSlider'
 
 
 interface FileProp {
@@ -89,8 +90,10 @@ image,
 
   // ** States
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
+  const [openPreview, setOpenPreview] = useState(false)
 
-  const url=getCookie('apiUrl')
+  const url = getCookie('apiUrl')
+  // const fontStyle=getCookie('fontStyle')
 
 
   // ** Hooks
@@ -147,7 +150,8 @@ image,
               sx={{
                 display: 'flex',
                 flexDirection: ['row', 'row', 'row'],
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+
               }}
               key={file.id}
             >
@@ -209,6 +213,9 @@ image,
     }
   }
 
+  const handleTogglePreview = () => {
+    setOpenPreview(!openPreview)
+  }
   const fileList =
     Array.isArray(image) && image.length > 0 && !image[0]?.oldImages? (
       image.map(file => (
@@ -252,10 +259,22 @@ image,
         []
       )
   }
+  console.log(openPreview,'openPreview')
 
   return (
     <Fragment>
-      <div {...getRootProps({ className: 'dropzone' })}>
+      {
+            openPreview && (
+              <CustomSlider
+                data={image}
+                open={openPreview}
+                toggle={handleTogglePreview}
+
+
+              />
+            )
+          }
+      <div {...getRootProps({ className: 'dropzone' })} >
         <input {...getInputProps()} />
         <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'column'], alignItems: 'center' }}>
           <Img alt='Upload img' src={`/images/misc/upload-${theme.palette.mode}.png`} />
@@ -266,7 +285,7 @@ image,
               Drop files here or click{' '}
               <Link href='/' onClick={e => e.preventDefault()}>
                 browse
-              </Link>{' '}
+              </Link>
               thorough your machine
             </Typography>
           </Box>
@@ -281,6 +300,13 @@ image,
                 <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
                   Remove All
                 </Button>
+                <Button color='primary' variant='outlined'
+                  onClick={() => {
+                 handleTogglePreview()
+                  }}
+                >
+                Preview
+                </Button>
               </div>
             )
           }
@@ -289,8 +315,10 @@ image,
               Remove All
             </Button>
           </div> */}
+
         </Fragment>
       ) : null}
+
     </Fragment>
   )
 }

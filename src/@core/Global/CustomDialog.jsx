@@ -2,7 +2,7 @@ import { Dialog } from '@mui/material'
 // ** Cookies
 import { getCookie } from 'cookies-next'
 
-const CustomDialog = ({ open, toggle, children }) => {
+const CustomDialog = ({ open, toggle, children, width, maxWidth }) => {
   const transText = getCookie('fontStyle')
 
   return (
@@ -10,16 +10,17 @@ const CustomDialog = ({ open, toggle, children }) => {
       open={open}
       onClose={toggle}
       fullWidth
+      maxWidth={maxWidth ? maxWidth : null}
       sx={{
         '& .MuiDialog-paper': {
-          width: '90vw',
+          width: width ? width : '90vw',
           maxWidth: '90vw',
           minWidth: '300px'
         },
         fontStyle: transText
       }}
     >
-      {...children}
+      {children}
     </Dialog>
   )
 }

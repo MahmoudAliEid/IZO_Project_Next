@@ -761,13 +761,7 @@ const searchData: AppBarSearchType[] = [
     title: 'List Products - Products',
     category: 'appsPages'
   },
-  {
-    id: 109,
-    url: '/apps/products/addProduct',
-    icon: 'bx:plus',
-    title: 'Add Product - Products',
-    category: 'appsPages'
-  },
+
   {
     id: 110,
     url: '/apps/products/variations',

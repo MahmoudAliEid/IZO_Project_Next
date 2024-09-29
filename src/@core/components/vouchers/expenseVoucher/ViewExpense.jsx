@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 // ** MUI
-import { Dialog, DialogActions, DialogContent, Box, Typography } from '@mui/material'
+import { DialogContent, Box, Typography } from '@mui/material'
 // ** Custom Components
 import CustomHeader from 'src/@core/components/customDialogHeader/CustomHeader'
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
@@ -13,6 +13,7 @@ import { viewExpenseVoucher } from 'src/store/apps/vouchers/expenseVoucher/Actio
 
 // ** Data Grid
 import { DataGrid } from '@mui/x-data-grid'
+import CustomDialog from 'src/@core/Global/CustomDialog'
 
 const ViewExpense = ({ open, toggle, id }) => {
   // ** State
@@ -41,7 +42,7 @@ const ViewExpense = ({ open, toggle, id }) => {
   console.log(data, 'data form view expense Voucher 🐣')
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth>
+    <CustomDialog open={open} toggle={handleClose}>
       <CustomHeader
         title={`Expense Voucher ( ${data?.ref_no ? data.ref_no : ''} )`}
         handleClose={handleClose}
@@ -97,8 +98,7 @@ const ViewExpense = ({ open, toggle, id }) => {
           </Box>
         )}
       </DialogContent>
-      <DialogActions></DialogActions>
-    </Dialog>
+    </CustomDialog>
   )
 }
 
