@@ -73,7 +73,7 @@ export const createPurchase = createAsyncThunk('Purchases/createPurchase', async
       formData.append(`shiping_text[${index}]`, item.note)
       formData.append(`shipping_account_id[${index}]`, item.debit)
       formData.append(`shipping_cost_center_id[${index}]`, item.cost_center)
-      formData.append(`shipping_date[${index}]`, formattedShippingDate)
+      formData.append(`shiping_date[${index}]`, formattedShippingDate)
       formData.append(`line_currency_id[${index}]`, item.currency_id)
       formData.append(`line_currency_id_amount[${index}]`, item.currency_id_amount)
     })
