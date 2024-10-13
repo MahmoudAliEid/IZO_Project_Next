@@ -91,7 +91,7 @@ export const createPurchase = createAsyncThunk('Purchases/createPurchase', async
       const total_cost_dis_new_currency = Number(item.unit_price_after_dis_curr)
       const total_unit_cost_with_tax_new_currency =
         Number(item.unit_price_after_dis_curr) + Number(item.unit_price_after_dis_curr) / Number(values.tax_value)
-      formData.append(`line_sort[${index}]`, item.line_sort)
+      formData.append(`line_sort[${index}]`, index + 1)
       formData.append(`purchases[${index}][quantity]`, item.quantity)
       formData.append(`purchases[${index}][product_id]`, item.product_id)
       formData.append(`purchases[${index}][variation_id]`, item.variation_id)
@@ -130,7 +130,7 @@ export const createPurchase = createAsyncThunk('Purchases/createPurchase', async
         total_cost_dis_new_currency ? total_cost_dis_new_currency : 0
       )
       formData.append(`purchases[${index}][item_tax]`, Number(values.tax))
-      formData.append(`purchases[${index}][line_sort]`, item.line_sort)
+      formData.append(`purchases[${index}][line_sort]`, index + 1)
       formData.append(`purchases[${index}][mfg_date]`, item.mfg_date)
       formData.append(`purchases[${index}][exp_date]`, item.exp_date)
       formData.append(
@@ -139,6 +139,15 @@ export const createPurchase = createAsyncThunk('Purchases/createPurchase', async
       )
     })
   }
+  // for =>1 new=>2
+  //line sort 0: 1
+  // line sort 1: 2
+  //0:2
+  // 1:1
+
+  // 0:1
+  // 1:2
+  // 2:3
 
   // ** files and media
   if (values.attachment && values.attachment.length > 0) {
