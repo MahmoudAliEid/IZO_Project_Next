@@ -44,7 +44,7 @@ export const createPurchase = createAsyncThunk('Purchases/createPurchase', async
   formData.append('total_before_tax_cur', values.sub_total_curr)
   formData.append('discount_type', values.discount_type)
   formData.append('discount_amount', values.discount_amount)
-  formData.append('tax_id', values.tax)
+  formData.append('tax_id', values.tax_amount)
   formData.append('shipping_details', values.shipping_details)
   formData.append('final_total', values.final_total)
   formData.append('final_total_hidden_', values.final_total)
