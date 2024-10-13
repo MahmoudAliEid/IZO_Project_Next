@@ -13,8 +13,6 @@ const initialState = {
 
 const token = getCookie('token')
 
-// const apiUrl = getCookie('apiUrl')
-
 // Create an Axios instance with common headers
 const axiosInstance = axios.create({
   headers: {

@@ -83,11 +83,12 @@ const SearchSupplier = ({ setFieldValue, handleChange, searchSupplier, setSearch
         balance: itemToAdd.balance
       })
       setFieldValue('contact_id', itemToAdd.id)
+      setSearchSupplier(itemToAdd)
 
       // Clear searchInfo
       setSearchInfo([])
     }
-  }, [searchInfo, setFieldValue])
+  }, [searchInfo, setFieldValue, setSearchSupplier])
 
   const handleToggleSupplier = () => {
     setOpenAddSupplier(!openAddSupplier)
@@ -162,6 +163,7 @@ const SearchSupplier = ({ setFieldValue, handleChange, searchSupplier, setSearch
                 fullWidth
                 {...params}
                 {...field}
+                required
                 onChange={handleSearchChange}
                 label='Supplier'
                 variant='outlined'

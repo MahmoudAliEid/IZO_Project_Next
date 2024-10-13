@@ -52,20 +52,21 @@ const RowOptions = ({ idx, remove }) => {
 import { Fragment, useState, useEffect } from 'react'
 
 // ** MUI Imports
-import Paper from '@mui/material/Paper'
-import Table from '@mui/material/Table'
-import TableRow from '@mui/material/TableRow'
-import TableHead from '@mui/material/TableHead'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
+
 import { styled } from '@mui/material/styles'
-import { useSelector } from 'react-redux'
+
 import {
   IconButton,
   Menu,
   MenuItem,
   Tooltip,
+  Paper,
+  Table,
+  TableRow,
+  TableCell,
+  TableContainer,
+  TableBody,
+  TableHead,
   Dialog,
   FormControl,
   InputLabel,
@@ -86,11 +87,12 @@ import Icon from 'src/@core/components/icon'
 
 // ** Third Party Components
 import ProgressCustomization from 'src/views/components/progress/ProgressCircularCustomization'
-
+import { useSelector } from 'react-redux'
 import { getCookie } from 'cookies-next'
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import SearchPurchase from './SearchPurchase'
+import EditorPopUp from './EditorPopUp'
 
 const LinkStyled = styled(Box)(({ theme }) => ({
   fontWeight: 400,
@@ -103,20 +105,10 @@ const LinkStyled = styled(Box)(({ theme }) => ({
   }
 }))
 
-const CustomInputField = ({ name, value, onChange, disabled, multiline, rows }) => {
+const CustomInputField = ({ name, onChange, type, ...props }) => {
   const [field] = useField(name)
 
-  return (
-    <TextField
-      {...field}
-      value={value}
-      onChange={onChange}
-      fullWidth
-      disabled={disabled}
-      multiline={multiline}
-      rows={rows}
-    />
-  )
+  return <TextField {...field} {...props} onChange={onChange} type={type} />
 }
 
 const reorder = (list, startIndex, endIndex) => {
@@ -156,8 +148,97 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
   // Utility function for currency conversion
   const convertToCurrency = (amount, conversionRate) => Number(amount) / conversionRate
 
-  // Utility function to convert back to currency
-  // const convertBackToCurrency = (amount, conversionRate) => Number(amount) * conversionRate
+  //ToDo when currency change make percentage fixed and change the amount discount
+  //ToDo when discount percentage change  and there is currency take amount value or calc unit price before discount curr
+
+  const resetFieldValuesForItem = index => {
+    const updateFields = fields => {
+      Object.entries(fields).forEach(([field, value]) => {
+        setFieldValue(field, value)
+        console.log('mahmoud', { field, value })
+      })
+    }
+    const updatedFields = {
+      [`items.${index}.unit_price_before_dis`]: 0,
+      [`items.${index}.unit_price_after_dis`]: 0,
+      [`items.${index}.unit_price_before_dis_include_vat`]: 0,
+      [`items.${index}.unit_price_after_dis_include_vat`]: 0,
+      [`items.${index}.unit_price_before_dis_curr`]: 0,
+      [`items.${index}.unit_price_after_dis_curr`]: 0,
+      [`items.${index}.total`]: 0,
+      [`items.${index}.total_currency`]: 0,
+      [`items.${index}.percentage_discount`]: 0,
+      [`items.${index}.amount_discount`]: 0
+    }
+
+    updateFields(updatedFields)
+  }
+
+  const calcPrices = (params, priceValue) => {
+    const discountAmount = Number(values.items[params.idx].amount_discount)
+    const quantity = Number(values.items[params.idx].quantity)
+    const tax = Number(values.tax_value)
+    const unitPriceAfterDis = Number(priceValue) - Number(discountAmount)
+    const vatValueBefore = Number(priceValue) * Number(tax)
+    const vatValueAfter = Number(unitPriceAfterDis) * Number(tax)
+    const unitPriceAfterDisInCludeVat = Number(unitPriceAfterDis) + Number(vatValueAfter)
+    const unitPriceBeforeDisInCludeVat = Number(priceValue) + Number(vatValueBefore)
+    const unitPriceBeforeDisCurr = Number(priceValue) / Number(values.currency_id_amount)
+    const unitPriceAfterDisCurr = Number(unitPriceBeforeDisCurr) - Number(discountAmount)
+
+    const updateFields = fields => {
+      Object.entries(fields).forEach(([field, value]) => {
+        setFieldValue(field, value)
+      })
+    }
+
+    const updatedFields = {
+      [`items.${params.idx}.unit_price_before_dis`]: priceValue.toFixed(decimalFormate),
+      [`items.${params.idx}.unit_price_after_dis`]: unitPriceAfterDis.toFixed(decimalFormate),
+      [`items.${params.idx}.unit_price_before_dis_include_vat`]: unitPriceBeforeDisInCludeVat.toFixed(decimalFormate),
+      [`items.${params.idx}.unit_price_after_dis_include_vat`]: unitPriceAfterDisInCludeVat.toFixed(decimalFormate),
+      [`items.${params.idx}.unit_price_before_dis_curr`]: unitPriceBeforeDisCurr.toFixed(decimalFormate),
+      [`items.${params.idx}.unit_price_after_dis_curr`]: unitPriceAfterDisCurr.toFixed(decimalFormate),
+      [`items.${params.idx}.total`]: (quantity * unitPriceAfterDisInCludeVat).toFixed(decimalFormate),
+      [`items.${params.idx}.total_currency`]: (quantity * unitPriceAfterDisCurr).toFixed(decimalFormate)
+    }
+
+    updateFields(updatedFields)
+    updatePercentageDiscount(params, Number(values.items[params.idx].percentage_discount), priceValue)
+  }
+
+  const handleUnitClick = (unit, params) => {
+    setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
+    setFieldValue(`items.${params.idx}.child_price`, '')
+
+    const price_id = values.parent_price
+
+    // set price value based on price_id in all items row if it's unit is null
+
+    if (unit.list_price.length > 0) {
+      const price = unit.list_price.find(price => price.line_id === price_id) || null
+
+      if (!price) {
+        resetFieldValuesForItem(params.idx)
+
+        return
+      }
+
+      calcPrices(params, Number(price.price))
+    }
+  }
+
+  const handleChildPriceClick = (price, params) => {
+    const priceValue = Number(price.price)
+
+    if (!priceValue) {
+      resetFieldValuesForItem(params.idx)
+
+      return
+    }
+
+    calcPrices(params, priceValue)
+  }
 
   const calcAmountDiscount = discountAmount => {
     if (!discountAmount) return 0
@@ -166,6 +247,46 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
     } else {
       return Number(discountAmount)
     }
+  }
+
+  const updatePercentageDiscount = (params, discountPercentage, unitPriceBeforeDis) => {
+    // all fields that will be change is after dis and dis amount and total and total Currency
+    const { currency_id_amount, tax_value, currency_id } = values
+
+    const vat = Number(tax_value) //0.05
+
+    //100 , 27.32 , 3.67
+
+    const discountAmount = (Number(unitPriceBeforeDis) * Number(discountPercentage)) / 100 // 100 * 10 / 100 = 10
+
+    const unitPriceAfterDis = currency_id
+      ? Number(unitPriceBeforeDis) - Number(discountAmount) * Number(currency_id_amount) //100-10*3.67 = 63.3
+      : Number(unitPriceBeforeDis) - Number(discountAmount) // 100 - 10 = 90
+
+    const vatValue = Number(unitPriceAfterDis) * Number(vat) // 63.3 * 0.05 = 3.165 || 90 * 0.05 = 4.5
+    const unitPriceAfterDisIncludeVat = Number(unitPriceAfterDis) + Number(vatValue) // 63.3 + 3.165 = 66.465 || 90 + 4.5 = 94.5
+    // const discountAmount = (unitPriceBeforeDis * discountPercentage) / 100
+
+    const unitPriceBeforeDisCurr = currency_id ? Number(unitPriceBeforeDis) / Number(currency_id_amount) : 0 // 100 / 3.67 = 27.32 || 0
+
+    const unitPriceAfterDisCurr = currency_id
+      ? Number(unitPriceBeforeDisCurr) - Number(discountAmount) / Number(currency_id_amount)
+      : 0 // 27.32 - (10/3.67 )= 24.68 || 0
+
+    const totalCurrency = Number(values.items[params.idx].quantity) * Number(unitPriceAfterDisCurr)
+
+    const finalAmountDis = currency_id ? Number(discountAmount) / Number(currency_id_amount) : Number(discountAmount)
+
+    setFieldValue(`items.${params.idx}.amount_discount`, formatNumber(finalAmountDis))
+    setFieldValue(`items.${params.idx}.unit_price_after_dis`, formatNumber(unitPriceAfterDis))
+    setFieldValue(`items.${params.idx}.unit_price_after_dis_include_vat`, formatNumber(unitPriceAfterDisIncludeVat))
+    setFieldValue(
+      `items.${params.idx}.total`,
+      formatNumber(Number(values.items[params.idx].quantity) * Number(unitPriceAfterDisIncludeVat))
+    )
+
+    setFieldValue(`items.${params.idx}.unit_price_after_dis_curr`, formatNumber(unitPriceAfterDisCurr))
+    setFieldValue(`items.${params.idx}.total_currency`, formatNumber(totalCurrency))
   }
 
   const handleColumCurrency = (unitPriceBeforeDis, discountAmount, params) => {
@@ -223,6 +344,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
     )
 
     handleColumCurrency(unitPriceBeforeDis, discountAmount, params)
+    updatePercentageDiscount(params, Number(values.items[params.idx].percentage_discount), unitPriceBeforeDis)
   }
 
   const handleBeforeDisIncludeVat = (params, event) => {
@@ -252,6 +374,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       (Number(values.items[params.idx].quantity) * Number(unitPriceAfterDisIncludeVat)).toFixed(decimalFormate)
     )
     handleColumCurrency(unitPriceBeforeDis, discountAmount, params)
+    updatePercentageDiscount(params, Number(values.items[params.idx].percentage_discount), unitPriceBeforeDis)
   }
 
   const handleBeforeDiscountCurrency = (params, event) => {
@@ -289,6 +412,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
     setFieldValue(`items.${params.idx}.unit_price_after_dis_curr`, formatNumber(unitPriceAfterDisCurr))
     setFieldValue(`items.${params.idx}.total`, formatNumber(total))
     setFieldValue(`items.${params.idx}.total_currency`, formatNumber(totalCurrency))
+    updatePercentageDiscount(params, Number(values.items[params.idx].percentage_discount), unitPriceBeforeDis)
   }
 
   const updateAmountDiscount = (params, event) => {
@@ -300,11 +424,11 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
     // 4- discount_percentage
     // 5- unit_price_after_dis_curr
     // 6- total_currency
+
+    const discountAmount = Number(event.target.value)
     const { currency_id_amount, tax_value, currency_id } = values
 
     const vat = Number(tax_value) // 0.05
-
-    const discountAmount = Number(event.target.value) // 10
 
     const unitPriceBeforeDis = Number(values.items[params.idx].unit_price_before_dis) // 100
 
@@ -339,80 +463,6 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
     )
   }
 
-  const updatePercentageDiscount = (params, event) => {
-    // all fields that will be change is after dis and dis amount and total and total Currency
-    const { currency_id_amount, tax_value, currency_id } = values
-
-    const vat = Number(tax_value)
-
-    const discountPercentage = Number(event.target.value)
-
-    const discountAmount = (Number(values.items[params.idx].unit_price_before_dis) * discountPercentage) / 100
-
-    const unitPriceBeforeDis = Number(values.items[params.idx].unit_price_before_dis)
-
-    const unitPriceAfterDis = currency_id
-      ? Number(unitPriceBeforeDis) - Number(discountAmount) * Number(currency_id_amount)
-      : Number(unitPriceBeforeDis) - Number(discountAmount)
-
-    const vatValue = Number(unitPriceAfterDis) * Number(vat)
-    const unitPriceAfterDisIncludeVat = Number(unitPriceAfterDis) + Number(vatValue)
-    // const discountAmount = (unitPriceBeforeDis * discountPercentage) / 100
-
-    const unitPriceBeforeDisCurr = currency_id ? Number(unitPriceBeforeDis) / Number(currency_id_amount) : 0
-
-    const unitPriceAfterDisCurr = currency_id ? Number(unitPriceBeforeDisCurr) - Number(discountAmount) : 0
-
-    const totalCurrency = Number(values.items[params.idx].quantity) * Number(unitPriceAfterDisCurr)
-
-    setFieldValue(`items.${params.idx}.amount_discount`, formatNumber(discountAmount))
-    setFieldValue(`items.${params.idx}.unit_price_after_dis`, formatNumber(unitPriceAfterDis))
-    setFieldValue(`items.${params.idx}.unit_price_after_dis_include_vat`, formatNumber(unitPriceAfterDisIncludeVat))
-    setFieldValue(
-      `items.${params.idx}.total`,
-      formatNumber(Number(values.items[params.idx].quantity) * Number(unitPriceAfterDisIncludeVat))
-    )
-
-    setFieldValue(`items.${params.idx}.unit_price_after_dis_curr`, formatNumber(unitPriceAfterDisCurr))
-    setFieldValue(`items.${params.idx}.total_currency`, formatNumber(totalCurrency))
-  }
-
-  // const handleUpdateAfterDiscountCurrency = (params, event) => {
-  //   //ToDo : Add logic for currency
-
-  //   const vat = Number(values.tax_value)
-
-  //   const unitPiceAfterDisCurr = Number(event.target.value)
-
-  //   const discountAmount = calcAmountDiscount(values.items[params.idx].amount_discount)
-
-  //   const unitPriceBeforeDis =
-  //     (Number(unitPiceAfterDisCurr) + Number(discountAmount)) * Number(values.currency_id_amount)
-  //   const vatValueBeforeDis = calculateVAT(unitPriceBeforeDis, vat)
-
-  //   const unitPriceBeforeDisIncludeVat = Number(unitPriceBeforeDis) + Number(vatValueBeforeDis)
-
-  //   const unitPriceAfterDis = Number(unitPriceBeforeDis) - Number(discountAmount)
-
-  //   const vatValueAfterDis = calculateVAT(unitPriceAfterDis, vat)
-
-  //   const unitPriceAfterDisIncludeVat = Number(unitPriceAfterDis) + Number(vatValueAfterDis)
-
-  //   const unitPriceBeforeDisCurr = Number(unitPriceBeforeDis) / Number(values.currency_id_amount)
-
-  //   const totalCurrency = Number(values.items[params.idx].quantity) * Number(unitPiceAfterDisCurr)
-  //   const total = Number(values.items[params.idx].quantity) * Number(unitPriceAfterDisIncludeVat)
-
-  //   setFieldValue(`items.${params.idx}.unit_price_before_dis`, formatNumber(unitPriceBeforeDis))
-  //   setFieldValue(`items.${params.idx}.unit_price_after_dis`, formatNumber(unitPriceAfterDis))
-
-  //   setFieldValue(`items.${params.idx}.unit_price_before_dis_include_vat`, formatNumber(unitPriceBeforeDisIncludeVat))
-  //   setFieldValue(`items.${params.idx}.unit_price_after_dis_include_vat`, formatNumber(unitPriceAfterDisIncludeVat))
-  //   setFieldValue(`items.${params.idx}.unit_price_before_dis_curr`, formatNumber(unitPriceBeforeDisCurr))
-  //   setFieldValue(`items.${params.idx}.total`, formatNumber(total))
-  //   setFieldValue(`items.${params.idx}.total_currency`, formatNumber(totalCurrency))
-  // }
-
   const columns = [
     {
       field: 'idx',
@@ -425,6 +475,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         return <span>{params.no + 1}</span>
       }
     },
+
     {
       field: 'actions',
       headerName: 'Actions',
@@ -453,12 +504,17 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       flex: 0.95,
       minWidth: 250,
       renderCell: params => (
-        <CustomInputField
+        // <CustomInputField
+        //   name={`items.${params.idx}.description`}
+        //   value={values.items[params.idx].description}
+        //   onChange={handleChange}
+        //   multiline
+        //   rows={4}
+        // />
+        <CustomDescription
           name={`items.${params.idx}.description`}
           value={values.items[params.idx].description}
-          onChange={handleChange}
-          multiline
-          rows={4}
+          setFieldValue={setFieldValue}
         />
       )
     },
@@ -477,12 +533,13 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
             name={`items.${params.idx}.quantity`}
             type='number'
             onChange={e => {
-              if (e.target.value <= 0 || e.target.value === '0' || e.target.value === '') {
+              if (Number(e.target.value) <= 0) {
                 setFieldValue(`items.${params.idx}.quantity`, 1)
+              } else {
+                handleChange(e)
               }
-              handleChange(e)
 
-              if (values.items[params.idx].unit_quantity > 0) {
+              if (values.currency_id) {
                 setFieldValue(
                   `items.${params.idx}.total`,
                   (Number(e.target.value) * Number(values.items[params.idx].unit_price_before_dis_include_vat)).toFixed(
@@ -536,33 +593,8 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
                     key={idx}
                     value={unit.id}
                     onClick={() => {
-                      setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
-                      setFieldValue(`items.${params.idx}.child_price`, '')
-                      setFieldValue('parent_price', 0)
-
-                      const price_id = 0
-
-                      // set price value based on price_id in all items row if it's unit is null
-                      values.items.forEach(() => {
-                        if (unit.list_price.length > 0) {
-                          const price = unit.list_price.find(price => price.line_id === price_id)
-
-                          if (price) {
-                            const priceValue = price.price
-
-                            setFieldValue(`items.${params.idx}.price`, priceValue)
-                            setFieldValue(
-                              `items.${params.idx}.total`,
-                              Number(priceValue) * Number(values.items[params.idx].quantity)
-                            )
-                          } else if (price === null) {
-                            setFieldValue(`items.${params.idx}.price`, 0)
-                            setFieldValue(`items.${params.idx}.total`, 0)
-                          } else {
-                            return
-                          }
-                        }
-                      })
+                      handleUnitClick(unit, params)
+                      setFieldValue(`items.${params.idx}.unit_quantity`, unit.unit_quantity)
                     }}
                   >
                     {unit.value}
@@ -604,7 +636,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
                   const listPrice = values.items[params.idx].list_prices
                   if (listPrice) {
                     const childPrice = listPrice.find(price => price.line_id === parentPrice)
-                    setFieldValue(`items.${params.idx}.price`, childPrice?.price)
+                    calcPrices(params, Number(childPrice.price))
                   }
                 }}
                 value={''}
@@ -615,11 +647,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
                 ? rows[params.idx].list_prices.map((price, idx) => (
                     <MenuItem
                       onClick={() => {
-                        setFieldValue(`items.${params.idx}.unit_price_before_dis`, price.price ? price.price : 0)
-                        setFieldValue(
-                          `items.${params.idx}.total`,
-                          (Number(values.items[params.idx].quantity) * Number(price.price)).toFixed(decimalFormate)
-                        )
+                        handleChildPriceClick(price, params)
                       }}
                       key={idx}
                       value={price.line_id}
@@ -633,7 +661,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         </Grid>
       )
     },
-    //TODO: Add unit price before discount( any other logic)
+
     {
       field: 'unit_price_before_dis',
       headerName: `Unit Price(Before Dis) ${currencyCode}`,
@@ -652,7 +680,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         />
       )
     },
-    //TODO: Add unit price before discount include vat( any other logic)
+
     {
       field: 'unit_price_before_dis_include_vat',
       headerName: `Unit Price(Before Dis) Include vat ${currencyCode}`,
@@ -671,6 +699,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         />
       )
     },
+
     {
       field: 'unit_price_before_dis_curr',
       headerName: `Unit Price(Before Dis) ${values.currency_symbol}`,
@@ -689,7 +718,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         />
       )
     },
-    // ** Discount
+
     {
       field: 'amount_discount',
       headerName: 'Amount Discount',
@@ -722,12 +751,12 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
           value={values.items[params.idx].percentage_discount}
           onChange={event => {
             handleChange(event)
-            updatePercentageDiscount(params, event)
+            updatePercentageDiscount(params, Number(event.target.value), values.items[params.idx].unit_price_before_dis)
           }}
         />
       )
     },
-    //TODO: Add unit price after discount( any other logic)
+
     {
       field: 'unit_price_after_dis',
       headerName: `Unit Price(After Dis) ${currencyCode}`,
@@ -744,6 +773,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         />
       )
     },
+
     {
       field: 'unit_price_after_dis_curr',
       headerName: `Unit Price(After Dis) ${values.currency_symbol}`,
@@ -760,6 +790,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         />
       )
     },
+
     {
       field: 'unit_price_after_dis_include_vat',
       headerName: `Unit Price(After Dis) Include vat ${currencyCode}`,
@@ -798,6 +829,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         />
       )
     },
+
     {
       field: 'total_currency',
       headerName: 'Total Currency',
@@ -814,6 +846,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         />
       )
     },
+
     {
       field: 'mfg_date',
       headerName: 'MFG Date / EXP Date',
@@ -832,22 +865,11 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
   ]
 
   useEffect(() => {
+    const setField = (name, value) => setFieldValue(name, Number(value).toFixed(decimalFormate))
     if (values.items && values.items.length > 0) {
-      setFieldValue(
+      setField(
         'total_items',
         values.items.map(item => Number(item.quantity)).reduce((acc, curr) => acc + curr, 0)
-      )
-    }
-  }, [setFieldValue, values])
-
-  useEffect(() => {
-    if (values.items && values.items.length > 0) {
-      setFieldValue(
-        'net_total_amount',
-        values.items
-          .map(item => Number(item.price) * Number(item.quantity))
-          .reduce((acc, curr) => acc + curr, 0)
-          .toFixed(decimalFormate)
       )
     }
   }, [setFieldValue, values, decimalFormate])
@@ -895,9 +917,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
 
     const reorderedRows = reorder(rows, result.source.index, result.destination.index)
 
-    // setMainRows(reorderedRows)
     setFieldValue('items', reorderedRows)
-    console.log(reorderedRows, 'reordered Rows🍤🍤🍤')
   }
 
   const filteredColumns = columns.filter(column => {
@@ -994,21 +1014,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       <DragDropContext onDragEnd={onDragEnd}>
         <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
           <Table stickyHeader aria-label='sticky table'>
-            <TableHead
-              sx={
-                {
-                  // '& .MuiTableCell-root': {
-                  //   backgroundColor: theme => theme.palette.background.default,
-                  //   // backgroundColor: 'transparent',
-                  //   color: 'text.secondary',
-                  //   backdropFilter: `saturate(200%) blur(6px)`,
-                  //   fontSize: '.8rem'
-                  // },
-                  // border: theme => `1px solid ${theme.palette.divider} !important`,
-                  // borderRadius: '5px'
-                }
-              }
-            >
+            <TableHead>
               <TableRow>
                 {filteredColumns.map((column, idx) => (
                   <TableCell
@@ -1121,3 +1127,39 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
 }
 
 export default CustomPurchaseTable
+
+const CustomDescription = ({ name, value, setFieldValue }) => {
+  const [open, setOpen] = useState(false)
+  const toggle = () => {
+    setOpen(!open)
+  }
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        m: 2
+      }}
+    >
+      <Button
+        variant='outlined'
+        onClick={() => {
+          toggle()
+        }}
+      >
+        Show Description
+      </Button>
+      {open && (
+        <EditorPopUp
+          editorValue={value}
+          open={open}
+          toggle={toggle}
+          setFieldValue={setFieldValue}
+          fieldName={name}
+          isEdit={true}
+        />
+      )}
+    </Box>
+  )
+}

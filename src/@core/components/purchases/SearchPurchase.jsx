@@ -103,7 +103,7 @@ const SearchPurchase = ({
         variation_id: itemToAdd.variation_id,
         cost: itemToAdd.cost === 0 ? itemToAdd.all_unit[0].list_price[0].price : itemToAdd.cost,
         quantity: 1,
-        unit: 1,
+        unit: '',
         initial: false,
         stock: itemToAdd.stock,
         unit_price_before_dis: unitPriceBeforeDis,
@@ -121,7 +121,10 @@ const SearchPurchase = ({
         total: unitPriceBeforeDisIncludeVat,
         total_currency: unitPriceBeforeDisCurr,
         mfg_date: '',
-        unit_quantity: 1
+        unit_quantity: 1,
+        line_sort: values.items.length + 1,
+        unit_quantity: '',
+        exp_date: ''
       })
 
       // Clear searchInfo
@@ -132,7 +135,7 @@ const SearchPurchase = ({
     return () => {
       setOpen(false)
     }
-  }, [searchInfo, setOpen, push, values.tax_value, values.currency_id_amount])
+  }, [searchInfo, setOpen, push, values.tax_value, values.currency_id_amount, values.items])
 
   return (
     <Box sx={{ my: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -179,7 +182,7 @@ const SearchPurchase = ({
                     variation_id: item.variation_id,
                     cost: item.cost === 0 ? item.all_unit[0].list_price[0].price : item.cost,
                     quantity: 1,
-                    unit: 1,
+                    unit: '',
                     initial: false,
                     stock: item.stock,
                     unit_price_before_dis: unitPriceBeforeDis,
@@ -197,7 +200,10 @@ const SearchPurchase = ({
                     total: unitPriceBeforeDisIncludeVat,
                     total_currency: unitPriceBeforeDisCurr,
                     mfg_date: '',
-                    unit_quantity: 1
+                    unit_quantity: 1,
+                    line_sort: values.items.length + 1,
+                    unit_quantity: '',
+                    exp_date: ''
                   })
                 })
               } else {
@@ -224,7 +230,7 @@ const SearchPurchase = ({
                   variation_id: newValue.variation_id,
                   cost: newValue.cost === 0 ? newValue.all_unit[0].list_price[0].price : newValue.cost,
                   quantity: 1,
-                  unit: 1,
+                  unit: '',
                   initial: false,
                   stock: newValue.stock,
                   unit_price_before_dis: unitPriceBeforeDis,
@@ -242,7 +248,10 @@ const SearchPurchase = ({
                   total: unitPriceBeforeDisIncludeVat,
                   total_currency: unitPriceBeforeDisCurr,
                   mfg_date: '',
-                  unit_quantity: 1
+                  unit_quantity: 1,
+                  line_sort: values.items.length + 1,
+                  unit_quantity: '',
+                  exp_date: ''
                 })
               }
             }

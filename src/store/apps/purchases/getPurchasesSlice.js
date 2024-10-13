@@ -1,12 +1,8 @@
-'use client'
-
-// dashboardSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 // ** Next Imports
 import { getCookie } from 'cookies-next'
-
 // Define the initial state
 const initialState = {
   data: null,
@@ -36,7 +32,6 @@ export const fetchPurchases = createAsyncThunk('dashboard/fetchPurchases', async
         Authorization: 'Bearer ' + `${token}`
       }
     })
-
     const data = response.data
 
     return data

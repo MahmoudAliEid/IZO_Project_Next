@@ -99,7 +99,7 @@ const RowOptions = ({ id }) => {
   const [openEdit, setOpenEdit] = useState(false)
   const [openView, setOpenView] = useState(false)
   // const [openViewAttachments, setOpenViewAttachments] = useState(false)
-  const [openEntry, setOpenEntry] = useState(false)
+  const [setOpenEntry] = useState(false)
 
   const rowOptionsOpen = anchorEl
 

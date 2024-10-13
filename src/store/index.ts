@@ -156,6 +156,7 @@ import getCreatePurchase from './apps/purchases/getCreatePurchase'
 import getEditPurchase from './apps/purchases/getEditPurchase'
 import postDeletePurchase from './apps/purchases/postDeletePurchase'
 import getLastSupplierAddedSlice from './apps/purchases/Actions/getLastSupplierAddedSlice'
+import postCreatePurchaseSlice from './apps/purchases/postCreatePurchaseSlice'
 
 export const store = configureStore({
   reducer: {
@@ -305,7 +306,8 @@ export const store = configureStore({
     getCreatePurchase,
     getEditPurchase,
     postDeletePurchase,
-    getLastSupplierAdded: getLastSupplierAddedSlice
+    getLastSupplierAdded: getLastSupplierAddedSlice,
+    postCreatePurchase: postCreatePurchaseSlice
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
