@@ -20,6 +20,8 @@ const AddExpense = ({ toggle, open, handleChange, setFieldValue, data, values })
   const transText = getCookie('fontStyle')
 
   // ToDo : debit is required and amount of row should be >0
+  // ToDo : units in product Times Base Unit should be >0 in add  from or edit
+  // ToDo : when unit change check why total is NAN
 
   return (
     <Fragment>

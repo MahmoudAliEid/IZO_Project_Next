@@ -155,7 +155,6 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
     const updateFields = fields => {
       Object.entries(fields).forEach(([field, value]) => {
         setFieldValue(field, value)
-        console.log('mahmoud', { field, value })
       })
     }
     const updatedFields = {
@@ -199,12 +198,12 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       [`items.${params.idx}.unit_price_after_dis_include_vat`]: unitPriceAfterDisInCludeVat.toFixed(decimalFormate),
       [`items.${params.idx}.unit_price_before_dis_curr`]: unitPriceBeforeDisCurr.toFixed(decimalFormate),
       [`items.${params.idx}.unit_price_after_dis_curr`]: unitPriceAfterDisCurr.toFixed(decimalFormate),
-      [`items.${params.idx}.total`]: (quantity * unitPriceAfterDisInCludeVat).toFixed(decimalFormate),
-      [`items.${params.idx}.total_currency`]: (quantity * unitPriceAfterDisCurr).toFixed(decimalFormate)
+      [`items.${params.idx}.total`]: (Number(quantity) * Number(unitPriceAfterDisInCludeVat)).toFixed(decimalFormate),
+      [`items.${params.idx}.total_currency`]: (Number(quantity) * Number(unitPriceAfterDisCurr)).toFixed(decimalFormate)
     }
 
     updateFields(updatedFields)
-    updatePercentageDiscount(params, Number(values.items[params.idx].percentage_discount), priceValue)
+    updatePercentageDiscount(params, Number(values.items[params.idx].percentage_discount), Number(priceValue))
   }
 
   const handleUnitClick = (unit, params) => {

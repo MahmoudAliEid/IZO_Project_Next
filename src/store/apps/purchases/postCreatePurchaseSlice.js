@@ -97,17 +97,38 @@ export const createPurchase = createAsyncThunk('Purchases/createPurchase', async
       formData.append(`purchases[${index}][variation_id]`, item.variation_id)
       formData.append(`purchases[${index}][product_unit_id]`, item.unit_quantity)
       formData.append(`purchases[${index}][sub_unit_id]`, item.unit)
-      formData.append(`purchases[${index}][pp_without_discount_s]`, item.unit_price_before_dis)
-      formData.append(`purchases[${index}][pp_without_discount]`, item.unit_price_before_dis)
+      formData.append(
+        `purchases[${index}][pp_without_discount_s]`,
+        item.unit_price_before_dis ? item.unit_price_before_dis : 0
+      )
+      formData.append(
+        `purchases[${index}][pp_without_discount]`,
+        item.unit_price_before_dis ? item.unit_price_before_dis : 0
+      )
       formData.append(`purchases[${index}][list_price]`, item.child_price)
       formData.append(`purchases[${index}][purchase_note]`, item.description)
-      formData.append(`purchases[${index}][pp_with_tax]`, item.unit_price_before_dis_include_vat)
-      formData.append(`purchases[${index}][pp_new_currency]`, item.unit_price_before_dis_curr)
-      formData.append(`purchases[${index}][pp_with_tax_new_currency]`, pp_with_tax_new_currency)
-      formData.append(`purchases[${index}][discount_percent]`, item.amount_discount)
-      formData.append(`purchases[${index}][purchase_price]`, item.unit_price_after_dis)
-      formData.append(`purchases[${index}][unit_cost_after_tax]`, item.unit_price_after_dis_include_vat)
-      formData.append(`purchases[${index}][total_cost_dis_new_currency]`, total_cost_dis_new_currency)
+      formData.append(
+        `purchases[${index}][pp_with_tax]`,
+        item.unit_price_before_dis_include_vat ? item.unit_price_before_dis_include_vat : 0
+      )
+      formData.append(
+        `purchases[${index}][pp_new_currency]`,
+        item.unit_price_before_dis_curr ? item.unit_price_before_dis_curr : 0
+      )
+      formData.append(
+        `purchases[${index}][pp_with_tax_new_currency]`,
+        pp_with_tax_new_currency ? pp_with_tax_new_currency : 0
+      )
+      formData.append(`purchases[${index}][discount_percent]`, item.amount_discount ? item.amount_discount : 0)
+      formData.append(`purchases[${index}][purchase_price]`, item.unit_price_after_dis ? item.unit_price_after_dis : 0)
+      formData.append(
+        `purchases[${index}][unit_cost_after_tax]`,
+        item.unit_price_after_dis_include_vat ? item.unit_price_after_dis_include_vat : 0
+      )
+      formData.append(
+        `purchases[${index}][total_cost_dis_new_currency]`,
+        total_cost_dis_new_currency ? total_cost_dis_new_currency : 0
+      )
       formData.append(`purchases[${index}][item_tax]`, Number(values.tax))
       formData.append(`purchases[${index}][line_sort]`, item.line_sort)
       formData.append(`purchases[${index}][mfg_date]`, item.mfg_date)
