@@ -164,7 +164,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       [`items.${index}.unit_price_after_dis_include_vat`]: 0,
       [`items.${index}.unit_price_before_dis_curr`]: 0,
       [`items.${index}.unit_price_after_dis_curr`]: 0,
-      [`items.${index}.total`]: 0,
+      [`items.${index}.total`]: '0',
       [`items.${index}.total_currency`]: 0,
       [`items.${index}.percentage_discount`]: 0,
       [`items.${index}.amount_discount`]: 0
@@ -208,7 +208,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
 
   const handleUnitClick = (unit, params) => {
     setFieldValue(`items.${params.idx}.list_prices`, unit.list_price)
-    setFieldValue(`items.${params.idx}.child_price`, '')
+    setFieldValue(`items.${params.idx}.child_price`, values.parent_price)
 
     const price_id = values.parent_price
 
@@ -216,8 +216,10 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
 
     if (unit.list_price.length > 0) {
       const price = unit.list_price.find(price => price.line_id === price_id) || null
+      alert('price from click', price)
 
       if (!price) {
+        alert('price not found')
         resetFieldValuesForItem(params.idx)
 
         return
@@ -503,13 +505,6 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       flex: 0.95,
       minWidth: 250,
       renderCell: params => (
-        // <CustomInputField
-        //   name={`items.${params.idx}.description`}
-        //   value={values.items[params.idx].description}
-        //   onChange={handleChange}
-        //   multiline
-        //   rows={4}
-        // />
         <CustomDescription
           name={`items.${params.idx}.description`}
           value={values.items[params.idx].description}
@@ -672,6 +667,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         <CustomInputField
           name={`items.${params.idx}.unit_price_before_dis`}
           value={values.items[params.idx].unit_price_before_dis}
+          type='number'
           onChange={event => {
             handleChange(event)
             handleBeforeDiscount(params, event)
@@ -691,6 +687,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         <CustomInputField
           name={`items.${params.idx}.unit_price_before_dis_include_vat`}
           value={values.items[params.idx].unit_price_before_dis_include_vat}
+          type='number'
           onChange={event => {
             handleChange(event)
             handleBeforeDisIncludeVat(params, event)
@@ -710,6 +707,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         <CustomInputField
           name={`items.${params.idx}.unit_price_before_dis_curr`}
           value={values.items[params.idx].unit_price_before_dis_curr}
+          type='number'
           onChange={event => {
             handleChange(event)
             handleBeforeDiscountCurrency(params, event)
@@ -729,6 +727,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         <CustomInputField
           name={`items.${params.idx}.amount_discount`}
           value={values.items[params.idx].amount_discount}
+          type='number'
           onChange={event => {
             handleChange(event)
             updateAmountDiscount(params, event)
@@ -748,6 +747,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
         <CustomInputField
           name={`items.${params.idx}.percentage_discount`}
           value={values.items[params.idx].percentage_discount}
+          type='number'
           onChange={event => {
             handleChange(event)
             updatePercentageDiscount(params, Number(event.target.value), values.items[params.idx].unit_price_before_dis)
@@ -844,23 +844,23 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
           disabled={true}
         />
       )
-    },
-
-    {
-      field: 'mfg_date',
-      headerName: 'MFG Date / EXP Date',
-      align: 'center',
-      flex: 0.25,
-      hide: hiddenColumns['mfg_date'],
-      minWidth: 110,
-      renderCell: params => (
-        <CustomInputField
-          name={`items.${params.idx}.mfg_date`}
-          value={values.items[params.idx].mfg_date}
-          onChange={handleChange}
-        />
-      )
     }
+
+    // {
+    //   field: 'mfg_date',
+    //   headerName: 'MFG Date / EXP Date',
+    //   align: 'center',
+    //   flex: 0.25,
+    //   hide: hiddenColumns['mfg_date'],
+    //   minWidth: 110,
+    //   renderCell: params => (
+    //     <CustomInputField
+    //       name={`items.${params.idx}.mfg_date`}
+    //       value={values.items[params.idx].mfg_date}
+    //       onChange={handleChange}
+    //     />
+    //   )
+    // }
   ]
 
   useEffect(() => {

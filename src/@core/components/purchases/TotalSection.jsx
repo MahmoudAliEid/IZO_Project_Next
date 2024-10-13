@@ -138,6 +138,30 @@ const TotalSection = ({ values, setFieldValue }) => {
     values.final_total,
     values.final_total_curr
   ])
+  // ** and currency of additional cost || supplier charges
+  useEffect(() => {
+    const updateField = (fieldName, total) => {
+      // Parse string back to number if needed
+      setFieldValue(fieldName, Number(total).toFixed(decimalFormate))
+    }
+
+    updateField(
+      'additional_supplier_charges_curr',
+      values.currency_id ? Number(values.additional_supplier_charges) / Number(values.currency_id_amount) : 0
+    )
+
+    updateField(
+      'additional_cost_charges_curr',
+      values.currency_id ? Number(values.additional_cost_charges) / Number(values.currency_id_amount) : 0
+    )
+  }, [
+    values.additional_cost_charges,
+    setFieldValue,
+    decimalFormate,
+    values.currency_id_amount,
+    values.currency_id,
+    values.additional_supplier_charges
+  ])
 
   const subTotalCurr = values.currency_id
     ? CurrencySymbolPlacement === 'left'

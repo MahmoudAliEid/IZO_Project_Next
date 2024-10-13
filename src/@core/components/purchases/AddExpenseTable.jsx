@@ -36,7 +36,7 @@ import DatePicker from 'react-datepicker'
 import { Fragment, useEffect, useState, useMemo } from 'react'
 
 // ** Custom Components
-const CustomInputField = ({ name, value, onChange, disabled, multiline, rows, onBlur }) => {
+const CustomInputField = ({ name, value, onChange, disabled, multiline, rows, onBlur, type }) => {
   const [field] = useField(name)
 
   return (
@@ -49,6 +49,7 @@ const CustomInputField = ({ name, value, onChange, disabled, multiline, rows, on
       multiline={multiline}
       rows={rows}
       onBlur={onBlur}
+      type={type}
     />
   )
 }
@@ -198,14 +199,14 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
     updateField('additional_cost_charges', triggerUpdateSupplier.costCharges)
     updateField(
       'additional_supplier_charges_curr',
-      Number(triggerUpdateSupplier.supplierCharges) / Number(values.currency_id_amount)
+      values.currency_id ? Number(triggerUpdateSupplier.supplierCharges) / Number(values.currency_id_amount) : 0
     )
 
     updateField(
       'additional_cost_charges_curr',
-      Number(triggerUpdateSupplier.costCharges) / Number(values.currency_id_amount)
+      values.currency_id ? Number(triggerUpdateSupplier.costCharges) / Number(values.currency_id_amount) : 0
     )
-  }, [triggerUpdateSupplier, setFieldValue, decimalFormate, values.currency_id_amount])
+  }, [triggerUpdateSupplier, setFieldValue, decimalFormate, values.currency_id_amount, values.currency_id])
 
   // ** Calculate currency fields
   useEffect(() => {
@@ -339,10 +340,20 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
               onChange={event => {
                 handleChange(event)
                 handleClickCurrencyRow(data.currencies.find(item => item.id === event.target.value))
+                setFieldValue(
+                  `expense.${params.idx}.currency_id_amount`,
+                  data.currencies.find(item => item.id === event.target.value).amount
+                )
               }}
               fullWidth
             >
-              <MenuItem value=''>
+              <MenuItem
+                value=''
+                onClick={() => {
+                  handleClickCurrencyRow(null)
+                  setFieldValue(`expense.${params.idx}.currency_id_amount`, '')
+                }}
+              >
                 <em>Please Select</em>
               </MenuItem>
 
@@ -390,8 +401,14 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
           <CustomInputField
             value={values.expense[params.idx].amount}
             name={`expense.${params.idx}.amount`}
+            type='number'
             onChange={event => {
-              handleChange(event)
+              if (Number(event.target.value) <= 0) {
+                setFieldValue(`expense.${params.idx}.amount`, 1)
+              } else {
+                handleChange(event)
+              }
+
               const amount = Number(event.target.value)
               const vat = Number(values.expense[params.idx].vat)
               const total = Number(amount + vat).toFixed(decimalFormate)
@@ -413,8 +430,13 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
           <CustomInputField
             value={values.expense[params.idx].vat}
             name={`expense.${params.idx}.vat`}
+            type='number'
             onChange={event => {
-              handleChange(event)
+              if (Number(event.target.value) < 0) {
+                setFieldValue(`expense.${params.idx}.vat`, 0)
+              } else {
+                handleChange(event)
+              }
               const vat = Number(event.target.value)
               const amount = Number(values.expense[params.idx].amount)
               const total = Number(amount + vat).toFixed(decimalFormate)
@@ -454,8 +476,13 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
           <CustomInputField
             value={values.expense[params.idx].amount_curr}
             name={`expense.${params.idx}.amount_curr`}
+            type={'number'}
             onChange={event => {
-              handleChange(event)
+              if (Number(event.target.value) <= 0) {
+                setFieldValue(`expense.${params.idx}.amount_curr`, 1)
+              } else {
+                handleChange(event)
+              }
               const amount_curr = Number(event.target.value)
               const vat = Number(values.expense[params.idx].vat_curr)
               const total_curr = Number(amount_curr + vat).toFixed(decimalFormate)
@@ -477,8 +504,13 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
           <CustomInputField
             value={values.expense[params.idx].vat_curr}
             name={`expense.${params.idx}.vat_curr`}
+            type={'number'}
             onChange={event => {
-              handleChange(event)
+              if (Number(event.target.value) < 0) {
+                setFieldValue(`expense.${params.idx}.vat_curr`, 0)
+              } else {
+                handleChange(event)
+              }
               const vat = Number(event.target.value)
               const amount_curr = Number(values.expense[params.idx].amount_curr)
               const total_curr = Number(amount_curr + vat).toFixed(decimalFormate)
@@ -544,9 +576,6 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
               onChange={handleChange}
               fullWidth
             >
-              <MenuItem value=''>
-                <em>Please Select</em>
-              </MenuItem>
               {data &&
                 data.expense_accounts.length > 0 &&
                 data.expense_accounts.map((item, index) => (
@@ -748,18 +777,7 @@ const AddExpenseTable = ({ rows, values, data, handleChange, setFieldValue, remo
                 >
                   <em>Please Select</em>
                 </MenuItem>
-                <MenuItem
-                  value={2}
-                  onClick={() => {
-                    const item = {
-                      amount: 2,
-                      symbol: '🍔'
-                    }
-                    handleClickCurrency(item)
-                  }}
-                >
-                  Mahmoud
-                </MenuItem>
+
                 {data &&
                   data.currencies.length > 0 &&
                   data.currencies.map(item => (

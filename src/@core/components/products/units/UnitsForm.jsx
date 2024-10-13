@@ -277,8 +277,15 @@ const UnitsForm = ({ type, open, setOpen, itemId }) => {
                               multiline
                               label='Times Base Unit'
                               name='sub_qty'
+                              type='number'
                               value={values.sub_qty}
-                              onChange={handleChange}
+                              onChange={event => {
+                                if (Number(event.target.value) <= 0) {
+                                  setFieldValue(`sub_qty`, 1)
+                                } else {
+                                  handleChange(event)
+                                }
+                              }}
                               onBlur={handleBlur}
                             />
                           </FormControl>

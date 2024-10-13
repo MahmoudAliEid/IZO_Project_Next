@@ -1,6 +1,6 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
-import { Box, Button, DialogContent, Divider, FormControl, Grid, TextField } from '@mui/material'
+import { Alert, Box, Button, DialogContent, DialogTitle, Divider, FormControl, Grid, TextField } from '@mui/material'
 
 // ** Cookies
 import { getCookie } from 'cookies-next'
@@ -11,22 +11,43 @@ import { FieldArray } from 'formik'
 // ** Custom Components
 import AddExpenseTable from './AddExpenseTable'
 import CustomDialog from 'src/@core/Global/CustomDialog'
-import CustomHeader from '../customDialogHeader/CustomHeader'
+// import CustomHeader from '../customDialogHeader/CustomHeader'
 import MultipleUploadFile from 'src/@core/Global/MultipleUploadFile'
 
 const AddExpense = ({ toggle, open, handleChange, setFieldValue, data, values }) => {
   // ** Cookies
-
   const transText = getCookie('fontStyle')
+
+  const [isNotValid, setIsNotValid] = useState(false)
 
   // ToDo : debit is required and amount of row should be >0
   // ToDo : units in product Times Base Unit should be >0 in add  from or edit
-  // ToDo : when unit change check why total is NAN
+  // ToDo : when unit change check why total is NAN when child price dropdowm is selected
+  // ToDo : trigger change in expenst to cacl crr (infinty)
+
+  useEffect(() => {
+    let valid = false
+    values.expense.forEach(item => {
+      if (!item.debit || item.debit === '0' || item.debit === 0 || item.debit === '') {
+        valid = true
+      }
+    })
+
+    setIsNotValid(valid)
+  }, [values.expense])
 
   return (
     <Fragment>
       <CustomDialog open={open} handleClose={toggle}>
-        <CustomHeader divider={true} title='Add Expense' handleClose={toggle} />
+        {/* <CustomHeader divider={true} title='Add Expense' handleClose={toggle} /> */}
+        <DialogTitle
+          title='Add Expense'
+          sx={{
+            textTransform: transText
+          }}
+        >
+          Add Expense
+        </DialogTitle>
         <DialogContent
           sx={{
             textTransform: transText
@@ -35,6 +56,11 @@ const AddExpense = ({ toggle, open, handleChange, setFieldValue, data, values })
           <FieldArray name={`expense`}>
             {({ push, remove }) => (
               <div>
+                {isNotValid && (
+                  <Alert severity='error' sx={{ m: 2 }}>
+                    <strong>Warning:</strong> Please make sure to add the debit details for each row
+                  </Alert>
+                )}
                 <AddExpenseTable
                   values={values}
                   data={data}
@@ -104,7 +130,7 @@ const AddExpense = ({ toggle, open, handleChange, setFieldValue, data, values })
             p: 2
           }}
         >
-          <Button color='primary' variant='contained' onClick={toggle}>
+          <Button color='primary' variant='contained' onClick={toggle} disabled={isNotValid}>
             Save
           </Button>
         </Box>
