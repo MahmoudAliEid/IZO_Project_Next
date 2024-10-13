@@ -48,7 +48,15 @@ const ViewPopUp = ({ open, toggle, isEdit, itemId, contact, contactData }: any) 
 
   return (
     <Fragment>
-      <CustomDialog open={open}   toggle={handleClose} >
+      <CustomDialog open={open}
+        toggle={handleClose}
+        maxWidth='md'
+
+        width={"90vw"}
+
+
+
+      >
         <DialogTitle id='customized-dialog-title' sx={{ position: 'relative' }}>
           <Typography
             variant='h6'
