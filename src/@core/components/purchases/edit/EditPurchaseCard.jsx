@@ -13,22 +13,22 @@ import * as Yup from 'yup'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
+import { fetchEditPurchase } from 'src/store/apps/purchases/getEditPurchase'
 import { fetchCreatePurchase } from 'src/store/apps/purchases/getCreatePurchase'
-import { createPurchase } from 'src/store/apps/purchases/postCreatePurchaseSlice'
 
 // ** Custom Components
-import AddExpense from './AddExpense'
-import ExpenseActions from './ExpenseActions'
-import PurchaseFirstSection from './PurchaseFirstSection'
-import PurchaseSecondSection from './PurchaseSecondSection'
-import PurchaseThirdSection from './PurchaseThirdSection'
-import PurchaseFooterSection from './PurchaseFooterSection'
-import PurchaseTableSection from './PurchaseTableSection'
+import AddExpense from '../AddExpense'
+import ExpenseActions from '../ExpenseActions'
+import PurchaseFirstSection from '../PurchaseFirstSection'
+import PurchaseSecondSection from '../PurchaseSecondSection'
+import PurchaseThirdSection from '../PurchaseThirdSection'
+import PurchaseFooterSection from '../PurchaseFooterSection'
+import PurchaseTableSection from '../PurchaseTableSection'
 
 const now = new Date()
 const tomorrowDate = now.setDate(now.getDate() + 7)
 
-const AddPurchaseCard = () => {
+const EditPurchaseCard = ({ id }) => {
   // ** State
   const [data, setData] = useState()
   const [openLoading, setOpenLoading] = useState(false)
@@ -101,7 +101,8 @@ const AddPurchaseCard = () => {
   const dispatch = useDispatch()
 
   // ** Selectors
-  const store = useSelector(state => state.getCreatePurchase?.data?.value)
+  const store = useSelector(state => state.getEditPurchase?.data?.value)
+  const storeCreate = useSelector(state => state.getCreatePurchase?.data?.value)
   const createStatus = useSelector(state => state.postCreatePurchase)
   const dataOfLastSupplier = useSelector(state => state.getLastSupplierAdded?.data?.value)
 
@@ -115,15 +116,18 @@ const AddPurchaseCard = () => {
 
   // ** fetch create purchase data
   useEffect(() => {
+    dispatch(fetchEditPurchase({ itemId: id }))
+  }, [dispatch, id])
+  useEffect(() => {
     dispatch(fetchCreatePurchase())
   }, [dispatch])
 
   // ** set Data
   useEffect(() => {
-    if (store) {
-      setData(store)
+    if (storeCreate) {
+      setData(storeCreate)
     }
-  }, [store])
+  }, [storeCreate])
 
   // ** Trigger last supplier added
   useEffect(() => {
@@ -144,14 +148,79 @@ const AddPurchaseCard = () => {
       })
     }
   }, [dataOfLastSupplier])
+  useEffect(() => {
+    if (store) {
+      const { info } = store
+      setInitialValues(prev => {
+        return {
+          ...prev,
+          ...info[0],
+          store_id: info[0].store,
+          storeName: info[0].storeName,
+          location_id: info[0].location,
+          type: info[0].type,
+          status: info[0].status,
+          payment_status: info[0].payment_status,
+          transaction_date: new Date(info[0].date),
+          contact_id: info[0].contact,
+          reference_no: info[0].reference_no,
+          project_no: info[0].project_no,
+          tax_amount: info[0].tax,
+          tax_final: info[0].tax_amount,
+          discount_type: info[0].discount_type,
+          discount_amount: info[0].discount_amount,
+          sub_total: info[0].sub_total,
+          final_total: info[0].final_total,
+          additional_notes: info[0].additional_notes,
+          shipping_details: info[0].shipping_details,
+          source_reference: info[0].source_reference,
+          currency_id: info[0].currency_id,
+          currency_id_amount: Number(info[0].exchange_price),
+          currency_symbol: '', // ! need it from back end
+          items: info[0].list.map(item => ({
+            ...item,
+            id: item.id,
+            name: '',
+            description: item.purchase_note,
+            product_id: item.product_id,
+            variation_id: item.variation_id,
+            quantity: item.quantity,
+            unit: 1,
+            initial: false,
+            unit_price_before_dis: item.pp_without_discount,
+            unit_price_before_dis_include_vat: 0,
+            list_prices: [],
+            all_unit: [],
+            child_price: '',
+            unit_price_after_dis: item.purchase_price,
+            unit_price_after_dis_include_vat: item.purchase_price_inc_tax,
+            amount_discount: item.discount_percent,
+            percentage_discount: 0,
+            unit_price_after_dis_curr: 0,
+            unit_price_before_dis_curr: 0,
+            total: Number(item.purchase_price_inc_tax) * Number(item.quantity),
+            total_currency: 0,
+            mfg_date: item.mfg_date,
+            unit_quantity: 1,
+            line_sort: item.order_id,
+            unit_quantity: '',
+            exp_date: item.exp_date
+          }))
+        }
+      })
+    }
+  }, [store])
 
   // ** Function to handle form submit
   const handleSubmit = (values, { setSubmitting }) => {
     setOpenLoading(true)
-    dispatch(createPurchase({ values })).then(() => {
-      setSubmitting(false)
-    })
+    console.log('id form edit purchase edit and values:=>', id, values)
+    // dispatch(createPurchase({ values })).then(() => {
+    //   setSubmitting(false)
+    // })
+    setSubmitting(false)
   }
+  console.log('store of edit purchase & data:=>', data)
 
   return (
     <Fragment>
@@ -238,7 +307,12 @@ const AddPurchaseCard = () => {
               </Grid>
               <Grid item xl={12} md={12} xs={12}>
                 <Card>
-                  <ExpenseActions values={values} setFieldValue={setFieldValue} isSubmitting={isSubmitting} />
+                  <ExpenseActions
+                    values={values}
+                    setFieldValue={setFieldValue}
+                    isSubmitting={isSubmitting}
+                    edit={true}
+                  />
                 </Card>
               </Grid>
             </Grid>
@@ -260,4 +334,4 @@ const AddPurchaseCard = () => {
   )
 }
 
-export default AddPurchaseCard
+export default EditPurchaseCard

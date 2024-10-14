@@ -20,11 +20,6 @@ const AddExpense = ({ toggle, open, handleChange, setFieldValue, data, values })
 
   const [isNotValid, setIsNotValid] = useState(false)
 
-  // ToDo : debit is required and amount of row should be >0
-  // ToDo : units in product Times Base Unit should be >0 in add  from or edit
-  // ToDo : when unit change check why total is NAN when child price dropdowm is selected
-  // ToDo : trigger change in expenst to cacl crr (infinty)
-
   useEffect(() => {
     let valid = false
     values.expense.forEach(item => {

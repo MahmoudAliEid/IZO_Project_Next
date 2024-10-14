@@ -55,6 +55,7 @@ import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlob
 import { deletePurchase } from 'src/store/apps/purchases/postDeletePurchase'
 import ViewPurchases from 'src/@core/components/purchases/ViewPurchases'
 import AddPurchases from 'src/@core/components/purchases/AddPurchases'
+import PurchaseEditPopUp from 'src/@core/components/purchases/edit/PurchaseEditPopUp'
 
 const paymentStatus = {
   paid: { title: 'Paid', color: 'success' },
@@ -323,8 +324,8 @@ const RowOptions = ({ id }) => {
       )}
       {openView && <ViewPurchases open={openView} toggle={handleView} id={id} />}
 
+      {openEdit && <PurchaseEditPopUp open={openEdit} toggle={handleEdit} id={id} />}
       {/*
-      {openEdit && <EditJournalVoucherPopUp open={openEdit} handleClose={handleEdit} id={id} />}
 
       {openViewAttachments && (
         <AttachmentJournalVoucher open={openViewAttachments} toggle={handleViewAttachments} id={id} />

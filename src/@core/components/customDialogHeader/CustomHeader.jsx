@@ -29,7 +29,6 @@ const CustomHeader = ({ title, handleClose, divider }) => {
           size='large'
           aria-label='close'
           onClick={handleClose}
-          // change variant to 'outlined' on hover and 'contained' if else to see the difference on hover
           variant={hover ? 'contained' : 'text'}
           onMouseEnter={() => {
             setHover(true)
@@ -39,7 +38,6 @@ const CustomHeader = ({ title, handleClose, divider }) => {
           }}
           color='error'
           sx={{
-            // make the button on right top corner
             position: 'absolute',
             top: 3,
             right: 3,
