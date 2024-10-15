@@ -867,7 +867,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
   }, [setFieldValue, values, decimalFormate])
 
   useEffect(() => {
-    values.items.map((item, idx) => {
+    values.items.slice(1).map((item, idx) => {
       if (item.unit) {
         const arrOfUnit = item.all_unit
 
@@ -1041,9 +1041,9 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            sx={{
-                              display: row.initial ? 'none' : 'auto'
-                            }}
+                            // sx={{
+                            //   display: row.initial ? 'none' : 'auto'
+                            // }}
                           >
                             {filteredColumns.map((column, index) => {
                               const params = row[column.field]
