@@ -139,17 +139,12 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
   const currencyCode = getCookie('currency_code')
 
   // ** Functions
-  // Utility function for formatting numbers
+
   const formatNumber = num => Number(num).toFixed(decimalFormate)
 
-  // Utility function to calculate VAT
   const calculateVAT = (amount, vatRate) => Number(amount) * vatRate
 
-  // Utility function for currency conversion
   const convertToCurrency = (amount, conversionRate) => Number(amount) / conversionRate
-
-  //ToDo when currency change make percentage fixed and change the amount discount
-  //ToDo when discount percentage change  and there is currency take amount value or calc unit price before discount curr
 
   const resetFieldValuesForItem = index => {
     const updateFields = fields => {
@@ -216,10 +211,8 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
 
     if (unit.list_price.length > 0) {
       const price = unit.list_price.find(price => price.line_id === price_id) || null
-      alert('price from click', price)
 
       if (!price) {
-        alert('price not found')
         resetFieldValuesForItem(params.idx)
 
         return
@@ -473,7 +466,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       hide: hiddenColumns['idx'],
       minWidth: 10,
       renderCell: params => {
-        return <span>{params.no + 1}</span>
+        return <span>{params.no}</span>
       }
     },
 
@@ -1011,7 +1004,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
       <HandleHideColumn initialColumns={filteredColumns} toggleColumnVisibility={toggleColumnVisibility} />
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <TableContainer component={Paper} sx={{ maxHeight: 440, minWidth: '100%' }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 1040, minWidth: '100%' }}>
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
               <TableRow>
@@ -1049,7 +1042,7 @@ const CustomPurchaseTable = ({ rows, values, handleChange, remove, setFieldValue
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             sx={{
-                              display: row.id === -1 ? 'none' : 'auto'
+                              display: row.initial ? 'none' : 'auto'
                             }}
                           >
                             {filteredColumns.map((column, index) => {

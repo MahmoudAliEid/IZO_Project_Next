@@ -102,7 +102,7 @@ const EditPurchaseCard = ({ id }) => {
 
   // ** Selectors
   const store = useSelector(state => state.getEditPurchase?.data?.value)
-  const storeCreate = useSelector(state => state.getCreatePurchase?.data?.value)
+
   const createStatus = useSelector(state => state.postCreatePurchase)
   const dataOfLastSupplier = useSelector(state => state.getLastSupplierAdded?.data?.value)
 
@@ -124,10 +124,10 @@ const EditPurchaseCard = ({ id }) => {
 
   // ** set Data
   useEffect(() => {
-    if (storeCreate) {
-      setData(storeCreate)
+    if (store) {
+      setData(store.requirement)
     }
-  }, [storeCreate])
+  }, [store])
 
   // ** Trigger last supplier added
   useEffect(() => {
@@ -169,18 +169,19 @@ const EditPurchaseCard = ({ id }) => {
           tax_final: info[0].tax_amount,
           discount_type: info[0].discount_type,
           discount_amount: info[0].discount_amount,
+          currency_symbol: info[0].currency_symbol,
           sub_total: info[0].sub_total,
           final_total: info[0].final_total,
           additional_notes: info[0].additional_notes,
           shipping_details: info[0].shipping_details,
-          source_reference: info[0].source_reference,
+          sup_refe: info[0].source_reference,
           currency_id: info[0].currency_id,
           currency_id_amount: Number(info[0].exchange_price),
-          currency_symbol: '', // ! need it from back end
+          tax_final: info[0].tax_amount,
           items: info[0].list.map(item => ({
             ...item,
             id: item.id,
-            name: '',
+            name: item.name,
             description: item.purchase_note,
             product_id: item.product_id,
             variation_id: item.variation_id,
@@ -188,9 +189,9 @@ const EditPurchaseCard = ({ id }) => {
             unit: 1,
             initial: false,
             unit_price_before_dis: item.pp_without_discount,
-            unit_price_before_dis_include_vat: 0,
-            list_prices: [],
-            all_unit: [],
+            unit_price_before_dis_include_vat: item.pp_without_discount_tax,
+            list_prices: item.list_prices || [],
+            all_unit: item.all_unit || [],
             child_price: '',
             unit_price_after_dis: item.purchase_price,
             unit_price_after_dis_include_vat: item.purchase_price_inc_tax,

@@ -30,12 +30,12 @@ const PurchaseSecondSection = ({ values, handleBlur, handleChange, data, touched
   return (
     <CardContent>
       <Grid container sx={{ px: { sm: 4, xs: 0 } }}>
-        <Grid item xl={6} xs={12}>
+        <Grid item xs={12}>
           <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: { xl: 'flex-end', xs: 'flex-start' }
+              alignItems: 'flex-start'
             }}
           >
             <Box
