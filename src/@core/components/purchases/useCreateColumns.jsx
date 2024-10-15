@@ -24,6 +24,8 @@ import Icon from 'src/@core/components/icon'
 // ** custom components
 import CustomDescription from './CustomDescription'
 
+import { getCookie } from 'cookies-next'
+
 const LinkStyled = styled(Box)(({ theme }) => ({
   fontWeight: 400,
   fontSize: '1rem',
