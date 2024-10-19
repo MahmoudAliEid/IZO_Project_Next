@@ -122,7 +122,7 @@ const SearchPurchase = ({
         total_currency: unitPriceBeforeDisCurr,
         mfg_date: '',
         unit_quantity: 1,
-        line_sort: values.items.length,
+        line_sort: values.items.length + 1,
         unit_quantity: '',
         exp_date: ''
       })
@@ -201,7 +201,7 @@ const SearchPurchase = ({
                     total_currency: unitPriceBeforeDisCurr,
                     mfg_date: '',
                     unit_quantity: 1,
-                    line_sort: values.items.length,
+                    line_sort: values.items.length + 1,
                     unit_quantity: '',
                     exp_date: ''
                   })
@@ -249,7 +249,7 @@ const SearchPurchase = ({
                   total_currency: unitPriceBeforeDisCurr,
                   mfg_date: '',
                   unit_quantity: 1,
-                  line_sort: values.items.length,
+                  line_sort: values.items.length + 1,
                   unit_quantity: '',
                   exp_date: ''
                 })

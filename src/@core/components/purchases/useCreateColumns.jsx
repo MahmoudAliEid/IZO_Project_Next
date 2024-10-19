@@ -57,7 +57,7 @@ const useCreateColumns = ({ rows, values, handleChange, setFieldValue, remove, h
       hide: hiddenColumns['idx'],
       minWidth: 10,
       renderCell: params => {
-        return <span>{params.no}</span>
+        return <span>{params.no+1}</span>
       }
     },
 

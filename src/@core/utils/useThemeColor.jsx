@@ -20,9 +20,8 @@ const useThemeColor = () => {
       }
     }, 1000) // Check every second
 
-    // Cleanup function to clear the interval when the component unmounts
     return () => clearInterval(intervalId)
-  }, [themeColor]) // Add themeColor as a dependency
+  }, [themeColor])
 
   return { themeColor, mainColor }
 }
