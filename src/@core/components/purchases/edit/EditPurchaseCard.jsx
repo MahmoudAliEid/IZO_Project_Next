@@ -230,6 +230,7 @@ const EditPurchaseCard = ({ id }) => {
           }))
         }
       })
+      setSearchSupplier(info[0].contact_info.name)
     }
   }, [store])
 
