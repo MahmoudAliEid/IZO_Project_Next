@@ -56,6 +56,7 @@ const PurchaseThirdSection = ({
   data
 }) => {
   const userName = getCookie('userName')
+  const decimalFormate = getCookie('DecimalFormat')
 
   const handleGlobalPriceChange = (event, setFieldValue, values) => {
     const price_id = event.target.value
@@ -125,7 +126,7 @@ const PurchaseThirdSection = ({
       setFieldValue('currency_symbol', '')
     }
     setFieldValue('currency_symbol', item.symbol)
-    setFieldValue('currency_id_amount', item.amount)
+    setFieldValue('currency_id_amount', Number(item.amount))
 
     // Iterate over each row in values.items and calculate new values
     values.items.forEach((row, rowIndex) => {

@@ -82,7 +82,7 @@ const TotalSection = ({ values, setFieldValue }) => {
     updateFinalDiscount()
 
     if (SubTotal !== values.sub_total) {
-      setFieldValue('sub_total', SubTotal)
+      setFieldValue('sub_total', Number(SubTotal).toFixed(decimalFormate))
     }
 
     if (SubCurrTotal !== values.sub_total_curr) {
