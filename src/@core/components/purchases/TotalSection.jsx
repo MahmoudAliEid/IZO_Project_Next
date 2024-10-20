@@ -220,8 +220,8 @@ const TotalSection = ({ values, setFieldValue }) => {
               <StyledTableCell align='center'>
                 <Typography variant='body1' sx={{ fontWeight: 600, color: 'text.secondary' }}>
                   {CurrencySymbolPlacement === 'left'
-                    ? `${currencyCode} ${values.sub_total.toFixed(decimalFormate)}`
-                    : `${values.sub_total.toFixed(decimalFormate)} ${currencyCode}`}
+                    ? `${currencyCode} ${Number(values.sub_total).toFixed(decimalFormate)}`
+                    : `${Number(values.sub_total).toFixed(decimalFormate)} ${currencyCode}`}
                 </Typography>
               </StyledTableCell>
               {subTotalCurr && (

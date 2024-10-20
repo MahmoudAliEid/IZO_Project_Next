@@ -6,7 +6,12 @@ import CustomPurchaseTable from './CustomPurchaseTable'
 // ** formik
 import { FieldArray } from 'formik'
 
+// ** Cookies
+import { getCookie } from 'cookies-next'
+
 const PurchaseTableSection = ({ values, handleChange, setFieldValue }) => {
+  const decimalFormat = getCookie('DecimalFormat')
+
   return (
     <CardContent>
       <FieldArray name={`items`}>
@@ -38,7 +43,12 @@ const PurchaseTableSection = ({ values, handleChange, setFieldValue }) => {
               </Grid>
               <Grid item xs={12} md={6} lg={6}>
                 <FormControl fullWidth>
-                  <TextField label='Sub Total' name='sub_total' value={values.sub_total} disabled />
+                  <TextField
+                    label='Sub Total'
+                    name='sub_total'
+                    value={Number(values.sub_total).toFixed(decimalFormat)}
+                    disabled
+                  />
                 </FormControl>
               </Grid>
             </Grid>
