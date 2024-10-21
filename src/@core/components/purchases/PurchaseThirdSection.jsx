@@ -251,7 +251,7 @@ const PurchaseThirdSection = ({
                   id='purchase_status'
                   name='status'
                   label='Purchase Status'
-                  value={values.status}
+                  value={values.status === 'recieved' ? 'received' : values.status}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={Boolean(touched.status && errors.status)}
@@ -261,6 +261,7 @@ const PurchaseThirdSection = ({
                   <MenuItem value=''>
                     <em>Please Select</em>
                   </MenuItem>
+
                   {data &&
                     data.status.length > 0 &&
                     data.status.map((item, index) => (

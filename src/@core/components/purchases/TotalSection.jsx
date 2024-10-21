@@ -205,6 +205,14 @@ const TotalSection = ({ values, setFieldValue }) => {
         }`
     : null
 
+  console.log(
+    'values of total sections🍕🍕 SubTotal, DiscountValue ,TaxFinal, FinalTotal',
+    values.sub_total,
+    values.discount_amount_value,
+    values.tax_final,
+    values.final_total
+  )
+
   return (
     <Grid item xs={12} sm={6} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
       <Box sx={{ width: '100%', mb: 4 }}>

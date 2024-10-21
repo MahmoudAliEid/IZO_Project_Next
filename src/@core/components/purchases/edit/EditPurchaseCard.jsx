@@ -231,8 +231,8 @@ const EditPurchaseCard = ({ id }) => {
           expense_total_amount: Number(info[0].additional[0].amount),
           expense_total_vat: Number(info[0].additional[0].vat),
           expense_total: Number(info[0].additional[0].total),
-          final_additional_cost: Number(info[0].additional[0].cost_shipping),
-          final_additional_supplier: Number(info[0].additional[0].supplier_shipping),
+          additional_cost_charges: Number(info[0].additional[0].cost_shipping),
+          additional_supplier_charges: Number(info[0].additional[0].supplier_shipping),
           additional_supplier_charges_curr: Number(info[0].additional[0].supplier_shipping_curr),
           additional_cost_charges_curr: Number(info[0].additional[0].cost_shipping_curr),
           expense: info[0].additional[0].lines.map(expense => ({
