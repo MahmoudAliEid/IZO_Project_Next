@@ -32,7 +32,7 @@ const EditPurchaseCard = ({ id }) => {
   // ** State
   const [data, setData] = useState()
   const [openLoading, setOpenLoading] = useState(false)
-  const [searchSupplier, setSearchSupplier] = useState(null)
+  const [searchSupplier, setSearchSupplier] = useState('ebrahem')
   const [addExpense, setAddExpense] = useState(false)
   const [initialValues, setInitialValues] = useState({
     total_items: 0,
@@ -156,7 +156,7 @@ const EditPurchaseCard = ({ id }) => {
       setInitialValues(prev => {
         return {
           ...prev,
-          ...info[0],
+
           store_id: info[0].store,
           storeName: info[0].storeName,
           location_id: info[0].location,
@@ -167,6 +167,7 @@ const EditPurchaseCard = ({ id }) => {
           due_date: new Date(info[0].due_date),
           parent_price: info[0].list_price,
           cost_center_id: info[0].cost_center_id,
+          tax_value: 0.05,
           attachment: [],
           business_info: {
             name: info[0].contact_info.name,
@@ -182,23 +183,23 @@ const EditPurchaseCard = ({ id }) => {
           reference_no: info[0].reference_no,
           project_no: info[0].project_no,
           tax_amount: Number(info[0].tax),
-          tax_final: Number(info[0].tax_amount),
+          // tax_final: Number(info[0].tax_amount),
           discount_type: info[0].discount_type,
           discount_amount: Number(info[0].discount_amount),
           currency_symbol: info[0].currency_symbol,
-          sub_total: Number(info[0].sub_total),
-          final_total: Number(info[0].final_total),
+          // sub_total: Number(info[0].sub_total),
+          // final_total: Number(info[0].final_total),
           additional_notes: info[0].additional_notes,
           shipping_details: info[0].shipping_details,
           sup_refe: info[0].source_reference,
           currency_id: info[0].currency_id,
           currency_id_amount: Number(info[0].exchange_price),
           tax_curr: Number(info[0].tax_amount_curr),
-          final_total_curr: Number(info[0].final_total_curr),
+          // final_total_curr: Number(info[0].final_total_curr),
           main_currency_symbol: info[0].main_currency_symbol,
-          sub_total_curr: Number(info[0].sub_total_cur),
-          discount_amount_value: Number(info[0].discount_amount_view),
-          discount_amount_curr: Number(info[0].discount_amount_view_curr),
+          // sub_total_curr: Number(info[0].sub_total_cur),
+          // discount_amount_value: Number(info[0].discount_amount_view),
+          // discount_amount_curr: Number(info[0].discount_amount_view_curr),
           items: info[0].list.map(item => ({
             ...item,
             id: item.id,
@@ -230,7 +231,16 @@ const EditPurchaseCard = ({ id }) => {
           }))
         }
       })
-      setSearchSupplier(info[0].contact_info.name)
+      setSearchSupplier({
+        name: info[0].contact_info.name,
+        id: info[0].contact_info.id,
+        businessName: info[0].contact_info.businessName,
+        contactNumber: info[0].contact_info.contactNumber,
+        tax_number: info[0].contact_info.tax_number,
+        mobile: info[0].contact_info.mobile,
+        email: info[0].contact_info.email,
+        balance: info[0].contact_info.balance
+      })
     }
   }, [store])
 

@@ -56,6 +56,7 @@ import { deletePurchase } from 'src/store/apps/purchases/postDeletePurchase'
 import ViewPurchases from 'src/@core/components/purchases/ViewPurchases'
 import AddPurchases from 'src/@core/components/purchases/AddPurchases'
 import PurchaseEditPopUp from 'src/@core/components/purchases/edit/PurchaseEditPopUp'
+import UpdateStatus from 'src/@core/components/purchases/updateStatus/UpdateStatus'
 
 const paymentStatus = {
   paid: { title: 'Paid', color: 'success' },
@@ -74,6 +75,7 @@ const paymentStatus = {
 
 const purchaseStatus = {
   received: { title: 'Received', color: 'success' },
+  recieved: { title: 'Received', color: 'success' },
   final: { title: 'Final', color: 'secondary' },
   pending: { title: 'Pending', color: 'warning' },
   ordered: { title: 'Ordered', color: 'primary' }
@@ -99,6 +101,7 @@ const RowOptions = ({ id }) => {
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
   const [openView, setOpenView] = useState(false)
+  const [openUpdateStatus, setOpenUpdateStatus] = useState(false)
   // const [openViewAttachments, setOpenViewAttachments] = useState(false)
   const [setOpenEntry] = useState(false)
 
@@ -183,6 +186,10 @@ const RowOptions = ({ id }) => {
   // const handleViewAttachments = () => {
   //   setOpenViewAttachments(!openViewAttachments)
   // }
+
+  const handleUpdateStatus = () => {
+    setOpenUpdateStatus(!openUpdateStatus)
+  }
 
   return (
     <Fragment>
@@ -306,6 +313,7 @@ const RowOptions = ({ id }) => {
         <MenuItem
           onClick={() => {
             handleRowOptionsClose()
+            setOpenUpdateStatus(true)
           }}
           sx={{ '& svg': { mr: 2 } }}
         >
@@ -323,6 +331,7 @@ const RowOptions = ({ id }) => {
         />
       )}
       {openView && <ViewPurchases open={openView} toggle={handleView} id={id} />}
+      {openUpdateStatus && <UpdateStatus open={openUpdateStatus} toggle={handleUpdateStatus} id={id} />}
 
       {openEdit && <PurchaseEditPopUp open={openEdit} toggle={handleEdit} id={id} />}
       {/*
@@ -539,7 +548,7 @@ const ListPurchases = () => {
       renderCell: ({ row }) => {
         const status = purchaseStatus[row.status]
 
-        return <Chip variant='outlined' label={status.title} color={status.color} />
+        return <Chip variant='outlined' label={status?.title || 'default'} color={status?.color || 'info'} />
       }
     },
     {

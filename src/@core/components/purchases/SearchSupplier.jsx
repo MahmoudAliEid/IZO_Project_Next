@@ -33,10 +33,6 @@ const SearchSupplier = ({ setFieldValue, handleChange, searchSupplier, setSearch
 
     debounceTimeoutRef.current = setTimeout(async () => {
       try {
-        // Logging for debugging
-        console.log('Sending request to:', `${URL}/app/react/purchase/supplier?letters=${event.target.value}`)
-        console.log('With token:', token)
-
         const response = await axios.get(`${URL}/app/react/purchase/supplier?letters=${event.target.value}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,33 +42,19 @@ const SearchSupplier = ({ setFieldValue, handleChange, searchSupplier, setSearch
 
         const data = response.data
         setSearchInfo(data.value || [])
-        console.log('data information 🧀:', data.value)
       } catch (error) {
-        console.error('Error fetching data :', error)
-        if (error.response) {
-          // Server responded with a status other than 2xx
-          console.error('Response data:', error.response.data)
-          console.error('Response status:', error.response.status)
-          console.error('Response headers:', error.response.headers)
-        } else if (error.request) {
-          // Request was made but no response received
-          console.error('Request data:', error.request)
-        } else {
-          // Something else happened
-          console.error('Error message:', error.message)
-        }
+        // throw error
+        console.error(error)
       } finally {
         setLoading(false)
       }
-    }, 1000) // Delay of 1000 milliseconds
+    }, 1000)
   }
 
-  // !TESTING Important
   useEffect(() => {
     if (searchInfo.length === 1) {
       // Push the data
-      const itemToAdd = searchInfo[0] // Store the item to push to avoid stale closure
-
+      const itemToAdd = searchInfo[0]
       setFieldValue(`business_info`, {
         name: itemToAdd.name,
         businessName: itemToAdd.businessName,
@@ -117,12 +99,11 @@ const SearchSupplier = ({ setFieldValue, handleChange, searchSupplier, setSearch
               if (newValue) {
                 setSearchSupplier(newValue)
                 setFieldValue(`search_supplier`, newValue.name)
-                console.log('new value from search supplier 🍗🍗🍗:', newValue)
-                // setFieldValue(`product_compo.${productIndex}.p_id`, newValue.product_id)
+
                 setSupplierId(newValue.product_id)
 
                 const matchingOptions = searchInfo.filter(item => item.id === newValue.id)
-                console.log('matching options from search product 🍗🍗🍗:', matchingOptions)
+
                 if (matchingOptions.length > 1) {
                   matchingOptions.forEach(item => {
                     setFieldValue('business_info', {
@@ -167,6 +148,7 @@ const SearchSupplier = ({ setFieldValue, handleChange, searchSupplier, setSearch
                 onChange={handleSearchChange}
                 label='Supplier'
                 variant='outlined'
+                value={searchSupplier}
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
