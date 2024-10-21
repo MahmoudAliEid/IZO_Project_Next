@@ -275,12 +275,11 @@ const PurchaseThirdSection = ({
             {/* prices */}
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <FormControl fullWidth>
-                <InputLabel htmlFor='parent_price'>Prices</InputLabel>
+                <InputLabel htmlFor='parent-price'>Prices</InputLabel>
                 <Select
-                  id='parent_price'
+                  id='parent-price'
                   name='parent_price'
                   label='Prices'
-                  disabled={values.items.length === 0}
                   value={values.parent_price}
                   onChange={event => {
                     handleChange(event)

@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect, Fragment } from 'react'
 
+import { useRouter } from 'next/router'
+
 // ** Mui Import
 import {
   Box,
@@ -54,7 +56,6 @@ import { fetchPurchases } from 'src/store/apps/purchases/getPurchasesSlice'
 import DeleteGlobalAlert from 'src/@core/components/deleteGlobalAlert/DeleteGlobalAlert'
 import { deletePurchase } from 'src/store/apps/purchases/postDeletePurchase'
 import ViewPurchases from 'src/@core/components/purchases/ViewPurchases'
-import AddPurchases from 'src/@core/components/purchases/AddPurchases'
 import PurchaseEditPopUp from 'src/@core/components/purchases/edit/PurchaseEditPopUp'
 import UpdateStatus from 'src/@core/components/purchases/updateStatus/UpdateStatus'
 
@@ -432,13 +433,12 @@ const Attachment = ({ row }) => {
 
 const ListPurchases = () => {
   // ** States
-  // const [openAdd, setOpenAdd] = useState(false)
+
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [searchText, setSearchText] = useState('')
   const [filteredData, setFilteredData] = useState([])
   const [transText, setTransText] = useState('')
   const [data, setData] = useState([])
-  const [openAdd, setOpenAdd] = useState(false)
 
   const currency_code = getCookie('currency_code')
   const decimalFormat = getCookie('DecimalFormat')
@@ -446,6 +446,7 @@ const ListPurchases = () => {
 
   // ** Store Vars
   const dispatch = useDispatch()
+  const router = useRouter()
   const storeData = useSelector(state => state.getPurchases?.data?.value)
 
   useEffect(() => {
@@ -675,7 +676,7 @@ const ListPurchases = () => {
                 variant='contained'
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={() => {
-                  setOpenAdd(true)
+                  router.replace('/apps/purchases/add')
                 }}
               >
                 Add
@@ -723,14 +724,6 @@ const ListPurchases = () => {
           )}
         </Card>
       </Grid>
-      {openAdd && (
-        <AddPurchases
-          open={openAdd}
-          handleClose={() => {
-            setOpenAdd(!openAdd)
-          }}
-        />
-      )}
     </Grid>
   )
 }

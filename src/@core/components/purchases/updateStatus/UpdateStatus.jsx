@@ -98,7 +98,13 @@ const UpdateStatus = ({ open, toggle, id }) => {
         <Button variant={'outlined'} onClick={toggle} color='error'>
           Cancel
         </Button>
-        <Button variant={'contained'} onClick={handleUpdateStatus()} color='primary'>
+        <Button
+          variant={'contained'}
+          onClick={() => {
+            handleUpdateStatus()
+          }}
+          color='primary'
+        >
           Save
         </Button>
       </DialogActions>

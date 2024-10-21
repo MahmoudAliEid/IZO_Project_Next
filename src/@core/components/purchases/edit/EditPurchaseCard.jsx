@@ -40,7 +40,7 @@ const EditPurchaseCard = ({ id }) => {
     search_product: '',
     search_supplier: '',
     business_info: null,
-    parent_price: null,
+    parent_price: 0,
     discount: 0,
     discount_type: '',
     discount_amount: 0,
@@ -156,7 +156,6 @@ const EditPurchaseCard = ({ id }) => {
       setInitialValues(prev => {
         return {
           ...prev,
-
           store_id: info[0].store,
           storeName: info[0].storeName,
           location_id: info[0].location,
@@ -167,7 +166,7 @@ const EditPurchaseCard = ({ id }) => {
           due_date: new Date(info[0].due_date),
           parent_price: info[0].list_price,
           cost_center_id: info[0].cost_center_id,
-          tax_value: 0.05,
+          tax_value: Number(info[0].taxValue) / 100,
           attachment: [],
           business_info: {
             name: info[0].contact_info.name,
@@ -183,23 +182,23 @@ const EditPurchaseCard = ({ id }) => {
           reference_no: info[0].reference_no,
           project_no: info[0].project_no,
           tax_amount: Number(info[0].tax),
-          // tax_final: Number(info[0].tax_amount),
+          tax_final: Number(info[0].tax_amount),
           discount_type: info[0].discount_type,
           discount_amount: Number(info[0].discount_amount),
           currency_symbol: info[0].currency_symbol,
-          // sub_total: Number(info[0].sub_total),
-          // final_total: Number(info[0].final_total),
+          sub_total: Number(info[0].sub_total),
+          final_total: Number(info[0].final_total),
+          tax_curr: Number(info[0].tax_amount_curr),
           additional_notes: info[0].additional_notes,
           shipping_details: info[0].shipping_details,
           sup_refe: info[0].source_reference,
           currency_id: info[0].currency_id,
-          currency_id_amount: Number(info[0].exchange_price),
-          tax_curr: Number(info[0].tax_amount_curr),
-          // final_total_curr: Number(info[0].final_total_curr),
+          currency_id_amount: info[0].exchange_price ? Number(info[0].exchange_price) : '',
+          final_total_curr: Number(info[0].final_total_curr),
           main_currency_symbol: info[0].main_currency_symbol,
-          // sub_total_curr: Number(info[0].sub_total_cur),
-          // discount_amount_value: Number(info[0].discount_amount_view),
-          // discount_amount_curr: Number(info[0].discount_amount_view_curr),
+          sub_total_curr: Number(info[0].sub_total_curr),
+          discount_amount_value: Number(info[0].discount_amount_view),
+          discount_amount_curr: Number(info[0].discount_amount_view_curr),
           items: info[0].list.map(item => ({
             ...item,
             id: item.id,
@@ -228,6 +227,30 @@ const EditPurchaseCard = ({ id }) => {
             line_sort: item.line_sort,
             unit_quantity: '',
             exp_date: item.exp_date
+          })),
+          expense_total_amount: Number(info[0].additional[0].amount),
+          expense_total_vat: Number(info[0].additional[0].vat),
+          expense_total: Number(info[0].additional[0].total),
+          final_additional_cost: Number(info[0].additional[0].cost_shipping),
+          final_additional_supplier: Number(info[0].additional[0].supplier_shipping),
+          additional_supplier_charges_curr: Number(info[0].additional[0].supplier_shipping_curr),
+          additional_cost_charges_curr: Number(info[0].additional[0].cost_shipping_curr),
+          expense: info[0].additional[0].lines.map(expense => ({
+            id: expense.id,
+            cost_center: expense.cost_center_id,
+            supplier: expense.supplier_id,
+            amount: expense.amount_line,
+            vat: expense.vat_line,
+            total: expense.total_line,
+            supplier_name: expense.supplier_name,
+            total_curr: expense.total_line_curr,
+            vat_curr: expense.vat_line_curr,
+            amount_curr: expense.amount_line_curr,
+            note: expense.note,
+            debit: expense.debit_account_id,
+            date: new Date(expense.date),
+            currency_id: expense.currency_id,
+            currency_id_amount: expense.currency_amount
           }))
         }
       })
@@ -248,12 +271,11 @@ const EditPurchaseCard = ({ id }) => {
   const handleSubmit = (values, { setSubmitting }) => {
     setOpenLoading(true)
     console.log('id form edit purchase edit and values:=>', id, values)
-    // dispatch(createPurchase({ values })).then(() => {
-    //   setSubmitting(false)
-    // })
+
     setSubmitting(false)
   }
   console.log('store of edit purchase & data:=>', data)
+  console.log('initialValues of edit purchase :=>', initialValues)
 
   return (
     <Fragment>

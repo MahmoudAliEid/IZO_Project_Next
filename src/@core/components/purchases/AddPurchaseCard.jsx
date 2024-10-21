@@ -40,7 +40,7 @@ const AddPurchaseCard = () => {
     search_product: '',
     search_supplier: '',
     business_info: null,
-    parent_price: null,
+    parent_price: 0,
     discount: 0,
     discount_type: '',
     discount_amount: 0,
