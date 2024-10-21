@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 // ** Custom Components
 import CustomHeader from '../../customDialogHeader/CustomHeader'
 
+// ** redux
+import { useDispatch } from 'react-redux'
+
 // ** MUI
 import { Select, FormControl, InputLabel, MenuItem, DialogContent, Dialog, Button, DialogActions } from '@mui/material'
 
@@ -18,22 +21,28 @@ const UpdateStatus = ({ open, toggle, id }) => {
   })
   const fontStyle = getCookie('fontStyle')
 
+  const dispatch = useDispatch()
+
   // ** send data
   const handleUpdateStatus = async () => {
     const token = getCookie('token')
     const URL = getCookie('apiUrl')
 
     try {
-      await axios.get(
-        `${URL}/app/react/purchase/update-status-change/${id}?status=${data.status}&contact_id=${data.contact_id}`,
+      await axios
+        .get(
+          `${URL}/app/react/purchase/update-status-change/${id}?status=${data.status}&contact_id=${data.contact_id}`,
 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
           }
-        }
-      )
+        )
+        .then(() => {
+          dispatch(fetchPurchases({ token }))
+        })
     } catch (error) {
       // throw error
       console.error(error)
@@ -69,7 +78,8 @@ const UpdateStatus = ({ open, toggle, id }) => {
     <Dialog
       open={open}
       toggle={toggle}
-      minWidth='md'
+      minWidth='lg'
+      fullWidth
       sx={{
         textTransform: fontStyle
       }}
@@ -101,6 +111,7 @@ const UpdateStatus = ({ open, toggle, id }) => {
         <Button
           variant={'contained'}
           onClick={() => {
+            toggle()
             handleUpdateStatus()
           }}
           color='primary'
