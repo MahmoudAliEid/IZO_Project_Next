@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import CustomHeader from '../../customDialogHeader/CustomHeader'
 
 // ** MUI
-import { Select, FormControl, InputLabel, MenuItem, DialogContent, Dialog } from '@mui/material'
+import { Select, FormControl, InputLabel, MenuItem, DialogContent, Dialog, Button, DialogActions } from '@mui/material'
 
 // ** cookies
 import { getCookie } from 'cookies-next'
@@ -16,15 +16,16 @@ const UpdateStatus = ({ open, toggle, id }) => {
     contact_id: null,
     status: ''
   })
+  const fontStyle = getCookie('fontStyle')
 
   // ** send data
-  const handleUpdateStatus = async status => {
+  const handleUpdateStatus = async () => {
     const token = getCookie('token')
     const URL = getCookie('apiUrl')
 
     try {
       await axios.get(
-        `${URL}/app/react/purchase/update-status-change/${id}?status=${status}&contact_id=${data.contact_id}`,
+        `${URL}/app/react/purchase/update-status-change/${id}?status=${data.status}&contact_id=${data.contact_id}`,
 
         {
           headers: {
@@ -64,10 +65,15 @@ const UpdateStatus = ({ open, toggle, id }) => {
     fetchStatus()
   }, [id])
 
-  console.log(data.status, 'data from update status')
-
   return (
-    <Dialog open={open} toggle={toggle} maxWidth='sm'>
+    <Dialog
+      open={open}
+      toggle={toggle}
+      minWidth='md'
+      sx={{
+        textTransform: fontStyle
+      }}
+    >
       <CustomHeader title='Update Status' divider={true} handleClose={toggle} />
       <DialogContent>
         <FormControl fullWidth>
@@ -81,17 +87,21 @@ const UpdateStatus = ({ open, toggle, id }) => {
           >
             {data &&
               Object.keys(data.list_status).map((key, index) => (
-                <MenuItem
-                  key={index}
-                  value={data.list_status[key]}
-                  onClick={() => handleUpdateStatus(data.list_status[key])}
-                >
+                <MenuItem key={index} value={data.list_status[key]}>
                   {data.list_status[key]}
                 </MenuItem>
               ))}
           </Select>
         </FormControl>
       </DialogContent>
+      <DialogActions>
+        <Button variant={'outlined'} onClick={toggle} color='error'>
+          Cancel
+        </Button>
+        <Button variant={'contained'} onClick={handleUpdateStatus()} color='primary'>
+          Save
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }

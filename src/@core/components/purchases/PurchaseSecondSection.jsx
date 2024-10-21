@@ -52,7 +52,7 @@ const PurchaseSecondSection = ({ values, handleBlur, handleChange, data, touched
               <TextField
                 size='small'
                 value={data?.invoice_number}
-                sx={{ width: '150px' }}
+                sx={{ width: '200px' }}
                 InputProps={{
                   disabled: true,
                   startAdornment: <InputAdornment position='start'>#</InputAdornment>
