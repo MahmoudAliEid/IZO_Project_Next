@@ -104,14 +104,14 @@ const TotalSection = ({ values, setFieldValue }) => {
       setFieldValue('final_additional_cost', final_additional_cost)
     }
 
-    const finalTotalCurr = values.currency_id_amount ? final_additional_cost / Number(values.currency_id_amount) : 0
+    const finalTotalCurr = values.currency_id_amount ? final_additional_supplier / Number(values.currency_id_amount) : 0
     const taxCurr = calculateDiscountCurr(SubCurrTotal) * Number(values.tax_value)
     if (taxCurr !== values.tax_curr) {
       setFieldValue('tax_curr', taxCurr)
     }
 
-    if (final_additional_cost !== values.final_total) {
-      setFieldValue('final_total', final_additional_cost)
+    if (final_additional_supplier !== values.final_total) {
+      setFieldValue('final_total', final_additional_supplier)
     }
 
     if (finalTotalCurr !== values.final_total_curr) {

@@ -167,6 +167,7 @@ const EditPurchaseCard = ({ id }) => {
           parent_price: info[0].list_price,
           cost_center_id: info[0].cost_center_id,
           tax_value: Number(info[0].taxValue) / 100,
+          tax: Number(info[0].taxValue),
           attachment: [],
           business_info: {
             name: info[0].contact_info.name,
